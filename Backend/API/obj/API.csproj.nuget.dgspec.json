@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "C:\\Accomart\\AccoMart\\Backend\\API\\API.csproj": {}
   },
   "projects": {
@@ -15,6 +16,22 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Kamal.K_INT1582\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+    "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj",
+        "projectName": "API",
+        "projectPath": "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\khushboo.g_INT1596\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\khushboo.g_INT1596\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> 480479dfe4c5ea0463c73ee31e1bab8f2668fbe1
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +39,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

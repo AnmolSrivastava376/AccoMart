@@ -9,11 +9,19 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = API
 build_property.RootNamespace = API
+<<<<<<< HEAD
 build_property.ProjectDir = C:\Accomart\AccoMart\Backend\API\
+=======
+build_property.ProjectDir = C:\Users\khushboo.g_INT1596\Documents\GitHub\AccoMart\Backend\API\
+>>>>>>> 480479dfe4c5ea0463c73ee31e1bab8f2668fbe1
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+<<<<<<< HEAD
 build_property.MSBuildProjectDirectory = C:\Accomart\AccoMart\Backend\API
+=======
+build_property.MSBuildProjectDirectory = C:\Users\khushboo.g_INT1596\Documents\GitHub\AccoMart\Backend\API
+>>>>>>> 480479dfe4c5ea0463c73ee31e1bab8f2668fbe1
 build_property._RazorSourceGeneratorDebug = 
