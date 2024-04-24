@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Anmol.S_INT1583\\Desktop\\AccoMart\\Backend\\API\\API.csproj": {}
+    "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Anmol.S_INT1583\\Desktop\\AccoMart\\Backend\\API\\API.csproj": {
+    "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Anmol.S_INT1583\\Desktop\\AccoMart\\Backend\\API\\API.csproj",
+        "projectUniqueName": "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\Anmol.S_INT1583\\Desktop\\AccoMart\\Backend\\API\\API.csproj",
-        "packagesPath": "C:\\Users\\Anmol.S_INT1583\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Anmol.S_INT1583\\Desktop\\AccoMart\\Backend\\API\\obj\\",
+        "projectPath": "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\khushboo.g_INT1596\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\khushboo.g_INT1596\\Documents\\GitHub\\AccoMart\\Backend\\API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Anmol.S_INT1583\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\khushboo.g_INT1596\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,6 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,6 +46,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.2.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
