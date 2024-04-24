@@ -1,25 +1,77 @@
+using Microsoft.Data.SqlClient;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// For production scenarios, consider keeping Swagger configurations behind the environment check
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger();
+app.UseSwaggerUI();
+// }
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+string connectionString = app.Configuration.GetConnectionString("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";")!;
 
-app.MapControllers();
+try
+{
+    // Table would be created ahead of time in production
+    using var conn = new SqlConnection(connectionString);
+    conn.Open();
+
+    var command = new SqlCommand(
+        "CREATE TABLE Persons (ID int NOT NULL PRIMARY KEY IDENTITY, FirstName varchar(255), LastName varchar(255));",
+        conn);
+    using SqlDataReader reader = command.ExecuteReader();
+}
+catch (Exception e)
+{
+    // Table may already exist
+    Console.WriteLine(e.Message);
+}
+
+app.MapGet("/Person", () => {
+    var rows = new List<string>();
+
+    using var conn = new SqlConnection(connectionString);
+    conn.Open();
+
+    var command = new SqlCommand("SELECT * FROM Persons", conn);
+    using SqlDataReader reader = command.ExecuteReader();
+
+    if (reader.HasRows)
+    {
+        while (reader.Read())
+        {
+            rows.Add($"{reader.GetInt32(0)}, {reader.GetString(1)}, {reader.GetString(2)}");
+        }
+    }
+
+    return rows;
+})
+.WithName("GetPersons")
+.WithOpenApi();
+
+app.MapPost("/Person", async (Person person) => {
+    using var conn = new SqlConnection(connectionString);
+    await conn.OpenAsync();
+
+    var command = new SqlCommand(
+        "INSERT INTO Persons (firstName, lastName) VALUES (@firstName, @lastName)",
+        conn);
+
+    command.Parameters.AddWithValue("@firstName", person.FirstName);
+    command.Parameters.AddWithValue("@lastName", person.LastName);
+
+    await command.ExecuteNonQueryAsync();
+})
+.WithName("CreatePerson")
+.WithOpenApi();
+
 
 app.Run();
