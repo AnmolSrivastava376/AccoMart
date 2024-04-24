@@ -35,7 +35,8 @@ catch (Exception e)
     Console.WriteLine(e.Message);
 }
 
-app.MapGet("/Person", () => {
+app.MapGet("/Person", () =>
+{
     var rows = new List<string>();
 
     using var conn = new SqlConnection(connectionString);
@@ -54,8 +55,7 @@ app.MapGet("/Person", () => {
 
     return rows;
 })
-.WithName("GetPersons")
-.WithOpenApi();
+.WithName("GetPersons");
 
 app.MapPost("/Person", async (Person person) => {
     using var conn = new SqlConnection(connectionString);
@@ -70,8 +70,7 @@ app.MapPost("/Person", async (Person person) => {
 
     await command.ExecuteNonQueryAsync();
 })
-.WithName("CreatePerson")
-.WithOpenApi();
+.WithName("CreatePerson");
 
 
 app.Run();
