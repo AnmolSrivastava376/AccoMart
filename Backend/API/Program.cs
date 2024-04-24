@@ -16,12 +16,10 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-string connectionString = app.Configuration.GetConnectionString("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication=\"Active Directory Default\";")!;
-
 try
 {
     // Table would be created ahead of time in production
-    using var conn = new SqlConnection(connectionString);
+    using var conn = new SqlConnection(app.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"));
     conn.Open();
 
     var command = new SqlCommand(
@@ -35,10 +33,11 @@ catch (Exception e)
     Console.WriteLine(e.Message);
 }
 
-app.MapGet("/Person", () => {
+app.MapGet("/Person", () =>
+{
     var rows = new List<string>();
 
-    using var conn = new SqlConnection(connectionString);
+    using var conn = new SqlConnection(app.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"));
     conn.Open();
 
     var command = new SqlCommand("SELECT * FROM Persons", conn);
@@ -54,11 +53,10 @@ app.MapGet("/Person", () => {
 
     return rows;
 })
-.WithName("GetPersons")
-.WithOpenApi();
+.WithName("GetPersons");
 
 app.MapPost("/Person", async (Person person) => {
-    using var conn = new SqlConnection(connectionString);
+    using var conn = new SqlConnection(app.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"));
     await conn.OpenAsync();
 
     var command = new SqlCommand(
@@ -70,8 +68,5 @@ app.MapPost("/Person", async (Person person) => {
 
     await command.ExecuteNonQueryAsync();
 })
-.WithName("CreatePerson")
-.WithOpenApi();
-
-
+.WithName("CreatePerson");
 app.Run();
