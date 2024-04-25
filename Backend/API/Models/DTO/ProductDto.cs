@@ -1,13 +1,13 @@
-﻿namespace API.Models
+﻿namespace API.Models.DTO
 {
-    public class Product
+    public class ProductDto
     {
-        public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string ProductDesc { get; set; }
         public decimal ProductPrice { get; set; }
         public string ProductImageUrl { get; set; }
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }  
+       // public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+       
     }
 }
