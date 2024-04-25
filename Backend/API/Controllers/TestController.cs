@@ -31,6 +31,9 @@ namespace API.Controllers
                     Admin admin = new Admin
                     {
                         AdminId = Convert.ToInt32(reader["AdminId"]),
+                        AdminEmail = Convert.ToString(reader["AdminEmail"]),
+                        AdminPassword = Convert.ToString(reader["AdminPassword"]),
+
                         // Populate other properties accordingly
                     };
                     admins.Add(admin);
