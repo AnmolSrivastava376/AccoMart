@@ -1,0 +1,14 @@
+.parent{
+    background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+}
+
+.landing-img{
+    background-image: url('../../../assets/Image/Landing-image.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.child{
+    background-image: linear-gradient(to bottom right,#112f47,#035094, #035094);
+
+}
