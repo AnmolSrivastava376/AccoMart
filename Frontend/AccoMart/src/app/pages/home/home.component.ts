@@ -9,5 +9,5 @@ import { CategoryNavbarComponent } from "../../components/category-navbar/catego
     imports: [CategoryNavbarComponent]
 })
 export class HomeComponent {
-
+    categories: string[] = ['Electronics', 'Footwear', 'Clothing', 'Drinks'];
 }
