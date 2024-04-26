@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Category } from '../../interfaces/category';
 
 @Component({
   selector: 'app-category-navbar',
@@ -9,5 +10,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './category-navbar.component.css'
 })
 export class CategoryNavbarComponent {
-  @Input() categories?: any[];
+  @Input() categories?: Category[]
 }
