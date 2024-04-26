@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CategoryNavbarComponent } from '../../components/category-navbar/category-navbar.component';
 import axios from 'axios';
 import { Category } from '../../interfaces/category';
+import { CategoryService } from '../../services/category.services';
 
 @Component({
   selector: 'app-home',
@@ -12,13 +13,11 @@ import { Category } from '../../interfaces/category';
 })
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
+  constructor(private categoryService: CategoryService) {}
+  
   ngOnInit(): void {
-    this.fetchCategories();
-  }
-  fetchCategories() {
-    axios.get<Category[]>('http://localhost:5239/AdminDashboard')
+    this.categoryService.fetchCategories()
       .then((response) => {
-        console.log(response.data)
         this.categories = response.data;
       })
       .catch((error) => {
