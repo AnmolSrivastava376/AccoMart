@@ -6,7 +6,7 @@ import { Product } from '../interfaces/product';
   providedIn: 'root'
 })
 export class productService {
-  fetchProductByCategoryID() {
-    return axios.get<Product[]>('http://localhost:5239/AdminDashboard/1');
+  fetchProductByCategoryID(categoryId:Number) {
+    return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/${categoryId}`);
   }
 }
