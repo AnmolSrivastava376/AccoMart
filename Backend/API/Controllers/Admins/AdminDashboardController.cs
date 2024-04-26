@@ -3,6 +3,7 @@ using API.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Admins
 {
@@ -194,24 +195,208 @@ namespace API.Controllers.Admins
         }
 
 
-
-        /*[HttpPost]
-        public IActionResult PostAdmin([FromBody] Admin admin)
+        [HttpPut]
+        public IActionResult UpdateCategory(string categoryName, string NewCategoryName)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sqlQuery = "INSERT INTO Admin (AdminEmail, AdminPassword) VALUES (@Value1, @Value2)";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@Value1", admin.AdminEmail);
-                command.Parameters.AddWithValue("@Value2", admin.AdminPassword);
-                connection.Open();
-                command.ExecuteNonQuery();
+                
+
+                string sqlCategoryIdQuery = $"SELECT CategoryId FROM Category WHERE CategoryName = '{categoryName}'";
+                int categoryId = 0;
+
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(sqlCategoryIdQuery, connection))
+                    {
+                        object categoryIdObj = command.ExecuteScalar();
+
+                        if (categoryIdObj != null && categoryIdObj != DBNull.Value)
+                        {
+                            categoryId = Convert.ToInt32(categoryIdObj);
+                        }
+                        else
+                        {
+                            return NotFound("Category not found");
+                        }
+                    }
+
+                    string sqlQuery = $"UPDATE Category SET CategoryName = '{NewCategoryName}' WHERE CategoryId = '{categoryId}';";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@CategoryName", NewCategoryName);
+                        command.ExecuteNonQuery();
+                    }
+
+                    return Ok("Product uppdated successfully");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"An error occurred while creating the product: {ex.Message}");
+                }
             }
-
             return Ok();
-        }*/
+        }
+
+        [HttpPut("Update/Product")]
+
+        public IActionResult UpdateProduct (int productId, UpdateProductDto productDto)
+        {
+            using(SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sqlProductIdQuery = $"SELECT ProductId FROM Product WHERE ProductId = {productId}";
+                string sqlCategoryIdQuery = $"SELECT CategoryId FROM Category WHERE CategoryId = {productDto.CategoryId}";
+                int ProductId = 0;
+                int CategoryId = 0;
+
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(sqlProductIdQuery, connection))
+                    {
+                        object productIdObj = command.ExecuteScalar();
+
+                        if (productIdObj != null && productIdObj != DBNull.Value)
+                        {
+                            ProductId = Convert.ToInt32(productIdObj);
+                        }
+                        else
+                        {
+                            return NotFound("Product not found");
+                        }
+                    }
+                    using (SqlCommand command = new SqlCommand(sqlCategoryIdQuery, connection))
+                    {
+                        object categoryIdObj = command.ExecuteScalar();
+
+                        if (categoryIdObj != null && categoryIdObj != DBNull.Value)
+                        {
+                            CategoryId = Convert.ToInt32(categoryIdObj);
+                        }
+                        else
+                        {
+                            return NotFound("Category not found");
+                        }
+                    }
+
+                    string sqlQuery = "UPDATE Product SET ProductName = @ProductName, ProductDesc = @ProductDesc, " +
+                                      "ProductPrice = @ProductPrice, ProductImageUrl = @ProductImageUrl, " +
+                                      "CategoryId = @CategoryId WHERE ProductId = @ProductId";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProductName", productDto.ProductName);
+                        command.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
+                        command.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
+                        command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
+                        command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
+                        command.Parameters.AddWithValue("@ProductId", ProductId); // Use the retrieved ProductId
+
+                        command.ExecuteNonQuery();
+                    }
+
+                    return Ok("Product updated successfully");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"An error occurred while updating the product: {ex.Message}");
+                }
+            }
+            return Ok();
+        }
 
 
+        [HttpDelete]
+        public IActionResult DeleteCategory(int CategoryId)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+               
+                string sqlCategoryIdQuery = $"SELECT CategoryId FROM Category WHERE CategoryId = {CategoryId}";
+
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(sqlCategoryIdQuery, connection))
+                    {
+                        object categoryIdObj = command.ExecuteScalar();
+
+                        if (categoryIdObj != null && categoryIdObj != DBNull.Value)
+                        {
+                            CategoryId = Convert.ToInt32(categoryIdObj);
+                        }
+                        else
+                        {
+                            return NotFound("Category not found");
+                        }
+                    }
+
+                    string sqlQuery = $"DELETE FROM Category WHERE CategoryId = {CategoryId}";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+
+                    return Ok();
+                }
+
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"An error occurred while updating the product: {ex.Message}");
+                }
+
+
+
+            } }
+
+
+
+
+        [HttpDelete("Delete/Product")]
+        public IActionResult DeleteProduct(int ProductId)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+
+                string sqlProductIdQuery = $"SELECT ProductId FROM Product WHERE ProductId = {ProductId}";
+
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(sqlProductIdQuery, connection))
+                    {
+                        object productIdObj = command.ExecuteScalar();
+
+                        if (productIdObj != null && productIdObj != DBNull.Value)
+                        {
+                            ProductId = Convert.ToInt32(productIdObj);
+                        }
+                        else
+                        {
+                            return NotFound("Product not found");
+                        }
+                    }
+
+                    string sqlQuery = $"DELETE FROM Product WHERE ProductId = {ProductId}";
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+
+                    return Ok();
+                }
+
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"An error occurred while updating the product: {ex.Message}");
+                }
+
+
+
+            }
+        }
 
 
 
