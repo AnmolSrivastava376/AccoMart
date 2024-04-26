@@ -12,3 +12,63 @@
     background-image: linear-gradient(to bottom right,#112f47,#035094, #035094);
 
 }
+@media(max-width:540px){
+    .logo{
+        font-size: 56px;
+        line-height: 56px;
+    }
+    .shopping{
+        font-size: 32px;
+        line-height: 32px;
+    }
+    .text{
+        font-size: 18px;
+        line-height: 18px;
+    }
+    .button{
+        width: 124px;
+        font-size: 16px;
+    }
+}
+@media(max-width:420px){
+    .logo{
+        font-size: 52px;
+        line-height: 52px;
+    }
+    .shopping{
+        font-size: 32px;
+        line-height: 32px;
+    }
+    .text{
+        font-size: 16px;
+        line-height: 16px;
+    }
+    .button{
+        width: 100px;
+        font-size: 16px;
+    }
+}
+
+@media(max-width:355px){
+    .logo{
+        font-size: 32px;
+        line-height: 32px;
+    }
+    .shopping{
+        font-size: 24px;
+        line-height: 24px;
+    }
+    .text{
+        font-size: 12px;
+        line-height: 12px;
+    }
+    .button{
+        width: 80px;
+        font-size: 8px;
+    }
+}
+@media (max-width: 1000px){
+    .landing-img{
+        display: none;
+    }
+}
