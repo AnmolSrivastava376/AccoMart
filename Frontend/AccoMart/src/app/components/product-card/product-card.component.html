@@ -1,0 +1,10 @@
+<div class="w-full h-fit flex flex-col gap-[20px]">
+    <div *ngFor="let product of products" class="w-full h-[200px] border rounded-[10px] flex overflow-hidden">  
+        <div class="w-full h-full flex-[1] bg-gray-300 bg-[center]" [style.backgroundImage]="'url(' + product.productImageUrl + ')'"></div>
+        <div class="w-full h-full flex-[3] py-[10px] px-[20px]">
+            <div class="text-[28px] font-bold leading-[32px]">{{product.productName}}</div>
+            <div class="text-[16px] leading-[16px] mb-2">{{product.productPrice}}</div>
+            <div class="text-[20px] italic leading-[24px]">{{product.productDesc}}</div>
+        </div>
+    </div>
+</div>

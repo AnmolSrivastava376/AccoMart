@@ -1,1 +1,13 @@
-<p>home works!</p>
+<div class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col">
+    <div class="w-full h-[40px] border">Navbar</div>
+    <div class="w-full h-[40px] border">Searchbar</div>
+    <div class="w-full h-full border flex relative py-[20px]">
+        <div class="w-full h-full flex-[25] sticky top-[30px] min-h-[20vh] px-[20px]">
+            <app-category-navbar [categories]="categories" (categorySelected)="onCategorySelected($event)">
+            </app-category-navbar>
+        </div>
+        <div class="w-full h-fit flex-[75] rounded-[10px] mr-[20px]">
+            <app-product-card [products]="products"></app-product-card>
+        </div>
+    </div>
+</div>

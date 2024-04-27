@@ -1,0 +1,8 @@
+<div class="w-full h-full border flex flex-col rounded-[10px]">
+    <div class="text-[32px] font-bold px-[20px]">
+        Categories
+    </div>
+    <div *ngFor="let category of categories" class="w-full h-[40px] flex items-center text-[16px] px-[30px] cursor-pointer" (click)="onCategoryClick(category.categoryId)">
+        {{category.categoryName}}
+    </div>
+</div>
