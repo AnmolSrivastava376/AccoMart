@@ -92,46 +92,47 @@ namespace API.Controllers.Authentication
         public async Task<IActionResult> Login(Login login)
         {
             //checking user
-            var user = await _userManager.FindByEmailAsync(login.Email);
-            if (user.TwoFactorEnabled)
+            var loginOtpResponse = await _userManagement.GetOtpByLoginAsync(login);
+            if(loginOtpResponse.Response! != null)
             {
-                await _signInManager.SignOutAsync();
-                await _signInManager.PasswordSignInAsync(user, login.Password, false, true);
-                var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                var user = loginOtpResponse.Response.User;
+                if (user.TwoFactorEnabled)
+                {
+                    var token = loginOtpResponse.Response.Token;
 
-                var message = new Message(new string[] { user.Email! }, "OTP Confrimation", token);
-                _emailService.SendEmail(message);
+                    var message = new Message(new string[] { user.Email! }, "OTP Confrimation", token);
+                    _emailService.SendEmail(message);
 
-                return StatusCode(StatusCodes.Status200OK,
-                 new Response { Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
-            }
-            if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
-            {
-                var authClaims = new List<Claim>
+                    return StatusCode(StatusCodes.Status200OK,
+                     new Response {IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
+                }
+                if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
+                {
+                    var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
-                var userRoles = await _userManager.GetRolesAsync(user);
-                foreach (var role in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                    var userRoles = await _userManager.GetRolesAsync(user);
+                    foreach (var role in userRoles)
+                    {
+                        authClaims.Add(new Claim(ClaimTypes.Role, role));
+                    }
+
+
+                    var jwtToken = GetToken(authClaims);
+
+                    return Ok(new
+                    {
+                        token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                        expiration = jwtToken.ValidTo
+                    });
+
+
                 }
-
-
-                var jwtToken = GetToken(authClaims);
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                    expiration = jwtToken.ValidTo
-                });
-               
-
             }
+           
             return Unauthorized();
-
-
         }
 
 

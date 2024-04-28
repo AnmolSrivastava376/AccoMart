@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Service.Models.Authentication.Register;
 using Microsoft.AspNetCore.Identity;
 using Service.Models.Authentication.User;
+using Service.Models.Authentication.Login;
 namespace Service.Services
 {
     public interface IUserManagement
     {
         Task<ApiResponse<CreateUserResponse>> CreateUserWithTokenAsync(SignUp register);
         Task<ApiResponse<List<string>>> AssignRoleToUserAsync(List<string> roles, IdentityUser user); 
+        Task<ApiResponse<LoginOtpResponse>> GetOtpByLoginAsync(Login login); 
     }
 }

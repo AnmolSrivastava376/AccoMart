@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.Data
+namespace Data.Models
 {
     public class AuthenticationDbContext :IdentityDbContext<IdentityUser>
     {
