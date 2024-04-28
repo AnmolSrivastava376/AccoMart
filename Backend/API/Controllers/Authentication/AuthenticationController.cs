@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Service.Models;
 using Service.Models.Authentication.Login;
 using Service.Models.Authentication.Register;
+using Service.Models.Authentication.User;
 using Service.Services;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,19 +26,17 @@ namespace API.Controllers.Authentication
     
     public class AuthenticationController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;    
-        private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
+       private readonly SignInManager<ApplicationUser> _signInManager;
+       
         private readonly Service.Services.IEmailService _emailService;
         private readonly IUserManagement _userManagement;   
-        public AuthenticationController(UserManager<IdentityUser>userManager, RoleManager<IdentityRole> roleManager, Service.Services.IEmailService emailService, IConfiguration configuration,SignInManager<IdentityUser> signInManager,IUserManagement userManagement)
+        public AuthenticationController(UserManager<ApplicationUser>userManager, RoleManager<IdentityRole> roleManager, Service.Services.IEmailService emailService, IConfiguration configuration,SignInManager<ApplicationUser> signInManager,IUserManagement userManagement)
         {
             _userManager = userManager; 
-            _roleManager = roleManager;
+          
             _emailService = emailService;
-            _configuration = configuration;
-            _signInManager = signInManager;
+          
             _userManagement = userManagement;
 
         }
@@ -62,7 +62,7 @@ namespace API.Controllers.Authentication
 
         }
 
-        [HttpGet]
+        [HttpGet("Test Send email")]
         public IActionResult TestEmail()
         {
             var message = new Message(new string[] { "guptakhushboo81537@gmail.com" }, "test", "<h1>Testing</h1>");
@@ -108,26 +108,9 @@ namespace API.Controllers.Authentication
                 }
                 if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
                 {
-                    var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-                    var userRoles = await _userManager.GetRolesAsync(user);
-                    foreach (var role in userRoles)
-                    {
-                        authClaims.Add(new Claim(ClaimTypes.Role, role));
-                    }
+                        var serviceResponse = await _userManagement.GetJwtTokenAsync(user);
 
-
-                    var jwtToken = GetToken(authClaims);
-
-                    return Ok(new
-                    {
-                        token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                        expiration = jwtToken.ValidTo
-                    });
-
+                        return Ok(serviceResponse);                  
 
                 }
             }
@@ -142,37 +125,32 @@ namespace API.Controllers.Authentication
         public async Task<IActionResult> LoginWithOTP(string code, string email)
         {
 
-            var user = await _userManager.FindByEmailAsync(email);
-           
-            var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
-            if (signIn.Succeeded)
+          
+            var jwt = await _userManagement.LoginUserWithJWTokenAsync(code, email);
+            // var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
+            if (jwt.IsSuccess)
             {
-                if (user != null)
-                {
-                    var authClaims = new List<Claim>
-                    {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
 
-                    var userRoles = await _userManager.GetRolesAsync(user);
-                    foreach (var role in userRoles)
-                    {
-                        authClaims.Add(new Claim(ClaimTypes.Role, role));
-                    }
-                    
-                    var jwtToken = GetToken(authClaims);
 
-                    return Ok(
-                        new
-                        {
-                            token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                            expiration = jwtToken.ValidTo
-                        });
-                }
+                return Ok(
+                    jwt);
+
             }
 
             return StatusCode(StatusCodes.Status404NotFound, new Response { Status = $"Invalid OTP" });
+        }
+
+        [HttpPost]
+        [Route("Refresh-Token")]
+        public async Task<IActionResult> RefreshToken(LoginResponse accessToken)
+        {
+            var jwt = await _userManagement.RenewAccessTokenAsync(accessToken);
+            if(jwt.IsSuccess)
+            {
+                return Ok(jwt);
+            }
+            return StatusCode(StatusCodes.Status404NotFound,
+                new Response { Status = "Success", Message = $"Invalid code" });
         }
 
         [HttpPost("forgot-password")]
@@ -225,21 +203,7 @@ namespace API.Controllers.Authentication
                       
                                                                            
       
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            var token = new JwtSecurityToken(
-
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT: ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims : authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-
-                );
-            return token;
-             
-        }
+       
 
     }
 }
