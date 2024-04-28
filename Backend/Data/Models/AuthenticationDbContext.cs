@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Models
 {
-    public class AuthenticationDbContext :IdentityDbContext<IdentityUser>
+    public class AuthenticationDbContext :IdentityDbContext<ApplicationUser>
     {
         public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options) : base(options) 
         { 
