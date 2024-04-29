@@ -48,6 +48,10 @@ using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Se
 //conn.Open(); // Open the connection
 
 // Configure DbContextOptionsBuilder to use the SqlConnection
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Auth;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+});
 builder.Services.AddDbContext<AuthenticationDbContext>(options =>
 {
     options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Auth;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
@@ -82,8 +86,11 @@ var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfig
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserManagement,UserManagement>();
-var app = builder.Build();
 
+//Redis
+
+
+var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 // }
