@@ -8,10 +8,13 @@ import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { InvoiceComponent } from './pages/invoice/invoice.component';
 import { NgModule } from '@angular/core';
+import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
+
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
+    {path :'home/productdetail', component: ProductDetailComponent },
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/cart/orders', component: OrdersComponent },
