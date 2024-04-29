@@ -14,7 +14,7 @@ import {ProductDetailComponent  } from './pages/product-detail/product-detail.co
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
-    {path :'home/productdetail', component: ProductDetailComponent},
+    { path :'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/cart/orders', component: OrdersComponent },
