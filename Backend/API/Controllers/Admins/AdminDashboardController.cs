@@ -19,7 +19,7 @@ namespace API.Controllers.Admins
         {
             _productService = productService;
         }
-        private string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        
         [HttpGet("Products/CategoryId")]
         public async Task<IEnumerable<Product>> GetAllProducts([FromRoute] int id)
         {
