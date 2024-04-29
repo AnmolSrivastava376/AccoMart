@@ -1,4 +1,7 @@
 
+using API.Repository.Implementation;
+using API.Repository.Interfaces;
+using API.Services;
 using Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -48,10 +51,17 @@ using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Se
 //conn.Open(); // Open the connection
 
 // Configure DbContextOptionsBuilder to use the SqlConnection
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Auth;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-});
+    options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=AccoMart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+});*/
+
+//Databse Connection
+//Services and Repo for Product
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+
 builder.Services.AddDbContext<AuthenticationDbContext>(options =>
 {
     options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Auth;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
