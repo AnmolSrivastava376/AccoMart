@@ -11,9 +11,4 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductCardComponent {
   @Input() products?: Product[]
-  ngOnChanges() {
-    if (this.products) {
-      console.log('Received products:', this.products);
-    }
-  }
 }
