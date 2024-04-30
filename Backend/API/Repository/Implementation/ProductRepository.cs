@@ -130,8 +130,9 @@ namespace API.Repository.Implementation
                                 ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
                                 CategoryId = Convert.ToInt32(reader["CategoryId"])
                             };
-                            products.Add(product);
+                             products.Add(product);
                         }
+                        reader.Close();
                     }
                 }
 

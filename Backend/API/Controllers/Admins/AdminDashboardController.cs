@@ -21,7 +21,7 @@ namespace API.Controllers.Admins
         }
         
         [HttpGet("Products/CategoryId")]
-        public async Task<IEnumerable<Product>> GetAllProducts([FromRoute] int id)
+        public async Task<IEnumerable<Product>> GetAllProducts(int id)
         {
            
             return await _productService.GetAllProductsAsync(id); 

@@ -108,10 +108,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
     return ConnectionMultiplexer.Connect(config);
 });
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
-    var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
-    return ConnectionMultiplexer.Connect(config);
-});
+
 
 var app = builder.Build();
 app.UseSwagger();
