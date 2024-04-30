@@ -346,7 +346,7 @@ namespace API.Repository.Implementation
                         
                     }
                 }
-            var category = GetCategoryById_(categoryId);
+            var category = await GetCategoryById_(categoryId);
             return category;
           }
 
