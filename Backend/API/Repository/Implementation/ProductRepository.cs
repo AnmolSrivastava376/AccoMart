@@ -212,6 +212,8 @@ namespace API.Repository.Implementation
                         product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
                         product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
                         product.ProductPrice = Convert.ToInt32(reader["ProductPrice"]);
+                        product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
+                        //product.Category = Convert.ToString(reader["Category"]);
                     }
                     reader.Close();
                 }
