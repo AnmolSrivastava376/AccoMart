@@ -100,7 +100,7 @@ namespace API.Repository.Implementation
         {
             List<Product> products = new List<Product>();
             // Check if categories are cached in Redis
-            string cacheKey = "Products";
+            string cacheKey = $"ProductByCategory_{id}";
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
