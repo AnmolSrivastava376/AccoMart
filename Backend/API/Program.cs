@@ -102,10 +102,10 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserManagement,UserManagement>();
 
 //Redis
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "localhost:6379";
-    
+builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
+    var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    config.AbortOnConnectFail = false; // Enable retry policy
+    return ConnectionMultiplexer.Connect(config);
 });
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
