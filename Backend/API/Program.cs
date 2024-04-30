@@ -13,6 +13,10 @@ using Microsoft.OpenApi.Models;
 using Service.Models;
 using Service.Services;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.Rewrite;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -98,7 +102,16 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserManagement,UserManagement>();
 
 //Redis
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+    
+});
 
+builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
+    var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    return ConnectionMultiplexer.Connect(config);
+});
 
 var app = builder.Build();
 app.UseSwagger();
@@ -110,6 +123,7 @@ app.UseCors(options =>
            .AllowAnyHeader()
            .AllowAnyMethod();
 });
+app.UseRewriter();  
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication(); 
