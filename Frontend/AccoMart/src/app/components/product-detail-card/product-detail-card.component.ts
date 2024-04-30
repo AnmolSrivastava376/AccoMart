@@ -3,12 +3,12 @@ import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-product-card',
+  selector: 'app-product-detail-card',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './product-card.component.html',
-  styleUrl: './product-card.component.css'
+  templateUrl: './product-detail-card.component.html',
+  styleUrl: './product-detail-card.component.css'
 })
-export class ProductCardComponent {
-  @Input() products?: Product[]
+export class ProductDetailCardComponent {
+   @Input() product?:Product;
 }

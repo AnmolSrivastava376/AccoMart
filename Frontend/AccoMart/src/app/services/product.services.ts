@@ -9,4 +9,7 @@ export class productService {
   fetchProductByCategoryID(categoryId:Number) {
     return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/${categoryId}`);
   }
+  fetchProductById(productId: number) {
+    return axios.get<Product>(`http://localhost:5239/AdminDashboard/id?id=${productId}`);
+  }
 }
