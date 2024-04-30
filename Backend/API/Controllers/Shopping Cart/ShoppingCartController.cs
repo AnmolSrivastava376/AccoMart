@@ -8,6 +8,7 @@ namespace API.Controllers.Shopping_Cart
     [ApiController]
     public class ShoppingCartController : Controller
     {
+
         private string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
         [HttpPost]
