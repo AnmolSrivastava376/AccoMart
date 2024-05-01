@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 import axios from 'axios';
 import { Product } from '../interfaces/product';
 
+
 @Injectable({
-  providedIn: 'root'
+  providedIn:'root'
 })
 export class productService {
   fetchProductByCategoryID(categoryId:Number) {
-    return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/${categoryId}`);
+    return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId?id=${categoryId}`);
   }
   fetchProductById(productId: number) {
-    return axios.get<Product>(`http://localhost:5239/AdminDashboard/id?id=${productId}`);
+    return axios.get<Product>(`http://localhost:5239/AdminDashboard/Product/ProductId?id=${productId}`);
   }
 }
+
+
+
