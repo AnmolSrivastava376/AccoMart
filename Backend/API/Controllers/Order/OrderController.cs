@@ -14,9 +14,7 @@ namespace API.Controllers.Order
     {
         private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
-
-
-        [HttpPost]
+        [HttpPost("PlaceOrder")]
         public IActionResult PlaceOrder(ProductOrderDto order)
         {
 
@@ -66,15 +64,53 @@ namespace API.Controllers.Order
                 return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
             }
         }
-/*
-        [HttpPost]
+
+        [HttpPost("PlaceOrderByCart")]
         public IActionResult PlaceOrderByCart(CartOrderDto order)
         {
 
+            try
+            {
+                // Create a connection to the database
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Retrieve the UserId associated with the CartId
+                    int userId;
+                    string getUserIdQuery = "SELECT UserId FROM Cart WHERE CartId = @CartId";
+                    using (var getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
+                    {
+                        getUserIdCommand.Parameters.AddWithValue("@CartId", order.CartId);
+                        userId = (int)getUserIdCommand.ExecuteScalar();
+                    }
 
 
-            return Ok();
-        }*/
+                    // Insert the order into the database
+                    string insertOrderQuery = @"
+                        INSERT INTO Orders (OrderDate, UserId, AddressId, CartId, DeliveryServiceID) 
+                        VALUES (@OrderDate, @UserId, @AddressId, @CartId, @DeliveryServiceID);
+                        SELECT SCOPE_IDENTITY();";
+
+                    using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
+                    {
+                        insertOrderCommand.Parameters.AddWithValue("@OrderDate", DateTime.Now);
+                        insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
+                        insertOrderCommand.Parameters.AddWithValue("@AddressId", order.AddressId);
+                        insertOrderCommand.Parameters.AddWithValue("@CartId", order.CartId);
+                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
+
+                        int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
+
+                        return Ok(newOrderId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
+            }
+        }
 
     }
 }
