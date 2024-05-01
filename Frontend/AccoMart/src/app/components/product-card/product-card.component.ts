@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-card',
@@ -11,4 +12,10 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductCardComponent {
   @Input() products?: Product[]
+  
+  constructor(private router: Router) { }
+
+  handleClick(productId: number) {
+  this.router.navigate(['home/productdetail', productId.toString()]);
+}
 }
