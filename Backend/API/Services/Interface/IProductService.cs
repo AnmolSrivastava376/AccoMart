@@ -1,7 +1,7 @@
 ﻿using API.Models.DTO;
 using API.Models;
 
-namespace API.Services
+namespace API.Services.Interface
 {
     public interface IProductService
     {
@@ -14,6 +14,6 @@ namespace API.Services
         Task<Category> UpdateCategoryAsync(string categoryName, string NewCategoryName);
         Task<Product> UpdateProductAsync(int productId, UpdateProductDto productDto);
         Task DeleteCategoryAsync(int CategoryId);
-        Task DeleteProductAsync(int ProductId);    
+        Task DeleteProductAsync(int ProductId);
     }
 }

@@ -2,8 +2,9 @@
 using API.Models;
 using API.Repository.Interfaces;
 using API.Repository;
+using API.Services.Interface;
 
-namespace API.Services
+namespace API.Services.Implementation
 {
     public class ProductService : IProductService
     {
@@ -14,7 +15,7 @@ namespace API.Services
         }
         async Task<Category> IProductService.CreateCategoryAsync(string categoryName)
         {
-            return await _productRepository.CreateCategory(categoryName);   
+            return await _productRepository.CreateCategory(categoryName);
         }
 
         async Task<Product> IProductService.CreateProductAsync(ProductDto productDto)
@@ -25,7 +26,7 @@ namespace API.Services
             return await _productRepository.CreateProduct(productDto, CategoryId);
         }
 
-       
+
 
         async Task IProductService.DeleteCategoryAsync(int CategoryId)
         {
@@ -39,7 +40,7 @@ namespace API.Services
 
         async Task<IEnumerable<Category>> IProductService.GetAllCategoriesAsync()
         {
-            return await _productRepository.GetAllCategories();   
+            return await _productRepository.GetAllCategories();
         }
 
         async Task<IEnumerable<Product>> IProductService.GetAllProductsAsync(int id)
@@ -59,7 +60,7 @@ namespace API.Services
 
         async Task<Category> IProductService.UpdateCategoryAsync(string categoryName, string NewCategoryName)
         {
-            return await _productRepository.UpdateCategory(categoryName, NewCategoryName);  
+            return await _productRepository.UpdateCategory(categoryName, NewCategoryName);
         }
 
         async Task<Product> IProductService.UpdateProductAsync(int productId, UpdateProductDto productDto)
