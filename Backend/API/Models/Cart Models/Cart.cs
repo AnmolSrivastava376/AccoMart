@@ -9,10 +9,10 @@
         public string PaymentId { get; set; }
         public decimal ShippingPrice { get; set; } */
 
-        static readonly List<CartItem> cart = new List<CartItem> { };   
-        public static List<CartItem> GetCartList()
-        {
-            return cart;
-        }
+        public int CartId { get; set; } 
+        public int UserId {  get; set; }
+        public int CartItemId { get; set; }
+
+        
     }
 }
