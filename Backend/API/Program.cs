@@ -1,7 +1,6 @@
 
 using API.Repository.Implementation;
 using API.Repository.Interfaces;
-using API.Services;
 using Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Rewrite;
 using static Org.BouncyCastle.Math.EC.ECCurve;
+using API.Services.Interface;
+using API.Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -50,20 +51,14 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddControllers();
-// Create a SqlConnection object using the connection string
 using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;\";"));
-//conn.Open(); // Open the connection
 
-// Configure DbContextOptionsBuilder to use the SqlConnection
-/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=AccoMart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-});*/
 
-//Databse Connection
-//Services and Repo for Product
+//Services and Repo 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 
 builder.Services.AddDbContext<AuthenticationDbContext>(options =>

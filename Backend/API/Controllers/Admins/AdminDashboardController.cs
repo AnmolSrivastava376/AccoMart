@@ -1,6 +1,6 @@
 ﻿using API.Models;
 using API.Models.DTO;
-using API.Services;
+using API.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,7 +9,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Admins
 {
-   // [Authorize]
+    // [Authorize]
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller
@@ -28,7 +28,7 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("Product/ProductId")]
-        async public Task<Product> GetProductById(int id)
+         public async Task<Product> GetProductById(int id)
         {
 
             return await _productService.GetProductByIdAsync(id);
@@ -65,7 +65,7 @@ namespace API.Controllers.Admins
         }
 
 
-        [HttpPut]
+        [HttpPut("Update/Category")]
         async public Task<ActionResult<Category>> UpdateCategory(string categoryName, string NewCategoryName)
         {
            var category = await _productService.UpdateCategoryAsync(categoryName, NewCategoryName); 
@@ -81,7 +81,7 @@ namespace API.Controllers.Admins
         }
 
 
-        [HttpDelete]
+        [HttpDelete("Delete/Category")]
         async public Task<ActionResult> DeleteCategory(int CategoryId)
         {
             await _productService.DeleteCategoryAsync(CategoryId);
