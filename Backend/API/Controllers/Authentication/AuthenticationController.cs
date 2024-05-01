@@ -121,19 +121,14 @@ namespace API.Controllers.Authentication
 
         [HttpPost]
         [Route("Login-2FA")]
-
         public async Task<IActionResult> LoginWithOTP(string code, string email)
         {
-
-          
+        
             var jwt = await _userManagement.LoginUserWithJWTokenAsync(code, email);
             // var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
             if (jwt.IsSuccess)
             {
-
-
-                return Ok(
-                    jwt);
+                return Ok(jwt);
 
             }
 

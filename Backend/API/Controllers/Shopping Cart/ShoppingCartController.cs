@@ -13,7 +13,12 @@ namespace API.Controllers.ShoppingCart
     [ApiController]
     public class ShoppingCartController : Controller
     {
+<<<<<<< HEAD
         private readonly ICartService _cartService;
+=======
+
+        private string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+>>>>>>> f27255efb74f95755700af821b2d3f349383d5ef
 
         public ShoppingCartController(ICartService cartService)
         {

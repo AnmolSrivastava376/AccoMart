@@ -7,6 +7,6 @@ import { Category } from '../interfaces/category';
 })
 export class CategoryService {
   fetchCategories() {
-    return axios.get<Category[]>('http://localhost:5239/AdminDashboard');
+    return axios.get<Category[]>('http://localhost:5239/AdminDashboard/GetAllCategories');
   }
 }
