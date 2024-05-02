@@ -65,10 +65,10 @@ namespace API.Controllers.Order
             }
         }
 
-        [HttpPost("PlaceOrderByCart")]
-        public IActionResult PlaceOrderByCart(CartOrderDto order)
-        {
 
+        [HttpPost("PlaceOrderByCart")]
+        public IActionResult PlaceOrderByCart(CartOrderDto orderr)
+        {
             try
             {
                 // Create a connection to the database
@@ -81,24 +81,36 @@ namespace API.Controllers.Order
                     string getUserIdQuery = "SELECT UserId FROM Cart WHERE CartId = @CartId";
                     using (var getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
                     {
-                        getUserIdCommand.Parameters.AddWithValue("@CartId", order.CartId);
+                        getUserIdCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
                         userId = (int)getUserIdCommand.ExecuteScalar();
                     }
 
+                    // Calculate the total amount of the cart items
+                    decimal totalAmount;
+                    string getTotalAmountQuery = @"
+                SELECT SUM(p.ProductPrice * ci.Quantity) AS TotalAmount
+                FROM CartItem ci
+                JOIN Product p ON ci.ProductId = p.ProductId
+                WHERE ci.CartId = @CartId";
+                    using (var getTotalAmountCommand = new SqlCommand(getTotalAmountQuery, connection))
+                    {
+                        getTotalAmountCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
+                        totalAmount = (decimal)getTotalAmountCommand.ExecuteScalar();
+                    }
 
                     // Insert the order into the database
                     string insertOrderQuery = @"
-                        INSERT INTO Orders (OrderDate, UserId, AddressId, CartId, DeliveryServiceID) 
-                        VALUES (@OrderDate, @UserId, @AddressId, @CartId, @DeliveryServiceID);
-                        SELECT SCOPE_IDENTITY();";
+                INSERT INTO Orders (UserId, AddressId, CartId, DeliveryServiceID, OrderAmount) 
+                VALUES (@UserId, @AddressId, @CartId, @DeliveryServiceID, @OrderAmount);
+                SELECT SCOPE_IDENTITY();";
 
                     using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
                     {
-                        insertOrderCommand.Parameters.AddWithValue("@OrderDate", DateTime.Now);
                         insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
-                        insertOrderCommand.Parameters.AddWithValue("@AddressId", order.AddressId);
-                        insertOrderCommand.Parameters.AddWithValue("@CartId", order.CartId);
-                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
+                        insertOrderCommand.Parameters.AddWithValue("@AddressId", orderr.AddressId);
+                        insertOrderCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
+                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", orderr.DeliveryServiceID);
+                        insertOrderCommand.Parameters.AddWithValue("@OrderAmount", totalAmount);
 
                         int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
 
