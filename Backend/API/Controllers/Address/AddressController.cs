@@ -46,6 +46,47 @@ namespace API.Controllers.Address
 
 
 
+        [HttpPut("UpdateAddress/{id}")]
+        public IActionResult UpdateAddress(int id, AddressModel address)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection))
+                    {
+                        command.Parameters.AddWithValue("@Street", address.Street);
+                        command.Parameters.AddWithValue("@City", address.City);
+                        command.Parameters.AddWithValue("@State", address.State);
+                        command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
+                        command.Parameters.AddWithValue("@AddressId", id);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected == 0)
+                        {
+                            return NotFound("Address not found.");
+                        }
+                    }
+                }
+
+                return Ok("Address updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception as needed
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
 
         [HttpDelete("DeleteAddress/{id}")]
         public IActionResult DeleteAddress(int id)
