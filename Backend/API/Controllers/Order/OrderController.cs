@@ -124,5 +124,37 @@ namespace API.Controllers.Order
             }
         }
 
+
+        [HttpPut("CancelOrder/{orderId}")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string sql = "UPDATE [Order] SET isCancelled = 1 WHERE orderId = @orderId";
+
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@orderId", orderId);
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                        if (rowsAffected == 0)
+                        {
+                            return NotFound("Order not found.");
+                        }
+                    }
+                }
+
+                return Ok("Order has been cancelled successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }
