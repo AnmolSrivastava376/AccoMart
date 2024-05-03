@@ -121,5 +121,8 @@ app.UseRouting();
 app.UseAuthentication(); 
 app.UseAuthorization();
 
+app.MapControllerRoute(
+    name: default,
+    pattern: "{controller=Test}/{action = Index}");
 
 app.Run();

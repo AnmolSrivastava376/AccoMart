@@ -35,10 +35,10 @@ namespace API.Controllers.ShoppingCart
         }
 
         [HttpGet("Get/CartItems")]
-        public async Task<IEnumerable<CartItem>> GetCartItems()
+        public async Task<IEnumerable<CartItem>> GetCartItems(int cartId)
         {
 
-            return await _cartService.GetCartItemsAsync();      
+            return await _cartService.GetCartItemsAsync(cartId);      
         }
 
 

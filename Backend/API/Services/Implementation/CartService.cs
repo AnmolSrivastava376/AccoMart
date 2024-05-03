@@ -26,9 +26,9 @@ namespace API.Services.Implementation
             return await _cartRepository.UpdateCartItem(productId, quantity);
         }
 
-        async Task<IEnumerable<CartItem>> ICartService.GetCartItemsAsync()
+        async Task<IEnumerable<CartItem>> ICartService.GetCartItemsAsync(int cartId)
         {
-            return await _cartRepository.GetCartItems();
+            return await _cartRepository.GetCartItems(cartId);
         }
     }
 }
