@@ -571,7 +571,7 @@ namespace API.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-                string sqlQuery = $"SELECT * FROM Product WHERE ProductName = LIKE '{prefix}%';";
+                string sqlQuery = $"SELECT * FROM Product WHERE ProductName LIKE '{prefix}%';";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
