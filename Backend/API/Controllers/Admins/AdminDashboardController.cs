@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.ComponentModel;
+using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Admins
@@ -27,6 +28,19 @@ namespace API.Controllers.Admins
             return await _productService.GetAllProductsAsync(id); 
         }
 
+       [HttpGet("Products/ProductName")]
+        public async Task<Product> GetProductBySearchName(string prefix)
+        {
+            return await _productService.GetProductBySearchNameAsync(prefix);  
+        }
+
+       /* [HttpGet("Products/Price")]
+        public async Task<Queryable<Product>> GetProductByPrice(string order)
+        {
+            return await _productService.GetProductByPriceAsync(order);
+        }*/
+
+
         [HttpGet("Product/ProductId")]
          public async Task<Product> GetProductById(int id)
         {
@@ -35,9 +49,9 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("GetAllCategories")]
-        async public Task<IEnumerable<Category>> GetAllCategories()
+        async public Task<IQueryable<IEnumerable<Category>>> GetAllCategories(string prefix )
         {
-            return await _productService.GetAllCategoriesAsync();
+            return await _productService.GetAllCategoriesAsync(prefix);
         }
 
        

@@ -7,7 +7,7 @@ namespace API.Services.Interface
     {
         Task<Product> GetProductByIdAsync(int id);
         Task<IEnumerable<Product>> GetAllProductsAsync(int id);
-        Task<IEnumerable<Category>> GetAllCategoriesAsync();
+        Task<IQueryable<IEnumerable<Category>>> GetAllCategoriesAsync(string prefix);
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> CreateCategoryAsync(string categoryName);
         Task<Product> CreateProductAsync(ProductDto productDto);
@@ -15,5 +15,7 @@ namespace API.Services.Interface
         Task<Product> UpdateProductAsync(int productId, UpdateProductDto productDto);
         Task DeleteCategoryAsync(int CategoryId);
         Task DeleteProductAsync(int ProductId);
+        Task<Product> GetProductBySearchNameAsync(string prefix);
+        Task<Product> GetProductByPriceOrderAsync(string OrderBy);
     }
 }
