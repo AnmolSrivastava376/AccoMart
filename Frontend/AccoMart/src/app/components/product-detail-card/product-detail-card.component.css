@@ -36,7 +36,7 @@ img {
 .content {
   animation-delay: 0.3s;
   position: absolute;
-  left: 20px;
+  left: 60px;
   z-index: 3;
   
 }
@@ -46,8 +46,8 @@ h1 {
 }
 
 p {
-  width: 280px;
-  font-size: 13px;
+  width: 500px;
+  font-size: 14px;
   line-height: 1.4;
   color: black;
   margin: 20px 0;
@@ -60,7 +60,7 @@ p {
   background: cornflowerblue;
   padding: 5px 10px;
   border-radius: 50px;
-  font-size: .7em;
+  font-size: .9em;
 }
 .button {
   width: fit-content;
@@ -75,11 +75,11 @@ p {
   display: inline-block;
   overflow: hidden;
   position: relative;
-  font-size: 11px;
+  font-size: 15px;
   color: #111;
   text-decoration: none;
   padding: 10px 15px;
-  border: 1px solid #aaa;
+  border: 2px solid #aaa;
   font-weight: bold;
   
   
