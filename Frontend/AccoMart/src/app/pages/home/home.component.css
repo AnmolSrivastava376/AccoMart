@@ -1,0 +1,32 @@
+header img{
+ width: 35px;
+}
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    position: relative;
+}
+header .cartIcon{
+    position: relative;
+    z-index: 2;
+}
+header .totalQuantity{
+    z-index: 3;
+    position: absolute;
+    top: 2px;
+    right: 15px;
+    font-size: small;
+    background-color: #1d0a88;
+    width: 20px;
+    height: 15px;
+    border-radius: 40%;
+    color: #fff;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(10px);
+
+}
