@@ -96,7 +96,7 @@ namespace API.Repository.Implementation
             
         }
 
-        async Task<IEnumerable<CartItem>> ICartRepository.GetCartItems()
+        async Task<IEnumerable<CartItem>> ICartRepository.GetCartItems(int cartId)
         {
             List<CartItem> cartItems = new List<CartItem>();
             string cacheKey = "CartItems";
@@ -111,26 +111,22 @@ namespace API.Repository.Implementation
                 {
                     await connection.OpenAsync();
 
-                    string sqlQuery = "SELECT * FROM Cart; SELECT * FROM CartItem;";
+                    string sqlQuery = $" SELECT * FROM CartItem WHERE CartId = {cartId};";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     // Read data from the first result set (Cart table)
                     while (await reader.ReadAsync())
                     {
-                        int cartItemId = Convert.ToInt32(reader["CartItemID"]);
-                        if (reader.NextResult())
-                        {
-                            while (await reader.ReadAsync())
-                            {
+                       
                                 CartItem cartItem = new CartItem
                                 {
                                     ProductId = Convert.ToInt32(reader["ProductId"]),
                                     Quantity = Convert.ToInt32(reader["Quantity"])
                                 };
                                 cartItems.Add(cartItem);
-                            }
-                        }
+                            
+                        
                     }
                     reader.Close();
                 }

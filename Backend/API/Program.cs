@@ -123,6 +123,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: default,
-    pattern: "{controller=Test}/{action = Index}");
+    pattern: "{controller=Authentication}/{action = Register}");
 
 app.Run();
