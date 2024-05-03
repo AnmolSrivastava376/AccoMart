@@ -1,4 +1,5 @@
 ﻿using API.Models;
+using API.Services.Interface;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,37 +31,54 @@ namespace API.Controllers.Authentication
        private readonly SignInManager<ApplicationUser> _signInManager;
        
         private readonly Service.Services.IEmailService _emailService;
-        private readonly IUserManagement _userManagement;   
-        public AuthenticationController(UserManager<ApplicationUser>userManager, RoleManager<IdentityRole> roleManager, Service.Services.IEmailService emailService, IConfiguration configuration,SignInManager<ApplicationUser> signInManager,IUserManagement userManagement)
+        private readonly IUserManagement _userManagement;
+        private readonly ICartService _cartService;
+        public AuthenticationController(UserManager<ApplicationUser>userManager, RoleManager<IdentityRole> roleManager, Service.Services.IEmailService emailService, IConfiguration configuration,SignInManager<ApplicationUser> signInManager,IUserManagement userManagement, ICartService cartService)
         {
             _userManager = userManager; 
           
             _emailService = emailService;
           
             _userManagement = userManagement;
+            _cartService = cartService;
 
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(SignUp registerUser)
         {
+            int cartId = await _cartService.AddToCartAsync();
 
+            var user = new Users
+            {
+                UserName = registerUser.UserName,
+                UserEmail = registerUser.Email,
+                UserPassword = registerUser.Password,
+                CartId = cartId
+            };
 
-             var tokenResponse = await _userManagement.CreateUserWithTokenAsync(registerUser);
+            await _cartService.AddUser(user);
+
+            var tokenResponse = await _userManagement.CreateUserWithTokenAsync(registerUser);
              if(tokenResponse.IsSuccess)
             {
+                
+                
+
                 await _userManagement.AssignRoleToUserAsync(registerUser.Roles,tokenResponse.Response.User);
                 var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new {tokenResponse.Response.Token, email = registerUser.Email }, Request.Scheme);
                 var message = new Message(new string[] { registerUser.Email! }, "Confirmation email link", confirmationLink);
                 _emailService.SendEmail(message);
+                // Assuming you have a method to retrieve claims from the ClaimsPrincipal
+                
+                
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Email verfication mail sent" });
             }
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response {Message = tokenResponse.Message,IsSuccess = false});
 
-
-
-
         }
+
+        
 
         [HttpGet("Test Send email")]
         public IActionResult TestEmail()
@@ -91,6 +109,8 @@ namespace API.Controllers.Authentication
 
         public async Task<IActionResult> Login(Login login)
         {
+           
+           
             //checking user
             var loginOtpResponse = await _userManagement.GetOtpByLoginAsync(login);
             if(loginOtpResponse.Response! != null)

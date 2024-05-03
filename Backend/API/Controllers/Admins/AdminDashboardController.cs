@@ -10,7 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Admins
 {
-    // [Authorize]
+    [Authorize]
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller
@@ -22,14 +22,14 @@ namespace API.Controllers.Admins
         }
         
         [HttpGet("Products/CategoryId")]
-        public async Task<List<Product>> GetAllProducts(int id,string orderBy)
+        public async Task<List<Product>> GetAllProducts(int id,string orderBy = "")
         {
            
             return await _productService.GetAllProductsAsync(id, orderBy); 
         }
 
        [HttpGet("Products/ProductName")]
-        public async Task<Product> GetProductBySearchName(string prefix)
+        public async Task<Product> GetProductBySearchName(string prefix = "")
         {
             return await _productService.GetProductBySearchNameAsync(prefix);  
         }
@@ -49,7 +49,7 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("GetAllCategories")]
-        async public Task<List<Category>> GetAllCategories(string prefix )
+        async public Task<List<Category>> GetAllCategories(string prefix = "" )
         {
             return await _productService.GetAllCategoriesAsync(prefix);
         }

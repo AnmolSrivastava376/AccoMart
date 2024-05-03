@@ -8,6 +8,7 @@ namespace API.Services.Interface
         Task<IEnumerable<CartItem>> GetCartItemsAsync(int cartId);
         Task<CartItem> UpdateCartItemAsync(int productId, int quantity);
         Task DeleteCartItemAsync(int productId);
-
+        Task<int> AddToCartAsync();
+        Task AddUser(Users user);
     }
 }
