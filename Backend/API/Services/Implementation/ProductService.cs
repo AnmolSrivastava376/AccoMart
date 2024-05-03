@@ -37,15 +37,15 @@ namespace API.Services.Implementation
         {
             await _productRepository.DeleteProduct(ProductId);
         }
-
-        async Task<IEnumerable<Category>> IProductService.GetAllCategoriesAsync()
+        
+        async Task<List<Category>> IProductService.GetAllCategoriesAsync(string prefix)
         {
-            return await _productRepository.GetAllCategories();
+            return await _productRepository.GetAllCategories(prefix);
         }
 
-        async Task<IEnumerable<Product>> IProductService.GetAllProductsAsync(int id)
+        async Task<List<Product>> IProductService.GetAllProductsAsync(int id, string orderBy)
         {
-            return await _productRepository.GetAllProducts(id);
+            return await _productRepository.GetAllProducts(id, orderBy);
         }
 
         async Task<Category> IProductService.GetCategoryByIdAsync(int id)
@@ -56,6 +56,17 @@ namespace API.Services.Implementation
         async Task<Product> IProductService.GetProductByIdAsync(int id)
         {
             return await _productRepository.GetProductById(id);
+        }
+
+        /*async Task<Product> IProductService.GetProductByPriceOrderAsync(string OrderBy)
+        {
+            return await _productRepository.GetProductByPriceOrder(OrderBy);
+
+        }*/
+
+        async Task<Product> IProductService.GetProductBySearchNameAsync(string prefix)
+        {
+            return await _productRepository.GetProductBySearchName(prefix);
         }
 
         async Task<Category> IProductService.UpdateCategoryAsync(string categoryName, string NewCategoryName)
