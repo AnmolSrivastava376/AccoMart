@@ -2,11 +2,13 @@ using API.Models;
 using API.Models.DTO;
 using API.Repository.Interfaces;
 using Data.Models;
+using MailKit.Search;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Repository.Implementation
@@ -14,9 +16,6 @@ namespace API.Repository.Implementation
 
     public class ProductRepository : IProductRepository
     {
-        //private string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
-        /*private readonly ApplicationDbContext dbContext;*/
         private readonly IConfiguration _configuration;
         private readonly StackExchange.Redis.IDatabase _database;
         public ProductRepository(IConfiguration configuration, IConnectionMultiplexer redis)
@@ -53,10 +52,9 @@ namespace API.Repository.Implementation
             return categories;
         }*/
 
-
-        public async Task<IEnumerable<Category>> GetAllCategories()
+        public async Task<List<Category>> GetAllCategories(string startsWithName = "")
         {
-            List<Category> categories = new List<Category>();
+            List<Category> categories;
 
             // Check if categories are cached in Redis
             string cacheKey = "Categories";
@@ -70,9 +68,10 @@ namespace API.Repository.Implementation
             else
             {
                 // If categories are not cached, fetch them from the SQL database and cache them
+                categories = new List<Category>(); // Create a list to hold categories
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    string sqlQuery = $"SELECT * FROM Category";
+                    string sqlQuery = "SELECT * FROM Category";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
                     await connection.OpenAsync();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -84,7 +83,7 @@ namespace API.Repository.Implementation
                             CategoryId = Convert.ToInt32(reader["CategoryId"]),
                             CategoryName = Convert.ToString(reader["CategoryName"])
                         };
-                        categories.Add(category_);
+                        categories.Add(category_); // Add category to the list
                     }
                     reader.Close();
                 }
@@ -93,19 +92,29 @@ namespace API.Repository.Implementation
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categories));
             }
 
+            // Apply filtering if a startsWithName is provided
+            if (!string.IsNullOrEmpty(startsWithName))
+            {
+                categories = categories.Where(c => c.CategoryName.StartsWith(startsWithName)).ToList();
+            }
+
             return categories;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProducts(int id)
+
+
+        public async Task<List<Product>> GetAllProducts(int id, string orderBy = "")
         {
+            string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();
-            // Check if categories are cached in Redis
+
+            // Check if products are cached in Redis
             string cacheKey = $"ProductByCategory_{id}";
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
             {
-                // If categories are cached, deserialize the JSON string
+                // If products are cached, deserialize the JSON string
                 products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
             }
             else
@@ -130,7 +139,7 @@ namespace API.Repository.Implementation
                                 ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
                                 CategoryId = Convert.ToInt32(reader["CategoryId"])
                             };
-                             products.Add(product);
+                            products.Add(product);
                         }
                         reader.Close();
                     }
@@ -139,8 +148,19 @@ namespace API.Repository.Implementation
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(products));
             }
 
+            switch (orderBy)
+            {
+                case "price_dsc":
+                    products = products.OrderByDescending(product => product.ProductPrice).ToList();
+                    break;
+                default:
+                    products = products.OrderBy(product => product.ProductPrice).ToList();
+                    break;
+            }
+
             return products;
         }
+
 
         public async Task<Category> GetCategoryById(int id)
         {
@@ -187,6 +207,7 @@ namespace API.Repository.Implementation
 
         public async Task<Product> GetProductById(int id)
         {
+           
             string cacheKey = $"Product_{id}";
             string cachedProduct = await _database.StringGetAsync(cacheKey);
 
@@ -200,10 +221,12 @@ namespace API.Repository.Implementation
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
+
                     await connection.OpenAsync();
                     string sqlQuery = $"SELECT * FROM Product WHERE ProductId = {id}";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
+                   
 
                     while (await reader.ReadAsync())
                     {
@@ -540,6 +563,38 @@ namespace API.Repository.Implementation
             await _database.KeyDeleteAsync(cacheKey);
         }
 
+        async Task<Product> IProductRepository.GetProductBySearchName(string prefix = "")
+        {
+            prefix = string.IsNullOrEmpty(prefix) ? "" : prefix.ToLower();
+            Product product = new Product();
+
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+                string sqlQuery = $"SELECT * FROM Product WHERE ProductName = LIKE '{prefix}%';";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    product.ProductId = Convert.ToInt32(reader["ProductId"]);
+                    product.ProductName = Convert.ToString(reader["ProductName"]);
+                    product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
+                    product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
+                    product.ProductPrice = Convert.ToInt32(reader["ProductPrice"]);
+                    product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
+                    //product.Category = Convert.ToString(reader["Category"]);
+                }
+                reader.Close();
+            }
+
+            // Store product in cache
+            //await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
+
+            return product;
+        }
+       
+        
     }
 }
 
