@@ -67,7 +67,7 @@ namespace API.Controllers.Order
 
 
         [HttpPost("PlaceOrderByCart")]
-        public IActionResult PlaceOrderByCart(CartOrderDto orderr)
+        public IActionResult PlaceOrderByCart(CartOrderDto orderr,int userId)
         {
             try
             {
@@ -77,29 +77,51 @@ namespace API.Controllers.Order
                     connection.Open();
 
                     // Retrieve the UserId associated with the CartId
-                    int userId;
-                    string getUserIdQuery = "SELECT UserId FROM Cart WHERE CartId = @CartId";
+                /*    string getUserIdQuery = "SELECT UserId FROM Cart WHERE CartId = @CartId";
                     using (var getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
                     {
                         getUserIdCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
                         userId = (int)getUserIdCommand.ExecuteScalar();
-                    }
+                    }*/
 
                     // Calculate the total amount of the cart items
-                    decimal totalAmount;
-                    string getTotalAmountQuery = @"
-                SELECT SUM(p.ProductPrice * ci.Quantity) AS TotalAmount
-                FROM CartItem ci
-                JOIN Product p ON ci.ProductId = p.ProductId
-                WHERE ci.CartId = @CartId";
-                    using (var getTotalAmountCommand = new SqlCommand(getTotalAmountQuery, connection))
+
+                    decimal ProductAmount;
+                    string getProductAmountQuery = @"
+                        SELECT CAST(SUM(p.ProductPrice * ci.Quantity) AS DECIMAL(18,2)) AS TotalAmount
+                        FROM CartItem ci
+                        JOIN Product p ON ci.ProductId = p.ProductId
+                        WHERE ci.CartId = @CartId";
+
+                    using (var getProductAmountCommand = new SqlCommand(getProductAmountQuery, connection))
                     {
-                        getTotalAmountCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
-                        totalAmount = (decimal)getTotalAmountCommand.ExecuteScalar();
+                        getProductAmountCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
+                        ProductAmount = (decimal)getProductAmountCommand.ExecuteScalar();
                     }
 
-                    // Insert the order into the database
-                    string insertOrderQuery = @"
+                    decimal DeliveryPrice;
+                    string getDeliveryPriceQuery = @"
+                    SELECT Price
+                    FROM DeliveryService
+                    WHERE DServiceId = @DServiceId;
+                    ";
+
+                    using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
+                    {
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", orderr.DeliveryServiceID);
+                        DeliveryPrice = (decimal)getDeliveryPriceCommand.ExecuteScalar();
+                    }
+
+
+                    decimal TotalAmount;
+                    TotalAmount = ProductAmount+ DeliveryPrice; 
+
+
+                    
+
+
+                        // Insert the order into the database
+                        string insertOrderQuery = @"
                 INSERT INTO Orders (UserId, AddressId, CartId, DeliveryServiceID, OrderAmount) 
                 VALUES (@UserId, @AddressId, @CartId, @DeliveryServiceID, @OrderAmount);
                 SELECT SCOPE_IDENTITY();";
@@ -110,7 +132,7 @@ namespace API.Controllers.Order
                         insertOrderCommand.Parameters.AddWithValue("@AddressId", orderr.AddressId);
                         insertOrderCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
                         insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", orderr.DeliveryServiceID);
-                        insertOrderCommand.Parameters.AddWithValue("@OrderAmount", totalAmount);
+                        insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
                         int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
 
