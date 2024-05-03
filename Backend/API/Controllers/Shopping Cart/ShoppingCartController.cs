@@ -14,12 +14,7 @@ namespace API.Controllers.ShoppingCart
     public class ShoppingCartController : Controller
     {
 
-
         private readonly ICartService _cartService;
-
-        private string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
-
 
         public ShoppingCartController(ICartService cartService)
         {
@@ -40,9 +35,6 @@ namespace API.Controllers.ShoppingCart
 
             return await _cartService.GetCartItemsAsync(cartId);      
         }
-
-
-
 
 
         [HttpPut("Update/CartItem")]

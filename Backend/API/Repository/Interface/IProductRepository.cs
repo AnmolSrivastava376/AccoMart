@@ -9,8 +9,8 @@ namespace API.Repository.Interfaces
 
         Task<Product> GetProductById(int id);
         Task<Category> GetCategoryByName(string name);
-        Task<IEnumerable<Product>> GetAllProducts(int id);
-        Task<IQueryable<IEnumerable<Category>>> GetAllCategories(string prefix);
+        Task<List<Product>> GetAllProducts(int id,string orderBy);
+        Task<List<Category>> GetAllCategories(string prefix);
         Task<Category> GetCategoryById(int id);
         Task<Category> CreateCategory(string categoryName);
         Task<Product> CreateProduct(ProductDto productDto, int categoryId);
@@ -19,5 +19,6 @@ namespace API.Repository.Interfaces
         Task DeleteCategory(int CategoryId);
         Task DeleteProduct(int productId);
         Task<Product> GetProductBySearchName(string prefix);
+        
     }
 }

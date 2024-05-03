@@ -52,10 +52,9 @@ namespace API.Repository.Implementation
             return categories;
         }*/
 
-
-        public async Task<IQueryable<IEnumerable<Category>>> GetAllCategories(string startsWithName)
+        public async Task<List<Category>> GetAllCategories(string startsWithName = "")
         {
-            IQueryable<IEnumerable<Category>> categories;
+            List<Category> categories;
 
             // Check if categories are cached in Redis
             string cacheKey = "Categories";
@@ -64,13 +63,12 @@ namespace API.Repository.Implementation
             if (!string.IsNullOrEmpty(cachedCategories))
             {
                 // If categories are cached, deserialize the JSON string
-                var categoryList = JsonConvert.DeserializeObject<List<Category>>(cachedCategories);
-                categories = categoryList.Select(c => new List<Category> { c }).AsQueryable();
+                categories = JsonConvert.DeserializeObject<List<Category>>(cachedCategories);
             }
             else
             {
                 // If categories are not cached, fetch them from the SQL database and cache them
-                List<Category> categoryList = new List<Category>(); // Create a list to hold categories
+                categories = new List<Category>(); // Create a list to hold categories
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     string sqlQuery = "SELECT * FROM Category";
@@ -85,38 +83,38 @@ namespace API.Repository.Implementation
                             CategoryId = Convert.ToInt32(reader["CategoryId"]),
                             CategoryName = Convert.ToString(reader["CategoryName"])
                         };
-                        categoryList.Add(category_); // Add category to the list
+                        categories.Add(category_); // Add category to the list
                     }
                     reader.Close();
                 }
 
-                categories = categoryList.Select(c => new List<Category> { c }).AsQueryable(); // Convert list to IQueryable
-
                 // Cache categories in Redis for future requests
-                await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categoryList));
+                await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categories));
             }
 
             // Apply filtering if a startsWithName is provided
             if (!string.IsNullOrEmpty(startsWithName))
             {
-                categories = categories.Where(c => c.FirstOrDefault().CategoryName.StartsWith(startsWithName)).AsQueryable();
+                categories = categories.Where(c => c.CategoryName.StartsWith(startsWithName)).ToList();
             }
 
             return categories;
         }
 
 
-        public async Task<IEnumerable<Product>> GetAllProducts(int id, string orderBy = "")
+
+        public async Task<List<Product>> GetAllProducts(int id, string orderBy = "")
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();
-            // Check if categories are cached in Redis
+
+            // Check if products are cached in Redis
             string cacheKey = $"ProductByCategory_{id}";
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
             {
-                // If categories are cached, deserialize the JSON string
+                // If products are cached, deserialize the JSON string
                 products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
             }
             else
@@ -141,7 +139,7 @@ namespace API.Repository.Implementation
                                 ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
                                 CategoryId = Convert.ToInt32(reader["CategoryId"])
                             };
-                             products.Add(product);
+                            products.Add(product);
                         }
                         reader.Close();
                     }
@@ -149,16 +147,20 @@ namespace API.Repository.Implementation
 
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(products));
             }
+
             switch (orderBy)
             {
                 case "price_dsc":
-                    products = (List<Product>?)products.OrderByDescending(product => product.ProductPrice);
-
-
-
+                    products = products.OrderByDescending(product => product.ProductPrice).ToList();
+                    break;
+                default:
+                    products = products.OrderBy(product => product.ProductPrice).ToList();
+                    break;
             }
+
             return products;
         }
+
 
         public async Task<Category> GetCategoryById(int id)
         {
@@ -569,7 +571,7 @@ namespace API.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-                string sqlQuery = $"SELECT * FROM Product WHERE {prefix} == '' || ProductName.ToLower().StartsWith({prefix});";
+                string sqlQuery = $"SELECT * FROM Product WHERE ProductName = LIKE '{prefix}%';";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -591,36 +593,7 @@ namespace API.Repository.Implementation
 
             return product;
         }
-        async Task<Product> IProductRepository.GetProductByPriceOrder(string OrderBy = "")
-        {
-            string order = string.IsNullOrEmpty(OrderBy) ? "price_asc" : "price_dsc";
-            Product product = new Product();
-
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-            {
-                await connection.OpenAsync();
-                string sqlQuery = $"SELECT * FROM Product;";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                while (await reader.ReadAsync())
-                {
-                    product.ProductId = Convert.ToInt32(reader["ProductId"]);
-                    product.ProductName = Convert.ToString(reader["ProductName"]);
-                    product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
-                    product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
-                    product.ProductPrice = Convert.ToInt32(reader["ProductPrice"]);
-                    product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
-                    //product.Category = Convert.ToString(reader["Category"]);
-                }
-                reader.Close();
-            }
-
-            // Store product in cache
-            //await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
-
-            return product;
-        }
+       
         
     }
 }
