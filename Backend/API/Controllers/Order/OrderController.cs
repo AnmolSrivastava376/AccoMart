@@ -76,16 +76,7 @@ namespace API.Controllers.Order
                 {
                     connection.Open();
 
-                    // Retrieve the UserId associated with the CartId
-                /*    string getUserIdQuery = "SELECT UserId FROM Cart WHERE CartId = @CartId";
-                    using (var getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
-                    {
-                        getUserIdCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
-                        userId = (int)getUserIdCommand.ExecuteScalar();
-                    }*/
-
-                    // Calculate the total amount of the cart items
-
+             
                     decimal ProductAmount;
                     string getProductAmountQuery = @"
                         SELECT CAST(SUM(p.ProductPrice * ci.Quantity) AS DECIMAL(18,2)) AS TotalAmount
@@ -121,10 +112,10 @@ namespace API.Controllers.Order
 
 
                         // Insert the order into the database
-                        string insertOrderQuery = @"
-                INSERT INTO Orders (UserId, AddressId, CartId, DeliveryServiceID, OrderAmount) 
-                VALUES (@UserId, @AddressId, @CartId, @DeliveryServiceID, @OrderAmount);
-                SELECT SCOPE_IDENTITY();";
+                            string insertOrderQuery = @"
+                    INSERT INTO Orders (UserId, AddressId, CartId, DeliveryServiceID, OrderAmount) 
+                    VALUES (@UserId, @AddressId, @CartId, @DeliveryServiceID, @OrderAmount);
+                    SELECT SCOPE_IDENTITY();";
 
                     using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
                     {
