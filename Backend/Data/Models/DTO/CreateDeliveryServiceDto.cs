@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Models.DTO
+namespace Data.Models.DTO
 {
     public class CreateDeliveryServiceDto
     {

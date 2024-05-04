@@ -1,5 +1,5 @@
 ﻿
-namespace API.Models
+namespace Data.Models
 {
     public class Category
     {

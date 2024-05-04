@@ -1,17 +1,17 @@
-using API.Models;
-using API.Models.DTO;
-using API.Repository.Interfaces;
 using Data.Models;
-using MailKit.Search;
+using Data.Models.DTO;
+using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Linq;
+
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace API.Repository.Implementation
+namespace Data.Repository.Implementation
 {
 
     public class ProductRepository : IProductRepository

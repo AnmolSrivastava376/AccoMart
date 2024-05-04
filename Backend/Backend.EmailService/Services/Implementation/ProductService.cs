@@ -1,10 +1,10 @@
-﻿using API.Models.DTO;
-using API.Models;
-using API.Repository.Interfaces;
-using API.Repository;
-using API.Services.Interface;
+﻿using Data.Models.DTO;
+using Data.Models;
+using Data.Repository.Interfaces;
+using Data.Repository;
+using Service.Services.Interface;
 
-namespace API.Services.Implementation
+namespace Service.Services.Implementation
 {
     public class ProductService : IProductService
     {

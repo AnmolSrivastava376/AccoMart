@@ -1,4 +1,4 @@
-﻿namespace API.Models.DTO
+﻿namespace Data.Models.DTO
 {
     public class UpdateProductDto
     {

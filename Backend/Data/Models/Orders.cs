@@ -1,5 +1,4 @@
-﻿namespace API.Models
-{
+﻿namespace Data.Models { 
     public class Orders
     {
         public int OrderId { get; set; } 

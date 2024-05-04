@@ -1,6 +1,6 @@
 
-using API.Repository.Implementation;
-using API.Repository.Interfaces;
+using Data.Repository.Implementation;
+using Data.Repository.Interfaces;
 using Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -16,8 +16,9 @@ using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Rewrite;
 using static Org.BouncyCastle.Math.EC.ECCurve;
-using API.Services.Interface;
-using API.Services.Implementation;
+using Service.Services.Interface;
+using Service.Services.Implementation;
+using Data.Repository.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

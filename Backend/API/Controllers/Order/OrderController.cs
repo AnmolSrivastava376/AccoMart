@@ -1,7 +1,7 @@
-﻿using API.Models;
+﻿using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using API.Models.DTO;
+using Data.Models.DTO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Order

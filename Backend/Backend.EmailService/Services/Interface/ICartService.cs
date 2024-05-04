@@ -1,6 +1,7 @@
-﻿using API.Models;
+﻿using Data.Models.CartModels;
+using Data.Models;
 
-namespace API.Services.Interface
+namespace Service.Services.Interface
 {
     public interface ICartService
     {

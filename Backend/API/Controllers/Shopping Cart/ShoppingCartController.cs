@@ -1,7 +1,8 @@
-﻿using API.Models;
-using API.Models.DTO;
-using API.Services.Implementation;
-using API.Services.Interface;
+﻿using Data.Models;
+using Data.Models.CartModels;
+using Data.Models.DTO;
+using Service.Services.Implementation;
+using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using MimeKit;

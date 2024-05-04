@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace API.Models
-{
+namespace Data.Models { 
     public class DeliveryService
     {
         public int DServiceId { get; set; }

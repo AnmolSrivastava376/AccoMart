@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using API.Models;
+using Data.Models;
 using System;
 using System.Collections.Generic;
 

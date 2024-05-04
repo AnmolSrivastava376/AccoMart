@@ -1,12 +1,14 @@
-﻿using API.Models;
-using API.Repository.Interfaces;
-using API.Services.Interface;
+﻿using Data.Models.CartModels;
+using Data.Repository.Interfaces;
+using Service.Services.Interface;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Data.Repository.Implementation;
+using Data.Models;
 
-namespace API.Services.Implementation
+namespace Service.Services.Implementation
 {
     public class CartService : ICartService
     {
