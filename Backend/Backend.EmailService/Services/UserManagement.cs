@@ -37,6 +37,57 @@ namespace Service.Services
             _roleManager = roleManager;
             _cartService = cartService;
         }
+
+
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            _ = int.TryParse(_configuration["JWT:TokenValidiyInMinutes"], out int tokenValidityInMinutes);
+            var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
+            var localTimeZone = TimeZoneInfo.Local;
+            var expirationTimeInLocalTimeZone = TimeZoneInfo.ConvertTimeFromUtc(expirationTimeUtc, localTimeZone);
+            var token = new JwtSecurityToken(
+
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: expirationTimeInLocalTimeZone,
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+
+                );
+            return token;
+
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new Byte[64];
+            var range = RandomNumberGenerator.Create();
+            range.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        private ClaimsPrincipal GetClaimsPrincipal(string accessToken)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out SecurityToken securityToken);
+            return principal;
+
+        }
+
+
+
+
         public async Task<ApiResponse<CreateUserResponse>> CreateUserWithTokenAsync(SignUp register)
         {
             var userExist = await _userManager.FindByEmailAsync(register.Email);
