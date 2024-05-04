@@ -65,10 +65,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 
-/*builder.Services.AddDbContext<AuthenticationDbContext>(options =>
-{
-    options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Auth;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-});*/
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
