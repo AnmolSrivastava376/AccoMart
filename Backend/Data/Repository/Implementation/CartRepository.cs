@@ -1,11 +1,15 @@
-﻿using Data.Models;
+﻿using Data.Models.CartModels;
+
 using Data.Repository.Interfaces;
 using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using StackExchange.Redis;
+using Newtonsoft.Json;
+
+
 namespace Data.Repository.Implementation
+
 {
     public class CartRepository : ICartRepository
     {

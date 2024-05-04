@@ -1,5 +1,5 @@
-﻿using API.Models;
-using API.Services.Interface;
+﻿using Data.Models;
+using Service.Services.Interface;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -47,7 +47,7 @@ namespace API.Controllers.Authentication
         [HttpPost]
         public async Task<IActionResult> Register(SignUp registerUser)
         {
-            int cartId = await _cartService.AddToCartAsync();
+  /*          int cartId = await _cartService.AddToCartAsync();
 
             var user = new Users
             {
@@ -57,7 +57,7 @@ namespace API.Controllers.Authentication
                 CartId = cartId
             };
 
-            await _cartService.AddUser(user);
+            await _cartService.AddUser(user);*/
 
             var tokenResponse = await _userManagement.CreateUserWithTokenAsync(registerUser);
              if(tokenResponse.IsSuccess)

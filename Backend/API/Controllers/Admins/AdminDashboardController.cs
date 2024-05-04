@@ -1,6 +1,6 @@
-﻿using API.Models;
-using API.Models.DTO;
-using API.Services.Interface;
+﻿using Data.Models;
+using Data.Models.DTO;
+using Service.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

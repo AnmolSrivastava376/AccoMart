@@ -1,8 +1,8 @@
-﻿using API.Models;
-using API.Models.DTO;
+﻿using Data.Models;
+using Data.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Repository.Interfaces
+namespace Data.Repository.Interfaces
 {
     public interface IProductRepository
     {

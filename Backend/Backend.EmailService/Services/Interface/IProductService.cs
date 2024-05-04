@@ -1,7 +1,7 @@
-﻿using API.Models.DTO;
-using API.Models;
+﻿using Data.Models.DTO;
+using Data.Models;
 
-namespace API.Services.Interface
+namespace Service.Services.Interface
 {
     public interface IProductService
     {

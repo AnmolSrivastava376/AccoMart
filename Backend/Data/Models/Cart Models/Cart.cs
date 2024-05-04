@@ -1,4 +1,4 @@
-﻿namespace API.Models
+﻿namespace Data.Models.CartModels
 {
     public  class Cart
     {

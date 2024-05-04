@@ -14,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using Azure.Core;
 using System.Text;
+using Service.Services.Interface;
+using Service.Services.Implementation;
 
 
 namespace Service.Services
@@ -24,14 +26,16 @@ namespace Service.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly CartService _cartService;
 
-        public UserManagement(UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public UserManagement(UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, CartService cartService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _cartService = cartService;
         }
         public async Task<ApiResponse<CreateUserResponse>> CreateUserWithTokenAsync(SignUp register)
         {
@@ -41,11 +45,15 @@ namespace Service.Services
                 return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 403, Message = "User already exists" };
             }
 
+            int cartId = await _cartService.AddToCartAsync();
+
+
             ApplicationUser user = new()
             {
                 Email = register.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = register.UserName,
+                CartId = cartId,
                 TwoFactorEnabled = true,
             };
 
@@ -229,57 +237,6 @@ namespace Service.Services
 
 
         }
-
-        #region PrivateMethods
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            _ = int.TryParse(_configuration["JWT:TokenValidiyInMinutes"], out int tokenValidityInMinutes);
-            var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
-            var localTimeZone = TimeZoneInfo.Local;
-            var expirationTimeInLocalTimeZone = TimeZoneInfo.ConvertTimeFromUtc(expirationTimeUtc, localTimeZone);
-            var token = new JwtSecurityToken(
-
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: expirationTimeInLocalTimeZone,
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-
-                );
-            return token;
-
-        }
-
-        private string GenerateRefreshToken()
-        {
-            var randomNumber = new Byte[64];
-            var range = RandomNumberGenerator.Create();
-            range.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
-
-       private ClaimsPrincipal GetClaimsPrincipal(string accessToken)
-        {
-            var tokenValidationParameters = new TokenValidationParameters
-
-            {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
-                ValidateLifetime = false
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out SecurityToken securityToken);
-            return principal;
-             
-        }
-
-        #endregion
-
-
 
 
     }

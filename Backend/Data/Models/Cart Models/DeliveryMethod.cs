@@ -1,4 +1,4 @@
-﻿namespace API.Models.Cart_Models
+﻿namespace Data.Models.CartModels
 {
     public class DeliveryMethod
     {
