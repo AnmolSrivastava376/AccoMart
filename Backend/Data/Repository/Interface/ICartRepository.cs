@@ -1,6 +1,6 @@
-﻿using API.Models;
+﻿using Data.Models;
 
-namespace API.Repository.Interfaces
+namespace Data.Repository.Interfaces
 {
     public interface ICartRepository
     {

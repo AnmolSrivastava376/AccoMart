@@ -1,4 +1,4 @@
-﻿namespace Data.Models
+﻿namespace API.Models
 {
     public class Admin
     {
