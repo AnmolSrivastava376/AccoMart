@@ -4,16 +4,19 @@ using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Data.Migrations
 {
-    [DbContext(typeof(AuthenticationDbContext))]
-    partial class AuthenticationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20240504063238_AddMigrations")]
+    partial class AddMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,14 +125,14 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a07b280-c2c2-40c5-86dc-b568ca4c88a0",
+                            Id = "b7d58b46-7e07-43e1-9a5a-c1c737eb1d2e",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "eee65a0c-386c-4d89-8989-03d4c587640b",
+                            Id = "4f20b98d-44c7-440d-a287-961f8813bdda",
                             ConcurrencyStamp = "1",
                             Name = "User",
                             NormalizedName = "User"
