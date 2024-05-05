@@ -119,7 +119,6 @@ namespace Service.Services
 
 
             else
-
                 return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 500, Message = "User Failed to create" };
 
         }
@@ -205,6 +204,7 @@ namespace Service.Services
             var authClaims = new List<Claim>
                     {
                     new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim("CartId",user.CartId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
 
