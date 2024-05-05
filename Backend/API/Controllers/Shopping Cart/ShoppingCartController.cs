@@ -1,6 +1,6 @@
 ﻿using Data.Models;
 using Data.Models.CartModels;
-using Data.Models.DTO;
+using API.DTO;
 using Service.Services.Implementation;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;

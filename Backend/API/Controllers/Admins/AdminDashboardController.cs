@@ -1,5 +1,5 @@
 ﻿using Data.Models;
-using Data.Models.DTO;
+using API.DTO;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Admins
 {
-    [Authorize]
+    //[Authorize]
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller
@@ -21,41 +21,35 @@ namespace API.Controllers.Admins
             _productService = productService;
         }
         
-        [HttpGet("Products/CategoryId")]
+        [HttpGet("Products/CategoryId = {id}")]
         public async Task<List<Product>> GetAllProducts(int id,string orderBy = "")
         {
            
             return await _productService.GetAllProductsAsync(id, orderBy); 
         }
 
-       [HttpGet("Products/ProductName")]
+       [HttpGet("Products/SearchBy={prefix}")]
         public async Task<Product> GetProductBySearchName(string prefix = "")
         {
             return await _productService.GetProductBySearchNameAsync(prefix);  
         }
 
-       /*[HttpGet("Products/Price")]
-        public async Task<Product> GetProductByPrice(string order)
-        {
-            return await _productService.GetProductByPriceOrderAsync(order);
-        }*/
 
-
-        [HttpGet("Product/ProductId")]
+        [HttpGet("Product/{id}")]
          public async Task<Product> GetProductById(int id)
         {
 
             return await _productService.GetProductByIdAsync(id);
         }
 
-        [HttpGet("GetAllCategories")]
+        [HttpGet("GetAllCategories/SearchBy={prefix}")]
         async public Task<List<Category>> GetAllCategories(string prefix = "" )
         {
             return await _productService.GetAllCategoriesAsync(prefix);
         }
 
        
-       [HttpGet("Category/CategoryId")]
+       [HttpGet("Category/{id}")]
         public async Task<ActionResult<Category>> GetCategoryById(int id)
         {
             var category = await _productService.GetCategoryByIdAsync(id);
@@ -86,7 +80,7 @@ namespace API.Controllers.Admins
            return  Ok(category);   
         }
 
-        [HttpPut("Update/Product")]
+        [HttpPut("Update/Product/{productId}")]
 
         async public Task<ActionResult<Product>> UpdateProduct (int productId, UpdateProductDto productDto)
         {
@@ -95,7 +89,7 @@ namespace API.Controllers.Admins
         }
 
 
-        [HttpDelete("Delete/Category")]
+        [HttpDelete("Delete/Category/{CategoryId}")]
         async public Task<ActionResult> DeleteCategory(int CategoryId)
         {
             await _productService.DeleteCategoryAsync(CategoryId);
@@ -105,7 +99,7 @@ namespace API.Controllers.Admins
 
 
 
-        [HttpDelete("Delete/Product")]
+        [HttpDelete("Delete/Product/{ProductId}")]
         async public Task<ActionResult> DeleteProduct(int ProductId)
         {
             await _productService.DeleteProductAsync(ProductId);
