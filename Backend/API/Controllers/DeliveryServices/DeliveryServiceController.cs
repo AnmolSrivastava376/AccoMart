@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Data.Models;
-using System;
-using System.Collections.Generic;
+using Data.Models.DTO;
+
 
 namespace API.Controllers.DeliveryServices
 {
@@ -10,14 +10,21 @@ namespace API.Controllers.DeliveryServices
     [Route("DeliveryServiceController")]
     public class DeliveryServiceController : ControllerBase
     {
-        private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+        private readonly IConfiguration _configuration;
+        public DeliveryServiceController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+
 
         [HttpPost("AddDeliveryService")]
-        public IActionResult AddDeliveryService(DeliveryService deliveryService)
+        public IActionResult AddDeliveryService(CreateDeliveryServiceDto deliveryService)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
 
@@ -48,24 +55,24 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+        using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+        {
+            connection.Open();
+
+            string sqlQuery = @"DELETE FROM DeliveryService WHERE DServiceId = @DServiceId";
+
+            using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+            {
+                command.Parameters.AddWithValue("@DServiceId", id);
+
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected == 0)
                 {
-                    connection.Open();
-
-                    string sqlQuery = @"DELETE FROM DeliveryService WHERE DServiceId = @DServiceId";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@DServiceId", id);
-
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        if (rowsAffected == 0)
-                        {
-                            return NotFound("Delivery service not found.");
-                        }
-                    }
+                    return NotFound("Delivery service not found.");
                 }
+            }
+        }
 
                 return Ok("Delivery service deleted successfully.");
             }
@@ -80,7 +87,7 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
 
@@ -120,7 +127,7 @@ namespace API.Controllers.DeliveryServices
             {
                 List<DeliveryService> deliveryServices = new List<DeliveryService>();
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
 

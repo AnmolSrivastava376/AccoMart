@@ -9,7 +9,7 @@ namespace Data.Models.DTO
         [Required]
         public string ServiceName { get; set; }
         [Required]
-        public float price { get; set; }
+        public float Price { get; set; }
         [Required]
         public int DeliveryDays { get; set; }
     }

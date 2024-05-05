@@ -1,12 +1,7 @@
-﻿using Data.Models;
-using Data.Models.CartModels;
-using Data.Models.DTO;
-using Service.Services.Implementation;
+﻿using Data.Models.CartModels;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using MimeKit;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace API.Controllers.ShoppingCart
 {

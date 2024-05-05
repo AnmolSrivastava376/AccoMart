@@ -10,7 +10,13 @@ namespace API.Controllers.Address
     [ApiController]
     public class AddressController : Controller
     {
-        private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
+
+        private readonly IConfiguration _configuration;
+        public AddressController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         [Authorize]
         [HttpPost("PostAddress")]
@@ -33,7 +39,7 @@ namespace API.Controllers.Address
 
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
                     using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, States, ZipCode, UserId) VALUES (@Street, @City, @State, @ZipCode, @UserId)", connection))
@@ -42,7 +48,7 @@ namespace API.Controllers.Address
                         command.Parameters.AddWithValue("@City", address.City);
                         command.Parameters.AddWithValue("@State", address.State);
                         command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
-                        command.Parameters.AddWithValue("@UserId", address.userId);
+                        command.Parameters.AddWithValue("@UserId", userId);
 
                         command.ExecuteNonQuery();
                     }
@@ -69,7 +75,7 @@ namespace API.Controllers.Address
 
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
                     using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection))
@@ -106,7 +112,7 @@ namespace API.Controllers.Address
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
                     using (var command = new SqlCommand("DELETE FROM Addresses WHERE AddressId = @AddressId", connection))

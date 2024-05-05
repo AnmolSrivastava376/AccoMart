@@ -2,20 +2,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Data.Models.DTO;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace API.Controllers.Order
 {
-
-
     [ApiController]
     [Route("OrderController")]
     public class OrderController : ControllerBase
     {
-        private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-/*
+
+        private readonly IConfiguration _configuration;
+        public OrderController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [Authorize]
         [HttpPost("PlaceOrder")]
         public IActionResult PlaceOrder(ProductOrderDto order)
@@ -29,11 +31,20 @@ namespace API.Controllers.Order
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
 
                     string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
+
+                    var user = HttpContext.User as ClaimsPrincipal;
+
+                    var userIdClaim = user.FindFirst("UserId");
+                    string userId = "0";
+                    if (userIdClaim != null)
+                    {
+                        userId = userIdClaim.Value;
+                    }
 
                     using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
                     {
@@ -49,7 +60,7 @@ namespace API.Controllers.Order
                         using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                         {
                             command.Parameters.AddWithValue("@AddressId", order.AddressId);
-                            command.Parameters.AddWithValue("@UserId", order.UserId);
+                            command.Parameters.AddWithValue("@UserId", userId);
                             command.Parameters.AddWithValue("@ProductId", order.ProductId);
                             command.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
@@ -66,12 +77,12 @@ namespace API.Controllers.Order
             {
                 return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
             }
-        }*/
+        }
 
 
         [Authorize]
         [HttpPost("PlaceOrderByCart")]
-        public IActionResult PlaceOrderByCart(CartOrderDto orderr)
+        public IActionResult PlaceOrderByCart(CartOrderDto order)
         {
             var user = HttpContext.User as ClaimsPrincipal;
 
@@ -96,7 +107,7 @@ namespace API.Controllers.Order
             try
             {
                 // Create a connection to the database
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
 
@@ -129,16 +140,13 @@ namespace API.Controllers.Order
 
                     using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
                     {
-                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", orderr.DeliveryServiceID);
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
                         DeliveryPrice = (decimal)getDeliveryPriceCommand.ExecuteScalar();
                     }
 
 
                     decimal TotalAmount;
                     TotalAmount = ProductAmount+ DeliveryPrice; 
-
-
-                    
 
 
                         // Insert the order into the database
@@ -150,9 +158,9 @@ namespace API.Controllers.Order
                     using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
                     {
                         insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
-                        insertOrderCommand.Parameters.AddWithValue("@AddressId", orderr.AddressId);
+                        insertOrderCommand.Parameters.AddWithValue("@AddressId", order.AddressId);
                         insertOrderCommand.Parameters.AddWithValue("@CartId", cartId);
-                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", orderr.DeliveryServiceID);
+                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
                         insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
                         int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
@@ -173,11 +181,11 @@ namespace API.Controllers.Order
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
 
-                    string sql = "UPDATE [Order] SET isCancelled = 1 WHERE orderId = @orderId";
+                    string sql = "UPDATE [Orders] SET isCancelled = 1 WHERE orderId = @orderId";
 
                     using (var command = new SqlCommand(sql, connection))
                     {
