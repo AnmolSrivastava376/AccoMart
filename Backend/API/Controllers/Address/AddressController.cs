@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Data.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Address
 {
@@ -10,9 +12,20 @@ namespace API.Controllers.Address
     {
         private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
+        [Authorize]
         [HttpPost("PostAddress")]
         public IActionResult PostAddress(AddressModel address)
         {
+            var user = HttpContext.User as ClaimsPrincipal;
+
+            var userIdClaim = user.FindFirst("UserId");
+            string userId = "0";
+            if (userIdClaim != null)
+            {
+                userId = userIdClaim.Value;
+            }
+
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -29,7 +42,7 @@ namespace API.Controllers.Address
                         command.Parameters.AddWithValue("@City", address.City);
                         command.Parameters.AddWithValue("@State", address.State);
                         command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
-                        command.Parameters.AddWithValue("@UserId", 2);
+                        command.Parameters.AddWithValue("@UserId", address.userId);
 
                         command.ExecuteNonQuery();
                     }
@@ -45,7 +58,7 @@ namespace API.Controllers.Address
         }
 
 
-
+        [Authorize]
         [HttpPut("UpdateAddress/{id}")]
         public IActionResult UpdateAddress(int id, AddressModel address)
         {
@@ -87,7 +100,7 @@ namespace API.Controllers.Address
 
 
 
-
+        [Authorize]
         [HttpDelete("DeleteAddress/{id}")]
         public IActionResult DeleteAddress(int id)
         {

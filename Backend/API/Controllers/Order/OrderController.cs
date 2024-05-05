@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Data.Models.DTO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace API.Controllers.Order
 {
@@ -13,7 +15,8 @@ namespace API.Controllers.Order
     public class OrderController : ControllerBase
     {
         private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
+/*
+        [Authorize]
         [HttpPost("PlaceOrder")]
         public IActionResult PlaceOrder(ProductOrderDto order)
         {
@@ -63,12 +66,33 @@ namespace API.Controllers.Order
             {
                 return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
             }
-        }
+        }*/
 
 
+        [Authorize]
         [HttpPost("PlaceOrderByCart")]
-        public IActionResult PlaceOrderByCart(CartOrderDto orderr,int userId)
+        public IActionResult PlaceOrderByCart(CartOrderDto orderr)
         {
+            var user = HttpContext.User as ClaimsPrincipal;
+
+            var userIdClaim = user.FindFirst("UserId");
+            string userId="0";
+            if (userIdClaim != null)
+            {
+                 userId = userIdClaim.Value;
+            }
+
+            // Get the CartId claim
+            var cartIdClaim = user.FindFirst("CartId");
+            int cartId=0;
+            if (cartIdClaim != null)
+            {
+
+                 cartId = int.Parse(cartIdClaim.Value);
+
+                // Use cartId as needed
+            }
+
             try
             {
                 // Create a connection to the database
@@ -77,7 +101,7 @@ namespace API.Controllers.Order
                     connection.Open();
 
              
-                    decimal ProductAmount;
+                    decimal ProductAmount = 0.00M;
                     string getProductAmountQuery = @"
                         SELECT CAST(SUM(p.ProductPrice * ci.Quantity) AS DECIMAL(18,2)) AS TotalAmount
                         FROM CartItem ci
@@ -86,8 +110,14 @@ namespace API.Controllers.Order
 
                     using (var getProductAmountCommand = new SqlCommand(getProductAmountQuery, connection))
                     {
-                        getProductAmountCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
-                        ProductAmount = (decimal)getProductAmountCommand.ExecuteScalar();
+                        getProductAmountCommand.Parameters.AddWithValue("@CartId", cartId);
+                        object result = getProductAmountCommand.ExecuteScalar();
+
+                        if (result != DBNull.Value) 
+                        {
+                            ProductAmount = (decimal)result;
+                        }
+                        
                     }
 
                     decimal DeliveryPrice;
@@ -121,7 +151,7 @@ namespace API.Controllers.Order
                     {
                         insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
                         insertOrderCommand.Parameters.AddWithValue("@AddressId", orderr.AddressId);
-                        insertOrderCommand.Parameters.AddWithValue("@CartId", orderr.CartId);
+                        insertOrderCommand.Parameters.AddWithValue("@CartId", cartId);
                         insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", orderr.DeliveryServiceID);
                         insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
