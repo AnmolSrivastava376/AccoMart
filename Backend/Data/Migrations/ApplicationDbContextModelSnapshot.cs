@@ -30,6 +30,9 @@ namespace Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -122,14 +125,14 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b7d58b46-7e07-43e1-9a5a-c1c737eb1d2e",
+                            Id = "93cb5859-0603-4485-86a5-79322d2a0b75",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "4f20b98d-44c7-440d-a287-961f8813bdda",
+                            Id = "bb004458-4c73-4737-ab6e-5e38cf8341fe",
                             ConcurrencyStamp = "1",
                             Name = "User",
                             NormalizedName = "User"
