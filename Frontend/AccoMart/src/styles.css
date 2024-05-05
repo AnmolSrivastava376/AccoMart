@@ -10,3 +10,7 @@ body::-webkit-scrollbar{
 body {
     font-family: 'Montserrat', sans-serif;
 }
+.bg-100{
+    background-position: center;
+    background-size: 100% 100%;
+}

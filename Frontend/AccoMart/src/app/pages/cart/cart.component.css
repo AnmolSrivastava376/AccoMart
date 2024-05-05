@@ -1,3 +1,14 @@
 .parent{
     background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
+@media (max-width: 1200px){
+    .minw{
+        min-width: 250px;
+    }
+}
+@media (max-width: 1000px){
+    .col{
+        flex-direction: column;
+        gap: 0;
+    }
+}
