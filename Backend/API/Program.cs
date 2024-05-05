@@ -59,6 +59,8 @@ using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Se
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IUserManagement, UserManagement>();
+
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {

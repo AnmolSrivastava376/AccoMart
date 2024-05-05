@@ -26,9 +26,9 @@ namespace Service.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
-        private readonly CartService _cartService;
+        private readonly ICartService _cartService;
 
-        public UserManagement(UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, CartService cartService)
+        public UserManagement(UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ICartService cartService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
