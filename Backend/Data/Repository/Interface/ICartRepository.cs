@@ -1,4 +1,5 @@
 ﻿using Data.Models.CartModels;
+using Data.Models.DTO;
 
 namespace Data.Repository.Interfaces
 {
@@ -9,6 +10,6 @@ namespace Data.Repository.Interfaces
         Task<CartItem> UpdateCartItem(int productId, int quantity,int cartId);
         Task<IEnumerable<CartItem>> GetCartItems(int cartId);
         Task GenerateInvoice(int cartId);
-         Task<GetInvoiceDto> GetInvoice(int orderId);
+        Task<GetInvoiceDto> GetInvoice(int orderId);
     }
 }

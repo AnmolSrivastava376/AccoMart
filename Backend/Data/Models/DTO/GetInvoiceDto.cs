@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Data.Models.DTO
 {
     public class GetInvoiceDto
@@ -15,7 +16,7 @@ namespace Data.Models.DTO
         public string PhoneNumber { get; set; } 
         public AddressModel Address { get; set; }         
        //public List<CartItem>? cartItems { get; set; } 
-        public List<ProductInvoiceDto>? products { get; set; }    
+        public List<InvoiceProductDto>? products { get; set; }    
         public DateTime OrderDate {  get; set; } 
         public DateTime OrderTime { get; set;}
         public float OrderAmount {  get; set; } 
