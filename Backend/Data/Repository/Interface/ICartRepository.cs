@@ -9,6 +9,6 @@ namespace Data.Repository.Interfaces
         Task<CartItem> UpdateCartItem(int productId, int quantity,int cartId);
         Task<IEnumerable<CartItem>> GetCartItems(int cartId);
         Task GenerateInvoice(int cartId);
-        Task GetInvoice(int orderId);
+         Task<GetInvoiceDto> GetInvoice(int orderId);
     }
 }
