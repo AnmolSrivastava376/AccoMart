@@ -1,5 +1,4 @@
 ﻿using Data.Models;
-using API.DTO;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using Microsoft.Data.SqlClient;
 using System.ComponentModel;
 using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Data.Models.DTO;
 
 namespace API.Controllers.Admins
 {
