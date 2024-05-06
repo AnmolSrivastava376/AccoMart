@@ -3,40 +3,32 @@ using Microsoft.Data.SqlClient;
 using Data.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-
 namespace API.Controllers.Address
 {
     [Route("AddressController")]
     [ApiController]
     public class AddressController : Controller
     {
-
-
         private readonly IConfiguration _configuration;
         public AddressController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
         [Authorize]
         [HttpPost("PostAddress")]
         public IActionResult PostAddress(AddressModel address)
         {
             var user = HttpContext.User as ClaimsPrincipal;
-
             var userIdClaim = user.FindFirst("UserId");
             string userId = "0";
             if (userIdClaim != null)
             {
                 userId = userIdClaim.Value;
             }
-
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -49,11 +41,9 @@ namespace API.Controllers.Address
                         command.Parameters.AddWithValue("@State", address.State);
                         command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
                         command.Parameters.AddWithValue("@UserId", userId);
-
                         command.ExecuteNonQuery();
                     }
                 }
-
                 return Ok("Address added successfully.");
             }
             catch (Exception ex)
@@ -62,8 +52,6 @@ namespace API.Controllers.Address
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
         [Authorize]
         [HttpPut("UpdateAddress/{id}")]
         public IActionResult UpdateAddress(int id, AddressModel address)
@@ -72,7 +60,6 @@ namespace API.Controllers.Address
             {
                 return BadRequest(ModelState);
             }
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -85,16 +72,13 @@ namespace API.Controllers.Address
                         command.Parameters.AddWithValue("@State", address.State);
                         command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
                         command.Parameters.AddWithValue("@AddressId", id);
-
                         int rowsAffected = command.ExecuteNonQuery();
-
                         if (rowsAffected == 0)
                         {
                             return NotFound("Address not found.");
                         }
                     }
                 }
-
                 return Ok("Address updated successfully.");
             }
             catch (Exception ex)
@@ -103,9 +87,6 @@ namespace API.Controllers.Address
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
-
         [Authorize]
         [HttpDelete("DeleteAddress/{id}")]
         public IActionResult DeleteAddress(int id)
@@ -119,14 +100,12 @@ namespace API.Controllers.Address
                     {
                         command.Parameters.AddWithValue("@AddressId", id);
                         int rowsAffected = command.ExecuteNonQuery();
-
                         if (rowsAffected == 0)
                         {
                             return NotFound("Address not found.");
                         }
                     }
                 }
-
                 return Ok("Address deleted successfully.");
             }
             catch (Exception ex)
@@ -136,5 +115,4 @@ namespace API.Controllers.Address
             }
         }
     }
-
 }
