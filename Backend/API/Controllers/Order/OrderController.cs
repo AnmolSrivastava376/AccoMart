@@ -81,6 +81,7 @@ namespace API.Controllers.Order
                     public IActionResult PlaceOrderByCart(CartOrderDto order)
                     {
                         var user = HttpContext.User as ClaimsPrincipal;
+                        int newOrderId=0;
 
                         var userIdClaim = user.FindFirst("UserId");
                         string userId = "0";
@@ -159,7 +160,7 @@ namespace API.Controllers.Order
                                     insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
                                     insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
-                                    int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
+                                     newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
                        
 
                                 }
@@ -323,4 +324,3 @@ namespace API.Controllers.Order
                 }
             }
         
-
