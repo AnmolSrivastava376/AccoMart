@@ -1,0 +1,17 @@
+.bg-gradient{
+    background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+}
+@media (max-width: 800px){
+    .h-adj{
+        height: 250px;
+    }
+    .heading{
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 650px){
+    .hide{
+        display: none;
+    }
+}
