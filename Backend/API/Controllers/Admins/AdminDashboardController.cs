@@ -1,8 +1,7 @@
 ﻿using Data.Models;
-using API.DTO;
 using Service.Services.Interface;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Data.Models.DTO;
 
 
 namespace API.Controllers.Admins
