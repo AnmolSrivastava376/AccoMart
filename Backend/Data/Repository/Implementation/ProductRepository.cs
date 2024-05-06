@@ -52,7 +52,7 @@ namespace Data.Repository.Implementation
             return categories;
         }*/
 
-        public async Task<List<Category>> GetAllCategories(string startsWithName = "")
+        public async Task<List<Category>> GetAllCategories()
         {
             List<Category> categories;
 
@@ -91,19 +91,12 @@ namespace Data.Repository.Implementation
                 // Cache categories in Redis for future requests
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categories));
             }
-
-            // Apply filtering if a startsWithName is provided
-            if (!string.IsNullOrEmpty(startsWithName))
-            {
-                categories = categories.Where(c => c.CategoryName.StartsWith(startsWithName)).ToList();
-            }
-
             return categories;
         }
 
 
 
-        public async Task<List<Product>> GetAllProducts(int id, string orderBy = "")
+        public async Task<List<Product>> GetAllProducts(int id, string orderBy )
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();

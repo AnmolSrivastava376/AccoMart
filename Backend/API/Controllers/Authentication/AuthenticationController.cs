@@ -1,21 +1,15 @@
 ﻿using Data.Models;
 using Service.Services.Interface;
-using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Service.Models;
 using Service.Models.Authentication.Login;
 using Service.Models.Authentication.Register;
 using Service.Models.Authentication.User;
 using Service.Services;
 using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Claims;
+
 
 
 
@@ -47,17 +41,6 @@ namespace API.Controllers.Authentication
         [HttpPost]
         public async Task<IActionResult> Register(SignUp registerUser)
         {
-  /*          int cartId = await _cartService.AddToCartAsync();
-
-            var user = new Users
-            {
-                UserName = registerUser.UserName,
-                UserEmail = registerUser.Email,
-                UserPassword = registerUser.Password,
-                CartId = cartId
-            };
-
-            await _cartService.AddUser(user);*/
 
             var tokenResponse = await _userManagement.CreateUserWithTokenAsync(registerUser);
              if(tokenResponse.IsSuccess)

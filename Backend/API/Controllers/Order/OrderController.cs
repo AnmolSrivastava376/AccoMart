@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Data.Models.DTO;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stripe.Checkout;
@@ -10,16 +9,30 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace API.Controllers.Order
 {
-
-
     [ApiController]
     [Route("OrderController")]
     public class OrderController : ControllerBase
     {
         private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
+        private readonly IConfiguration _configuration;
+        public OrderController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        [Authorize]
+        [HttpPost("PlaceOrder")]
+        public IActionResult PlaceOrder(ProductOrderDto order)
+        {
 
 
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    connection.Open();
 
 
         /*
@@ -78,7 +91,7 @@ return StatusCode(500, $"An error occurred while placing the order: {ex.Message}
 
         [Authorize]
         [HttpPost("PlaceOrderByCart")]
-        public IActionResult PlaceOrderByCart(CartOrderDto orderr)
+        public IActionResult PlaceOrderByCart(CartOrderDto order)
         {
             var user = HttpContext.User as ClaimsPrincipal;
 
@@ -103,7 +116,7 @@ return StatusCode(500, $"An error occurred while placing the order: {ex.Message}
             try
             {
                 // Create a connection to the database
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
 
@@ -136,7 +149,7 @@ return StatusCode(500, $"An error occurred while placing the order: {ex.Message}
 
                     using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
                     {
-                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", orderr.DeliveryServiceID);
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
                         DeliveryPrice = (decimal)getDeliveryPriceCommand.ExecuteScalar();
                     }
 
@@ -145,11 +158,8 @@ return StatusCode(500, $"An error occurred while placing the order: {ex.Message}
                     TotalAmount = ProductAmount + DeliveryPrice;
 
 
-
-
-
-                    // Insert the order into the database
-                    string insertOrderQuery = @"
+                        // Insert the order into the database
+                            string insertOrderQuery = @"
                     INSERT INTO Orders (UserId, AddressId, CartId, DeliveryServiceID, OrderAmount) 
                     VALUES (@UserId, @AddressId, @CartId, @DeliveryServiceID, @OrderAmount);
                     SELECT SCOPE_IDENTITY();";
@@ -157,9 +167,9 @@ return StatusCode(500, $"An error occurred while placing the order: {ex.Message}
                     using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
                     {
                         insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
-                        insertOrderCommand.Parameters.AddWithValue("@AddressId", orderr.AddressId);
+                        insertOrderCommand.Parameters.AddWithValue("@AddressId", order.AddressId);
                         insertOrderCommand.Parameters.AddWithValue("@CartId", cartId);
-                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", orderr.DeliveryServiceID);
+                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
                         insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
                         int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
@@ -295,11 +305,11 @@ return StatusCode(500, $"An error occurred while placing the order: {ex.Message}
         {
             try
             {
-                using (var connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
 
-                    string sql = "UPDATE [Order] SET isCancelled = 1 WHERE orderId = @orderId";
+                    string sql = "UPDATE [Orders] SET isCancelled = 1 WHERE orderId = @orderId";
 
                     using (var command = new SqlCommand(sql, connection))
                     {
