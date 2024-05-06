@@ -1,0 +1,10 @@
+@media (max-width: 500px){
+    .radius-adj{
+        border-radius: 0;
+    }
+}
+@media (max-width: 650px){
+    .hide{
+        display: none;
+    }
+}
