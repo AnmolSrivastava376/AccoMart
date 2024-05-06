@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Admins
 {
+
+    [Authorize(Roles="Admin")]
+
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller

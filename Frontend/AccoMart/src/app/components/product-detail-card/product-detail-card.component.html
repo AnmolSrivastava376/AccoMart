@@ -1,4 +1,4 @@
-<div class="max-w-[100vw] h-[100vh] bg-blue-50 flex flex-col py-[10vh] parent items-center">
+<!-- <div class="max-w-[100vw] h-[100vh] bg-blue-50 flex flex-col py-[10vh] parent items-center">
     <div class="w-[80%] border border-t-0 border-x-0 border-b-[rgb(140,140,140)]">
         <app-navbar></app-navbar>
     </div>
@@ -8,4 +8,22 @@
         </div>
         <div class="w-full h-full flex-[40] bg-gray-500 bg-100" style="background-image: url({{product?.productImageUrl}});" ></div>
     </div>
-</div>
+</div> -->
+
+
+<div class="wrapper flex justify-center items-center font-Montserrat w-full h-screen">
+    <div class="outer relative bg-white h-[500px] w-[900px] overflow-hidden flex items-center">
+      <div class="content animated fadeInLeft absolute z-3 left-[20px]">
+        <span class="bg animated fadeInDown inline-block text-white  py-1 px-2 ">EXCLUSIVE</span>
+        <h1 class="text-black">{{product?.productName}}</h1>
+        <p class="w-[280px] leading-6 text-black mt-5">{{product?.productDesc}}</p>
+        
+        <div class="button">
+          <a href="/home/cart">{{product?.productPrice}}</a><a class="cart-btn" href="/home/cart"><i class="cart-icon ion-bag"></i>ADD TO CART</a>
+        </div>
+        
+      </div>
+      <img src="{{product?.productImageUrl}}" width="300px" class="animated fadeInRight absolute top-0 right-[-20px] z-0 w-[50%] h-[100%]">
+    </div>
+    
+  </div>
