@@ -20,6 +20,7 @@ namespace API.Controllers.Order
         private readonly ICartService _cartService;
         public OrderController(IConfiguration configuration, ICartService cartService)
         {
+            _cartService = cartService;
             _configuration = configuration;
         }
 
@@ -75,9 +76,9 @@ namespace API.Controllers.Order
         }
 
 
-        [Authorize]
+                    [Authorize]
                     [HttpPost("PlaceOrderByCart")]
-                    public IActionResult PlaceOrderByCart(CartOrderDto order)
+                    public async Task<IActionResult> PlaceOrderByCart(CartOrderDto order)
                     {
                         var user = HttpContext.User as ClaimsPrincipal;
 
@@ -159,11 +160,11 @@ namespace API.Controllers.Order
                                     insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
                                     int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
-                        _cartService.GenerateInvoiceAsync(newOrderId);
-                        return Ok(newOrderId);
+                         await _cartService.GenerateInvoiceAsync(newOrderId);
 
                                 }
                             }
+                return Ok();
                         }
                         catch (Exception ex)
                         {

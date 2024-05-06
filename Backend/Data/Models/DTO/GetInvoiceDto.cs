@@ -15,7 +15,6 @@ namespace Data.Models.DTO
         public string UserEmail { get; set; }   
         public string PhoneNumber { get; set; } 
         public AddressModel Address { get; set; }         
-       //public List<CartItem>? cartItems { get; set; } 
         public List<InvoiceProductDto>? products { get; set; }    
         public DateTime OrderDate {  get; set; } 
         public DateTime OrderTime { get; set;}
