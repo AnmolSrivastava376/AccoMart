@@ -19,9 +19,9 @@ namespace Service.Services.Implementation
             _cartRepository = cartRepository;
             _configuration = configuration;
         }
-        async Task<CartItem> ICartService.AddItemToCartAsync(int productId, int quantity)
+        async Task<CartItem> ICartService.AddItemToCartAsync(int productId, int quantity, int cardId)
         {
-            return await _cartRepository.AddCartItem(productId, quantity);
+            return await _cartRepository.AddCartItem(productId, quantity,cardId);
         }
 
         async Task ICartService.DeleteCartItemAsync(int productId)
@@ -29,9 +29,9 @@ namespace Service.Services.Implementation
             await _cartRepository.DeleteCartItem(productId);
         }
 
-        async Task<CartItem> ICartService.UpdateCartItemAsync(int productId, int quantity)
+        async Task<CartItem> ICartService.UpdateCartItemAsync(int productId, int quantity, int cartId)
         {
-            return await _cartRepository.UpdateCartItem(productId, quantity);
+            return await _cartRepository.UpdateCartItem(productId, quantity, cartId);
         }
 
         async Task<IEnumerable<CartItem>> ICartService.GetCartItemsAsync(int cartId)
@@ -73,6 +73,16 @@ namespace Service.Services.Implementation
                 await insertCartCommand.ExecuteNonQueryAsync();
 
             }
+        }
+
+        async Task ICartService.GenerateInvoiceAsync(int cartId)
+        {
+             await _cartRepository.GenerateInvoice(cartId);
+        }
+
+        async Task ICartService.GetInvoiceAsync(int orderId)
+        {
+           await _cartRepository.GetInvoice(orderId);
         }
     }
 }
