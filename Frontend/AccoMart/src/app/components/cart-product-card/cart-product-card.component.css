@@ -1,6 +1,9 @@
 .bg-gradient{
     background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
+.bg-fit{
+    background-size: 100% 100%;
+}
 @media (max-width: 800px){
     .h-adj{
         height: 250px;
@@ -10,8 +13,42 @@
     }
 }
 
-@media (max-width: 650px){
+@media (max-width: 670px){
     .hide{
         display: none;
+    }
+    .nopad{
+        padding: 0;
+    }
+}
+@media (max-width: 550px){
+    .hide{
+        display: none;
+    }
+    .img-adj{
+        min-width: 150px;
+        min-height: 150px;
+        max-height: 150px;
+    }
+    .boxh{
+        height: 150px;
+    }
+    .box{
+        width: 100px;
+        height: 32px;
+    }
+}
+@media (max-width: 350px){
+    .img-adj{
+        min-width: 100px;
+        min-height: 100px;
+        max-height: 100px;
+    }
+    .heading, .subheading{
+        font-size: 12px;
+    }
+
+    .boxh{
+        height: 100px;
     }
 }
