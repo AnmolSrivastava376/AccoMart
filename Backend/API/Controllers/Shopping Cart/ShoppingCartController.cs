@@ -1,4 +1,5 @@
-﻿using Data.Models.CartModels;
+﻿﻿using Data.Models;
+using Data.Models.CartModels;
 using Data.Models.DTO;
 using Service.Services.Implementation;
 using Service.Services.Interface;

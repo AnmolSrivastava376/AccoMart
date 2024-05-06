@@ -1,12 +1,16 @@
 ﻿using Data.Models;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using System.ComponentModel;
+using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Data.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace API.Controllers.Admins
 {
-    //[Authorize]
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller
@@ -24,14 +28,14 @@ namespace API.Controllers.Admins
             return await _productService.GetAllProductsAsync(id, orderBy); 
         }
 
-       [HttpGet("Products/SearchBy={prefix}")]
+        [HttpGet("Products/SearchBy={prefix}")]
         public async Task<Product> GetProductBySearchName(string prefix = "")
         {
             return await _productService.GetProductBySearchNameAsync(prefix);  
         }
 
 
-        [HttpGet("Product/{id}")]
+         [HttpGet("Product/{id}")]
          public async Task<Product> GetProductById(int id)
         {
 
@@ -45,7 +49,7 @@ namespace API.Controllers.Admins
         }
 
        
-       [HttpGet("Category/{id}")]
+        [HttpGet("Category/{id}")]
         public async Task<ActionResult<Category>> GetCategoryById(int id)
         {
             var category = await _productService.GetCategoryByIdAsync(id);
@@ -53,7 +57,7 @@ namespace API.Controllers.Admins
         }
 
 
-        [HttpPost("Category/Create")]
+         [HttpPost("Category/Create")]
          public async Task<ActionResult<Category>> CreateCategory(string categoryName)
          {
 
@@ -92,19 +96,12 @@ namespace API.Controllers.Admins
             return Ok();
         }
 
-
-
-
         [HttpDelete("Delete/Product/{ProductId}")]
         async public Task<ActionResult> DeleteProduct(int ProductId)
         {
             await _productService.DeleteProductAsync(ProductId);
             return Ok();
         }
-
-
-
-
 
     }
 }

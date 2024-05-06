@@ -19,6 +19,7 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 using Service.Services.Interface;
 using Service.Services.Implementation;
 using Data.Repository.Implementation;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -56,7 +57,7 @@ using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Se
 
 
 //Services and Repo 
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, Service.Services.Implementation.ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IUserManagement, UserManagement>();
@@ -95,6 +96,7 @@ builder.Services.AddAuthentication(options =>
 
 //Email COnfiguration
 var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+StripeConfiguration.ApiKey = configuration.GetSection("Stripe:SecretKey").Get<string>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserManagement,UserManagement>();
@@ -106,7 +108,8 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
     return ConnectionMultiplexer.Connect(config);
 });
 
-
+builder.Services.AddSession();
+builder.Services.AddMvc();
 
 var app = builder.Build();
 app.UseSwagger();
@@ -121,6 +124,8 @@ app.UseCors(options =>
 app.UseRewriter();  
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSession();
+//app.UseMvc();
 app.UseAuthentication(); 
 app.UseAuthorization();
 
