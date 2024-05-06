@@ -34,13 +34,15 @@ namespace API.Controllers.Address
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
-                    using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, States, ZipCode, UserId) VALUES (@Street, @City, @State, @ZipCode, @UserId)", connection))
+                    using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, PhoneNumber, States, ZipCode, UserId) VALUES (@Street, @City, @PhoneNumber, @State, @ZipCode, @UserId)", connection))
                     {
                         command.Parameters.AddWithValue("@Street", address.Street);
                         command.Parameters.AddWithValue("@City", address.City);
+                        command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
                         command.Parameters.AddWithValue("@State", address.State);
                         command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
                         command.Parameters.AddWithValue("@UserId", userId);
+                        
                         command.ExecuteNonQuery();
                     }
                 }
@@ -65,10 +67,11 @@ namespace API.Controllers.Address
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
-                    using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection))
+                    using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, PhoneNumber = @PhoneNumber,States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection))
                     {
                         command.Parameters.AddWithValue("@Street", address.Street);
                         command.Parameters.AddWithValue("@City", address.City);
+                        command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
                         command.Parameters.AddWithValue("@State", address.State);
                         command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
                         command.Parameters.AddWithValue("@AddressId", id);

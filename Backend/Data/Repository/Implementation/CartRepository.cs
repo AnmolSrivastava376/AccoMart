@@ -6,6 +6,12 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 using Newtonsoft.Json;
+using Data.Models;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Data.Models.DTO;
+using System.Reflection.Metadata.Ecma335;
+
 
 
 namespace Data.Repository.Implementation
@@ -20,21 +26,13 @@ namespace Data.Repository.Implementation
             _database = redis.GetDatabase();
         }
 
-        
-        public async Task<CartItem> AddCartItem(int productId, int quantity)
+
+        public async Task<CartItem> AddCartItem(int productId, int quantity, int cardId)
         {
             CartItem cartItem = new CartItem();
-
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-                string insertCartQuery = "INSERT INTO Cart (UserId) VALUES (@UserId);";
-                SqlCommand insertCartCommand = new SqlCommand(insertCartQuery, connection);       
-                insertCartCommand.Parameters.AddWithValue("@UserId", 1);
-
-                int CartId = await insertCartCommand.ExecuteNonQueryAsync();
-
-               
 
                 // Check if the product ID already exists in the CartItem table
                 string checkProductQuery = "SELECT COUNT(*) FROM CartItem WHERE ProductId = @ProductId";
@@ -52,98 +50,291 @@ namespace Data.Repository.Implementation
                 SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
                 insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
                 insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
-                insertCartItemCommand.Parameters.AddWithValue("@CartId", CartId);
+                insertCartItemCommand.Parameters.AddWithValue("@CartId", cardId);
 
                 object result = await insertCartItemCommand.ExecuteScalarAsync();
                 int cartItemId = Convert.ToInt32(result);
 
-                
+
 
                 cartItem.ProductId = productId;
                 cartItem.Quantity = quantity;
+
             }
 
             return cartItem;
         }
 
 
-        async Task ICartRepository.DeleteCartItem(int productId)
+        async Task ICartRepository.DeleteCartItem(int cartItemId)
         {
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
 
-                /*string sqlCartItemIdQuery = "SELECT 1 FROM CartItem WHERE CartItemId = @CartItemId";
-                using (SqlCommand checkCommand = new SqlCommand(sqlCategoryIdQuery, connection))
+                string sqlCartItemIdQuery = "SELECT 1 FROM CartItem WHERE CartItemId = @CartItemId";
+                using (SqlCommand checkCommand = new SqlCommand(sqlCartItemIdQuery, connection))
                 {
-                    checkCommand.Parameters.AddWithValue("@CartItemId", CartItemId);
+                    checkCommand.Parameters.AddWithValue("@CartItemId", cartItemId);
                     object cartItemIdObj = await checkCommand.ExecuteScalarAsync();
 
                     if (cartItemIdObj == null || cartItemIdObj == DBNull.Value)
                     {
                         throw new InvalidOperationException("CartItem does not exist.");
                     }
-                }*/
-
-                string deleteQuery = $"DELETE FROM CartItem WHERE ProductId = {productId}; SELECT SCOPE_IDENTITY();";
-                using (SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection))
-                {
-                    deleteCommand.Parameters.AddWithValue("@ProductId", productId);
-                    await deleteCommand.ExecuteNonQueryAsync();
                 }
 
+
+
                 // Remove cart item from cache
-               /* string cacheKey = $"Category_{categoryId}";
-                await _database.KeyDeleteAsync(cacheKey);*/
+                /* string cacheKey = $"Category_{categoryId}";
+                 await _database.KeyDeleteAsync(cacheKey);*/
 
             }
-            
+
+        }
+
+        async Task ICartRepository.GenerateInvoice(int orderId)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+                string checkProductQuery = "INSERT INTO Invoice (OrderId) VALUES(@OrderId);";
+                SqlCommand checkProductCommand = new SqlCommand(checkProductQuery, connection);
+                checkProductCommand.Parameters.AddWithValue("@OrderId", orderId);
+                await checkProductCommand.ExecuteScalarAsync();
+
+
+            }
         }
 
         async Task<IEnumerable<CartItem>> ICartRepository.GetCartItems(int cartId)
         {
             List<CartItem> cartItems = new List<CartItem>();
-            string cacheKey = "CartItems";
-            string cachedCartItems = await _database.StringGetAsync(cacheKey);
-            if (!string.IsNullOrEmpty(cachedCartItems))
+            /*string cacheKey = "CartItems";
+            string cachedCartItems = await _database.StringGetAsync(cacheKey);*/
+            /*if (!string.IsNullOrEmpty(cachedCartItems))
             {
                 cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cachedCartItems);
-            }
-            else
+            }*/
+
+
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                await connection.OpenAsync();
+
+                string sqlQuery = $" SELECT * FROM CartItem WHERE CartId = {cartId};";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                // Read data from the first result set (Cart table)
+                while (await reader.ReadAsync())
                 {
-                    await connection.OpenAsync();
 
-                    string sqlQuery = $" SELECT * FROM CartItem WHERE CartId = {cartId};";
-                    SqlCommand command = new SqlCommand(sqlQuery, connection);
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    // Read data from the first result set (Cart table)
-                    while (await reader.ReadAsync())
+                    CartItem cartItem = new CartItem
                     {
-                       
-                                CartItem cartItem = new CartItem
-                                {
-                                    ProductId = Convert.ToInt32(reader["ProductId"]),
-                                    Quantity = Convert.ToInt32(reader["Quantity"])
-                                };
-                                cartItems.Add(cartItem);
-                            
-                        
-                    }
-                    reader.Close();
-                }
+                        ProductId = Convert.ToInt32(reader["ProductId"]),
+                        Quantity = Convert.ToInt32(reader["Quantity"])
+                    };
+                    cartItems.Add(cartItem);
 
-   
-                await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(cartItems));
+
+                }
+                reader.Close();
+
+
+
+                //await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(cartItems));
             }
 
             return cartItems;
         }
 
-        async Task<CartItem> ICartRepository.UpdateCartItem(int productId, int quantity)
+        async Task<GetInvoiceDto> ICartRepository.GetInvoice(int orderId)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+                string sqlQuery = $" SELECT * FROM Order WHERE OrderId = {orderId};";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@OrderId", orderId);
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    int? ProductId = reader["ProductId"] as int?;
+                    int? CartId = reader["CartId"] as int?;
+
+                    if (ProductId.HasValue)
+                    {
+                        int actualProductId = ProductId.Value;
+                        return await GetInvoiceByProductId(orderId, actualProductId); //----------> optimize this- remove second param
+                    }
+
+                    else
+                    {
+                        //int cartId = CartId.Value;
+                        return await GetInvoiceByCart(orderId);
+                    }
+                }
+            }
+            return null;
+        }
+    
+
+       async private Task<GetInvoiceDto> GetInvoiceByCart(int orderId)
+       {
+            GetInvoiceDto invoiceDto = new GetInvoiceDto();
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+                string sqlQuery = $" SELECT CartId FROM Order WHERE OrderId = @OrderId;";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@OrderId", orderId);
+                SqlDataReader orderReader = await command.ExecuteReaderAsync();
+                int cartId = 0;
+                while (await orderReader.ReadAsync())
+                {
+                    cartId = Convert.ToInt32(orderReader["CartId"]);
+                }
+
+                SqlDataReader cartItemReader = await command.ExecuteReaderAsync();
+                List<InvoiceProductDto> products = new List<InvoiceProductDto>();
+                while (await cartItemReader.ReadAsync())
+                {
+
+                    string sqlQuery1 = $" SELECT * FROM CartItem WHERE CartId = @CartId;";
+                    SqlCommand command1 = new SqlCommand(sqlQuery1, connection);
+                    command1.Parameters.AddWithValue("@CartId", cartId);
+                    int productId = 0;
+
+                    SqlDataReader productReader = await command.ExecuteReaderAsync();
+                    while (await productReader.NextResultAsync())
+                    {
+                        InvoiceProductDto product = new InvoiceProductDto();
+                        productId = Convert.ToInt32(productReader["ProductId"]);
+                        string sqlQuery2 = $" SELECT * FROM Product WHERE ProductId = @ProductId;";
+                        SqlCommand command2 = new SqlCommand(sqlQuery2, connection);
+                        command2.Parameters.AddWithValue("@ProductId", productId);
+                        product.ProductName = Convert.ToString(productReader["ProductName"]);
+                        product.ProductDesc = Convert.ToString(productReader["ProductDesc"]);
+                        product.ProductPrice = (decimal)Convert.ToDouble(productReader["ProductPrice"]);
+                        product.Quantity = Convert.ToInt32(cartItemReader["Quantity"]);
+                        products.Add(product);
+                        
+                    }                  
+                }
+
+                invoiceDto.products = products;
+
+
+                //Fetching Order Details
+                invoiceDto.OrderDate = Convert.ToDateTime(orderReader["OrderDate"]);
+                invoiceDto.OrderTime = Convert.ToDateTime(orderReader["OrderTime"]);
+                invoiceDto.OrderAmount = (float)Convert.ToDouble(orderReader["OrderAmount"]);
+
+                    //Fetching User Details
+                    string userId = Convert.ToString(orderReader["UserId"]);
+                    string sqlQuery3 = $" SELECT * FROM AspNetUsers WHERE Id = @UserId;";
+                    SqlCommand command3 = new SqlCommand(sqlQuery3, connection);
+                    command3.Parameters.AddWithValue("@UserId", userId);
+
+                SqlDataReader userReader = await command3.ExecuteReaderAsync();
+                while (await userReader.NextResultAsync())
+                    {
+                        invoiceDto.UserName = Convert.ToString(userReader["UserName"]);
+                        invoiceDto.UserEmail = Convert.ToString(userReader["UserEmail"]);
+                    }
+
+
+                    //Fetching Address                
+                    string sqlQuery4 = $" SELECT * FROM Addresses WHERE UserId = @UserId;";
+                    SqlCommand command4 = new SqlCommand(sqlQuery4, connection);
+                    command4.Parameters.AddWithValue("@UserId", userId);
+                    AddressModel addressModel = new AddressModel();
+                SqlDataReader addressReader = await command4.ExecuteReaderAsync();
+                while (await addressReader.NextResultAsync())
+                    {
+                        addressModel.ZipCode = Convert.ToString(addressReader["ZipCode"]);
+                        addressModel.PhoneNumber = Convert.ToString(addressReader["PhoneNumber"]);
+                        addressModel.City = Convert.ToString(addressReader["City"]);
+                        addressModel.State = Convert.ToString(addressReader["State"]);
+                        addressModel.Street = Convert.ToString(addressReader["Street"]);
+                    }
+                    invoiceDto.Address = addressModel;
+                
+
+
+            }
+            return invoiceDto;
+       }
+       async private Task<GetInvoiceDto> GetInvoiceByProductId(int orderId, int productId)
+        {
+            GetInvoiceDto invoiceDto = new GetInvoiceDto();
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+                string sqlQuery = $" SELECT * FROM Order WHERE OrderId = @OrderId;";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@OrderId", orderId);
+
+
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    //Fecthing Product Details
+                    string sqlQuery1 = $" SELECT * FROM Product WHERE ProductId = @ProductId;";
+                    SqlCommand command1 = new SqlCommand(sqlQuery1, connection);
+                    command1.Parameters.AddWithValue("@ProductId", productId);
+                    List<InvoiceProductDto> products = new List<InvoiceProductDto>();
+                    InvoiceProductDto product = new InvoiceProductDto();
+                    while (await reader.NextResultAsync())
+                    {
+                        product.ProductName = Convert.ToString(reader["ProductName"]);
+                        product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
+                        product.ProductPrice = (decimal)Convert.ToInt32(reader["ProductPrice"]);
+                    }
+                    products.Add(product);
+                    invoiceDto.products = products;
+
+                    //Fetching Order Details
+                    invoiceDto.OrderDate = Convert.ToDateTime(reader["OrderDate"]);
+                    invoiceDto.OrderTime = Convert.ToDateTime(reader["OrderTime"]);
+                    invoiceDto.OrderAmount = (float)Convert.ToDouble(reader["OrderAmount"]);
+
+                    //Fetching User Details
+                    string userId = Convert.ToString(reader["UserId"]);
+                    string sqlQuery2 = $" SELECT * FROM AspNetUsers WHERE Id = @UserId;";
+                    SqlCommand command2 = new SqlCommand(sqlQuery2, connection);
+                    command2.Parameters.AddWithValue("@UserId", userId);                  
+                    while (await reader.NextResultAsync())
+                    {
+                        invoiceDto.UserName = Convert.ToString(reader["UserName"]);
+                        invoiceDto.UserEmail = Convert.ToString(reader["UserEmail"]);                        
+                    }
+
+
+                    //Fetching Address                
+                    string sqlQuery3 = $" SELECT * FROM Addresses WHERE UserId = @UserId;";
+                    SqlCommand command3 = new SqlCommand(sqlQuery3, connection);
+                    command2.Parameters.AddWithValue("@UserId", userId);
+                    AddressModel addressModel = new AddressModel();
+
+                    while (await reader.NextResultAsync())
+                    {
+                        addressModel.ZipCode = Convert.ToString(reader["ZipCode"]);
+                        addressModel.PhoneNumber = Convert.ToString(reader["PhoneNumber"]);
+                        addressModel.City = Convert.ToString(reader["City"]);
+                        addressModel.State = Convert.ToString(reader["State"]);
+                        addressModel.Street = Convert.ToString(reader["Street"]);
+                    }
+                    invoiceDto.Address = addressModel;
+                }
+            }
+            return invoiceDto;
+        }
+
+        async Task<CartItem> ICartRepository.UpdateCartItem(int productId, int quantity, int cartId)
         {
             CartItem cartItem = new CartItem();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))

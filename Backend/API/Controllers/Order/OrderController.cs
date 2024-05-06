@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Stripe.Checkout;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Service.Services.Interface;
 
 namespace API.Controllers.Order
 {
@@ -16,7 +17,8 @@ namespace API.Controllers.Order
         private readonly string connectionString = "Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
         private readonly IConfiguration _configuration;
-        public OrderController(IConfiguration configuration)
+        private readonly ICartService _cartService;
+        public OrderController(IConfiguration configuration, ICartService cartService)
         {
             _configuration = configuration;
         }
@@ -31,6 +33,7 @@ namespace API.Controllers.Order
             }
             try
             {
+                int orderId = 0;
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
@@ -57,11 +60,13 @@ namespace API.Controllers.Order
                             command.Parameters.AddWithValue("@ProductId", order.ProductId);
                             command.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
-                            command.ExecuteNonQuery();
+                            orderId = Convert.ToInt32(command.ExecuteScalar());
                         }
                     }
                 }
+                _cartService.GenerateInvoiceAsync(orderId);
                 return Ok(order);
+
             }
             catch (Exception ex)
             {
@@ -154,8 +159,8 @@ namespace API.Controllers.Order
                                     insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
                                     int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
-
-                                    return Ok(newOrderId);
+                        _cartService.GenerateInvoiceAsync(newOrderId);
+                        return Ok(newOrderId);
 
                                 }
                             }
