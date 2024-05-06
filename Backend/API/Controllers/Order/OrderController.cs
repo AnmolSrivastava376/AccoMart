@@ -1,4 +1,4 @@
-﻿using Data.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Data.Models.DTO;
@@ -20,8 +20,8 @@ namespace API.Controllers.Order
         private readonly ICartService _cartService;
         public OrderController(IConfiguration configuration, ICartService cartService)
         {
-            _cartService = cartService;
             _configuration = configuration;
+            _cartService = cartService;
         }
 
         [Authorize]
@@ -76,9 +76,9 @@ namespace API.Controllers.Order
         }
 
 
-                    [Authorize]
+        [Authorize]
                     [HttpPost("PlaceOrderByCart")]
-                    public async Task<IActionResult> PlaceOrderByCart(CartOrderDto order)
+                    public IActionResult PlaceOrderByCart(CartOrderDto order)
                     {
                         var user = HttpContext.User as ClaimsPrincipal;
 
@@ -160,12 +160,14 @@ namespace API.Controllers.Order
                                     insertOrderCommand.Parameters.AddWithValue("@OrderAmount", TotalAmount);
 
                                     int newOrderId = Convert.ToInt32(insertOrderCommand.ExecuteScalar());
-                         await _cartService.GenerateInvoiceAsync(newOrderId);
+                       
 
                                 }
                             }
-                return Ok();
-                        }
+                _cartService.GenerateInvoiceAsync(newOrderId);
+
+                return Ok(order);
+            }
                         catch (Exception ex)
                         {
                             return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
