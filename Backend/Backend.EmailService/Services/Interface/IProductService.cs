@@ -7,7 +7,7 @@ namespace Service.Services.Interface
     {
         Task<Product> GetProductByIdAsync(int id);
         Task<List<Product>> GetAllProductsAsync(int id, string orderBy);
-        Task<List<Category>> GetAllCategoriesAsync(string prefix);
+        Task<List<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> CreateCategoryAsync(string categoryName);
         Task<Product> CreateProductAsync(ProductDto productDto);
