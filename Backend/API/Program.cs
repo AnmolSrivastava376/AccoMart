@@ -125,7 +125,7 @@ app.UseRewriter();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();
-app.UseMvc();
+//app.UseMvc();
 app.UseAuthentication(); 
 app.UseAuthorization();
 
