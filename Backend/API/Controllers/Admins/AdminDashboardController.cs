@@ -17,8 +17,8 @@ namespace API.Controllers.Admins
             _productService = productService;
         }
         
-        [HttpGet("Products/CategoryId = {id}")]
-        public async Task<List<Product>> GetAllProducts(int id,string orderBy = "")
+        [HttpGet("Products/CategoryId={id}")]
+        public async Task<List<Product>> GetAllProducts(int id,string orderBy)
         {
            
             return await _productService.GetAllProductsAsync(id, orderBy); 
@@ -38,10 +38,10 @@ namespace API.Controllers.Admins
             return await _productService.GetProductByIdAsync(id);
         }
 
-        [HttpGet("GetAllCategories/SearchBy={prefix}")]
-        async public Task<List<Category>> GetAllCategories(string prefix = "" )
+        [HttpGet("GetAllCategories")]
+        async public Task<List<Category>> GetAllCategories()
         {
-            return await _productService.GetAllCategoriesAsync(prefix);
+            return await _productService.GetAllCategoriesAsync();
         }
 
        

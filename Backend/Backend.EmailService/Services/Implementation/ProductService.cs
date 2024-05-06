@@ -38,9 +38,9 @@ namespace Service.Services.Implementation
             await _productRepository.DeleteProduct(ProductId);
         }
         
-        async Task<List<Category>> IProductService.GetAllCategoriesAsync(string prefix)
+        async Task<List<Category>> IProductService.GetAllCategoriesAsync()
         {
-            return await _productRepository.GetAllCategories(prefix);
+            return await _productRepository.GetAllCategories();
         }
 
         async Task<List<Product>> IProductService.GetAllProductsAsync(int id, string orderBy)

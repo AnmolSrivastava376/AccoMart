@@ -10,7 +10,7 @@ namespace Data.Repository.Interfaces
         Task<Product> GetProductById(int id);
         Task<Category> GetCategoryByName(string name);
         Task<List<Product>> GetAllProducts(int id,string orderBy);
-        Task<List<Category>> GetAllCategories(string prefix);
+        Task<List<Category>> GetAllCategories();
         Task<Category> GetCategoryById(int id);
         Task<Category> CreateCategory(string categoryName);
         Task<Product> CreateProduct(ProductDto productDto, int categoryId);
