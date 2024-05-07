@@ -4,6 +4,15 @@
 .hide{
     display: none;
 }
+.und::after{
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 0;
+    width: 120%;
+    height: 2px;
+    background: black;
+}
 @media (max-width: 1200px){
     .minw{
         min-width: 250px;
@@ -25,5 +34,16 @@
     }
     .p-parent{
         padding: 0;
+    }
+}
+@media (max-width: 400px) {
+    .text-adj{
+        font-size: 12px;
+    }
+    .head-adj{
+        font-size: 16px;
+    }
+    .und::after{
+        height: 1px;
     }
 }
