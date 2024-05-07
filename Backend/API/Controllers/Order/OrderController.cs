@@ -49,18 +49,28 @@ namespace API.Controllers.Order
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
-                    string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
                     
                     if (userIdClaim != null)
                     {
                         userId = userIdClaim.Value;
                     }
-                    
+
+                    decimal DeliveryPrice;
+                    string DeliveryPriceQuery = "Select Price FROM DeliveryService WHERE DServiceId = @DServiceId";
+                    using (SqlCommand DeliveryPriceCommand = new SqlCommand(DeliveryPriceQuery, connection))
+                    {
+                        DeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
+                         DeliveryPrice = (decimal)DeliveryPriceCommand.ExecuteScalar();
+                    }
+
+                    string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
+
+
                     using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
                     {
                         fetchPriceCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
-                        float productPrice = Convert.ToSingle(fetchPriceCommand.ExecuteScalar());
-                        float orderAmount = productPrice;
+                        decimal productPrice = (decimal)fetchPriceCommand.ExecuteScalar();
+                        decimal orderAmount = productPrice+DeliveryPrice;
                         string sqlQuery = @"INSERT INTO Orders (AddressId, UserId, ProductId, DeliveryServiceID, OrderAmount)
                                 VALUES (@AddressId, @UserId, @ProductId, @DeliveryServiceID, @OrderAmount);
                                 SELECT SCOPE_IDENTITY();";
