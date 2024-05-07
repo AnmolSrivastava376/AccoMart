@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cart.component.css'
 })
 export class CartComponent {
-  isVisible = true;
+  isVisible = false;
 
   toggleVisibility() {
     this.isVisible = !this.isVisible;

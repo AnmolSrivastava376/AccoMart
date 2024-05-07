@@ -4,6 +4,20 @@
 .hide{
     display: none;
 }
+.floating-window{
+    animation: slide-in 500ms
+}
+.bg{
+    animation: fade 500ms;
+}
+@keyframes slide-in{
+    from {top: -100%}
+    to {top: 0}
+}
+@keyframes fade{
+    from {opacity: 0%;}
+    to {opacity: 100%;}
+}
 .und::after{
     position: absolute;
     content: '';
