@@ -3,12 +3,12 @@
         <div class="w-full h-[50px]">
             <app-navbar></app-navbar>
         </div>
-        <div class="w-full h-full border flex relative py-[20px] col">
-            <div class="w-full h-full flex-[25] sticky top-[30px] min-h-[20vh] px-[20px]">
+        <div class="w-full h-full border flex py-[20px] col relative">
+            <div class="w-full h-full flex-[25] sticky top-[0px] min-h-[20vh] px-[20px]">
                 <app-category-navbar [categories]="categories" (categorySelected)="onCategorySelected($event)">
                 </app-category-navbar>
             </div>
-            <div class="w-full relative h-fit flex-[75] rounded-[10px] mr-[20px] pad">
+            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad">
                 <app-product-card [products]="products"></app-product-card>
             </div>
         </div>
