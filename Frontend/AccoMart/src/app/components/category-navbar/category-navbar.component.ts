@@ -13,8 +13,20 @@ import {MatIconModule} from '@angular/material/icon';
 export class CategoryNavbarComponent {
   @Input() categories?: Category[];
   @Output() categorySelected = new EventEmitter<number>();
+  isCategoryNavbarActive: boolean = false;
+  isFirstLoad: boolean = true;
+  shouldAnimate:boolean = false;
 
   onCategoryClick(categoryId: number) {
     this.categorySelected.emit(categoryId);
+  }
+  toogleCategoryButtonClick(){
+    this.isCategoryNavbarActive=!this.isCategoryNavbarActive;
+    if(this.isFirstLoad){
+      this.isFirstLoad = !this.isFirstLoad;
+    }
+    if(!this.isFirstLoad){
+      this.shouldAnimate=true;
+    }
   }
 }
