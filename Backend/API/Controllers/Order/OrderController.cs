@@ -7,6 +7,8 @@ using System.Security.Claims;
 using Stripe.Checkout;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Service.Services.Interface;
+using System.Net.Http;
+using System;
 
 namespace API.Controllers.Order
 {
@@ -25,7 +27,7 @@ namespace API.Controllers.Order
         }
 
         [Authorize]
-        [HttpPost("PlaceOrder")]
+        [HttpPost("PlaceOrderByProduct")]
         public IActionResult PlaceOrder(ProductOrderDto order)
         {
             if (order == null)
@@ -87,7 +89,7 @@ namespace API.Controllers.Order
                 }
                 _cartService.GenerateInvoiceAsync(orderId);
                 _cartService.DeleteCartAsync(cartId);
-                return Ok(order);
+                return Checkout();
 
             }
             catch (Exception ex)
@@ -187,8 +189,9 @@ namespace API.Controllers.Order
                                 }
                             }
                 _cartService.GenerateInvoiceAsync(newOrderId);
-                _cartService.DeleteCartAsync(cartId);
-                return Ok(order);
+                //_cartService.DeleteCartAsync(cartId);
+                return Checkout();
+                //return Ok(order);
             }
                         catch (Exception ex)
                         {
@@ -196,7 +199,8 @@ namespace API.Controllers.Order
                         }
                     }
 
-                    /*[HttpPost("Checkout/")]
+        string domain = "https://localhost:7153/Home/Index";
+        [HttpPost("Checkout/")]
                     public IActionResult Checkout()
                     {
                         var user = HttpContext.User as ClaimsPrincipal;
@@ -214,7 +218,7 @@ namespace API.Controllers.Order
                         {
                             cartId = int.Parse(cartIdClaim.Value);
                         }
-                        var domain = "http://localhost:5135/";
+                       
                         var options = new SessionCreateOptions
                         {
                             SuccessUrl = domain + $"Checkout/OrderConfirmation",
@@ -224,72 +228,102 @@ namespace API.Controllers.Order
                             CustomerEmail = userEmail
                         };
 
-                        using (var connection = new SqlConnection(connectionString))
+
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string getCartItemQuery = @"
+        SELECT *
+        FROM CartItem                    
+        WHERE CartId = @CartId";
+
+                using (var getCartItemCommand = new SqlCommand(getCartItemQuery, connection))
+                {
+                    getCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
+                    object result = getCartItemCommand.ExecuteScalar();
+
+                    if (result != DBNull.Value)
+                    {
+                        SqlDataReader cartItemReader = getCartItemCommand.ExecuteReader();
+
+                        // Read data from the first result set (Cart table)
+                        while (cartItemReader.Read())
                         {
-                            connection.Open();
+                            int productId = Convert.ToInt32(cartItemReader["ProductId"]);
+
                             string getProductQuery = @"
-                                    SELECT *
-                                    FROM CartItem                    
-                                    WHERE CartId = @CartId";
+                    SELECT *
+                    FROM Product                    
+                    WHERE ProductId = @ProductId";
 
                             using (var getProductCommand = new SqlCommand(getProductQuery, connection))
                             {
-                                getProductCommand.Parameters.AddWithValue("@CartId", cartId);
-                                object result = getProductCommand.ExecuteScalar();
+                                getProductCommand.Parameters.AddWithValue("@ProductId", productId);
+                                object result1 = getProductCommand.ExecuteScalar();
 
-                                if (result != DBNull.Value)
+                                if (result1 != DBNull.Value)
                                 {
-                                    SqlDataReader reader = getProductCommand.ExecuteReader();
+                                    SqlDataReader productReader = getProductCommand.ExecuteReader();
 
                                     // Read data from the first result set (Cart table)
-                                    while (reader.Read())
+                                    while (productReader.NextResult())
                                     {
-
                                         var sessionListItem = new SessionLineItemOptions
                                         {
                                             PriceData = new SessionLineItemPriceDataOptions
                                             {
-                                                UnitAmount = (long)Convert.ToDouble(reader["Quantity"]),
+                                                UnitAmount = (long)Convert.ToDouble(productReader["ProductPrice"]),
                                                 Currency = "inr",
                                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                                 {
-                                                    Name = GetProductName(Convert.ToInt32(reader["ProductId"]))
+                                                    Name = GetProductName(Convert.ToInt32(productReader["ProductId"]))
                                                 }
-
                                             },
-                                            Quantity = (long)Convert.ToDouble(reader["Quantity"])
-
+                                            Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
                                         };
+
+                                        int id = 0;
                                         options.LineItems.Add(sessionListItem);
-                                        var service = new SessionService();
-                                        Session session = service.Create(options);
-                                        HttpContext.Session.SetString("Session", session.Id);
-
-
-                                        Response.Headers.Add("Location", session.Url);
-                                        return new StatusCodeResult(303);
-
 
                                     }
-                                    reader.Close();
+                                    productReader.Close();
+
+                                    
+                                    
                                 }
                             }
-
                         }
+                        cartItemReader.Close();
+                    }              
+                }
+            }
+            var service = new SessionService();
+            Session session = service.Create(options);
+            HttpContext.Session.SetString("Session", session.Id);
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
 
-                        return BadRequest();
 
-                    }
+             }
 
+                    [HttpGet("OrderConfirmation")]
                     public IActionResult OrderConfirmation()
                     {
                         var service = new SessionService();
                         Session session = new Session();
-                        HttpContext.Session.GetString("Session");           
-                        if (session.PaymentStatus == "Paid")
-                        {
-                            return Ok();
-                        }
+                        HttpContext.Session.GetString("Session");
+            using var httpClient = new HttpClient();
+            if (session.PaymentStatus == "Paid")
+            {
+                var response = httpClient.GetAsync(domain);
+
+                if (response.IsCompletedSuccessfully)
+                {
+                    // Redirect to the Index action if the request was successful
+                    return RedirectToAction("Index", "Home");
+                }
+            }
                         return BadRequest();
                     }
 
@@ -307,7 +341,7 @@ namespace API.Controllers.Order
                             }
                         }
                         return "Unknown Product";
-                    }*/
+                    }
 
 
 
