@@ -128,7 +128,7 @@ app.UseSession();
 //app.UseMvc();
 app.UseAuthentication(); 
 app.UseAuthorization();
-
+app.UseStaticFiles();
 app.MapControllerRoute(
     name: default,
     pattern: "{controller=Authentication}/{action = Register}");
