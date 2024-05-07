@@ -72,5 +72,20 @@ namespace API.Controllers.ShoppingCart
         {
             await _cartService.DeleteCartItemAsync(productId);   
         }
+
+        [HttpDelete("Delete/Cart")]
+        public async Task DeleteCart()
+        {
+
+            var user = HttpContext.User as ClaimsPrincipal;
+            var cartIdClaim = user.FindFirst("CartId");
+            int cartId = 0;
+            if (cartIdClaim != null)
+            {
+
+                cartId = int.Parse(cartIdClaim.Value);
+            }
+            await _cartService.DeleteCartAsync(cartId);
+        }
     }
 }

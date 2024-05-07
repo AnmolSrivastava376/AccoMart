@@ -11,5 +11,6 @@ namespace Data.Repository.Interfaces
         Task<IEnumerable<CartItem>> GetCartItems(int cartId);
         Task GenerateInvoice(int cartId);
         Task<GetInvoiceDto> GetInvoice(int orderId);
+        Task DeleteCart(int cartId);
     }
 }
