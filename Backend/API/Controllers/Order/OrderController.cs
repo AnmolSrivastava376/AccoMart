@@ -25,7 +25,7 @@ namespace API.Controllers.Order
         }
 
         [Authorize]
-        [HttpPost("PlaceOrder")]
+        [HttpPost("PlaceOrderByProduct")]
         public IActionResult PlaceOrder(ProductOrderDto order)
         {
             if (order == null)
@@ -77,7 +77,7 @@ namespace API.Controllers.Order
                 }
                 _cartService.GenerateInvoiceAsync(orderId);
                 _cartService.DeleteCartAsync(cartId);
-                return Ok(order);
+                return Checkout();
 
             }
             catch (Exception ex)
@@ -177,8 +177,9 @@ namespace API.Controllers.Order
                                 }
                             }
                 _cartService.GenerateInvoiceAsync(newOrderId);
-                _cartService.DeleteCartAsync(cartId);
-                return Ok(order);
+                //_cartService.DeleteCartAsync(cartId);
+                return Checkout();
+                //return Ok(order);
             }
                         catch (Exception ex)
                         {
@@ -186,7 +187,7 @@ namespace API.Controllers.Order
                         }
                     }
 
-                    /*[HttpPost("Checkout/")]
+                    [HttpPost("Checkout/")]
                     public IActionResult Checkout()
                     {
                         var user = HttpContext.User as ClaimsPrincipal;
@@ -214,63 +215,83 @@ namespace API.Controllers.Order
                             CustomerEmail = userEmail
                         };
 
-                        using (var connection = new SqlConnection(connectionString))
+
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string getCartItemQuery = @"
+        SELECT *
+        FROM CartItem                    
+        WHERE CartId = @CartId";
+
+                using (var getCartItemCommand = new SqlCommand(getCartItemQuery, connection))
+                {
+                    getCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
+                    object result = getCartItemCommand.ExecuteScalar();
+
+                    if (result != DBNull.Value)
+                    {
+                        SqlDataReader reader = getCartItemCommand.ExecuteReader();
+
+                        // Read data from the first result set (Cart table)
+                        while (reader.Read())
                         {
-                            connection.Open();
+                            int productId = Convert.ToInt32(reader["ProductId"]);
+
                             string getProductQuery = @"
-                                    SELECT *
-                                    FROM CartItem                    
-                                    WHERE CartId = @CartId";
+                    SELECT *
+                    FROM Product                    
+                    WHERE ProductId = @ProductId";
 
                             using (var getProductCommand = new SqlCommand(getProductQuery, connection))
                             {
-                                getProductCommand.Parameters.AddWithValue("@CartId", cartId);
-                                object result = getProductCommand.ExecuteScalar();
+                                getProductCommand.Parameters.AddWithValue("@ProductId", productId);
+                                object result1 = getProductCommand.ExecuteScalar();
 
-                                if (result != DBNull.Value)
+                                if (result1 != DBNull.Value)
                                 {
-                                    SqlDataReader reader = getProductCommand.ExecuteReader();
+                                    SqlDataReader reader2 = getProductCommand.ExecuteReader();
 
                                     // Read data from the first result set (Cart table)
-                                    while (reader.Read())
+                                    while (reader2.Read())
                                     {
-
                                         var sessionListItem = new SessionLineItemOptions
                                         {
                                             PriceData = new SessionLineItemPriceDataOptions
                                             {
-                                                UnitAmount = (long)Convert.ToDouble(reader["Quantity"]),
+                                                UnitAmount = (long)Convert.ToDouble(reader2["ProductPrice"]),
                                                 Currency = "inr",
                                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                                 {
-                                                    Name = GetProductName(Convert.ToInt32(reader["ProductId"]))
+                                                    Name = GetProductName(Convert.ToInt32(reader2["ProductId"]))
                                                 }
-
                                             },
-                                            Quantity = (long)Convert.ToDouble(reader["Quantity"])
-
+                                            Quantity = (long)Convert.ToInt32(reader["Quantity"])
                                         };
+
+                                        int id = 0;
                                         options.LineItems.Add(sessionListItem);
                                         var service = new SessionService();
                                         Session session = service.Create(options);
                                         HttpContext.Session.SetString("Session", session.Id);
-
-
                                         Response.Headers.Add("Location", session.Url);
                                         return new StatusCodeResult(303);
-
-
                                     }
-                                    reader.Close();
                                 }
                             }
-
                         }
+                        reader.Close();
+                    }
+                }
+            }
 
-                        return BadRequest();
+
+            return BadRequest();
 
                     }
 
+                    [HttpGet("OrderConfirmation")]
                     public IActionResult OrderConfirmation()
                     {
                         var service = new SessionService();
@@ -297,7 +318,7 @@ namespace API.Controllers.Order
                             }
                         }
                         return "Unknown Product";
-                    }*/
+                    }
 
 
 
