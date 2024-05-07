@@ -84,5 +84,10 @@ namespace Service.Services.Implementation
         {
            await _cartRepository.GetInvoice(orderId);
         }
+
+        async Task ICartService.DeleteCartAsync(int cartId)
+        {
+            await _cartRepository.DeleteCart(cartId);
+        }
     }
 }

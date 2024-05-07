@@ -43,28 +43,66 @@ namespace Data.Repository.Implementation
 
                 if (existingCount > 0)
                 {
-                    throw new InvalidOperationException("Product ID already exists in the CartItem table.");
+                    string updateQuantityQuery = "UPDATE CartItem SET Quantity = Quantity + @Quantity WHERE ProductId = @ProductId";
+                    SqlCommand updateQuantityCommand = new SqlCommand(updateQuantityQuery, connection);
+                    updateQuantityCommand.Parameters.AddWithValue("@ProductId", productId);
+                    updateQuantityCommand.Parameters.AddWithValue("@Quantity", quantity);
+
+                    await updateQuantityCommand.ExecuteNonQueryAsync();
+
+                    // Retrieve the updated cart item after incrementing quantity
+                    string getCartItemQuery = "SELECT ProductId, Quantity FROM CartItem WHERE ProductId = @ProductId";
+                    SqlCommand getCartItemCommand = new SqlCommand(getCartItemQuery, connection);
+                    getCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
+
+                    using (SqlDataReader reader = await getCartItemCommand.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            cartItem.ProductId = reader.GetInt32(0);
+                            cartItem.Quantity = reader.GetInt32(1);
+                        }
+                    }
                 }
+                else
+                {
+                    string insertCartItemQuery = "INSERT INTO CartItem (ProductId, Quantity, CartId) VALUES (@ProductId, @Quantity, @CartId); SELECT SCOPE_IDENTITY();";
+                    SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
+                    insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
+                    insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
+                    insertCartItemCommand.Parameters.AddWithValue("@CartId", cardId);
 
-                string insertCartItemQuery = "INSERT INTO CartItem (ProductId, Quantity,CartId) VALUES (@ProductId, @Quantity,@CartId); SELECT SCOPE_IDENTITY();";
-                SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
-                insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
-                insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
-                insertCartItemCommand.Parameters.AddWithValue("@CartId", cardId);
+                    object result = await insertCartItemCommand.ExecuteScalarAsync();
+                    int cartItemId = Convert.ToInt32(result);
 
-                object result = await insertCartItemCommand.ExecuteScalarAsync();
-                int cartItemId = Convert.ToInt32(result);
-
-
-
-                cartItem.ProductId = productId;
-                cartItem.Quantity = quantity;
+                    cartItem.ProductId = productId;
+                    cartItem.Quantity = quantity;
+                }
 
             }
 
             return cartItem;
         }
 
+        async Task ICartRepository.DeleteCart(int cartId)
+        {
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+
+                string sqlCartIdQuery = "DELETE FROM CartItem WHERE CartId = @CartId";
+                using (SqlCommand checkCommand = new SqlCommand(sqlCartIdQuery, connection))
+                {
+                    checkCommand.Parameters.AddWithValue("@CartId", cartId);
+                    object cartIdObj = await checkCommand.ExecuteScalarAsync();
+
+                    if (cartIdObj == null || cartIdObj == DBNull.Value)
+                    {
+                        throw new InvalidOperationException("Cart is already empty.");
+                    }
+                }               
+            }
+        }
 
         async Task ICartRepository.DeleteCartItem(int cartItemId)
         {

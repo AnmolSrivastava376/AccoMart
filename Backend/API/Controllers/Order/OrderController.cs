@@ -34,18 +34,28 @@ namespace API.Controllers.Order
             }
             try
             {
+
                 int orderId = 0;
+                var user = HttpContext.User as ClaimsPrincipal;
+                var userIdClaim = user.FindFirst("UserId");
+                string userId = "0";
+                var cartIdClaim = user.FindFirst("CartId");
+                int cartId = 0;
+                if (cartIdClaim != null)
+                {
+
+                    cartId = int.Parse(cartIdClaim.Value);
+                }
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     connection.Open();
                     string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
-                    var user = HttpContext.User as ClaimsPrincipal;
-                    var userIdClaim = user.FindFirst("UserId");
-                    string userId = "0";
+                    
                     if (userIdClaim != null)
                     {
                         userId = userIdClaim.Value;
                     }
+                    
                     using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
                     {
                         fetchPriceCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
@@ -66,6 +76,7 @@ namespace API.Controllers.Order
                     }
                 }
                 _cartService.GenerateInvoiceAsync(orderId);
+                _cartService.DeleteCartAsync(cartId);
                 return Ok(order);
 
             }
@@ -166,7 +177,7 @@ namespace API.Controllers.Order
                                 }
                             }
                 _cartService.GenerateInvoiceAsync(newOrderId);
-
+                _cartService.DeleteCartAsync(cartId);
                 return Ok(order);
             }
                         catch (Exception ex)

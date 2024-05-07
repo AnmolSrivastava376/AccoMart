@@ -13,5 +13,6 @@ namespace Service.Services.Interface
         Task AddUser(Users user);
         Task GenerateInvoiceAsync(int orderId);
         Task GetInvoiceAsync(int orderId);
+        Task DeleteCartAsync(int cartId);
     }
 }
