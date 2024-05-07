@@ -10,6 +10,7 @@ header{
 }
 header .cartIcon{
     position: relative;
+   
     z-index: 2;
 }
 header .totalQuantity{
@@ -30,3 +31,5 @@ header .totalQuantity{
     transform: translateX(10px);
 
 }
+
+
