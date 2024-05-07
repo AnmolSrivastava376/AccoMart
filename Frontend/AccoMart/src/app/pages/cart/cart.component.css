@@ -40,11 +40,11 @@
 }
 @media(max-width: 500px){
     .pad{
-        padding: 10px;
+        padding: 20px;
         border-radius: 10px;
     }
     .p-adj{
-        padding: 10px;
+        padding: 20px;
     }
     .p-parent{
         padding: 0;

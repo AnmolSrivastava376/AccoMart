@@ -1,0 +1,17 @@
+@keyframes animate-in{
+    from {height: 0;}
+    to {height: 1000px;}
+}
+.animate{
+    animation: animate-in 500ms;
+}
+@keyframes animate-out{
+    from {height: 1000px;}
+    to {height: 0px;}
+}
+.deanimate{
+    animation: animate-out 500ms;
+}
+.go-round{
+    transform: rotate(180deg);
+}

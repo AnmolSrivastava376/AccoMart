@@ -2,6 +2,9 @@
 * {
   box-sizing: border-box;
 }
+.parent{
+  background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+}
 
 .wrapper {
   background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
