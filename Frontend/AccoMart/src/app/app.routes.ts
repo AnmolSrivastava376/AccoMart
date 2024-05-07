@@ -3,7 +3,6 @@ import { LandingPageComponent } from './pages/landing-page/landing-page.componen
 import { HomeComponent } from './pages/home/home.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { AuthComponent } from './pages/auth/auth.component';
-import { OrdersComponent } from './pages/orders/orders.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { InvoiceComponent } from './pages/invoice/invoice.component';
@@ -17,7 +16,6 @@ export const routes: Routes = [
     { path :'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
-    { path: 'home/cart/orders', component: OrdersComponent },
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoiceComponent }
