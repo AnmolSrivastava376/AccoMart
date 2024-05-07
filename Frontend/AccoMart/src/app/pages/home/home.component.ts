@@ -5,13 +5,14 @@ import { CategoryService } from '../../services/category.services';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CategoryNavbarComponent, ProductCardComponent],
+  imports: [CategoryNavbarComponent, ProductCardComponent, NavbarComponent],
 })
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
