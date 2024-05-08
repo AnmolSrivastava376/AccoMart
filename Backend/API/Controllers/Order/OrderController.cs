@@ -23,7 +23,7 @@ namespace API.Controllers.Order
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
         private readonly ICartService _cartService;
-        private readonly string _domain = "https://localhost:7153/Home/Index";
+        private readonly string _domain = "https://localhost:7153/";
 
         public OrderController(IConfiguration configuration, ICartService cartService)
         {
@@ -138,27 +138,37 @@ namespace API.Controllers.Order
                 using (var getCartItemCommand = new SqlCommand(getCartItemQuery, connection))
                 {
                     getCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
-                    object result = await getCartItemCommand.ExecuteScalarAsync();
 
-                    if (result != DBNull.Value)
+                    using (SqlDataReader cartItemReader = await getCartItemCommand.ExecuteReaderAsync())
                     {
-                        using (SqlDataReader cartItemReader = await getCartItemCommand.ExecuteReaderAsync())
+                        List<Tuple<int,int>> CartItems = new List<Tuple<int,int>>();
+
+                        while (await cartItemReader.ReadAsync())
                         {
-                            while (await cartItemReader.ReadAsync())
+                            int productId = Convert.ToInt32(cartItemReader["ProductId"]);
+                            int productQuantity = Convert.ToInt32(cartItemReader["Quantity"]);
+
+                            CartItems.Add(Tuple.Create(productId, productQuantity));
+                        }
+
+                        // Close the first SqlDataReader before executing the next query
+                        await cartItemReader.CloseAsync();
+
+                        foreach (Tuple<int,int> CartItem in CartItems)
+                        {
+                            string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
+
+                            using (var getProductCommand = new SqlCommand(getProductQuery, connection))
                             {
-                                int productId = Convert.ToInt32(cartItemReader["ProductId"]);
+                                getProductCommand.Parameters.AddWithValue("@ProductId", CartItem.Item1);
 
-                                string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
-
-                                using (var getProductCommand = new SqlCommand(getProductQuery, connection))
+                                // Execute the command to get product details
+                                using (SqlDataReader productReader = await getProductCommand.ExecuteReaderAsync())
                                 {
-                                    getProductCommand.Parameters.AddWithValue("@ProductId", productId);
-
-                                    while (await cartItemReader.NextResultAsync())
+                                    while (await productReader.ReadAsync())
                                     {
-                                        string name = Convert.ToString(cartItemReader["ProductName"]);
-                                        string newName = name;
-                                        decimal productPrice = (decimal)cartItemReader["ProductPrice"];
+                                        string name = Convert.ToString(productReader["ProductName"]);
+                                        decimal productPrice = (decimal)productReader["ProductPrice"];
 
                                         var sessionListItem = new SessionLineItemOptions
                                         {
@@ -171,19 +181,18 @@ namespace API.Controllers.Order
                                                     Name = name
                                                 }
                                             },
-                                            Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
+                                            Quantity = CartItem.Item2
                                         };
 
                                         options.LineItems.Add(sessionListItem);
                                     }
-
-
                                 }
                             }
                         }
                     }
                 }
             }
+
 
             var service = new SessionService();
             Session session = service.Create(options);
