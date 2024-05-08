@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 using Data.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-namespace API.Controllers.Address
+namespace API.Controllers.Addresses
 {
     [Route("AddressController")]
     [ApiController]
