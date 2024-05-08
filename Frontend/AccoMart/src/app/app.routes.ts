@@ -6,8 +6,9 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { InvoiceComponent } from './pages/invoice/invoice.component';
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
+import { LoginComponent } from './pages/login/login.component';
 
 
 export const routes: Routes = [
@@ -16,13 +17,16 @@ export const routes: Routes = [
     { path :'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
+    {path : 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
-    { path: 'home/cart/orders/invoice', component: InvoiceComponent }
+    { path: 'home/cart/orders/invoice', component: InvoiceComponent },
+
+
 ];
 
 @NgModule({
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule]
 })
-export class AppRoutingModule {} 
+export class AppRoutingModule {}
