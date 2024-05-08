@@ -8,7 +8,6 @@ import { Product } from '../interfaces/product';
 })
 export class productService {
   fetchProductByCategoryID(categoryId:Number) {
-    console.log(categoryId)
     return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`);
   }
   fetchProductById(productId: number) {

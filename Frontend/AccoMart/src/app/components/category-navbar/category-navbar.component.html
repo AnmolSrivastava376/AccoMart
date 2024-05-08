@@ -6,7 +6,7 @@
         [ngClass]="{'go-round': isCategoryNavbarActive}">keyboard_arrow_down</mat-icon>
     </div>
     <div class="w-full transition-all duration-300 flex flex-col overflow-hidden" [ngClass]="{'deanimate h-0': !isCategoryNavbarActive && shouldAnimate, 'animate': isCategoryNavbarActive, 'h-0': !isCategoryNavbarActive}" >
-        <div *ngFor="let category of categories" class="w-full bg h-[30px] flex items-center text-[16px] px-[30px] cursor-pointer" (click)="onCategoryClick(category.categoryId)">
+        <div *ngFor="let category of categories; let i = index" class="w-full bg h-[30px] flex items-center text-[16px] px-[30px] cursor-pointer" (click)="onCategoryClick(category.categoryId, i)">
             {{category.categoryName}}
         </div>
     </div>
