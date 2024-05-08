@@ -27,7 +27,7 @@ namespace Data.Repository.Implementation
         }
 
 
-        public async Task<CartItem> AddCartItem(int productId, int quantity, int cardId)
+        public async Task<CartItem> AddCartItem(int productId, int quantity, int cartId)
         {
             CartItem cartItem = new CartItem();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -35,25 +35,29 @@ namespace Data.Repository.Implementation
                 await connection.OpenAsync();
 
                 // Check if the product ID already exists in the CartItem table
-                string checkProductQuery = "SELECT COUNT(*) FROM CartItem WHERE ProductId = @ProductId";
+                string checkProductQuery = "SELECT COUNT(*) FROM CartItem WHERE ProductId = @ProductId and CartId = @CartId";
                 SqlCommand checkProductCommand = new SqlCommand(checkProductQuery, connection);
                 checkProductCommand.Parameters.AddWithValue("@ProductId", productId);
+                checkProductCommand.Parameters.AddWithValue("@CartId",cartId );
 
                 int existingCount = (int)await checkProductCommand.ExecuteScalarAsync();
 
                 if (existingCount > 0)
                 {
-                    string updateQuantityQuery = "UPDATE CartItem SET Quantity = Quantity + @Quantity WHERE ProductId = @ProductId";
+                    string updateQuantityQuery = "UPDATE CartItem SET Quantity = Quantity + @Quantity WHERE ProductId = @ProductId and CartId = @CartId ";
                     SqlCommand updateQuantityCommand = new SqlCommand(updateQuantityQuery, connection);
                     updateQuantityCommand.Parameters.AddWithValue("@ProductId", productId);
                     updateQuantityCommand.Parameters.AddWithValue("@Quantity", quantity);
+                    updateQuantityCommand.Parameters.AddWithValue("@CartId", cartId);
 
                     await updateQuantityCommand.ExecuteNonQueryAsync();
 
                     // Retrieve the updated cart item after incrementing quantity
-                    string getCartItemQuery = "SELECT ProductId, Quantity FROM CartItem WHERE ProductId = @ProductId";
+                    string getCartItemQuery = "SELECT ProductId, Quantity FROM CartItem WHERE ProductId = @ProductId CartId = @CartId";
                     SqlCommand getCartItemCommand = new SqlCommand(getCartItemQuery, connection);
                     getCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
+                    getCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
+
 
                     using (SqlDataReader reader = await getCartItemCommand.ExecuteReaderAsync())
                     {
@@ -70,7 +74,7 @@ namespace Data.Repository.Implementation
                     SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
                     insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
                     insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
-                    insertCartItemCommand.Parameters.AddWithValue("@CartId", cardId);
+                    insertCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
 
                     object result = await insertCartItemCommand.ExecuteScalarAsync();
                     int cartItemId = Convert.ToInt32(result);
