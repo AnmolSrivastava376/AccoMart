@@ -15,3 +15,11 @@
 .go-round{
     transform: rotate(180deg);
 }
+.hide{
+    display: none;
+}
+@media (max-width: 900px){
+    .hide{
+        display: block;
+    }
+}

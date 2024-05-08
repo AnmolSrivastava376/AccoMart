@@ -2,3 +2,20 @@
     background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
 
+@media (max-width: 650px){
+    .col{
+        flex-direction: column;
+    }
+    .parent{
+        padding: 0;
+    }
+    .r-adj{
+        border-radius: 0px;
+    }
+    .pad{
+        padding: 30px 20px;
+    }
+    .notsticky{
+        position: relative;
+    }
+}
