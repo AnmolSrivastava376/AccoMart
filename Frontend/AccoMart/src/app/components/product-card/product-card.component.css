@@ -1,3 +1,14 @@
 .parent{
     background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
+.unhide{
+    display: none;
+}
+@media (max-width: 900px){
+    .hide{
+        display: none;
+    }
+    .unhide{
+        display: block;
+    }
+}

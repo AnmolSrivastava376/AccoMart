@@ -15,4 +15,7 @@
     .pad{
         padding: 30px 20px;
     }
+    .notsticky{
+        position: relative;
+    }
 }
