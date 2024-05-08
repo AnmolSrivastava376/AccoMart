@@ -53,7 +53,7 @@ namespace Data.Repository.Implementation
                     await updateQuantityCommand.ExecuteNonQueryAsync();
 
                     // Retrieve the updated cart item after incrementing quantity
-                    string getCartItemQuery = "SELECT ProductId, Quantity FROM CartItem WHERE ProductId = @ProductId CartId = @CartId";
+                    string getCartItemQuery = "SELECT ProductId, Quantity FROM CartItem WHERE ProductId = @ProductId and  CartId = @CartId";
                     SqlCommand getCartItemCommand = new SqlCommand(getCartItemQuery, connection);
                     getCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
                     getCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
