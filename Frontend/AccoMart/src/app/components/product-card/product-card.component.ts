@@ -13,11 +13,10 @@ import { ProductScrollDisplayCardComponent } from '../product-scroll-display-car
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
-export class ProductCardComponent {
+export class ProductCardComponent{
   @Input() products?: Product[]
   
   constructor(private router: Router) { }
-
   handleClick(productId: number) {
   this.router.navigate(['home/productdetail', productId.toString()]);
 }

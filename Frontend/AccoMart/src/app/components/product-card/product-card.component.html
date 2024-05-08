@@ -1,6 +1,6 @@
 <div class="w-full h-fit border flex bg-white flex-col rounded-[10px]">
     <div class="font-bold text-[24px] px-[20px] py-[10px]">Trending</div>
-    <app-grid-display-card class="hide"></app-grid-display-card>
+    <app-grid-display-card class="hide" [products]="products"></app-grid-display-card>
     <app-scroll-display-card class="unhide"></app-scroll-display-card>
     <div class="font-bold text-[24px] px-[20px] py-[10px]">Category Name</div>
     <app-product-scroll-display-card></app-product-scroll-display-card>
