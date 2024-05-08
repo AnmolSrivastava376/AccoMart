@@ -270,15 +270,7 @@ namespace API.Controllers.Order
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = "sdfgh@gmail.com",
-                Customer = new SessionCustomerOptions
-                {
-                    Name = "Khushboo Gupta",
-                    Address = new AddressOptions
-                    {
-                        Line1 = "Accolite,Gurugram"
-                        // Add additional address fields as needed
-                    }
-                }
+
             };
 
             using (var connection = new SqlConnection(_connectionString))
