@@ -16,7 +16,14 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 })
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
-  products: Product[]=[];
+  products: Product[]=[{
+    productId: 0,
+    productName: '',
+    productDesc: '',
+    productPrice: 0,
+    productImageUrl: '',
+    categoryId: 0
+  }];
   activeCategory: Number=-1;
   constructor(private categoryService: CategoryService, private productService: productService) {}
   
@@ -33,7 +40,7 @@ export class HomeComponent implements OnInit {
           this.productService.fetchProductByCategoryID(this.activeCategory).then((response)=>{
             this.products = response.data;
           }).catch((error)=>{
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching products:', error);
           })
         }
       })
