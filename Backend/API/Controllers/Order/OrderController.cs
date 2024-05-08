@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Service.Services.Interface;
+using Stripe;
 using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
@@ -29,71 +30,6 @@ namespace API.Controllers.Order
             _configuration = configuration;
             _cartService = cartService;
             _connectionString = _configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
-        }
-
-        [Authorize]
-        [HttpPost("PlaceOrderByProduct")]
-        public async Task<IActionResult> PlaceOrder(ProductOrderDto order)
-        {
-            if (order == null)
-            {
-                return BadRequest("Invalid order data");
-            }
-
-            try
-            {
-                int orderId = 0;
-                var user = HttpContext.User as ClaimsPrincipal;
-                var userIdClaim = user.FindFirst("UserId");
-                string userId = userIdClaim?.Value ?? "0";
-
-                var cartIdClaim = user.FindFirst("CartId");
-                int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;
-
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-
-                    decimal deliveryPrice;
-                    string deliveryPriceQuery = "SELECT Price FROM DeliveryService WHERE DServiceId = @DServiceId";
-                    using (SqlCommand deliveryPriceCommand = new SqlCommand(deliveryPriceQuery, connection))
-                    {
-                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
-                        deliveryPrice = (decimal)await deliveryPriceCommand.ExecuteScalarAsync();
-                    }
-
-                    string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
-
-                    using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
-                    {
-                        fetchPriceCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
-                        decimal productPrice = (decimal)await fetchPriceCommand.ExecuteScalarAsync();
-                        decimal orderAmount = productPrice + deliveryPrice;
-
-                        string sqlQuery = @"INSERT INTO Orders (AddressId, UserId, ProductId, DeliveryServiceID, OrderAmount)
-                                            VALUES (@AddressId, @UserId, @ProductId, @DeliveryServiceID, @OrderAmount);
-                                            SELECT SCOPE_IDENTITY();";
-
-                        using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                        {
-                            command.Parameters.AddWithValue("@AddressId", order.AddressId);
-                            command.Parameters.AddWithValue("@UserId", userId);
-                            command.Parameters.AddWithValue("@ProductId", order.ProductId);
-                            command.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
-                            command.Parameters.AddWithValue("@OrderAmount", orderAmount);
-                            orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
-                        }
-                    }
-                }
-
-                await _cartService.GenerateInvoiceAsync(orderId);
-                //await _cartService.DeleteCartAsync(cartId);
-                return await Checkout(order.ProductId);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
-            }
         }
 
         [Authorize]
@@ -174,6 +110,7 @@ namespace API.Controllers.Order
             }
         }
 
+        [Authorize]
         [HttpPost("Checkout/Cart")]
         public async Task<IActionResult> CheckoutByCart()
         {
@@ -216,9 +153,9 @@ namespace API.Controllers.Order
                                 using (var getProductCommand = new SqlCommand(getProductQuery, connection))
                                 {
                                     getProductCommand.Parameters.AddWithValue("@ProductId", productId);
-   
-                                          while (await cartItemReader.NextResultAsync())
-                                            {
+
+                                    while (await cartItemReader.NextResultAsync())
+                                    {
                                         string name = Convert.ToString(cartItemReader["ProductName"]);
                                         string newName = name;
                                         decimal productPrice = (decimal)cartItemReader["ProductPrice"];
@@ -232,15 +169,15 @@ namespace API.Controllers.Order
                                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                                 {
                                                     Name = name
-                                                        }
-                                                    },
-                                                    Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
-                                                };
+                                                }
+                                            },
+                                            Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
+                                        };
 
-                                                options.LineItems.Add(sessionListItem);
-                                            }
-                                        
-                                    
+                                        options.LineItems.Add(sessionListItem);
+                                    }
+
+
                                 }
                             }
                         }
@@ -254,7 +191,74 @@ namespace API.Controllers.Order
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }
+        [Authorize]
+        [HttpPost("PlaceOrderByProduct")]
+        public async Task<IActionResult> PlaceOrder(ProductOrderDto order)
+        {
+            if (order == null)
+            {
+                return BadRequest("Invalid order data");
+            }
 
+            try
+            {
+                int orderId = 0;
+                var user = HttpContext.User as ClaimsPrincipal;
+                var userIdClaim = user.FindFirst("UserId");
+                string userId = userIdClaim?.Value ?? "0";
+
+                var cartIdClaim = user.FindFirst("CartId");
+                int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;
+
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    decimal deliveryPrice;
+                    string deliveryPriceQuery = "SELECT Price FROM DeliveryService WHERE DServiceId = @DServiceId";
+                    using (SqlCommand deliveryPriceCommand = new SqlCommand(deliveryPriceQuery, connection))
+                    {
+                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
+                        deliveryPrice = (decimal)await deliveryPriceCommand.ExecuteScalarAsync();
+                    }
+
+                    string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
+
+                    using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
+                    {
+                        fetchPriceCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
+                        decimal productPrice = (decimal)await fetchPriceCommand.ExecuteScalarAsync();
+                        decimal orderAmount = productPrice + deliveryPrice;
+
+                        string sqlQuery = @"INSERT INTO Orders (AddressId, UserId, ProductId, DeliveryServiceID, OrderAmount)
+                                            VALUES (@AddressId, @UserId, @ProductId, @DeliveryServiceID, @OrderAmount);
+                                            SELECT SCOPE_IDENTITY();";
+
+                        using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                        {
+                            command.Parameters.AddWithValue("@AddressId", order.AddressId);
+                            command.Parameters.AddWithValue("@UserId", userId);
+                            command.Parameters.AddWithValue("@ProductId", order.ProductId);
+                            command.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
+                            command.Parameters.AddWithValue("@OrderAmount", orderAmount);
+                            orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                        }
+                    }
+                }
+
+                await _cartService.GenerateInvoiceAsync(orderId);
+                //await _cartService.DeleteCartAsync(cartId);
+                return await Checkout(order.ProductId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
+            }
+        }
+
+   
+
+        [Authorize]
         [HttpPost("Checkout/Product")]
         public async Task<IActionResult> Checkout(int productId)
         {
@@ -265,24 +269,33 @@ namespace API.Controllers.Order
                 CancelUrl = _domain + "Cart/GetCart",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                CustomerEmail = "sdfgh@gmail.com"
+                CustomerEmail = "sdfgh@gmail.com",
+                Customer = new SessionCustomerOptions
+                {
+                    Name = "Khushboo Gupta",
+                    Address = new AddressOptions
+                    {
+                        Line1 = "Accolite,Gurugram"
+                        // Add additional address fields as needed
+                    }
+                }
             };
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
                
-     string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
+                    string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
 
                         using (var getProductCommand = new SqlCommand(getProductQuery, connection))
                         {
                             getProductCommand.Parameters.AddWithValue("@ProductId", productId);
-                                getProductCommand.ExecuteNonQueryAsync();   
+                             await getProductCommand.ExecuteNonQueryAsync();
 
 
                     using (SqlDataReader cartItemReader = await getProductCommand.ExecuteReaderAsync())
                     {
-                        while (await cartItemReader.NextResultAsync())
+                        while (await cartItemReader.ReadAsync())
                         {
                             string name = Convert.ToString(cartItemReader["ProductName"]);
                             string newName = name;
@@ -299,7 +312,7 @@ namespace API.Controllers.Order
                                         Name = name
                                     }
                                 },
-                                Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
+                                Quantity = (long)1
                             };
 
                             options.LineItems.Add(sessionListItem);
@@ -319,6 +332,7 @@ namespace API.Controllers.Order
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }
+
 
         [HttpGet("OrderConfirmation")]
         public IActionResult OrderConfirmation()
