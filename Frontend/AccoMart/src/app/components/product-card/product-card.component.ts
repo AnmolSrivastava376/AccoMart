@@ -15,6 +15,7 @@ import { ProductScrollDisplayCardComponent } from '../product-scroll-display-car
 })
 export class ProductCardComponent{
   @Input() products?: Product[]
+  @Input() categoryName?: string
   
   constructor(private router: Router) { }
   handleClick(productId: number) {

@@ -24,7 +24,8 @@ export class HomeComponent implements OnInit {
     productImageUrl: '',
     categoryId: 0
   }];
-  activeCategory: Number=-1;
+  activeCategory: number=-1;
+  activeCategoryIndex: number=0;
   constructor(private categoryService: CategoryService, private productService: productService) {}
   
   ngOnInit(): void {
@@ -52,5 +53,8 @@ export class HomeComponent implements OnInit {
     }).catch((error)=>{
       console.error('Error fetching categories:', error);
     })
+  }
+  onIndexSelected(index: number){
+    this.activeCategoryIndex = index;
   }
 }
