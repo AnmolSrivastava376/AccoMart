@@ -10,6 +10,7 @@ import { NgModule } from '@angular/core';
 import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
 
 
+
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
@@ -18,7 +19,8 @@ export const routes: Routes = [
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
-    { path: 'home/cart/orders/invoice', component: InvoiceComponent }
+    { path: 'home/cart/orders/invoice', component: InvoiceComponent },
+ 
 ];
 
 @NgModule({
