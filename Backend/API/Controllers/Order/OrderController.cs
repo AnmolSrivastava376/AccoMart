@@ -87,8 +87,8 @@ namespace API.Controllers.Order
                 }
 
                 await _cartService.GenerateInvoiceAsync(orderId);
-                await _cartService.DeleteCartAsync(cartId);
-                return await Checkout();
+                //await _cartService.DeleteCartAsync(cartId);
+                return await Checkout(order.ProductId);
             }
             catch (Exception ex)
             {
@@ -166,7 +166,7 @@ namespace API.Controllers.Order
 
                 await _cartService.GenerateInvoiceAsync(newOrderId);
                 //await _cartService.DeleteCartAsync(cartId); // commented out as per your original code
-                return await Checkout();
+                return await CheckoutByCart();
             }
             catch (Exception ex)
             {
@@ -174,8 +174,8 @@ namespace API.Controllers.Order
             }
         }
 
-        [HttpPost("Checkout/")]
-        public async Task<IActionResult> Checkout()
+        [HttpPost("Checkout/Cart")]
+        public async Task<IActionResult> CheckoutByCart()
         {
             var user = HttpContext.User as ClaimsPrincipal;
             var userEmailClaim = user.FindFirst("UserEmail");
@@ -216,22 +216,22 @@ namespace API.Controllers.Order
                                 using (var getProductCommand = new SqlCommand(getProductQuery, connection))
                                 {
                                     getProductCommand.Parameters.AddWithValue("@ProductId", productId);
-                                     //await getProductCommand.ExecuteNonQueryAsync();
-
-                                   
-                                       
-                                            while (await cartItemReader.ReadAsync())
+   
+                                          while (await cartItemReader.NextResultAsync())
                                             {
+                                        string name = Convert.ToString(cartItemReader["ProductName"]);
+                                        string newName = name;
                                         decimal productPrice = (decimal)cartItemReader["ProductPrice"];
+
                                         var sessionListItem = new SessionLineItemOptions
+                                        {
+                                            PriceData = new SessionLineItemPriceDataOptions
+                                            {
+                                                UnitAmount = (long)(productPrice * 100),
+                                                Currency = "inr",
+                                                ProductData = new SessionLineItemPriceDataProductDataOptions
                                                 {
-                                                    PriceData = new SessionLineItemPriceDataOptions
-                                                    {
-                                                        UnitAmount = (long)(productPrice * 100),
-                                                        Currency = "inr",
-                                                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                                                        {
-                                                            Name = GetProductName(Convert.ToInt32(cartItemReader["ProductId"]))
+                                                    Name = name
                                                         }
                                                     },
                                                     Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
@@ -245,6 +245,71 @@ namespace API.Controllers.Order
                             }
                         }
                     }
+                }
+            }
+
+            var service = new SessionService();
+            Session session = service.Create(options);
+            HttpContext.Session.SetString("Session", session.Id);
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+        }
+
+        [HttpPost("Checkout/Product")]
+        public async Task<IActionResult> Checkout(int productId)
+        {
+
+            var options = new SessionCreateOptions
+            {
+                SuccessUrl = _domain + "Checkout/OrderConfirmation",
+                CancelUrl = _domain + "Cart/GetCart",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                CustomerEmail = "sdfgh@gmail.com"
+            };
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+               
+     string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
+
+                        using (var getProductCommand = new SqlCommand(getProductQuery, connection))
+                        {
+                            getProductCommand.Parameters.AddWithValue("@ProductId", productId);
+                                getProductCommand.ExecuteNonQueryAsync();   
+
+
+                    using (SqlDataReader cartItemReader = await getProductCommand.ExecuteReaderAsync())
+                    {
+                        while (await cartItemReader.NextResultAsync())
+                        {
+                            string name = Convert.ToString(cartItemReader["ProductName"]);
+                            string newName = name;
+                            decimal productPrice = (decimal)cartItemReader["ProductPrice"];
+
+                            var sessionListItem = new SessionLineItemOptions
+                            {
+                                PriceData = new SessionLineItemPriceDataOptions
+                                {
+                                    UnitAmount = (long)(productPrice * 100),
+                                    Currency = "inr",
+                                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                                    {
+                                        Name = name
+                                    }
+                                },
+                                Quantity = (long)Convert.ToInt32(cartItemReader["Quantity"])
+                            };
+
+                            options.LineItems.Add(sessionListItem);
+                        }
+
+
+                    }
+                            
+                      
+                    
                 }
             }
 
