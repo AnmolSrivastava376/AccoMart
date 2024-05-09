@@ -19,12 +19,21 @@ export class HttpService {
   }
 
   login2FA(OTP: string, email: string) {
-    return this.http.post<{ accessToken: string, refreshToken: string }>(
-      `http://localhost:5239/AuthenticationController/Login-2FA?code=${OTP}&email=${email}`,
-      {
-        "OTP": OTP,
-        "email": email
-      }
-    );
+    return this.http.post<{
+      response: {
+        accessToken: {
+          token: string;
+          expiryTokenDate: string;
+        };
+        refreshToken: {
+          token: string;
+          expiryTokenDate: string;
+        };
+      };
+    }>(`http://localhost:5239/AuthenticationController/Login-2FA?code=${OTP}&email=${email}`, {
+      OTP: OTP,
+      email: email
+    });
+
   }
 }

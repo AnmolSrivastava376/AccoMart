@@ -9,6 +9,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { Int32 } from 'mongodb';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-2-fa',
@@ -28,7 +29,7 @@ import { Int32 } from 'mongodb';
 export class Login2FAComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
- // router = inject(Router);
+  router = inject(Router);
   loginForm = this.builder.group({
     email: ['', Validators.required],
     otp: ['',Validators.required],
@@ -40,6 +41,8 @@ export class Login2FAComponent {
     const otp = this.loginForm.value.otp!
     this.httpService.login2FA(otp,email).subscribe((result) => {
         console.log(result);
+        localStorage.setItem("token", result.response.accessToken.token);
+        this.router.navigateByUrl('/');
     })
   }
 }
