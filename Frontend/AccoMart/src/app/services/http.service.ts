@@ -48,4 +48,8 @@ export class HttpService {
 
 
   }
+  login2FA2()
+  {
+    return this.http.post(`http://localhost:5239/AuthenticationController`, {});
+  }
 }

@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router'; // Import Router
 import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 
+
 @Component({
   selector: 'app-login',
   standalone: true,
