@@ -58,3 +58,43 @@ input[type="submit"]:hover {
 }
 
 
+.social-login {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .social-login img{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  .facebook{
+    color: white;
+    background-color: #3b5993;
+  }
+  .google{
+    color: #303030;
+    background-color: #fff;
+    border: 1px solid #cfcfcf;
+    
+  }
+    .social-login a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 160px;
+    height: 45px;
+    border-radius: 8px;
+    padding: 0 10px;
+    /* border: 1px solid #e6e6e6; */
+    /* color: #5a5a5a; */
+    font-size: 12px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+ .form .or {
+    text-align: center;
+    color: #a3a3a3;
+    font-size: 18px;
+    line-height: 20px;
+  }
