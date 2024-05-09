@@ -10,6 +10,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { Int32 } from 'mongodb';
 import { Router } from '@angular/router';
+import { CategoryService } from '../../services/category.services';
+
+
 
 @Component({
   selector: 'app-login-2-fa',
@@ -26,7 +29,10 @@ import { Router } from '@angular/router';
   templateUrl: './login-2-fa.component.html',
   styleUrl: './login-2-fa.component.css'
 })
+
+
 export class Login2FAComponent {
+
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   router = inject(Router);
@@ -44,5 +50,16 @@ export class Login2FAComponent {
         localStorage.setItem("token", result.response.accessToken.token);
         this.router.navigateByUrl('/');
     })
+
   }
+
+  onlogin2FA2()
+  {
+    this.httpService.login2FA2().subscribe(() => {
+      //localStorage.setItem("new1","hello");
+      this.router.navigateByUrl('/');
+  })
+  }
+
+
 }
