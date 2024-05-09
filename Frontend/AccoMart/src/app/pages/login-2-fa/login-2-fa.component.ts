@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, numberAttribute } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,10 +8,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
-import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
+import { Int32 } from 'mongodb';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-2-fa',
   standalone: true,
   imports: [
     MatInputModule,
@@ -19,28 +19,27 @@ import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
     ReactiveFormsModule,
     MatButtonModule,
     HttpClientModule,
-    CommonModule,
-    Login2FAComponent
+    CommonModule
   ],
   providers: [HttpService],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  templateUrl: './login-2-fa.component.html',
+  styleUrl: './login-2-fa.component.css'
 })
-export class LoginComponent {
-
+export class Login2FAComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
  // router = inject(Router);
   loginForm = this.builder.group({
     email: ['', Validators.required],
-    password: ['', Validators.required],
+    otp: [''],
   });
-  onLogin()
+
+  onlogin2FA()
   {
     const email = this.loginForm.value.email!
-    const password = this.loginForm.value.password!
-    this.httpService.login(email,password).subscribe((result) => {
-
+    const otp = Number(this.loginForm.value.otp!)
+    this.httpService.login2FA(email,otp).subscribe((result) => {
+        console.log(result);
     })
   }
 }

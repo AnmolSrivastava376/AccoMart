@@ -9,6 +9,7 @@ import { InvoiceComponent } from './pages/invoice/invoice.component';
 import { Component, NgModule } from '@angular/core';
 import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
 import { LoginComponent } from './pages/login/login.component';
+import { Login2FAComponent } from './pages/login-2-fa/login-2-fa.component';
 
 
 export const routes: Routes = [
@@ -18,6 +19,7 @@ export const routes: Routes = [
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
     {path : 'login', component: LoginComponent},
+    {path : 'login', component: Login2FAComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoiceComponent },
