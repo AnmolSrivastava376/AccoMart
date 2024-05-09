@@ -7,7 +7,7 @@ import { Int32 } from 'mongodb';
   providedIn: 'root',
 })
 export class HttpService {
-  apiUrl = 'http://localhost:5280';
+
   http = inject(HttpClient);
   constructor() {}
 
@@ -18,11 +18,13 @@ export class HttpService {
     });
   }
 
-
-  login2FA(email : string, OTP:Number) {
-    return this.http.post<{token:string}>('http://localhost:5239/AuthenticationController/Login-2FA',{
-      "email": email,
-      "OTP": OTP
-    });
+  login2FA(OTP: string, email: string) {
+    return this.http.post<{ accessToken: string, refreshToken: string }>(
+      `http://localhost:5239/AuthenticationController/Login-2FA?code=${OTP}&email=${email}`,
+      {
+        "OTP": OTP,
+        "email": email
+      }
+    );
   }
 }

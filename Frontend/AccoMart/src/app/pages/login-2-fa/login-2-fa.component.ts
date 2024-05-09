@@ -31,14 +31,14 @@ export class Login2FAComponent {
  // router = inject(Router);
   loginForm = this.builder.group({
     email: ['', Validators.required],
-    otp: [''],
+    otp: ['',Validators.required],
   });
 
   onlogin2FA()
   {
     const email = this.loginForm.value.email!
-    const otp = Number(this.loginForm.value.otp!)
-    this.httpService.login2FA(email,otp).subscribe((result) => {
+    const otp = this.loginForm.value.otp!
+    this.httpService.login2FA(otp,email).subscribe((result) => {
         console.log(result);
     })
   }
