@@ -8,7 +8,6 @@
 }
 
 .Mainimg{
-    /* background-image: linear-gradient(to bottom right,#112f47,#035094, #035094); */
     background-image: url('../../../assets/Image/Landing-image.webp');
     background-position: center;
     background-repeat: no-repeat;
@@ -25,7 +24,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* height: 800px; */
 }
 
 h2 {
@@ -35,6 +33,7 @@ h2 {
 }
 
 
+input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%;
@@ -64,6 +63,7 @@ input[type="submit"]:hover {
     gap: 10px;
     margin-bottom: 20px;
   }
+
   .social-login img{
     width: 20px;
     height: 20px;
@@ -87,8 +87,6 @@ input[type="submit"]:hover {
     height: 45px;
     border-radius: 8px;
     padding: 0 10px;
-    /* border: 1px solid #e6e6e6; */
-    /* color: #5a5a5a; */
     font-size: 12px;
     text-decoration: none;
     cursor: pointer;
@@ -100,7 +98,7 @@ input[type="submit"]:hover {
     line-height: 20px;
   }
 
-  
+
 @media screen and (max-width :1100px){
     input[type="text"],
     input[type="email"],
@@ -120,7 +118,6 @@ input[type="submit"]:hover {
       }
     
     .social-login{
-        margin-top: 5px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -155,7 +152,7 @@ input[type="submit"]:hover {
         margin-top: 1rem;
         gap: 1rem;
     }
-    .createbtn{
+    .loginbtn{
         margin-top: 2px;
         margin-bottom: 2px ;
     }
@@ -192,7 +189,7 @@ input[type="submit"]:hover {
         margin-top: 1rem;
         gap: 1rem;
     }
-    .createbtn{
-        margin-bottom: 4px ;
+    .loginbtn{
+        margin-bottom: 2px ;
     }
 }

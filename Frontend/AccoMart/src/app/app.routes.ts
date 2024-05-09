@@ -8,6 +8,7 @@ import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { InvoiceComponent } from './pages/invoice/invoice.component';
 import { NgModule } from '@angular/core';
 import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
+import { RegisterPageComponent } from './pages/register-page/register-page.component';
 
 
 
@@ -17,6 +18,7 @@ export const routes: Routes = [
     { path :'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
+    { path : 'home/register', component: RegisterPageComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoiceComponent },
