@@ -247,8 +247,9 @@ namespace Service.Services
         {
 
             var user = await _userManager.FindByEmailAsync(email);
-            var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
-            if (signIn.Succeeded)
+            var signIn = await _userManager.VerifyTwoFactorTokenAsync(user,"Email", code);
+            //var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
+            if (signIn)
             {
                 if (user != null)
                 {

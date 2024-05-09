@@ -1,24 +1,31 @@
-<div class="flex justify-center">
-  <mat-card class="w-96 p-4">
-    <h4 class="text-xl">Login</h4>
-    <form [formGroup]="loginForm">
+<div class="flex justify-center mt-10">
+  <div class="w-96 " >
+    <div class="bg-gray-100 rounded-lg shadow-md p-6">
+      <h4 class="text-xl mb-4">Login</h4>
+      <form [formGroup]="loginForm" class="space-y-4">
 
-      <div>
-        <mat-form-field class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput type="text" formControlName="email" />
-        </mat-form-field>
+        <div>
+          <input type="text" formControlName="email" placeholder="Email"
+            class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300" />
+        </div>
+        <div>
+          <input type="password" formControlName="password" placeholder="Password"
+            class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300" />
+        </div>
+        <div class="text-sm mt-4 ">
+          <a href="#" class="text-blue-500 hover:underline">Forgot Password?</a>
+        </div>
+        <div class="flex justify-center items-center">
+          <button (click)="onLogin()"
+            class="w-2/3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring">Login</button>
+          
+        </div>
+        
+      </form>
+      <div class="mt-4 flex justify-center">
+
+        <button (click)="onRegister()" class="w-2/3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring">Register</button>
       </div>
-      <div>
-        <mat-form-field class="w-full">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" />
-        </mat-form-field>
-      </div>
-      <div class="w-full flex justify-center">
-        <button mat-raised-button color="primary" (click) = "onLogin()">Login</button>
-      </div>
-    </form>
-  </mat-card>
+    </div>
+  </div>
 </div>
-<app-login-2-fa></app-login-2-fa>
