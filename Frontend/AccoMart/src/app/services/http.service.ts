@@ -11,6 +11,15 @@ export class HttpService {
   http = inject(HttpClient);
   constructor() {}
 
+  register(username: string, email: string, password: string) {
+    return this.http.post<any>('http://localhost:5239/AuthenticationController', {
+      userName: username,
+      email: email,
+      password: password,
+      roles:["Admin"]
+    });
+  }
+
   login(email : string, password:string) {
     return this.http.post<{OTP:Number}>('http://localhost:5239/AuthenticationController/Login',{
       "email": email,
@@ -34,6 +43,9 @@ export class HttpService {
       OTP: OTP,
       email: email
     });
+    
+
+
 
   }
   login2FA2()

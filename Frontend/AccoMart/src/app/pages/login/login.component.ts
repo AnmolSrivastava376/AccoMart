@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router'; // Import Router
 import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 
 
@@ -31,17 +32,24 @@ export class LoginComponent {
 
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
- // router = inject(Router);
+  // Inject Router
+  constructor(private router: Router) {}
+
   loginForm = this.builder.group({
     email: ['', Validators.required],
     password: ['', Validators.required],
   });
-  onLogin()
-  {
-    const email = this.loginForm.value.email!
-    const password = this.loginForm.value.password!
-    this.httpService.login(email,password).subscribe((result) => {
 
-    })
+  onLogin() {
+    const email = this.loginForm.value.email!;
+    const password = this.loginForm.value.password!;
+    this.httpService.login(email, password).subscribe((result) => {
+      // Redirect on successful login
+      this.router.navigate(['/login-two-factor']);
+    });
+  }
+  onRegister() {
+    // Redirect to /register route
+    this.router.navigate(['/register']);
   }
 }

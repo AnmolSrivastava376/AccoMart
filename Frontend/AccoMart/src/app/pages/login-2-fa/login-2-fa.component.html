@@ -1,28 +1,25 @@
-<div class="flex justify-center">
-  <mat-card class="w-96 p-4">
-    <h4 class="text-xl">Login</h4>
-    <form [formGroup]="loginForm">
+<div class="flex justify-center mt-10">
+  <div class="w-96">
+    <div class="bg-gray-100 rounded-lg shadow-md p-6">
+      <h4 class="text-3xl font-bold text-center mb-6">Login With OTP</h4>
+      <form [formGroup]="loginForm" class="space-y-4">
 
-      <div>
-        <mat-form-field class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput type="text" formControlName="email" />
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field class="w-full">
-          <mat-label>OTP</mat-label>
-          <input matInput type="text" formControlName="otp" />
-        </mat-form-field>
-      </div>
-      <div class="w-full flex justify-center">
-        <button mat-raised-button color="primary" (click) = "onlogin2FA()">Login</button>
-      </div>
-      <div class="w-full flex justify-center">
-        <button mat-raised-button color="primary" (click) = "onlogin2FA2()">Login</button>
-      </div>
-    </form>
-  </mat-card>
+        <div>
+          <input type="text" formControlName="email" placeholder="Email"
+            class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300" />
+        </div>
+        <div>
+          <input type="text" formControlName="otp" placeholder="OTP"
+            class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300" />
+        </div>
+        <div class=" mt-4 ">
+          <a href="#" class="text-blue-500 hover:underline">Resend OTP</a>
+        </div>
+        <div class="flex justify-center items-center">
+          <button (click)="onlogin2FA()"
+            class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-
-
