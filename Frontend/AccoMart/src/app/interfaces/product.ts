@@ -1,7 +1,7 @@
 export interface Product {
     productId: number,
     productName: string,
-    productDesc:Text,
+    productDesc:string,
     productPrice:number,
     productImageUrl:string,
     categoryId:number

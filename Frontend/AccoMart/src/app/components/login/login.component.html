@@ -1,0 +1,66 @@
+<div class="parent w-[100vw] flex items-center justify-center h-[100vh] relative">
+    <div class=" child w-[70%] h-[80%] flex">
+        <div class="Mainimg w-full h-full flex-[1] ">
+        </div>
+        <div class="w-full h-full flex-col flex-[1] flex justify-center py-[40px] px-[40px] text-white gap-[20px]">
+            <div class="form w-[85%] h-[90%]">
+                <div class="social-login">
+                    <a href="#" class="google">
+                      <img src="../../../assets/Image/google.png" alt="" />
+                      <span>Sign up with Google</span>
+                    </a>
+                    <a href="#" class="facebook">
+                      <img src="../../../assets/Image/facebook.png" alt="" />
+                      <span>Sign up with Facebook</span>
+                    </a>
+                  </div>
+                  <div class="or">- OR -</div>
+                <h2><strong>SignIn</strong></h2>
+                <form class="form-details" action="#" method="post">
+                    <input type="email"  name="email" placeholder="Email" required><br>
+                    <input type="password" name="password" placeholder="Password" required><br>
+                    <input type="submit" value="Login">
+                </form>
+                <a href="/home/register">
+                <div class="createbtn flex gap-2 pt-7 cursor-pointer hover:scale-110 text-blue-500">
+                    <div class="">Create Account</div>
+                    <div class="">&rarr; </div>
+                </div>
+            </a>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+<div id="g_id_onload"
+data-client_id="545907028242-flj26lv303dntoqblu15dt949s8cenp6.apps.googleusercontent.com"
+data-context="signin"
+data-ux_mode="popup"
+data-callback="handleOauthResponse"
+data-itp_support="true">
+</div>
+
+<div class="g_id_signin"
+data-type="standard"
+data-shape="rectangular"
+data-theme="outline"
+data-text="signin_with"
+data-size="large"
+data-logo_alignment="left">
+</div>
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+    function decodeJWTToken(token){
+      return JSON.parse(atob(token.split(".")[1]))
+    }
+    function handleOauthResponse(response){
+      const responsePayload = decodeJWTToken(response.credential)
+      console.log(responsePayload)
+      sessionStorage.setItem('loggedinUser',JSON.stringify(responsePayload))
+      window.location('/your-desired-place') 
+      //Changed the above URL where you want user to be redirected
+    }
+
+</script>
+<!-- flex bg-white text-black justify-center text-center pt-4 -->
