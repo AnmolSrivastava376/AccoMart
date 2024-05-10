@@ -8,8 +8,6 @@ import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { InvoiceComponent } from './pages/invoice/invoice.component';
 import { Component, NgModule } from '@angular/core';
 import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
-import { RegisterPageComponent } from './pages/register-page/register-page.component';
-
 import { LoginComponent } from './pages/login/login.component';
 import { Login2FAComponent } from './pages/login-2-fa/login-2-fa.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
