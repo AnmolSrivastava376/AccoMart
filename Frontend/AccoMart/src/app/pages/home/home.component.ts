@@ -16,8 +16,16 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 })
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
-  products: Product[]=[];
-  activeCategory: Number=-1;
+  products: Product[]=[{
+    productId: 0,
+    productName: '',
+    productDesc: '',
+    productPrice: 0,
+    productImageUrl: '',
+    categoryId: 0
+  }];
+  activeCategory: number=-1;
+  activeCategoryIndex: number=0;
   constructor(private categoryService: CategoryService, private productService: productService) {}
   
   ngOnInit(): void {
@@ -33,7 +41,7 @@ export class HomeComponent implements OnInit {
           this.productService.fetchProductByCategoryID(this.activeCategory).then((response)=>{
             this.products = response.data;
           }).catch((error)=>{
-            console.error('Error fetching categories:', error);
+            console.error('Error fetching products:', error);
           })
         }
       })
@@ -45,5 +53,8 @@ export class HomeComponent implements OnInit {
     }).catch((error)=>{
       console.error('Error fetching categories:', error);
     })
+  }
+  onIndexSelected(index: number){
+    this.activeCategoryIndex = index;
   }
 }

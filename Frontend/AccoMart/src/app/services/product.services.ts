@@ -10,7 +10,6 @@ import { HttpClient } from '@angular/common/http';
 export class productService {
   http = inject(HttpClient);
   fetchProductByCategoryID(categoryId:Number) {
-    console.log(categoryId)
     return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`);
   }
   fetchProductById(productId: number) {

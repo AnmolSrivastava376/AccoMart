@@ -206,6 +206,7 @@ namespace Service.Services
                     {
                 
                     new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim("UserName", user.UserName),
                     new Claim ("UserId",user.Id),
                     new Claim("CartId",user.CartId.ToString()),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -214,6 +215,7 @@ namespace Service.Services
             var userRoles = await _userManager.GetRolesAsync(user);
             foreach (var role in userRoles)
             {
+                authClaims.Add(new Claim("Role", role));
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
             }
 
@@ -247,15 +249,15 @@ namespace Service.Services
         {
 
             var user = await _userManager.FindByEmailAsync(email);
-            var signIn = await _userManager.VerifyTwoFactorTokenAsync(user,"Email", code);
-            //var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
-            if (signIn)
-            {
-                if (user != null)
-                {
-                    return await GetJwtTokenAsync(user);
-                }
-            }
+           var signIn = await _userManager.VerifyTwoFactorTokenAsync(user,"Email", code);
+          //var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
+          if (signIn)
+          {
+              if (user != null)
+              {
+                  return await GetJwtTokenAsync(user);
+              }
+          }
             return new ApiResponse<LoginResponse>()
             {
 
