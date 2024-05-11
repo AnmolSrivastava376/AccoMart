@@ -32,9 +32,9 @@ namespace API.Controllers.Order
             _connectionString = _configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("PlaceOrderByCart")]
-        public async Task<IActionResult> PlaceOrderByCart(int userId, int cartId, int addressId, int deliveryId)
+        public async Task<string> PlaceOrderByCart(string userId, int cartId, int addressId, int deliveryId)
         {
             int newOrderId = 0;
             /*var user = HttpContext.User as ClaimsPrincipal;          
@@ -101,24 +101,24 @@ namespace API.Controllers.Order
 
                 await _cartService.GenerateInvoiceAsync(newOrderId);
                 //await _cartService.DeleteCartAsync(cartId); // commented out as per your original code
-                return await CheckoutByCart();
+                return await CheckoutByCart(userId, cartId);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
+                return  $"An error occurred while placing the order";
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<IActionResult> CheckoutByCart()
+        public async Task<string> CheckoutByCart(string userId, int cartId)
         {
-            var user = HttpContext.User as ClaimsPrincipal;
+            /*var user = HttpContext.User as ClaimsPrincipal;
             var userEmailClaim = user.FindFirst("UserEmail");
             string userEmail = userEmailClaim?.Value ?? "0";
 
             var cartIdClaim = user.FindFirst("CartId");
-            int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;
+            int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;*/
 
             var options = new SessionCreateOptions
             {
@@ -197,12 +197,12 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            await _cartService.DeleteCartAsync(cartId);
-            return new StatusCodeResult(303);
+           // await _cartService.DeleteCartAsync(cartId);
+            return session.Url;
         }
-        [Authorize]
+        //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<IActionResult> PlaceOrder(int userId, int addressId, int deliveryId, int productId)
+        public async Task<IActionResult> PlaceOrder(string userId, int addressId, int deliveryId, int productId)
         {
           
             try
@@ -251,7 +251,7 @@ namespace API.Controllers.Order
                     }
                 }
 
-                await _cartService.GenerateInvoiceAsync(orderId);
+                //await _cartService.GenerateInvoiceAsync(orderId);
                 //await _cartService.DeleteCartAsync(cartId);
                 return await Checkout(productId);
             }
@@ -263,7 +263,7 @@ namespace API.Controllers.Order
 
    
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("Checkout/Product")]
         public async Task<IActionResult> Checkout(int productId)
         {
