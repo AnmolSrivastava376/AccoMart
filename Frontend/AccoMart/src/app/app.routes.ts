@@ -18,9 +18,10 @@ import { AdminCategoriesComponent } from './pages/admin-categories/admin-categor
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
-    { path :'home/productdetail/:productId', component: ProductDetailComponent},
+    { path: 'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
+
     { path : 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
@@ -30,6 +31,7 @@ export const routes: Routes = [
     { path:  'admin',component:AdminComponent},
     { path:  'admin/products',component:AdminProductsComponent},
     { path:  'admin/categories',component:AdminCategoriesComponent}
+
 ];
 
 @NgModule({
