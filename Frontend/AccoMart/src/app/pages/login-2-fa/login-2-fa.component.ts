@@ -5,14 +5,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpService } from '../../services/http.service';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
-import { Int32 } from 'mongodb';
 import { Router } from '@angular/router';
-import { CategoryService } from '../../services/category.services';
-
-
 
 @Component({
   selector: 'app-login-2-fa',

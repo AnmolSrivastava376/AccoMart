@@ -15,15 +15,15 @@ import {RegisterComponent} from './pages/register/register.component'
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
-    { path :'home/productdetail/:productId', component: ProductDetailComponent},
+    { path: 'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
-    {path : 'login', component: LoginComponent},
+    { path: 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoiceComponent },
-    {path:  'login-two-factor',component:Login2FAComponent},
-    {path:  'register',component:RegisterComponent}
+    { path: 'login-two-factor',component:Login2FAComponent},
+    { path: 'register',component:RegisterComponent}
 ];
 
 @NgModule({
