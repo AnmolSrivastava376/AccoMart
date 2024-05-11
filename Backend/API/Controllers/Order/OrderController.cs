@@ -34,16 +34,15 @@ namespace API.Controllers.Order
 
         [Authorize]
         [HttpPost("PlaceOrderByCart")]
-        public async Task<IActionResult> PlaceOrderByCart(CartOrderDto order)
+        public async Task<IActionResult> PlaceOrderByCart(int userId, int cartId, int addressId, int deliveryId)
         {
-            var user = HttpContext.User as ClaimsPrincipal;
             int newOrderId = 0;
-
+            /*var user = HttpContext.User as ClaimsPrincipal;          
             var userIdClaim = user.FindFirst("UserId");
             string userId = userIdClaim?.Value ?? "0";
 
             var cartIdClaim = user.FindFirst("CartId");
-            int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;
+            int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;*/
 
             try
             {
@@ -77,7 +76,7 @@ namespace API.Controllers.Order
 
                     using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
                     {
-                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", deliveryId);
                         deliveryPrice = (decimal)await getDeliveryPriceCommand.ExecuteScalarAsync();
                     }
 
@@ -91,9 +90,9 @@ namespace API.Controllers.Order
                     using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
                     {
                         insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
-                        insertOrderCommand.Parameters.AddWithValue("@AddressId", order.AddressId);
+                        insertOrderCommand.Parameters.AddWithValue("@AddressId", addressId);
                         insertOrderCommand.Parameters.AddWithValue("@CartId", cartId);
-                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
+                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", deliveryId);
                         insertOrderCommand.Parameters.AddWithValue("@OrderAmount", totalAmount);
 
                         newOrderId = Convert.ToInt32(await insertOrderCommand.ExecuteScalarAsync());
@@ -198,26 +197,23 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
+            await _cartService.DeleteCartAsync(cartId);
             return new StatusCodeResult(303);
         }
         [Authorize]
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<IActionResult> PlaceOrder(ProductOrderDto order)
+        public async Task<IActionResult> PlaceOrder(int userId, int addressId, int deliveryId, int productId)
         {
-            if (order == null)
-            {
-                return BadRequest("Invalid order data");
-            }
-
+          
             try
             {
                 int orderId = 0;
-                var user = HttpContext.User as ClaimsPrincipal;
+                /*var user = HttpContext.User as ClaimsPrincipal;
                 var userIdClaim = user.FindFirst("UserId");
                 string userId = userIdClaim?.Value ?? "0";
 
                 var cartIdClaim = user.FindFirst("CartId");
-                int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;
+                int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;*/
 
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
@@ -227,7 +223,7 @@ namespace API.Controllers.Order
                     string deliveryPriceQuery = "SELECT Price FROM DeliveryService WHERE DServiceId = @DServiceId";
                     using (SqlCommand deliveryPriceCommand = new SqlCommand(deliveryPriceQuery, connection))
                     {
-                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", order.DeliveryServiceID);
+                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", deliveryId);
                         deliveryPrice = (decimal)await deliveryPriceCommand.ExecuteScalarAsync();
                     }
 
@@ -235,7 +231,7 @@ namespace API.Controllers.Order
 
                     using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
                     {
-                        fetchPriceCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
+                        fetchPriceCommand.Parameters.AddWithValue("@ProductId", productId);
                         decimal productPrice = (decimal)await fetchPriceCommand.ExecuteScalarAsync();
                         decimal orderAmount = productPrice + deliveryPrice;
 
@@ -245,10 +241,10 @@ namespace API.Controllers.Order
 
                         using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                         {
-                            command.Parameters.AddWithValue("@AddressId", order.AddressId);
+                            command.Parameters.AddWithValue("@AddressId", addressId);
                             command.Parameters.AddWithValue("@UserId", userId);
-                            command.Parameters.AddWithValue("@ProductId", order.ProductId);
-                            command.Parameters.AddWithValue("@DeliveryServiceID", order.DeliveryServiceID);
+                            command.Parameters.AddWithValue("@ProductId", productId);
+                            command.Parameters.AddWithValue("@DeliveryServiceID", deliveryId);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
                             orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
@@ -257,7 +253,7 @@ namespace API.Controllers.Order
 
                 await _cartService.GenerateInvoiceAsync(orderId);
                 //await _cartService.DeleteCartAsync(cartId);
-                return await Checkout(order.ProductId);
+                return await Checkout(productId);
             }
             catch (Exception ex)
             {
@@ -330,7 +326,7 @@ namespace API.Controllers.Order
             var service = new SessionService();
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
-            Response.Headers.Add("Location", session.Url);
+            Response.Headers.Add("Location", session.Url);       
             return new StatusCodeResult(303);
         }
 
