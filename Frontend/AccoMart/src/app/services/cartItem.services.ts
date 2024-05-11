@@ -13,7 +13,7 @@ export class cartItemService{
      }
 
      fetchCartItemByCartId(cartId:number){
-        return axios.get<cartItem>(`http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${cartId}`);
+        return axios.get<cartItem[]>(`http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${cartId}`);
      }
 
      updateCartItemByProductIdAndQuantity(productId: number, quantity: number){

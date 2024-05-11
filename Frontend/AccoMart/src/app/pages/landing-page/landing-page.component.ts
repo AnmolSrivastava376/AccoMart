@@ -19,12 +19,5 @@ export class LandingPageComponent {
 
   router = inject(Router);
 
-  onlogin2FA2()
-  {
-    this.httpService.onlogin2FA2().subscribe(() => {
-      //localStorage.setItem("new1","hello");
-      this.router.navigateByUrl('/');
-  })
-  }
-
+ 
 }

@@ -24,7 +24,7 @@
         </div>
       </div>
       <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
-        <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Address</div>
+        <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Service</div>
         <div class="w-full h-[1px] bg-black"></div>
         <div *ngIf="delivery && delivery.length > 0">
           <label *ngFor="let service of delivery" class="delivery-option">
@@ -37,6 +37,8 @@
         <div *ngIf="!delivery || delivery.length === 0">
           Loading delivery services...
         </div>
+      </div>
+
       </div>
       <div class="parent w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Cart Summary</div>
@@ -63,12 +65,13 @@
           <div class="">$ 11.46</div>
         </div>
         <div class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer" (click)="toggleVisibility()">
-          <div class="text-black font-semibold head-adj">Buy Now</div>
+          <div class="text-black font-semibold head-adj" (click)="placeOrder()">Buy Now</div>
+
         </div>
       </div>
     </div>
   </div>
-</div>
+
 
 <div class="absolute bg w-[100vw] h-[100vh] top-0 left-0 flex items-center justify-center z-[20] bg-[#00000050]"
 [ngClass]="{'hide': !isVisible}">

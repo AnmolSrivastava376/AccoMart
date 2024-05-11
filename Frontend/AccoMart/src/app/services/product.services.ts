@@ -15,10 +15,7 @@ export class productService {
   fetchProductById(productId: number) {
     return axios.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
   }
-  onlogin2FA2()
-  {
-    return this.http.post(`http://localhost:5239/AuthenticationController`, {});
-  }
+  
   }
 
 

@@ -8,3 +8,8 @@
         display: none;
     }
 }
+
+
+.navbar {
+    border-bottom: 1px solid #c2baba; /* Add a thin solid border at the bottom */
+  }

@@ -16,6 +16,8 @@ using Azure.Core;
 using System.Text;
 using Service.Services.Interface;
 using Service.Services.Implementation;
+using Microsoft.Data.SqlClient;
+using Stripe;
 
 
 namespace Service.Services
@@ -203,14 +205,19 @@ namespace Service.Services
         public async Task<ApiResponse<LoginResponse>> GetJwtTokenAsync(ApplicationUser user)
         {
             var authClaims = new List<Claim>
-                    {
-                
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("UserName", user.UserName),
-                    new Claim ("UserId",user.Id),
-                    new Claim("CartId",user.CartId.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim("UserName", user.UserName),
+        new Claim("UserId", user.Id),
+        new Claim("CartId", user.CartId.ToString()),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    };
+
+            var addressId = GetAddressIdByUserId(user.Id);
+            if (addressId != null)
+            {
+                authClaims.Add(new Claim("AddressId", addressId));
+            }
 
             var userRoles = await _userManager.GetRolesAsync(user);
             foreach (var role in userRoles)
@@ -224,8 +231,9 @@ namespace Service.Services
             _ = int.TryParse(_configuration["JWT:RefreshTokenValidity"], out int refreshTokenValidity);
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(refreshTokenValidity);
-           await _userManager.UpdateAsync(user);
-           return new ApiResponse<LoginResponse>
+            await _userManager.UpdateAsync(user);
+
+            return new ApiResponse<LoginResponse>
             {
                 Response = new LoginResponse()
                 {
@@ -244,6 +252,47 @@ namespace Service.Services
                 StatusCode = 200,
                 Message = $"Token created"
             };
+        }
+        private string GetAddressIdByUserId(string userId)
+        {
+            int addressId = 0;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("SELECT * FROM Addresses WHERE UserId = @UserId", connection))
+                    {
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                AddressModel address = new AddressModel
+                                {
+                                    Street = reader.GetString(reader.GetOrdinal("Street")),
+                                    City = reader.GetString(reader.GetOrdinal("City")),
+                                    PhoneNumber = reader.GetString(reader.GetOrdinal("PhoneNumber")),
+                                    State = reader.GetString(reader.GetOrdinal("States")),
+                                    ZipCode = reader.GetString(reader.GetOrdinal("ZipCode"))
+
+                                };
+                                addressId = (int)command.ExecuteScalar();
+
+                                return addressId.ToString();
+                            }
+                            else
+                            {
+                                return "5";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return "5";
+            }
         }
         public async Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string code, string email)
         {

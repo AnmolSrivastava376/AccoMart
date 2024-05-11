@@ -37,16 +37,16 @@ namespace API.Controllers.ShoppingCart
         }
 
         [HttpGet("Get/CartItems")]
-        public async Task<IEnumerable<CartItem>> GetCartItems()
+        public async Task<IEnumerable<CartItem>> GetCartItems(int cartId)
         {
-            var user = HttpContext.User as ClaimsPrincipal;
+            /*var user = HttpContext.User as ClaimsPrincipal;
             var cartIdClaim = user.FindFirst("CartId");
             int cartId = 0;
             if (cartIdClaim != null)
             {
 
                 cartId = int.Parse(cartIdClaim.Value);
-            }
+            }*/
 
             return await _cartService.GetCartItemsAsync(cartId);      
         }

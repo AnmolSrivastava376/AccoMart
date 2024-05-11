@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { jwtDecode } from "jwt-decode";
 
@@ -6,7 +7,7 @@ import { jwtDecode } from "jwt-decode";
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -16,19 +17,26 @@ export class NavbarComponent implements  OnInit{
 
   constructor() { }
 
+  decoded: { UserName: string };
 
-  ngOnInit(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.isLoggedIn = true;
-      const decoded = jwtDecode(token);
-      console.log(decoded);
-      console.log(2);
-      }
+ngOnInit(): void {
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    this.isLoggedIn = true;
+    this.decoded = jwtDecode(token);
+    console.log(this.decoded);
+    console.log(2);
+    // Move this line inside the conditional block
   }
+  const userName = this.decoded.UserName;
+  console.log(userName);
+}
+
+
 
   logout(): void {
-    
+
     localStorage.removeItem('token');
     this.isLoggedIn = false;
     this.username = '';

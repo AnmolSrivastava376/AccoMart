@@ -1,17 +1,17 @@
 <div class="w-full h-[200px] flex boxh">
-    <div class="flex bg-fit bg-white flex-[1] h-full bg-no-repeat w-[200px] min-h-[200px] min-w-[200px] img-adj bg-center rounded-[10px] overflow-hidden">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTclhYXt_dzMO4GP2Hz95Ohmu0pQ6qm33fVHstLtvI87A&s">
-    </div>
-    <div class="w-full h-full flex-[3] flex flex-col items-end box-left justify-between pl-[20px]">
-        <div class="flex flex-col items-start">
-            <div class="font-bold text-[32px] text-left heading">Samsung Galaxy S420</div>
-            <div class="text-[14px] text-start hide">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore similique quidem odio sed nam.</div>
-            <div class="font-semibold pt-[8px] nopad subheading">$ 1522.12</div>
-        </div>
-        <div class="w-[120px] h-[40px] border border-black flex rounded-[10px] box">
-            <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer">+</div>
-            <div class="w-full h-full flex items-center justify-center flex-[32] border border-x-black font-bold">1</div>
-            <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer">-</div>
-        </div>
-    </div>
+  <div class="flex bg-fit bg-white flex-[1] h-full bg-no-repeat w-[200px] min-h-[200px] min-w-[200px] img-adj bg-center rounded-[10px] overflow-hidden">
+      <img [src]="product.productImageUrl" alt="Product Image">
+  </div>
+  <div class="w-full h-full flex-[3] flex flex-col items-end box-left justify-between pl-[20px]">
+      <div class="flex flex-col items-start">
+          <div class="font-bold text-[32px] text-left heading">{{ product.productName }}</div>
+          <div class="text-[14px] text-start hide">{{ product.productDesc }}</div>
+          <div class="font-semibold pt-[8px] nopad subheading">$ {{ product.productPrice }}</div>
+      </div>
+      <div class="w-[120px] h-[40px] border border-black flex rounded-[10px] box">
+          <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer">+</div>
+          <div class="w-full h-full flex items-center justify-center flex-[32] border border-x-black font-bold">1</div>
+          <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer">-</div>
+      </div>
+  </div>
 </div>
