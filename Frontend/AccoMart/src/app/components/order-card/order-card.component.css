@@ -1,0 +1,39 @@
+.scroll-element::-webkit-scrollbar{
+    display: none;
+}
+@media (max-width: 550px){
+    .col{
+        flex-direction: column;
+    }
+    .s-start{
+        align-self: flex-start;
+    }
+    .text-adj{
+        font-size: 14px;
+    }
+}
+@media (max-width: 450px){
+    .col{
+        flex-direction: row;
+    }
+    .s-start{
+        align-self: center;
+    }
+    .col450{
+        flex-direction: column;
+    }
+    .w-adj{
+        width: 250px;
+    }
+    .sm{
+        font-size: 12px;
+    }
+}
+@media (max-width:400px){
+    .w-adj{
+        width: 200px;
+    }
+    .sm{
+        font-size: 10px;
+    }
+}

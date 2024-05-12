@@ -27,14 +27,10 @@ ngOnInit(): void {
     this.decoded = jwtDecode(token);
     console.log(this.decoded);
     console.log(2);
-    // Move this line inside the conditional block
   }
-  const userName = this.decoded.UserName;
-  console.log(userName);
+  const userName = this.decoded?.UserName?this.decoded.UserName:'Anthony Gonsalves';
+  this.username=userName
 }
-
-
-
   logout(): void {
 
     localStorage.removeItem('token');

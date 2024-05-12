@@ -1,14 +1,16 @@
 import { Time } from "@angular/common";
+import { Item } from "./item";
 
-export interface order{
+export interface Order{
     orderId: number,
-    orderDate:Date,
+    orderDate: Date,
     userId: number,
-    addressId: number,
+    address: string,
     orderAmount: number,
     orderTime: Time,
-    productId: number, 
-    cartId: number,
+    itemArray: Item[],
     deliveryServiceId: number,
-    isCancelled : BinaryType //I am not sure of this datatype as in sql  datatype is bit
+    isDelivered: boolean,
+    expectedDate: Date,
+    isCancelled : boolean,
 }

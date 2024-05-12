@@ -1,1 +1,11 @@
-<p>your-orders works!</p>
+<div class="w-[100vw] min-h-[100vh] parent px-[40px] py-[40px] flex justify-center pad0">
+    <div class="w-full h-fit bg-gray-300 pb-[20px] rounded-t-[10px] flex flex-col max-w-[900px] r0">
+        <app-navbar></app-navbar>
+        <div class="w-full h-fit px-[20px] py-[10px]">
+            <div class="font-bold text-[24px] pb-[10px]">Current Orders</div>
+            <app-order-card [orders]="currentOrders"></app-order-card>
+            <div class="font-bold text-[24px] py-[10px]">Order History</div>
+            <app-order-card [orders]="historyOrders"></app-order-card>
+        </div>
+    </div>
+</div>

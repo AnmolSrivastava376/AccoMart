@@ -1,0 +1,11 @@
+.parent{
+    background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+}
+@media (max-width: 650px){
+    .pad0{
+        padding: 0px;
+    }
+    .r0{
+        border-radius: 0;
+    }
+}
