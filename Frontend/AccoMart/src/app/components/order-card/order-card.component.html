@@ -1,0 +1,31 @@
+<div class="w-full h-fit overflow-hidden flex flex-col gap-[20px]">
+    <div class="" *ngFor="let order of orders">
+        <div class="h-fit w-full border flex flex-col bg-white rounded-[10px] px-[20px] pt-[10px] pb-[20px] gap-[10px]">
+            <div class="flex justify-between font-bold col450">
+                <div class="flex items-center gap-[10px] col">
+                    <div class="">ID : #{{order.orderId}}</div>
+                    <div *ngIf="!order.isDelivered && !order.isCancelled" class="bg-lime-400 s-start rounded-[20px] h-fit px-[6px] text-[12px] mb-[2px]">Active</div>
+                    <div *ngIf="order.isCancelled" class="bg-red-400 s-start rounded-[20px] h-fit px-[8px] text-[12px] mb-[2px]">Cancelled</div>
+                    <div *ngIf="order.isDelivered && !order.isCancelled" class="bg-lime-600 s-start rounded-[20px] h-fit px-[8px] text-[12px] mb-[2px]">Delivered</div>
+                </div>
+                <div class="">Expected Arrival : <span class="text-lime-500">{{format(order.expectedDate)}}</span></div>
+            </div>
+            <div class="w-full relative h-[100px] size scroll-element flex gap-[10px] overflow-x-scroll">
+                <div class="" *ngFor="let item of order.itemArray">
+                    <div class="w-[300px] w-adj border h-full flex rounded-[10px] overflow-hidden">
+                        <div class="h-full aspect-square bg-gray-400 bg-center bg-cover"
+                            style="background-image: url('{{item?.product?.productImageUrl}}');"></div>
+                        <div class="h-full w-full text-right px-[10px] py-[5px] flex flex-col justify-between">
+                            <div class="flex flex-col">
+                                <div class="text-[16px] font-bold sm">{{item?.product?.productName}}</div>
+                                <div class="text-[12px] font-semibold sm text-gray-400">Total Price : ${{item.product.productPrice*item.quantity}}</div>
+                            </div>
+                            <div class="text-[14px] font-semibold sm">Quantity : {{item?.quantity}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="font-bold text-adj">Delivering To : <span class="font-medium text-[14px] text-gray-500">{{order.address}}</span></div>
+        </div>
+    </div>
+</div>
