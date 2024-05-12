@@ -1,20 +1,3 @@
-@keyframes slide-down{
-    from {top: -100vh; opacity: 0;}
-    to {top: 0px; opacity: 100%;}
-}
-@keyframes slide-up{
-    from {top: 100vh; opacity: 0;}
-    to {top: 0px; opacity: 100%;}
-}
-.slide-down{
-    overflow: hidden;
-    animation: slide-down 500ms;
-}
-.slide-up{
-    overflow: hidden;
-    animation: slide-up 500ms;
-}
-
 .parent{
     background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
@@ -158,9 +141,8 @@ input[type="submit"]:hover {
         text-decoration: none;
         cursor: pointer;
     }
-    h2{
-        font-size: 1rem;
-        margin-bottom: 0px;
+    .h-adj{
+        height: 90%;
     }
     .form{
         grid-row: 2/3;
@@ -176,7 +158,6 @@ input[type="submit"]:hover {
         margin-bottom: 2px ;
     }
 }
-
 @media screen and (max-width: 900px){
     .parent{
         display: block;

@@ -1,12 +1,11 @@
-<div class="parent w-[100vw] flex items-center justify-center h-[100vh] relative">
-    <div class="child relative w-[95%] min-w-[90vw] h-[80%] max-h-[800px] flex items-center justify-center rounded-[20px] overflow-hidden">
-        <div class="w-full h-full flex-[1] min-w-[400px] ml-[30px] relative">
-            <div class="Mainimg w-full h-full absolute slide-up"></div>
+<div class="parent w-[100vw] flex items-center justify-center h-[100vh]">
+    <div class="child w-[95%] h-adj min-w-[90vw] h-[80%] flex items-center justify-center rounded-[20px]">
+        <div class="Mainimg w-full h-full flex-[1] min-w-[400px] ml-[30px]">
         </div>
-        <div class="w-full relative h-full flex-col flex-[1] min-w-[300px] flex justify-center py-[40px] px-[40px] gap-[20px] p-adj">
-            <div class="flex justify-center relative w-full h-full">
-                <div class="w-full px-[20px] absolute slide-down">
-                    <div class="bg-gray-50 relative rounded-lg shadow-md px-[20px] pt-[20px] pb-[30px]">
+        <div class="w-full h-full flex-col flex-[1] min-w-[300px] flex justify-center py-[40px] px-[40px] gap-[20px] p-adj">
+            <div class="flex justify-center w-full h-full">
+                <div class="w-full px-[20px] slide-down">
+                    <div class="bg-gray-50 rounded-lg shadow-md px-[20px] pt-[20px] pb-[30px]">
                         <div class="text-[32px] text-center font-bold" *ngIf="!isLogin">Register</div>
                         <div class="text-[32px] text-center font-bold" *ngIf="isLogin">Login</div>
                         <!-- Register box -->
