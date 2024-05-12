@@ -1,3 +1,20 @@
+@keyframes slide-down{
+    from {top: -100vh; opacity: 0;}
+    to {top: 0px; opacity: 100%;}
+}
+@keyframes slide-up{
+    from {top: 100vh; opacity: 0;}
+    to {top: 0px; opacity: 100%;}
+}
+.slide-down{
+    overflow: hidden;
+    animation: slide-down 500ms;
+}
+.slide-up{
+    overflow: hidden;
+    animation: slide-up 500ms;
+}
+
 .parent{
     background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
@@ -8,7 +25,6 @@
 }
 
 .Mainimg{
-    /* background-image: linear-gradient(to bottom right,#112f47,#035094, #035094); */
     background-image: url('../../../assets/Image/Landing-image.webp');
     background-position: center;
     background-repeat: no-repeat;
@@ -180,6 +196,7 @@ input[type="submit"]:hover {
         font-size: 1rem;
     }
     .child{
+        border-radius: 0;
         width: 100vw;
         height: 100vh;
         overflow: visible;   
@@ -194,5 +211,11 @@ input[type="submit"]:hover {
     }
     .createbtn{
         margin-bottom: 4px ;
+    }
+}
+@media (max-width: 500px){
+    .p-adj{
+        padding-left: 0;
+        padding-right: 0;
     }
 }

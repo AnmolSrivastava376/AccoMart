@@ -5,10 +5,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpService } from '../../services/http.service';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // Import Router
+import { Router } from '@angular/router';
 import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 
 

@@ -52,7 +52,6 @@ export class RegisterComponent {
   }
 
   onLogin() {
-    // Redirect to /register route
     this.router.navigate(['/login']);
   }
 }
