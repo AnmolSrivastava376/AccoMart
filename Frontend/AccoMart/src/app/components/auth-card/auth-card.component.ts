@@ -45,18 +45,18 @@ export class AuthCardComponent {
     const username = this.registerForm.value.username!;
     const email = this.registerForm.value.email!;
     const password = this.registerForm.value.password!;
-    
+    console.log({username,email,password})
     this.httpService.register(username,email, password).subscribe((result) => {
-    
-      this.router.navigate(['/login']);
+      console.log(result)
+      this.isLogin=true;
     }); 
   }
   onLogin() {
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
     this.httpService.login(email, password).subscribe((result) => {
-      // Redirect on successful login
-      this.router.navigate(['/login-two-factor']);
+      console.log(result);
+      this.router.navigate(['/home']);
     });
   }
 

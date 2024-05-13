@@ -21,7 +21,7 @@ export class NavbarComponent implements  OnInit{
 
 ngOnInit(): void {
   const token = localStorage.getItem('token');
-
+  console.log(token)
   if (token) {
     this.isLoggedIn = true;
     this.decoded = jwtDecode(token);
