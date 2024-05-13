@@ -20,6 +20,24 @@ export class HttpService {
   }
 
   login(email : string, password:string) {
+    return this.http.post<{
+      response: {
+        accessToken: {
+          token: string;
+          expiryTokenDate: string;
+        };
+        refreshToken: {
+          token: string;
+          expiryTokenDate: string;
+        };
+      };
+    }>('http://localhost:5239/AuthenticationController/Login',{
+      "email": email,
+      "password": password
+    });
+  }
+
+  loginForogotPwd(email : string, password:string) {
     return this.http.post<{OTP:Number}>('http://localhost:5239/AuthenticationController/Login',{
       "email": email,
       "password": password
@@ -42,7 +60,7 @@ export class HttpService {
       OTP: OTP,
       email: email
     });
-    
+
 
 
 

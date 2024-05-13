@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { jwtDecode } from "jwt-decode";
 
@@ -7,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,HttpClientModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
