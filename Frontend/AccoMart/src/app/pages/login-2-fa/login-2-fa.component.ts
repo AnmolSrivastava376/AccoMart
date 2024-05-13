@@ -47,13 +47,7 @@ export class Login2FAComponent {
 
   }
 
-  onlogin2FA2()
-  {
-    this.httpService.login2FA2().subscribe(() => {
-      //localStorage.setItem("new1","hello");
-      this.router.navigateByUrl('/');
-  })
-  }
+
 
 
 }

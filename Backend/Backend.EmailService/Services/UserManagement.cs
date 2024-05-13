@@ -89,8 +89,6 @@ namespace Service.Services
         }
 
 
-
-
         public async Task<ApiResponse<CreateUserResponse>> CreateUserWithTokenAsync(SignUp register)
         {
             var userExist = await _userManager.FindByEmailAsync(register.Email);
@@ -294,7 +292,32 @@ namespace Service.Services
                 return "5";
             }
         }
-        public async Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string code, string email)
+
+        public async Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string password, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null && await _userManager.CheckPasswordAsync(user, password))
+            {
+               // var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
+
+                if (signInResult.Succeeded)
+                {
+                    return await GetJwtTokenAsync(user);
+                }
+            }
+
+            return new ApiResponse<LoginResponse>()
+            {
+                Response = new LoginResponse(),
+                IsSuccess = false,
+                StatusCode = 400,
+                Message = "Invalid email or password"
+            };
+        }
+
+        public async Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsyncForgotPassword(string code, string email)
         {
 
             var user = await _userManager.FindByEmailAsync(email);
