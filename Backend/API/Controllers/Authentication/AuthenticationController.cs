@@ -92,6 +92,27 @@ namespace API.Controllers.Authentication
 
         public async Task<IActionResult> Login(Login login)
         {
+            string password = login.Password;
+            string email = login.Email;
+            var jwt = await _userManagement.LoginUserWithJWTokenAsync(password, email);
+            // var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
+            if (jwt.IsSuccess)
+            {
+                return Ok(jwt);
+
+            }
+
+            return StatusCode(StatusCodes.Status404NotFound, new Response { Status = $"Invalid OTP" });
+
+
+
+        }
+
+        [HttpPost]
+        [Route("LoginForgotPassword")]
+
+        public async Task<IActionResult> LoginForgotPassword(Login login)
+        {
            
            
             //checking user
