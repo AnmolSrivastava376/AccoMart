@@ -15,13 +15,15 @@ import {RegisterComponent} from './pages/register/register.component'
 import { AdminComponent } from './pages/admin/admin.component';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
+import { ForgetpasswordPageComponent} from './pages/forgetpassword-page/forgetpassword-page.component';
+
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
     { path: 'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
-
+    {path: 'home/forgotpassword', component: ForgetpasswordPageComponent},
     { path : 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
@@ -31,7 +33,6 @@ export const routes: Routes = [
     { path:  'admin',component:AdminComponent},
     { path:  'admin/products',component:AdminProductsComponent},
     { path:  'admin/categories',component:AdminCategoriesComponent}
-
 ];
 
 @NgModule({
