@@ -49,12 +49,13 @@ export class AuthCardComponent {
     this.httpService.register(username,email, password).subscribe((result) => {
       console.log(result)
       this.isLogin=true;
-    }); 
+    });
   }
   onLogin() {
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
     this.httpService.login(email, password).subscribe((result) => {
+      localStorage.setItem("token", result.response.accessToken.token);
       console.log(result);
       this.router.navigate(['/home']);
     });

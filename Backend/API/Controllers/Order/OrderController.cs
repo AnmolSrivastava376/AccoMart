@@ -99,7 +99,7 @@ namespace API.Controllers.Order
                     }
                 }
 
-                await _cartService.GenerateInvoiceAsync(newOrderId);
+               
                 //await _cartService.DeleteCartAsync(cartId); // commented out as per your original code
                 return await CheckoutByCart(userId, cartId);
             }
