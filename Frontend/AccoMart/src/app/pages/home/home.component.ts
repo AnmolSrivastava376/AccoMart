@@ -6,6 +6,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,7 @@ export class HomeComponent implements OnInit {
   }];
   activeCategory: number=-1;
   activeCategoryIndex: number=0;
-  constructor(private categoryService: CategoryService, private productService: productService) {}
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router) {}
   
   ngOnInit(): void {
     this.categoryService.fetchCategories()
@@ -56,5 +57,8 @@ export class HomeComponent implements OnInit {
   }
   onIndexSelected(index: number){
     this.activeCategoryIndex = index;
+  }
+  gotoCart(){
+    this.router.navigate(['/home/cart']);
   }
 }

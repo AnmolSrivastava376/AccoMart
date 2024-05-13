@@ -9,7 +9,9 @@
         <div *ngFor="let item of cart">
           <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
         </div>
-
+        <div class="text-gray-500">
+          {{cart.length===0?"No items in cart":""}}
+        </div>
       </div>
     </div>
     <div class="w-full h-full flex-[25] sticky top-[35px] flex flex-col gap-[20px] mb-[30px] minw">
@@ -23,7 +25,7 @@
           <div class="text-white font-semibold head-adj">Change Address</div>
         </div>
       </div>
-      <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
+      <!-- <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Address</div>
         <div class="w-full h-[1px] bg-black"></div>
         <div *ngIf="delivery && delivery.length > 0">
@@ -37,7 +39,7 @@
         <div *ngIf="!delivery || delivery.length === 0">
           Loading delivery services...
         </div>
-      </div>
+      </div> -->
       <div class="parent w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Cart Summary</div>
         <div class="w-full h-[1px] bg-white mb-[10px]"></div>
@@ -71,7 +73,7 @@
 </div>
 
 <div class="absolute bg w-[100vw] h-[100vh] top-0 left-0 flex items-center justify-center z-[20] bg-[#00000050]"
-[ngClass]="{'hide': !isVisible}">
+*ngIf="isVisible">
   <div class="floating-window relative w-[90%] py-[5px] h-fit min-h-[200px] z-10 bg-white rounded-[10px] max-w-[800px] flex flex-col">
     <div class="w-full mb-[10px] h-[30px] flex items-center justify-between px-[10px] cursor-pointer" (click)="toggleVisibility()">
       <div class="font-bold text-[20px] relative und head-adj">Confirm Order</div>
