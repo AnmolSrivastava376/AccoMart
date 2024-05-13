@@ -8,8 +8,8 @@
                 <app-category-navbar [categories]="categories" (categorySelected)="onCategorySelected($event)" (categoryIndex)="onIndexSelected($event)">
                 </app-category-navbar>
             </div>
-            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden">
-                <app-product-card [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-product-card>
+            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="products && categories[activeCategoryIndex]">
+                <app-product-card [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName" [cart]="cart"></app-product-card>
             </div>
         </div>
     </div>

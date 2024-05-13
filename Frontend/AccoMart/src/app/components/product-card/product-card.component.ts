@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { GridDisplayCardComponent } from '../grid-display-card/grid-display-card.component';
 import { ScrollDisplayCardComponent } from '../scroll-display-card/scroll-display-card.component';
 import { ProductScrollDisplayCardComponent } from '../product-scroll-display-card/product-scroll-display-card.component';
+import { cartItem } from '../../interfaces/cartItem';
 
 @Component({
   selector: 'app-product-card',
@@ -16,6 +17,7 @@ import { ProductScrollDisplayCardComponent } from '../product-scroll-display-car
 export class ProductCardComponent{
   @Input() products?: Product[]
   @Input() categoryName?: string
+  @Input() cart?: cartItem[]
   
   constructor(private router: Router) { }
   handleClick(productId: number) {

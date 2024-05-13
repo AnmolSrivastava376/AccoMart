@@ -1,6 +1,10 @@
 ::-webkit-scrollbar{
     display: none;
 }
+.parent{
+    background-color: #e6b207;
+    cursor: pointer;
+}
 @media (max-width: 650px){
     .margin-switch{
         margin: 0px;
