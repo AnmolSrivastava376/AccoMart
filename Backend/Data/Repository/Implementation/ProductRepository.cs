@@ -94,9 +94,41 @@ namespace Data.Repository.Implementation
             return categories;
         }
 
+        public async Task<List<Product>> GetAllProductsAsync()
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                string sqlQuery = $"SELECT * FROM Product";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+
+                await connection.OpenAsync(); // Open connection asynchronously
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync()) // Read asynchronously
+                    {
+                        Product product = new Product
+                        {
+                            ProductId = Convert.ToInt32(reader["ProductId"]),
+                            ProductName = Convert.ToString(reader["ProductName"]),
+                            ProductDesc = Convert.ToString(reader["ProductDesc"]),
+                            ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]),
+                            ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
+                            CategoryId = Convert.ToInt32(reader["CategoryId"])
+                        };
+                        products.Add(product);
+                    }
+                    reader.Close();
+                }
+            }
+            return products;
+        }
 
 
-        public async Task<List<Product>> GetAllProducts(int id, string orderBy )
+
+
+        public async Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy )
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();

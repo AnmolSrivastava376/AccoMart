@@ -6,7 +6,8 @@ namespace Service.Services.Interface
     public interface IProductService
     {
         Task<Product> GetProductByIdAsync(int id);
-        Task<List<Product>> GetAllProductsAsync(int id, string orderBy);
+        Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy);
+        Task<List<Product>> GetAllProductsAsync();
         Task<List<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> CreateCategoryAsync(string categoryName);
