@@ -7,13 +7,15 @@ import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { cartItem } from '../../interfaces/cartItem';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CategoryNavbarComponent, ProductCardComponent, NavbarComponent],
+  imports: [CategoryNavbarComponent, ProductCardComponent, NavbarComponent, CommonModule],
 })
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
@@ -25,6 +27,7 @@ export class HomeComponent implements OnInit {
     productImageUrl: '',
     categoryId: 0
   }];
+  cart: cartItem[]=[]
   activeCategory: number=-1;
   activeCategoryIndex: number=0;
   constructor(private categoryService: CategoryService, private productService: productService,private router: Router) {}
