@@ -5,7 +5,6 @@ import { CartComponent } from './pages/cart/cart.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
-import { InvoiceComponent } from './pages/invoice/invoice.component';
 import { Component, NgModule } from '@angular/core';
 import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -15,7 +14,8 @@ import {RegisterComponent} from './pages/register/register.component'
 import { AdminComponent } from './pages/admin/admin.component';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
-import { ForgetpasswordPageComponent} from './pages/forgetpassword-page/forgetpassword-page.component';
+import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
+import { ForgetpasswordPageComponent } from './pages/forgetpassword-page/forgetpassword-page.component';
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
@@ -23,16 +23,17 @@ export const routes: Routes = [
     { path: 'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
-    {path: 'home/forgotpassword', component: ForgetpasswordPageComponent},
+    {path :'home/forgotpassword', component:ForgetpasswordPageComponent},
     { path : 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
-    { path: 'home/cart/orders/invoice', component: InvoiceComponent },
+    { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
     { path:  'login-two-factor',component:Login2FAComponent},
     { path:  'register',component:RegisterComponent},
     { path:  'admin',component:AdminComponent},
     { path:  'admin/products',component:AdminProductsComponent},
     { path:  'admin/categories',component:AdminCategoriesComponent}
+
 ];
 
 @NgModule({
