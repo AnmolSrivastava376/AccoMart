@@ -28,7 +28,7 @@ namespace API.Controllers.Admins
         public async Task<List<Product>> GetAllProducts(int id,string orderBy)
         {
            
-            return await _productService.GetAllProductsAsync(id, orderBy); 
+            return await _productService.GetAllProductsByCategoryAsync(id, orderBy); 
         }
 
         [HttpGet("Products/SearchBy={prefix}")]
