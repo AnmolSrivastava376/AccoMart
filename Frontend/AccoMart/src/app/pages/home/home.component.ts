@@ -9,6 +9,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { cartItem } from '../../interfaces/cartItem';
+import { CartService } from '../../services/cart.services';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,10 @@ export class HomeComponent implements OnInit {
   cart: cartItem[]=[]
   activeCategory: number=-1;
   activeCategoryIndex: number=0;
-  constructor(private categoryService: CategoryService, private productService: productService,private router: Router) {}
+  cartItemLength = 0
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService) {
+    this.cart = cartService.fetchCart();
+  }
   
   ngOnInit(): void {
     this.categoryService.fetchCategories()

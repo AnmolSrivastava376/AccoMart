@@ -17,7 +17,6 @@ import { cartItem } from '../../interfaces/cartItem';
 export class ProductCardComponent{
   @Input() products?: Product[]
   @Input() categoryName?: string
-  @Input() cart?: cartItem[]
   
   constructor(private router: Router) { }
   handleClick(productId: number) {
