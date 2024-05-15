@@ -4,25 +4,21 @@
 
 <div class="flex">
   <!-- Sidebar -->
-  <div [class]="products.length > 1 ? 'bg-gray-800 text-white w-64 h-auto' : 'bg-gray-800 text-white w-64 h-screen' + ' position-fixed top-0 z-10 overflow-y-auto'">    
-    <div class="p-4">
-      <div class="sticky top-0  text-white py-2 px-4 mb-2">
-          <button (click)="showProducts()" class="block w-full rounded-md text-left text-sm mb-2   text-green-300 focus:outline-none focus:bg-gray-700">
-              Manage Products
-          </button>
-          <button (click)="showCategories()" class="block w-full rounded-md text-left text-sm mb-2  focus:outline-none focus:bg-gray-700">
-              Manage Categories
-          </button>
-      </div>
-      <div class="h-16"></div>
-    </div>
-  </div>
+
+    <app-sidebar></app-sidebar>
+
+  
 
   <!-- Main content -->
   <div class="flex-grow bg-gray-200 p-8 overflow-scroll">
       <h2 class="text-2xl font-bold mb-4">Products</h2>
+      <div class="mb-8 text-center">
+        <button (click)="openAddProductPage()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"> Add New Product</button>
+    </div>
+
 
       <div *ngIf="products.length<=1">No Products to show</div>
+
 
       <!-- Tiles of products -->
       <div *ngIf="products.length>1">
