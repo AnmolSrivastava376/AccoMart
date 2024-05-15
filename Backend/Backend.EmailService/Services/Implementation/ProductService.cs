@@ -20,10 +20,7 @@ namespace Service.Services.Implementation
 
         async Task<Product> IProductService.CreateProductAsync(ProductDto productDto)
         {
-            string categoryName = productDto.CategoryName;
-            var category = await _productRepository.GetCategoryByName(categoryName);
-            int CategoryId = category.CategoryId;
-            return await _productRepository.CreateProduct(productDto, CategoryId);
+            return await _productRepository.CreateProduct(productDto);
         }
 
 
