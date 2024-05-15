@@ -17,6 +17,7 @@ import { AdminCategoriesComponent } from './pages/admin-categories/admin-categor
 import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
 import { ForgetpasswordPageComponent } from './pages/forgetpassword-page/forgetpassword-page.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
+import { AddProductComponent } from './pages/add-product/add-product.component';
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
@@ -34,7 +35,9 @@ export const routes: Routes = [
     { path:  'admin',component:AdminComponent},
     { path:  'admin/products',component:AdminProductsComponent},
     { path:  'admin/categories',component:AdminCategoriesComponent},
-    { path:  'admin/product/edit/:productId',component:EditProductComponent}
+    { path:  'admin/product/edit/:productId',component:EditProductComponent},
+    { path:  'admin/product/add',component:AddProductComponent}
+
 
 ];
 

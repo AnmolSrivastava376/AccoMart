@@ -5,10 +5,11 @@ import { HttpClient } from '@angular/common/http';
 import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [NavbarComponent,CommonModule],
+  imports: [NavbarComponent,CommonModule,SidebarComponent],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css'
 })
@@ -53,7 +54,10 @@ export class AdminProductsComponent implements OnInit {
     this.router.navigate(['/admin/categories']);
   }
 
-
+  openAddProductPage()
+  {
+    this.router.navigate([`/admin/product/add`]);
+  }
   openEditPage(product: Product): void {
     this.selectedProduct = product;
     this.router.navigate([`/admin/product/edit/${product.productId}`]);
@@ -68,13 +72,15 @@ export class AdminProductsComponent implements OnInit {
     });
   }
  
-  openDeletePopup(product: Product) {
+  openDeletePopup(product: Product) 
+  {
     // Ask the user for confirmation before deleting the product
     
     const confirmDelete = window.confirm(`Are you sure you want to delete ${product.productName}?`);
 
     // If the user confirms, proceed with deleting the product
-    if (confirmDelete) {
+    if (confirmDelete) 
+    {
       this.deleteProduct(product.productId);
     }
   }

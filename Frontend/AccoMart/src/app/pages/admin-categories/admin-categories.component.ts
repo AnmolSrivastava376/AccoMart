@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-admin-categories',
   standalone: true,
-  imports: [NavbarComponent],
+  imports: [NavbarComponent, SidebarComponent],
   templateUrl: './admin-categories.component.html',
   styleUrl: './admin-categories.component.css'
 })
