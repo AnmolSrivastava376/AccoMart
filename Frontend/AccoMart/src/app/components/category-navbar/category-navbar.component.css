@@ -1,6 +1,6 @@
 @keyframes animate-in{
     from {height: 0;}
-    to {height: 1000px;}
+    to {height: 600px;}
 }
 .animate{
     animation: animate-in 500ms;
