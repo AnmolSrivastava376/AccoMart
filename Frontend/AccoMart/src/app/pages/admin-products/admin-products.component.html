@@ -1,4 +1,3 @@
-<!-- admin-dashboard.component.html -->
 <div class="navbar position-sticky top-0 z-10">
   <app-navbar></app-navbar>
 </div>
@@ -6,7 +5,6 @@
 <div class="flex">
   <!-- Sidebar -->
   <div [class]="products.length > 1 ? 'bg-gray-800 text-white w-64 h-auto' : 'bg-gray-800 text-white w-64 h-screen' + ' position-fixed top-0 z-10 overflow-y-auto'">    
-    <!-- Sidebar items -->
     <div class="p-4">
       <div class="sticky top-0  text-white py-2 px-4 mb-2">
           <button (click)="showProducts()" class="block w-full rounded-md text-left text-sm mb-2   text-green-300 focus:outline-none focus:bg-gray-700">
@@ -16,8 +14,6 @@
               Manage Categories
           </button>
       </div>
-      
-      <!-- Spacer to maintain space for fixed buttons -->
       <div class="h-16"></div>
     </div>
   </div>

@@ -8,9 +8,9 @@ import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { cartItem } from '../../interfaces/cartItem';
-import { InvoiceService } from '../../services/invoiceService';
-import { MatCardLgImage } from '@angular/material/card';
+import { CartService } from '../../services/cart.services';
+import { Subscription } from 'rxjs';
+import { CartStore } from '../../store/cart-store';
 
 @Component({
   selector: 'app-home',
@@ -29,12 +29,20 @@ export class HomeComponent implements OnInit {
     productImageUrl: '',
     categoryId: 0
   }];
-  cart: cartItem[]=[]
   activeCategory: number=-1;
   activeCategoryIndex: number=0;
-  constructor(private categoryService: CategoryService, private productService: productService,private router: Router,private invoiceService: InvoiceService) {}
+  cartItemLength = 0
+  private cartSubscription: Subscription;
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService, private cartStore: CartStore) {
+  }
 
   ngOnInit(): void {
+    this.cartItemLength = this.cartService.fetchQuantityInCart();
+    this.cartSubscription = this.cartService.getCartItems$().subscribe(
+      items => {
+        this.cartItemLength = items.length;
+      }
+    );
     this.categoryService.fetchCategories()
       .then((response) => {
         this.categories = response.data;
@@ -51,7 +59,11 @@ export class HomeComponent implements OnInit {
           })
         }
       })
-
+  }
+  ngOnDestroy(): void {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
   }
   onCategorySelected(categoryId: number){
     this.activeCategory = categoryId;
@@ -63,11 +75,6 @@ export class HomeComponent implements OnInit {
   }
   onIndexSelected(index: number){
     this.activeCategoryIndex = index;
-  }
-
-  getInvoice(){
-    console.log("Hello")
-    this.invoiceService.getInvoice();
   }
   gotoCart(){
     this.router.navigate(['/home/cart']);

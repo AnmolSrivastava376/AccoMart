@@ -1,13 +1,7 @@
 ﻿using Data.Models;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using System.ComponentModel;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Data.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
-
 
 namespace API.Controllers.Admins
 {
@@ -28,7 +22,7 @@ namespace API.Controllers.Admins
         public async Task<List<Product>> GetAllProducts(int id,string orderBy)
         {
            
-            return await _productService.GetAllProductsByCategoryAsync(id, orderBy); 
+            return await _productService.GetAllProductsByCategoryAsync(id,orderBy); 
         }
 
         [HttpGet("Products/SearchBy={prefix}")]
