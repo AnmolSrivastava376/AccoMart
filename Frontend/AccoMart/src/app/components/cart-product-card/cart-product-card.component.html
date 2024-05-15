@@ -1,16 +1,18 @@
 <div class="w-full h-[200px] flex boxh">
-  <div class="flex bg-fit bg-white flex-[30] h-full bg-no-repeat w-[200px] min-h-[200px] min-w-[200px] img-adj bg-center rounded-[10px] overflow-hidden bg-cover" style="background-image: url('{{product.productImageUrl}}');">
-  </div>
-  <div class="w-full h-full flex-[70] flex flex-col items-start box-left justify-between pl-[20px]">
+    <div class="flex bg-fit bg-white flex-[30] h-full bg-no-repeat w-[200px] min-h-[200px] min-w-[200px] img-adj bg-center rounded-[10px] overflow-hidden bg-cover" 
+         [style.backgroundImage]="'url(' + (product && product.productImageUrl) + ')'">
+    </div>
+    <div class="w-full h-full flex-[70] flex flex-col items-start box-left justify-between pl-[20px]">
       <div class="flex flex-col items-start text-left">
-          <div class="font-bold text-[28px] text-left heading">{{ product.productName }}</div>
-          <div class="text-[14px] text-start hide">{{ product.productDesc.slice(0,100) }}</div>
-          <div class="font-semibold pt-[8px] nopad subheading">$ {{ product.productPrice }}</div>
+        <div class="font-bold text-[28px] text-left heading">{{ product && product.productName }}</div>
+        <div class="text-[14px] text-start hide">{{ product && product.productDesc.slice(0,100) }}</div>
+        <div class="font-semibold pt-[8px] nopad subheading">$ {{ product && product.productPrice }}</div>
       </div>
       <div class="w-[120px] h-[40px] border border-black flex rounded-[10px] box self-end">
-          <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer">+</div>
-          <div class="w-full h-full flex items-center justify-center flex-[32] border border-x-black font-bold">1</div>
-          <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer">-</div>
+        <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer" (click)="incrementProductCount(product.productId)">+</div>
+        <div class="w-full h-full flex items-center justify-center flex-[32] border border-x-black font-bold">{{quantity}}</div>
+        <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer" (click)="decrementProductCount(product.productId)">-</div>
       </div>
+    </div>
   </div>
-</div>
+  
