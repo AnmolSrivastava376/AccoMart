@@ -5,12 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
-import { DeleteProductPopupComponent } from '../../components/delete-product-popup/delete-product-popup.component';
-import { EditProductPopupComponent } from '../../components/edit-product-popup/edit-product-popup.component';
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [NavbarComponent,DeleteProductPopupComponent,EditProductPopupComponent,CommonModule],
+  imports: [NavbarComponent,CommonModule],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css'
 })
@@ -44,7 +42,6 @@ export class AdminProductsComponent implements OnInit {
     }).catch((error)=>{
       console.error('Error fetching products:', error);
     })
-    console.log(this.products.length+": length");
 
   }
 
@@ -62,9 +59,24 @@ export class AdminProductsComponent implements OnInit {
     this.router.navigate([`/admin/product/edit/${product.productId}`]);
   }
 
+
+  deleteProduct(productId: number) {
+    // Call your service method to delete the product by ID
+    this.productService.deleteProductById(productId).then(() => {
+      // After successful deletion, remove the product from the products array
+      this.products = this.products.filter(product => product.productId !== productId);
+    });
+  }
  
-  openDeletePopup(product: Product): void {
-    this.selectedProduct = product;
+  openDeletePopup(product: Product) {
+    // Ask the user for confirmation before deleting the product
+    
+    const confirmDelete = window.confirm(`Are you sure you want to delete ${product.productName}?`);
+
+    // If the user confirms, proceed with deleting the product
+    if (confirmDelete) {
+      this.deleteProduct(product.productId);
+    }
   }
 
 

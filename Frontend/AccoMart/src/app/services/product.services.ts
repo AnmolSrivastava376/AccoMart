@@ -20,6 +20,15 @@ export class productService {
     return axios.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
   }
 
+  editProductById(productId: number, updatedProduct: Product) {
+    return axios.put<Product>(`http://localhost:5239/AdminDashboard/Update/Product/${productId}`, updatedProduct);
+  }
+
+  deleteProductById(productId:number)
+  {
+    return axios.delete(`http://localhost:5239/AdminDashboard/Delete/Product/${productId}`);
+  }
+
   
   }
 
