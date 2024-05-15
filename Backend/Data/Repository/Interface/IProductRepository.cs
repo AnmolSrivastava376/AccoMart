@@ -9,7 +9,8 @@ namespace Data.Repository.Interfaces
 
         Task<Product> GetProductById(int id);
         Task<Category> GetCategoryByName(string name);
-        Task<List<Product>> GetAllProducts(int id,string orderBy);
+        Task<List<Product>> GetAllProductsByCategoryAsync(int id,string orderBy);
+        Task<List<Product>> GetAllProductsAsync();
         Task<List<Category>> GetAllCategories();
         Task<Category> GetCategoryById(int id);
         Task<Category> CreateCategory(string categoryName);

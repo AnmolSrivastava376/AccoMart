@@ -15,6 +15,11 @@ export class productService {
   fetchProductById(productId: number) {
     return axios.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
   }
+
+  fetchAllProducts(){
+    return axios.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
+  }
+
   
   }
 

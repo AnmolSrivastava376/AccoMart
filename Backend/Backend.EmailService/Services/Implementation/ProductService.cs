@@ -43,10 +43,17 @@ namespace Service.Services.Implementation
             return await _productRepository.GetAllCategories();
         }
 
-        async Task<List<Product>> IProductService.GetAllProductsAsync(int id, string orderBy)
+        async Task<List<Product>> IProductService.GetAllProductsByCategoryAsync(int id, string orderBy)
         {
-            return await _productRepository.GetAllProducts(id, orderBy);
+            return await _productRepository.GetAllProductsByCategoryAsync(id, orderBy);
         }
+
+        async Task<List<Product>> IProductService.GetAllProductsAsync()
+        {
+            return await _productRepository.GetAllProductsAsync();
+        }
+
+
 
         async Task<Category> IProductService.GetCategoryByIdAsync(int id)
         {
