@@ -80,10 +80,10 @@ namespace Service.Services.Implementation
              await _cartRepository.GenerateInvoice(cartId);
         }
 
-        async Task ICartService.GetInvoiceAsync(int orderId)
+        /*async Task<string> ICartService.GetInvoiceAsync(int orderId)
         {
-           await _cartRepository.GetInvoice(orderId);
-        }
+           return await _cartRepository.GetInvoice(orderId);
+        }*/
 
         async Task ICartService.DeleteCartAsync(int cartId)
         {

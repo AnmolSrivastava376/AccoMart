@@ -32,17 +32,10 @@ namespace API.Controllers.Order
             _connectionString = _configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
         }
 
-        //[Authorize]
         [HttpPost("PlaceOrderByCart")]
         public async Task<string> PlaceOrderByCart(string userId, int cartId, int addressId, int deliveryId)
         {
             int newOrderId = 0;
-            /*var user = HttpContext.User as ClaimsPrincipal;          
-            var userIdClaim = user.FindFirst("UserId");
-            string userId = userIdClaim?.Value ?? "0";
-
-            var cartIdClaim = user.FindFirst("CartId");
-            int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;*/
 
             try
             {
@@ -99,13 +92,11 @@ namespace API.Controllers.Order
                     }
                 }
 
-               
-                //await _cartService.DeleteCartAsync(cartId); // commented out as per your original code
                 return await CheckoutByCart(userId, cartId);
             }
             catch (Exception ex)
             {
-                return  $"An error occurred while placing the order";
+                return $"An error occurred while placing the order";
             }
         }
 
@@ -113,13 +104,6 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Cart")]
         public async Task<string> CheckoutByCart(string userId, int cartId)
         {
-            /*var user = HttpContext.User as ClaimsPrincipal;
-            var userEmailClaim = user.FindFirst("UserEmail");
-            string userEmail = userEmailClaim?.Value ?? "0";
-
-            var cartIdClaim = user.FindFirst("CartId");
-            int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;*/
-
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "Checkout/OrderConfirmation",
@@ -140,7 +124,7 @@ namespace API.Controllers.Order
 
                     using (SqlDataReader cartItemReader = await getCartItemCommand.ExecuteReaderAsync())
                     {
-                        List<Tuple<int,int>> CartItems = new List<Tuple<int,int>>();
+                        List<Tuple<int, int>> CartItems = new List<Tuple<int, int>>();
 
                         while (await cartItemReader.ReadAsync())
                         {
@@ -150,10 +134,9 @@ namespace API.Controllers.Order
                             CartItems.Add(Tuple.Create(productId, productQuantity));
                         }
 
-                        // Close the first SqlDataReader before executing the next query
                         await cartItemReader.CloseAsync();
 
-                        foreach (Tuple<int,int> CartItem in CartItems)
+                        foreach (Tuple<int, int> CartItem in CartItems)
                         {
                             string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
 
@@ -161,7 +144,6 @@ namespace API.Controllers.Order
                             {
                                 getProductCommand.Parameters.AddWithValue("@ProductId", CartItem.Item1);
 
-                                // Execute the command to get product details
                                 using (SqlDataReader productReader = await getProductCommand.ExecuteReaderAsync())
                                 {
                                     while (await productReader.ReadAsync())
@@ -192,14 +174,13 @@ namespace API.Controllers.Order
                 }
             }
 
-
             var service = new SessionService();
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-           // await _cartService.DeleteCartAsync(cartId);
             return session.Url;
         }
+
         //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
         public async Task<IActionResult> PlaceOrder(string userId, int addressId, int deliveryId, int productId)
