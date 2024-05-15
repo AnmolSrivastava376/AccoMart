@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Login2FAComponent } from '../../pages/login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
 
+
 @Component({
   selector: 'app-auth-card',
   standalone: true,

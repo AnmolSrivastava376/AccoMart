@@ -8,8 +8,10 @@ import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { cartItem } from '../../interfaces/cartItem';
 import { CartService } from '../../services/cart.services';
+import { Subscription } from 'rxjs';
+import { CartStore } from '../../store/cart-store';
+import { InvoiceService } from '../../services/invoiceService';
 
 @Component({
   selector: 'app-home',
@@ -28,15 +30,30 @@ export class HomeComponent implements OnInit {
     productImageUrl: '',
     categoryId: 0
   }];
-  cart: cartItem[]=[]
+
+  downloadFile(data: Blob): void {
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'invoice.pdf';
+    link.click();
+    window.URL.revokeObjectURL(url);
+  }
   activeCategory: number=-1;
   activeCategoryIndex: number=0;
   cartItemLength = 0
-  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService) {
-    this.cart = cartService.fetchCart();
+  private cartSubscription: Subscription;
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService, private cartStore: CartStore,private invoiceService : InvoiceService) {
   }
-  
+
   ngOnInit(): void {
+    this.cartItemLength = this.cartService.fetchQuantityInCart();
+    this.cartSubscription = this.cartService.getCartItems$().subscribe(
+      items => {
+        this.cartItemLength = items.length;
+      }
+    );
     this.categoryService.fetchCategories()
       .then((response) => {
         this.categories = response.data;
@@ -54,6 +71,11 @@ export class HomeComponent implements OnInit {
         }
       })
   }
+  ngOnDestroy(): void {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
+  }
   onCategorySelected(categoryId: number){
     this.activeCategory = categoryId;
     this.productService.fetchProductByCategoryID(this.activeCategory).then((response)=>{
@@ -67,5 +89,16 @@ export class HomeComponent implements OnInit {
   }
   gotoCart(){
     this.router.navigate(['/home/cart']);
+  }
+
+  getInvoice(): void {
+    this.invoiceService.getInvoice().subscribe(
+      (response: Blob) => {
+        this.downloadFile(response);
+      },
+      (error) => {
+        console.error('Error fetching invoice:', error);
+      }
+    );
   }
 }

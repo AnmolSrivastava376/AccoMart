@@ -15,11 +15,22 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Rewrite;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 using Service.Services.Interface;
 using Service.Services.Implementation;
 using Data.Repository.Implementation;
 using Stripe;
+using System.ComponentModel;
+
+
+/*
+QuestPDF.Settings.License = LicenseType.Community;
+Document.Create(Container =>
+{
+    Container.Page(page =>
+    {
+        page.Size(PageSizes.A4);
+    });
+}).ShowInPreviewer();*/
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

@@ -12,9 +12,12 @@ import { Address } from '../../interfaces/address';
 import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { deliveryServices } from '../../services/delivery.service';
-import { orderServices } from '../../services/order.service';
+
 import { CartOrder } from '../../interfaces/placeOrder';
 import { FormsModule } from '@angular/forms';
+import { orderServices } from '../../services/order.service';
+import { CartService } from '../../services/cart.services';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
@@ -30,14 +33,12 @@ export class CartComponent {
   toggleVisibility() {
     this.isVisible = !this.isVisible;
   }
-
+  cartItemLength=0;
+  private cartSubscription: Subscription;
   constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices,
-    private orderService : orderServices, private cdr: ChangeDetectorRef) {}
+    private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService) {}
 
-  cart: cartItem[] = [{
-    productId : 0,
-    quantity : 0
-  }];
+  cart: cartItem[] = [];
 
   address: Address = {
     street : "",
@@ -65,6 +66,18 @@ export class CartComponent {
   decoded: { CartId: number,AddressId : number, UserId: string};
 
   ngOnInit(): void {
+    this.cartItemLength = this.cartService.fetchQuantityInCart();
+    this.cart = this.cartService.fetchCart();
+    this.cartSubscription = this.cartService.getCartItems$().subscribe(
+      items=>{
+        this.cart = items
+      }
+    )
+    this.cartSubscription = this.cartService.getCartItems$().subscribe(
+      items => {
+        this.cartItemLength = items.length;
+      }
+    );
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
@@ -74,13 +87,7 @@ export class CartComponent {
     const userId = this.decoded.UserId; // Add this line to get userId
 
     // Fetching cart items
-    this.cartItemService.fetchCartItemByCartId(cartId)
-    .then((response) => {
-      this.cart = response.data;
-    })
-    .catch((error) => {
-      console.error('Error fetching cart:', error);
-    });
+    
 
     // Fetching address
     this.addressService.getAddress(addressId)
@@ -110,12 +117,12 @@ export class CartComponent {
 
   placeOrder() {
     this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
-      .then((response) => {
+      .then((response: { data: string; }) => {
         const result: string = response.data;
         window.location.href = result;
         console.log(result);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error('Error placing order:', error);
       });
   }

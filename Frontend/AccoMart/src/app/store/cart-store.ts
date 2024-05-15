@@ -11,15 +11,22 @@ export class CartStore {
 
   cartItems$ = this._cartItemsSubject.asObservable();
 
-  constructor() { }
-
   get cartItems(): cartItem[] {
     return this._cartItems;
   }
-  updateCart(items: cartItem[]): void {
+
+  set cartItems(items: cartItem[]) {
     this._cartItems = items;
     this._cartItemsSubject.next(items);
     this.updateLocalStorage();
+  }
+
+  constructor() {
+    const storedCartItems = localStorage.getItem('cartItems');
+    if (storedCartItems) {
+      this._cartItems = JSON.parse(storedCartItems);
+      this._cartItemsSubject.next(this._cartItems);
+    }
   }
 
   private updateLocalStorage(): void {
