@@ -2,7 +2,7 @@
     <div class="w-full h-fit overflow-hidden px-[20px] relative">
         <div class="w-full h-fit items-center relative flex gap-[10px] overflow-hidden">
             <div class="" *ngFor="let product of products">
-                <div class='min-w-[240px] transition-all duration-500 h-[380px] border bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between'
+                <div class='min-w-[240px] transition-all duration-500 min-h-[380px] h-fit border bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between'
                     [style.transform]="'translateX(' + (i * -250) + 'px)'">
                     <div class="flex flex-col gap-[10px]">
                         <div class="w-[220px] aspect-[1.1] bg-cover bg-center rounded-[4px]"
@@ -31,7 +31,7 @@
                                     (click)="decrementCountByProductId(product.productId)">-</div>
                             </div>
                         </div>
-                        <div class="w-[20px] h-full py-[4px] px-[16px] rounded-[4px] bg-red-600 text-white font-bold flex items-center justify-center cursor-pointer" *ngIf="isPresentInCart(product.productId)" (click)="removeElementByProductId(product.productId)">
+                        <div class="w-[20px] h-[40px] py-[4px] px-[16px] rounded-[4px] bg-red-600 text-white font-bold flex items-center justify-center cursor-pointer" *ngIf="isPresentInCart(product.productId)" (click)="removeElementByProductId(product.productId)">
                             X
                         </div>
                     </div>

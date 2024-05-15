@@ -1,63 +1,76 @@
 import { Injectable } from '@angular/core';
 import { CartStore } from '../store/cart-store';
+import { cartItem } from '../interfaces/cartItem';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
   constructor(private cartStore: CartStore) {}
+
+  getCartItems$(): Observable<cartItem[]> {
+    return this.cartStore.cartItems$;
+  }
   
-  fetchCart() {
+  fetchCart(): cartItem[] {
     return this.cartStore.cartItems;
   }
 
   addToCart(productId: number): void {
-    if (!this.isPresentInCart(productId))
-      this.cartStore.updateCart([
-        ...this.cartStore.cartItems,
-        { productId: productId, quantity: 1 },
-      ]);
+    if (!this.isPresentInCart(productId)) {
+      const newItem: cartItem = { productId: productId, quantity: 1 };
+      this.cartStore.cartItems = [...this.cartStore.cartItems, newItem];
+    }
   }
 
   removeFromCart(productId: number): void {
-    this.cartStore.updateCart(
-      this.cartStore.cartItems.filter((item) => item.productId !== productId)
+    const updatedCart = this.cartStore.cartItems.filter(
+      (item) => item.productId !== productId
     );
+    this.cartStore.cartItems = updatedCart;
   }
 
   clearCart(): void {
-    this.cartStore.updateCart([]);
+    this.cartStore.cartItems = [];
   }
-  incrementCountByProductId(productId: number) {
+
+  incrementCountByProductId(productId: number): void {
     const updatedCart = this.cartStore.cartItems.map((item) => {
       if (item.productId === productId) {
         return { ...item, quantity: item.quantity + 1 };
-      } else return item;
+      }
+      return item;
     });
-    this.cartStore.updateCart(updatedCart);
+    this.cartStore.cartItems = updatedCart;
   }
-  decrementCountByProductId(productId: number) {
+
+  decrementCountByProductId(productId: number): void {
     const updatedCart = this.cartStore.cartItems
       .map((item) => {
-        if (item.productId === productId && productId >= 0) {
+        if (item.productId === productId && item.quantity > 0) {
           return { ...item, quantity: item.quantity - 1 };
-        } else return item;
+        }
+        return item;
       })
       .filter((item) => item.quantity !== 0);
-    this.cartStore.updateCart(updatedCart);
+    this.cartStore.cartItems = updatedCart;
   }
-  findQuantityByProductId(productId: number) {
+
+  findQuantityByProductId(productId: number): number {
     const item = this.cartStore.cartItems.find(
       (item) => item.productId === productId
     );
     return item ? item.quantity : 0;
   }
-  isPresentInCart(productId: number) {
+
+  isPresentInCart(productId: number): boolean {
     return this.cartStore.cartItems.some(
       (item) => item.productId === productId
     );
   }
-  fetchQuantityInCart(){
-    return this.cartStore.cartItems.length
+
+  fetchQuantityInCart(): number {
+    return this.cartStore.cartItems.length;
   }
 }
