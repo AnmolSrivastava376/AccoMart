@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
   activeCategoryIndex: number=0;
   cartItemLength = 0
   private cartSubscription: Subscription;
-  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService, private cartStore: CartStore) {
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService) {
   }
   
   ngOnInit(): void {

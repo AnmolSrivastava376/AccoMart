@@ -4,7 +4,7 @@
   <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] bg-gray-300 col p-adj">
     <div class="w-full h-full flex-[75] flex flex-col">
       <div class="font-bold text-[28px] leading-[32px]">Shopping Cart</div>
-      <div class="text-[16px]"><span class="font-semibold">3 items</span> in your cart</div>
+      <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} items</span> in your cart</div>
       <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
         <div *ngFor="let item of cart">
           <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
