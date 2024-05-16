@@ -318,9 +318,10 @@ namespace Data.Repository.Implementation
 
 
 
-        public async Task<Product> CreateProduct(ProductDto productDto, int categoryId)
+        public async Task<Product> CreateProduct(ProductDto productDto)
         {
             Product product = new Product();
+            
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -332,7 +333,7 @@ namespace Data.Repository.Implementation
                 command.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
                 command.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
                 command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
-                command.Parameters.AddWithValue("@CategoryId", categoryId);
+                command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
 
                 int productId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
