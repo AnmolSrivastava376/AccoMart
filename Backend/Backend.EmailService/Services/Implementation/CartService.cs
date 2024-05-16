@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Data.Repository.Implementation;
 using Data.Models;
+using System.Collections;
 
 namespace Service.Services.Implementation
 {
@@ -19,9 +20,9 @@ namespace Service.Services.Implementation
             _cartRepository = cartRepository;
             _configuration = configuration;
         }
-        async Task<CartItem> ICartService.AddItemToCartAsync(int productId, int quantity, int cardId)
+        async Task<IEnumerable<CartItem>> ICartService.AddToCartAsync(int cartId, IEnumerable<CartItem> cart)
         {
-            return await _cartRepository.AddCartItem(productId, quantity,cardId);
+            return await _cartRepository.AddCart(cartId,cart);
         }
 
         async Task ICartService.DeleteCartItemAsync(int productId)

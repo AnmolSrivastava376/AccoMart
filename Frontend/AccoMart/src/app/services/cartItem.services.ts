@@ -8,9 +8,9 @@ import { cartItem } from "../interfaces/cartItem";
   })
 export class cartItemService{
 
-     addCartItemByProductIdAndQuantity(productId: number, quantity:number){
-        return axios.post<cartItem>(`http://localhost:5239/ShoppingCartController/Add/CartItem?productId=${productId}&quantity=${quantity}`);
-     }
+  addCartByCartId(cart: cartItem[], cartId: number) {
+    return axios.post<cartItem[]>(`http://localhost:5239/ShoppingCartController/Add/CartItem?cartId=${cartId}`, cart);
+  }
 
      fetchCartItemByCartId(cartId:number){
         return axios.get<cartItem[]>(`http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${cartId}`);

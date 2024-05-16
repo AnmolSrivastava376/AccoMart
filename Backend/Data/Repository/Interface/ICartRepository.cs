@@ -5,12 +5,10 @@ namespace Data.Repository.Interfaces
 {
     public interface ICartRepository
     {
-        Task<CartItem> AddCartItem(int productId, int quantity, int cardId);
+        Task<IEnumerable<CartItem>> AddCart(int cartId, IEnumerable<CartItem> cart);
         Task DeleteCartItem(int productId);
         Task<CartItem> UpdateCartItem(int productId, int quantity,int cartId);
         Task<IEnumerable<CartItem>> GetCartItems(int cartId);
-        Task GenerateInvoice(int cartId);
-       // Task<string> GetInvoice(int orderId);
         Task DeleteCart(int cartId);
     }
 }

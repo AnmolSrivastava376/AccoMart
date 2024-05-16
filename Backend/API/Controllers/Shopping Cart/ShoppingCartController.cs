@@ -23,17 +23,9 @@ namespace API.Controllers.ShoppingCart
 
 
         [HttpPost("Add/CartItem")]
-        public async Task<CartItem> AddItemToCart(int productId, int quantity)
+        public async Task<IEnumerable<CartItem>> AddCart(int cartId, IEnumerable<CartItem> cart)
         {
-            var user = HttpContext.User as ClaimsPrincipal;         
-            var cartIdClaim = user.FindFirst("CartId");
-            int cartId = 0;
-            if (cartIdClaim != null)
-            {
-
-                cartId = int.Parse(cartIdClaim.Value);
-            }
-            return await _cartService.AddItemToCartAsync(productId, quantity,cartId);  
+            return await _cartService.AddToCartAsync(cartId, cart);  
         }
 
         [HttpGet("Get/CartItems")]

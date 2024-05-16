@@ -50,7 +50,7 @@ export class CartComponent {
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
       items=>{
-        this.cart = items
+        this.cart = items 
       }
     )
     this.cartSubscription = this.cartService.getCartItems$().subscribe(

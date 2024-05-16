@@ -216,58 +216,72 @@ namespace Data.Repository.Implementation
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@OrderId", orderId);
 
+                string userId = "";
 
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+
+                SqlDataReader orderReader = await command.ExecuteReaderAsync();
+                while (await orderReader.ReadAsync())
                 {
+                    invoiceDto.OrderDate = Convert.ToDateTime(orderReader["OrderDate"]);
+                    TimeSpan orderTime = (TimeSpan)orderReader["OrderTime"];
+                    DateTime today = invoiceDto.OrderDate;
+                    DateTime orderDateTime = today.Add(orderTime);
+                    invoiceDto.OrderTime = orderDateTime;
+                    invoiceDto.OrderAmount = (float)Convert.ToDouble(orderReader["OrderAmount"]);
+                    userId = Convert.ToString(orderReader["UserId"]);
+
+                }
+                await orderReader.CloseAsync();
+
                     //Fetching Product Details
                     string sqlQuery1 = $" SELECT * FROM Product WHERE ProductId = @ProductId;";
                     SqlCommand command1 = new SqlCommand(sqlQuery1, connection);
                     command1.Parameters.AddWithValue("@ProductId", productId);
                     List<InvoiceProductDto> products = new List<InvoiceProductDto>();
                     InvoiceProductDto product = new InvoiceProductDto();
-                    while (await reader.NextResultAsync())
+                    SqlDataReader productReader = await command1.ExecuteReaderAsync();
+                   while (await productReader.ReadAsync())
                     {
-                        product.ProductName = Convert.ToString(reader["ProductName"]);
-                        product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
-                        product.ProductPrice = (decimal)Convert.ToInt32(reader["ProductPrice"]);
+                        product.ProductName = Convert.ToString(productReader["ProductName"]);
+                        product.ProductDesc = Convert.ToString(productReader["ProductDesc"]);
+                        product.ProductPrice = (decimal)Convert.ToInt32(productReader["ProductPrice"]);
                     }
                     products.Add(product);
                     invoiceDto.products = products;
+                await productReader.CloseAsync();
 
-                    //Fetching Order Details
-                    invoiceDto.OrderDate = Convert.ToDateTime(reader["OrderDate"]);
-                    invoiceDto.OrderTime = Convert.ToDateTime(reader["OrderTime"]);
-                    invoiceDto.OrderAmount = (float)Convert.ToDouble(reader["OrderAmount"]);
 
-                    //Fetching User Details
-                    string userId = Convert.ToString(reader["UserId"]);
-                    string sqlQuery2 = $" SELECT * FROM AspNetUsers WHERE Id = @UserId;";
+                //Fetching User Details
+
+                string sqlQuery2 = $" SELECT * FROM AspNetUsers WHERE Id = @UserId;";
                     SqlCommand command2 = new SqlCommand(sqlQuery2, connection);
                     command2.Parameters.AddWithValue("@UserId", userId);
-                    while (await reader.NextResultAsync())
+                    SqlDataReader userReader = await command2.ExecuteReaderAsync();
+                    while (await userReader.ReadAsync())
                     {
-                        invoiceDto.UserName = Convert.ToString(reader["UserName"]);
-                        invoiceDto.UserEmail = Convert.ToString(reader["UserEmail"]);
+                        invoiceDto.UserName = Convert.ToString(userReader["UserName"]);
+                        invoiceDto.UserEmail = Convert.ToString(userReader["Email"]);
                     }
+                await userReader.CloseAsync();
 
 
-                    //Fetching Address                
-                    string sqlQuery3 = $" SELECT * FROM Addresses WHERE UserId = @UserId;";
+                //Fetching Address                
+                string sqlQuery3 = $" SELECT * FROM Addresses WHERE UserId = @UserId;";
                     SqlCommand command3 = new SqlCommand(sqlQuery3, connection);
-                    command2.Parameters.AddWithValue("@UserId", userId);
+                    command3.Parameters.AddWithValue("@UserId", userId);
                     AddressModel addressModel = new AddressModel();
-
-                    while (await reader.NextResultAsync())
+                SqlDataReader addressReader = await command3.ExecuteReaderAsync();
+                while (await addressReader.ReadAsync())
                     {
-                        addressModel.ZipCode = Convert.ToString(reader["ZipCode"]);
-                        addressModel.PhoneNumber = Convert.ToString(reader["PhoneNumber"]);
-                        addressModel.City = Convert.ToString(reader["City"]);
-                        addressModel.State = Convert.ToString(reader["State"]);
-                        addressModel.Street = Convert.ToString(reader["Street"]);
+                        addressModel.ZipCode = Convert.ToString(addressReader["ZipCode"]);
+                        addressModel.PhoneNumber = Convert.ToString(addressReader["PhoneNumber"]);
+                        addressModel.City = Convert.ToString(addressReader["City"]);
+                        addressModel.State = Convert.ToString(addressReader["State"]);
+                        addressModel.Street = Convert.ToString(addressReader["Street"]);
                     }
                     invoiceDto.Address = addressModel;
-                }
+                await addressReader.CloseAsync();
+
             }
             var document = new PdfDocument();
 
