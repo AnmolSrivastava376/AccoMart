@@ -36,24 +36,29 @@ namespace Data.Repository.Implementation
             {
                 await connection.OpenAsync();
 
+                // Delete existing cart items for the given cartId
+                string deleteCartItemsQuery = "DELETE FROM CartItem WHERE CartId = @CartId";
+                SqlCommand deleteCartItemsCommand = new SqlCommand(deleteCartItemsQuery, connection);
+                deleteCartItemsCommand.Parameters.AddWithValue("@CartId", cartId);
+                await deleteCartItemsCommand.ExecuteNonQueryAsync();
+
+                // Insert new cart items
                 foreach (var item in cart)
                 {
                     int productId = item.ProductId;
                     int quantity = item.Quantity;
 
-                    // Update the quantity of the existing cart item
-                    string updateCartItemQuery = "UPDATE CartItem SET Quantity = @Quantity WHERE ProductId = @ProductId AND CartId = @CartId";
-                    SqlCommand updateCartItemCommand = new SqlCommand(updateCartItemQuery, connection);
-                    updateCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
-                    updateCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
-                    updateCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
-                    await updateCartItemCommand.ExecuteNonQueryAsync();
+                    string insertCartItemQuery = "INSERT INTO CartItem (ProductId, Quantity, CartId) VALUES (@ProductId, @Quantity, @CartId)";
+                    SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
+                    insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
+                    insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
+                    insertCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
+                    await insertCartItemCommand.ExecuteNonQueryAsync();
                 }
             }
-
-            // Return the updated cart
             return cart;
         }
+
 
 
         async Task ICartRepository.DeleteCart(int cartId)
