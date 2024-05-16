@@ -104,6 +104,7 @@ export class CartComponent {
   }
   updateActiveDeliveryIndex(index:number){
     this.activeDeliveryIndex = index;
+    this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
   }
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex

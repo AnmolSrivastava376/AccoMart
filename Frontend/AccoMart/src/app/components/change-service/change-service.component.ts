@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 export class ChangeServiceComponent implements OnInit{
   @Input() delivery: DeliveryService[]
   @Input() index: number
-  @Output() activeDeliveryService = new EventEmitter<DeliveryService>();
   @Output() activeDeliveryIndex = new EventEmitter<number>();
   @Output() closeWindow = new EventEmitter<boolean>();
   activeIndex:number;
@@ -21,11 +20,11 @@ export class ChangeServiceComponent implements OnInit{
   }
   onChangeDelivery(index: number) {
     if (index >= 0 && index < this.delivery.length) {
-      this.activeDeliveryIndex.emit(index);
-      this.activeDeliveryService.emit(this.delivery[index]);
+      this.activeIndex = index
     }
   }
   onSaveClick(){
+    this.activeDeliveryIndex.emit(this.activeIndex);
     this.closeWindow.emit(true);
   }
 }

@@ -68,7 +68,7 @@
           <div class="">Grand Total</div>
           <div class="">$ 11.46</div>
         </div>
-        <div class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer" (click)="toggleVisibility();placeOrder()">
+        <div class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer" (click)="placeOrder()">
           <div class="text-black font-semibold head-adj">Buy Now</div>
         </div>
       </div>
@@ -89,7 +89,7 @@
       <app-change-address></app-change-address>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===2">
-      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex" (activeDeliveryService)="updateActiveDeliveryService($event)" (activeDeliveryIndex)="updateActiveDeliveryIndex($event)" (closeWindow)="toggleVisibility(0)"></app-change-service>
+      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex" (activeDeliveryIndex)="updateActiveDeliveryIndex($event)" (closeWindow)="toggleVisibility(0)"></app-change-service>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===3">
       <app-payment-method></app-payment-method>
