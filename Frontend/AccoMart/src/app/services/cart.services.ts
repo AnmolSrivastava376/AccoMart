@@ -12,7 +12,10 @@ export class CartService {
   getCartItems$(): Observable<cartItem[]> {
     return this.cartStore.cartItems$;
   }
-  
+  setCartItems(items: cartItem[]): void {
+    this.cartStore.cartItems = items;
+    localStorage.setItem('cartItems', JSON.stringify(items));
+  }
   fetchCart(): cartItem[] {
     return this.cartStore.cartItems;
   }

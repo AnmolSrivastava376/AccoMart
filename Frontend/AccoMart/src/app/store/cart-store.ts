@@ -8,7 +8,6 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root'
 })
 export class CartStore {
-
   constructor(private cartItemService : cartItemService) {
     const storedCartItems = localStorage.getItem('cartItems');
     if (storedCartItems) {
@@ -20,8 +19,6 @@ export class CartStore {
   private _cartItems: cartItem[] = [];
   private _cartItemsSubject = new BehaviorSubject<cartItem[]>([]);
   decoded: { CartId: number,AddressId : number, UserId: string};
-
-
   cartItems$ = this._cartItemsSubject.asObservable();
 
   get cartItems(): cartItem[] {
@@ -37,7 +34,7 @@ export class CartStore {
     this._cartItems = items;
     this._cartItemsSubject.next(items);
     this.updateLocalStorage();
-    this.cartItemService.addCartByCartId(items, cartId);
+    this.cartItemService.addCartByCartId(this._cartItems, cartId);
   }
   private updateLocalStorage(): void {
     localStorage.setItem('cartItems', JSON.stringify(this._cartItems));

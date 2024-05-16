@@ -12,6 +12,8 @@ import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { CartStore } from '../../store/cart-store';
 import { InvoiceService } from '../../services/invoiceService';
+import { jwtDecode } from 'jwt-decode';
+import { cartItemService } from '../../services/cartItem.services';
 
 @Component({
   selector: 'app-home',
@@ -44,10 +46,20 @@ export class HomeComponent implements OnInit {
   activeCategoryIndex: number=0;
   cartItemLength = 0
   private cartSubscription: Subscription;
-  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService, private cartStore: CartStore,private invoiceService : InvoiceService) {
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:CartService, private cartStore: CartStore,private invoiceService : InvoiceService, private cartItemService: cartItemService) {
   }
-
+  decodedToken:any;
   ngOnInit(): void {
+    const token = localStorage.getItem('token')
+    if(token){
+      this.decodedToken=jwtDecode(token)
+      console.log(this.decodedToken.CartId)
+      this.cartItemService.fetchCartItemByCartId(this.decodedToken.CartId).then(response=>{
+        console.log(response.data," : From Backend")
+        this.cartService.setCartItems(response.data)
+      })
+    }
+
     this.cartItemLength = this.cartService.fetchQuantityInCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
       items => {

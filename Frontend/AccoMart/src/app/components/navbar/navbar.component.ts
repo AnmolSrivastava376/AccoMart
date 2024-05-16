@@ -3,6 +3,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { cartItemService } from '../../services/cartItem.services';
+import { CartService } from '../../services/cart.services';
 
 @Component({
   selector: 'app-navbar',
@@ -17,25 +19,24 @@ export class NavbarComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  decoded: { UserName: string };
+  decoded: any;
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
-    console.log(token);
     if (token) {
       this.isLoggedIn = true;
       this.decoded = jwtDecode(token);
-      console.log(this.decoded);
-      console.log(2);
     }
     const userName = this.decoded?.UserName ? this.decoded.UserName : '';
     this.username = userName;
   }
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('cartItems')
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
+    this.router.navigate(['home/auth'])
   }
   navigateToAuth(){
     this.router.navigate(['/home/auth']);
