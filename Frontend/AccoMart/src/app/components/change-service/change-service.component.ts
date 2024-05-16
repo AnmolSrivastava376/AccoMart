@@ -21,11 +21,12 @@ export class ChangeServiceComponent implements OnInit{
   }
   onChangeDelivery(index: number) {
     if (index >= 0 && index < this.delivery.length) {
-      this.activeDeliveryIndex.emit(index);
-      this.activeDeliveryService.emit(this.delivery[index]);
+      this.activeIndex = index
     }
   }
   onSaveClick(){
+    this.activeDeliveryIndex.emit(this.activeIndex);
+    this.activeDeliveryService.emit(this.delivery[this.activeIndex]);
     this.closeWindow.emit(true);
   }
 }
