@@ -48,9 +48,18 @@
                                 <a href="#" class="text-blue-500 text-[14px] hover:underline">Forgot your password?</a>
                             </div>
                             <div class="flex justify-center">
-                                <button type="button" (click)="onLogin()"
-                                    class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring">{{isLogin?'Login':'Register'}}</button>
-                            </div>
+                              <button type="button" (click)="onLogin()"
+                                      class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring">
+                                  <span class="animate-spin mr-2" *ngIf="spinLoader">&#9696;</span>{{ isLogin ? 'Login' : 'Register' }}
+                              </button>
+                          </div>
+                            <!-- <div class="flex justify-center">
+                              <button type="button" (click)="onLogin()"
+                                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring">
+                                  <span class="mr-2" *ngIf="spinLoader"><i class="fas fa-spinner fa-spin text-white"></i></span>{{ isLogin ? 'Login' : 'Register' }}
+                              </button>
+                          </div> -->
+
                         </form>
                         <div class="my-2">
                             <span class="text-blue-500 text-[14px]" >{{isLogin?'Not Signed Up?':'Already a User?'}}</span>
