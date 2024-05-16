@@ -83,7 +83,7 @@ namespace API.Controllers.DeliveryServices
         }
 
         [HttpPut("UpdateDeliveryService/{id}")]
-        public IActionResult UpdateDeliveryService(int id, DeliveryService deliveryService)
+        public IActionResult UpdateDeliveryService(int id, CreateDeliveryServiceDto deliveryService)
         {
             try
             {
