@@ -20,5 +20,9 @@ export class SidebarComponent {
     this.router.navigate(['/admin/categories']);
   }
 
+  showDeliveryServices(){
+    this.router.navigate(['/admin/delivery'])
+  }
+
 
 }
