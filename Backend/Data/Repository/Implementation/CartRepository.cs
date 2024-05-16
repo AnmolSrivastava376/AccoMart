@@ -32,70 +32,29 @@ namespace Data.Repository.Implementation
 
         public async Task<IEnumerable<CartItem>> AddCart(int cartId, IEnumerable<CartItem> cart)
         {
-            IEnumerable<CartItem> cart1 = cart;
-            CartItem cartItem = new CartItem();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
+
                 foreach (var item in cart)
                 {
                     int productId = item.ProductId;
                     int quantity = item.Quantity;
 
-                    // Check if the product ID already exists in the CartItem table
-                    string checkProductQuery = "SELECT COUNT(*) FROM CartItem WHERE ProductId = @ProductId and CartId = @CartId";
-                    SqlCommand checkProductCommand = new SqlCommand(checkProductQuery, connection);
-                    checkProductCommand.Parameters.AddWithValue("@ProductId", productId);
-                    checkProductCommand.Parameters.AddWithValue("@CartId", cartId);
-
-                    int existingCount = (int)await checkProductCommand.ExecuteScalarAsync();
-
-                    if (existingCount > 0)
-                    {
-                        string updateQuantityQuery = "UPDATE CartItem SET Quantity = Quantity + @Quantity WHERE ProductId = @ProductId and CartId = @CartId ";
-                        SqlCommand updateQuantityCommand = new SqlCommand(updateQuantityQuery, connection);
-                        updateQuantityCommand.Parameters.AddWithValue("@ProductId", productId);
-                        updateQuantityCommand.Parameters.AddWithValue("@Quantity", quantity);
-                        updateQuantityCommand.Parameters.AddWithValue("@CartId", cartId);
-
-                        await updateQuantityCommand.ExecuteNonQueryAsync();
-
-                        // Retrieve the updated cart item after incrementing quantity
-                        string getCartItemQuery = "SELECT ProductId, Quantity FROM CartItem WHERE ProductId = @ProductId and  CartId = @CartId";
-                        SqlCommand getCartItemCommand = new SqlCommand(getCartItemQuery, connection);
-                        getCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
-                        getCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
-
-
-                        using (SqlDataReader reader = await getCartItemCommand.ExecuteReaderAsync())
-                        {
-                            if (await reader.ReadAsync())
-                            {
-                                cartItem.ProductId = reader.GetInt32(0);
-                                cartItem.Quantity = reader.GetInt32(1);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        string insertCartItemQuery = "INSERT INTO CartItem (ProductId, Quantity, CartId) VALUES (@ProductId, @Quantity, @CartId); SELECT SCOPE_IDENTITY();";
-                        SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
-                        insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
-                        insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
-                        insertCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
-
-                        object result = await insertCartItemCommand.ExecuteScalarAsync();
-                        int cartItemId = Convert.ToInt32(result);
-
-                        cartItem.ProductId = productId;
-                        cartItem.Quantity = quantity;
-                    }
+                    // Update the quantity of the existing cart item
+                    string updateCartItemQuery = "UPDATE CartItem SET Quantity = @Quantity WHERE ProductId = @ProductId AND CartId = @CartId";
+                    SqlCommand updateCartItemCommand = new SqlCommand(updateCartItemQuery, connection);
+                    updateCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
+                    updateCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
+                    updateCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
+                    await updateCartItemCommand.ExecuteNonQueryAsync();
                 }
-
             }
 
-            return cart1;
+            // Return the updated cart
+            return cart;
         }
+
 
         async Task ICartRepository.DeleteCart(int cartId)
         {
