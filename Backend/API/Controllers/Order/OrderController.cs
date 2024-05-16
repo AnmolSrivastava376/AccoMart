@@ -23,7 +23,7 @@ namespace API.Controllers.Order
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
         private readonly ICartService _cartService;
-        private readonly string _domain = "https://localhost:7153/";
+        private readonly string _domain = "https://localhost:4200/";
 
         public OrderController(IConfiguration configuration, ICartService cartService)
         {
@@ -106,8 +106,8 @@ namespace API.Controllers.Order
         {
             var options = new SessionCreateOptions
             {
-                SuccessUrl = _domain + "Checkout/OrderConfirmation",
-                CancelUrl = _domain + "Cart/GetCart",
+                SuccessUrl = _domain + "home/yourorders",
+                CancelUrl = _domain + "home/cart",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = "sdfgh@gmail.com"
