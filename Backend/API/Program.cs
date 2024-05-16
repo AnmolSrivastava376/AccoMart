@@ -12,25 +12,14 @@ using Microsoft.OpenApi.Models;
 using Service.Models;
 using Service.Services;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
-using Microsoft.AspNetCore.Rewrite;
 using Service.Services.Interface;
 using Service.Services.Implementation;
-using Data.Repository.Implementation;
 using Stripe;
-using System.ComponentModel;
+using ProductService = Service.Services.Implementation.ProductService;
+using Data.Repository.Interface;
+using InvoiceService = Service.Services.Implementation.InvoiceService;
 
-
-/*
-QuestPDF.Settings.License = LicenseType.Community;
-Document.Create(Container =>
-{
-    Container.Page(page =>
-    {
-        page.Size(PageSizes.A4);
-    });
-}).ShowInPreviewer();*/
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -68,12 +57,15 @@ using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Se
 
 
 //Services and Repo 
-builder.Services.AddScoped<IProductService, Service.Services.Implementation.ProductService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IUserManagement, UserManagement>();
-
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=AccoMart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");

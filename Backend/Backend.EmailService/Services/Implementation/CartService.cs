@@ -75,15 +75,7 @@ namespace Service.Services.Implementation
             }
         }
 
-        async Task ICartService.GenerateInvoiceAsync(int cartId)
-        {
-             await _cartRepository.GenerateInvoice(cartId);
-        }
-
-        /*async Task<string> ICartService.GetInvoiceAsync(int orderId)
-        {
-           return await _cartRepository.GetInvoice(orderId);
-        }*/
+        
 
         async Task ICartService.DeleteCartAsync(int cartId)
         {

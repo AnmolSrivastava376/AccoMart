@@ -11,8 +11,7 @@ namespace Service.Services.Interface
         Task DeleteCartItemAsync(int productId);
         Task<int> AddToCartAsync();
         Task AddUser(Users user);
-        Task GenerateInvoiceAsync(int orderId);
-        //Task<string> GetInvoiceAsync(int orderId);
+       
         Task DeleteCartAsync(int cartId);
     }
 }

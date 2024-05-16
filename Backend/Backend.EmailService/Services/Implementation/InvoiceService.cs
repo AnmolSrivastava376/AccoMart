@@ -1,6 +1,7 @@
 ﻿using Data.Repository.Implementation;
 using Data.Repository.Interface;
 using Data.Repository.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Service.Services.Interface;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace Service.Services.Implementation
             await _invoiceRepository.GenerateInvoice(cartId);
         }
 
-        async Task<string> IInvoiceService.GetInvoiceAsync(int orderId)
+        async Task<byte[]> IInvoiceService.GetInvoiceAsync(int orderId)
         {
            return await _invoiceRepository.GetInvoice(orderId);
         }

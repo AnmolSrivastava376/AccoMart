@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repository.Interface
 {
-    internal class IInvoiceRepository
+    public interface IInvoiceRepository
     {
+        Task GenerateInvoice(int orderId);
+        Task<byte[]> GetInvoice(int orderId);
     }
 }
