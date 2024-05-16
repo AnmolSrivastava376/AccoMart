@@ -2,37 +2,29 @@
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Service.Services.Interface;
+using Microsoft.Extensions.Configuration;
 using PdfSharpCore.Pdf;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
 using PdfSharpCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
-
-namespace API.Controllers.Invoice
+namespace Data.Repository.Implementation
 {
-    public class InvoiceController : Controller
+    public class InvoiceRepository
     {
-        private readonly ICartService _cartService;
-        private readonly IConfiguration _configuration; 
-        public InvoiceController(ICartService cartService, IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+
+        public InvoiceRepository(IConfiguration configuration)
         {
             _configuration = configuration;
-            _cartService = cartService;
-        }
 
-        [HttpPost("GenerateInvoice/{orderId}")]
-        public async Task<IActionResult> GenerateInvoice(int orderId)
-        {
-           await _cartService.GenerateInvoiceAsync(orderId);
-           return Ok();
+            public async Task<IActionResult> GetInvoice(int orderId)
+            {
 
-        }
-
-
-        [HttpGet("GetInvoice/{orderId}")]
-        public async Task<IActionResult>GetInvoice(int orderId)
-        {
-           
                 GetInvoiceDto invoiceDto = new GetInvoiceDto();
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -157,12 +149,12 @@ namespace API.Controllers.Invoice
 
                     htmlcontent += "</div>";
 
-                PdfGenerator.AddPdfPages(document, htmlcontent, PageSize.A4);           
+                    PdfGenerator.AddPdfPages(document, htmlcontent, PageSize.A4);
 
 
-            }
+                }
 
-            byte[]? response = null;
+                byte[]? response = null;
                 using (MemoryStream ms = new MemoryStream())
                 {
                     document.Save(ms);
@@ -171,6 +163,7 @@ namespace API.Controllers.Invoice
                 string Filename = "Invoice_" + ".pdf";
                 return File(response, "application/pdf", Filename);
             }
+
         }
-    
+    }
 }
