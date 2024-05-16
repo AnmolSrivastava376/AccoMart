@@ -25,14 +25,7 @@ export class CartStore {
   cartItems$ = this._cartItemsSubject.asObservable();
 
   get cartItems(): cartItem[] {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.decoded = jwtDecode(token);
-    }
-    const cartId = this.decoded.CartId;
-    const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId;
-    return this._cartItems || this.cartItemService.fetchCartItemByCartId(cartId);
+    return this._cartItems
   }
 
   set cartItems(items: cartItem[]) {
@@ -41,16 +34,11 @@ export class CartStore {
       this.decoded = jwtDecode(token);
     }
     const cartId = this.decoded.CartId;
-    const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId;
     this._cartItems = items;
     this._cartItemsSubject.next(items);
     this.updateLocalStorage();
     this.cartItemService.addCartByCartId(items, cartId);
   }
-
-
-
   private updateLocalStorage(): void {
     localStorage.setItem('cartItems', JSON.stringify(this._cartItems));
   }
