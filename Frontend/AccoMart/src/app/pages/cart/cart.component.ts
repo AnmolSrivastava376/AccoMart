@@ -12,17 +12,18 @@ import { Address } from '../../interfaces/address';
 import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { deliveryServices } from '../../services/delivery.service';
-
-import { CartOrder } from '../../interfaces/placeOrder';
 import { FormsModule } from '@angular/forms';
 import { orderServices } from '../../services/order.service';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
+import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
+import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
+import { ChangeServiceComponent } from '../../components/change-service/change-service.component';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule],
+  imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
   providers : [cartItemService],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
@@ -30,38 +31,17 @@ import { Subscription } from 'rxjs';
 export class CartComponent {
   isVisible = false;
   selectedDeliveryId: number;
-  toggleVisibility() {
-    this.isVisible = !this.isVisible;
-  }
   cartItemLength=0;
   private cartSubscription: Subscription;
   constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices,
     private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService) {}
 
   cart: cartItem[] = [];
-
-  address: Address = {
-    street : "",
-    city : "",
-    state : "",
-    zipCode : "",
-    phoneNumber : ""
-  };
-
-  delivery: DeliveryService[] = [{
-    deliveryId : 0,
-    imageUrl : "",
-    serviceName : "",
-    price : 0,
-    deliveryDays : 0
-  }];
-
-  order: CartOrder = {
-    userId : "",
-    cartId : 0,
-    addressId: 0,
-    deliveryId : 0
-  };
+  clickedIndex=0;
+  address: Address;
+  delivery: DeliveryService[] = [];
+  activeDeliveryIndex=0;
+  activeDeliveryService: DeliveryService;
 
   decoded: { CartId: number,AddressId : number, UserId: string};
 
@@ -70,7 +50,7 @@ export class CartComponent {
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
       items=>{
-        this.cart = items
+        this.cart = items 
       }
     )
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
@@ -84,20 +64,13 @@ export class CartComponent {
     }
     const cartId = this.decoded.CartId;
     const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId; // Add this line to get userId
-
-    // Fetching cart items
-    
+    const userId = this.decoded.UserId;
 
     // Fetching address
     this.addressService.getAddress(addressId)
     .then((response) => {
       console.log(response.data);
       this.address = response.data;
-      //this.cdr.detectChanges();
-      console.log(this.address);
-      console.log(this.address.city);
-      console.log(this.address.street || this.address.city || this.address.state || this.address.zipCode || this.address.phoneNumber)
     })
     .catch((error) => {
       console.error('Error fetching address:', error);
@@ -106,13 +79,13 @@ export class CartComponent {
     // Fetching delivery
     this.deliveryService.getDeliveryServices()
     .then((response) => {
-      //console.log(this.delivery.length);
       this.delivery = response.data;
+      if(this.delivery)
+      this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
     })
     .catch((error) => {
       console.error('Error fetching delivery services:', error);
     });
-    console.log(this.delivery.length);
   }
 
   placeOrder() {
@@ -125,5 +98,16 @@ export class CartComponent {
       .catch((error: any) => {
         console.error('Error placing order:', error);
       });
+  }
+  updateActiveDeliveryService(service: DeliveryService) {
+    this.activeDeliveryService = service;
+  }
+  updateActiveDeliveryIndex(index:number){
+    this.activeDeliveryIndex = index;
+    this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
+  }
+  toggleVisibility(clickedIndex: number) {
+    this.clickedIndex = clickedIndex
+    this.isVisible = !this.isVisible;
   }
 }
