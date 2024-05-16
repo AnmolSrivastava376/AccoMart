@@ -89,7 +89,7 @@
       <app-change-address></app-change-address>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===2">
-      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex" (activeDeliveryService)="updateActiveDeliveryService($event)" (activeDeliveryIndex)="updateActiveDeliveryIndex($event)" (closeWindow)="toggleVisibility(0)"></app-change-service>
+      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex" (activeDeliveryIndex)="updateActiveDeliveryIndex($event)" (closeWindow)="toggleVisibility(0)"></app-change-service>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===3">
       <app-payment-method></app-payment-method>
