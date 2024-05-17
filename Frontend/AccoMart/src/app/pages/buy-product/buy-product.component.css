@@ -1,0 +1,63 @@
+.parent{
+  background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+}
+.hide{
+  display: none;
+}
+.floating-window{
+  animation: slide-in 500ms
+}
+.bg{
+  animation: fade 500ms;
+}
+@keyframes slide-in{
+  from {top: -100%}
+  to {top: 0}
+}
+@keyframes fade{
+  from {opacity: 0%;}
+  to {opacity: 100%;}
+}
+.und::after{
+  position: absolute;
+  content: '';
+  bottom: 0;
+  left: 0;
+  width: 120%;
+  height: 2px;
+  background: black;
+}
+@media (max-width: 1200px){
+  .minw{
+      min-width: 250px;
+  }
+}
+@media (max-width: 1000px){
+  .col{
+      flex-direction: column;
+      gap: 0;
+  }
+}
+@media(max-width: 500px){
+  .pad{
+      padding: 20px;
+      border-radius: 10px;
+  }
+  .p-adj{
+      padding: 20px;
+  }
+  .p-parent{
+      padding: 0;
+  }
+}
+@media (max-width: 400px) {
+  .text-adj{
+      font-size: 12px;
+  }
+  .head-adj{
+      font-size: 16px;
+  }
+  .und::after{
+      height: 1px;
+  }
+}
