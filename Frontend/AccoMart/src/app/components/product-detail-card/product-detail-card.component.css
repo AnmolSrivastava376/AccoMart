@@ -5,6 +5,9 @@
 .parent{
   background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
 }
+.scrl::-webkit-scrollbar{
+  display: none;
+}
 
 .wrapper {
   background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
