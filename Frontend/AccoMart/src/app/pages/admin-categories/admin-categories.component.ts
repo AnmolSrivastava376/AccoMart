@@ -7,11 +7,12 @@ import { Category } from '../../interfaces/category';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
 
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-admin-categories',
   standalone: true,
-  imports: [NavbarComponent, SidebarComponent,CommonModule,FormsModule],
+  imports: [NavbarComponent, SidebarComponent,CommonModule,FormsModule,MatIcon],
   templateUrl: './admin-categories.component.html',
   styleUrl: './admin-categories.component.css'
 })

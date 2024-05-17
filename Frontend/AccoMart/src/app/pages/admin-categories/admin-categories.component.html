@@ -8,24 +8,22 @@
         <app-sidebar></app-sidebar>
     </div>
 
-    
-
     <!-- Main content -->
     <div class="main-content ml-64 overflow-auto">
         <div class="ml-4 mt-4">
             <h2 class="text-2xl font-semibold mb-4">All Categories</h2>
             <div class="flex-grow p-8">
                 <div class="mb-8 text-center">
-                    <button (click)="openEditPopup(defaultCategory)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"> Add New Category</button>
+                    <button (click)="openEditPopup(defaultCategory)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"> Add New Category</button>
                 </div>
                 <div class="grid grid-cols-2 gap-4 ml-20">
                     <div *ngFor="let category of categories" class="bg-white shadow-md rounded-md p-4 flex items-center justify-between">
                         <span class="text-lg">{{ category.categoryName }}</span>
                         <div class="space-x-2">
-                            <button  (click)="openEditPopup(category)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4">
+                            <button (click)="openEditPopup(category)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded ml-4">
                                 Edit
                             </button>
-                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
                                 Delete
                             </button>
                         </div>
