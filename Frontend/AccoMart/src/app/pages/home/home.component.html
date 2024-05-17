@@ -1,6 +1,6 @@
-<div class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col parent px-[2.5vw] py-[5vh] items-center justify-center">
+<div class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col items-center justify-center">
     <div class="w-full bg-gray-300 relative rounded-t-[10px] r-adj">
-        <div class="w-full h-[50px]">
+        <div class="w-full h-[60px] shadow-2xl">
             <app-navbar></app-navbar>
         </div>
         <div class="w-full h-full border flex py-[20px] col relative">
@@ -13,10 +13,10 @@
             </div>
         </div>
     </div>
-    <div class="w-full h-fit fixed bottom-0 flex justify-end pb-[30px] pr-[40px]">
+    <div class="w-full h-0 fixed bottom-[90px] right-[40px] flex justify-end">
         <div class="w-[70px] h-[70px] border bg-gray-200 shadow-lg rounded-[50%] left-[200px] bottom-[40px] flex items-center justify-center z-[50] cursor-pointer" (click)="gotoCart()">
             <img src="../../../assets/Image/cart-icon.webp" class="w-[44px] h-[44px]"/>
-            <div class="absolute top-0 right-[40px] w-[20px] h-[20px] bg-blue-700 flex p-2 text-white items-center justify-center rounded-[50%]"><div class="text-[12px] leading-[12px] font-bold">{{cartItemLength}}</div></div>
+            <div class="absolute top-0 right-[0px] w-[20px] h-[20px] bg-blue-700 flex p-2 text-white items-center justify-center rounded-[50%]"><div class="text-[12px] leading-[12px] font-bold">{{cartItemLength}}</div></div>
         </div>
     </div>
     <!-- <div class="absolute [100px] h-[50px] bg-white cursor-pointer" (click)="getInvoice()">getInvoice</div> -->
