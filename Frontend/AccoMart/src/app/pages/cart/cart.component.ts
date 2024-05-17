@@ -19,6 +19,8 @@ import { Subscription } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
 import { ChangeServiceComponent } from '../../components/change-service/change-service.component';
+import { productService } from '../../services/product.services';
+import { Product } from '../../interfaces/product';
 
 @Component({
   selector: 'app-cart',
@@ -33,7 +35,7 @@ export class CartComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices,
+  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices, private productService: productService,
     private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService) {}
 
   cart: cartItem[] = [];
@@ -42,7 +44,7 @@ export class CartComponent {
   delivery: DeliveryService[] = [];
   activeDeliveryIndex=0;
   activeDeliveryService: DeliveryService;
-
+  products: Product[] = [];
   decoded: { CartId: number,AddressId : number, UserId: string};
 
   ngOnInit(): void {
@@ -50,14 +52,15 @@ export class CartComponent {
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
       items=>{
-        this.cart = items 
+        this.cart = items;
+        this.cartItemLength = items.length;
+        this.cart.forEach(item=>{
+          this.productService.fetchProductById(item.productId).then((response)=>{
+            this.products.push(response.data)
+          })
+        })
       }
     )
-    this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items => {
-        this.cartItemLength = items.length;
-      }
-    );
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
@@ -87,7 +90,25 @@ export class CartComponent {
       console.error('Error fetching delivery services:', error);
     });
   }
-
+  getCartTotal(): number {
+    let total = 0;
+    this.cart.forEach((item, index) => {
+      total += this.products[index].productPrice * item.quantity;
+    });
+    return total;
+  }
+  getDeliveryCharges(): number {
+    return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
+  }
+  getDiscounts(): number {
+    return 5.00;
+  }
+  getTaxes(): number{
+    return 10;
+  }
+  getGrandTotal(): number {
+    return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
+  }
   placeOrder() {
     this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
       .then((response: { data: string; }) => {
