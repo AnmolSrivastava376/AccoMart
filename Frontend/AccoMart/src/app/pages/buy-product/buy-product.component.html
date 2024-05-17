@@ -1,0 +1,97 @@
+<div class="max-w-[100vw] min-h-[100vh] flex flex-col px-[5vh] py-[5vh] parent p-parent relative"
+  [ngClass]="{'overflow-hidden max-h-[100vh]': isVisible}">
+  <app-navbar></app-navbar>
+  <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] bg-gray-300 col p-adj">
+    <div class="w-full h-full flex-[75] flex flex-col">
+      <div class="font-bold text-[28px] leading-[32px]">Buy Product {{}}</div>
+
+      <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
+        <div *ngFor="let item of cart">
+          <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
+        </div>
+        <div class="text-gray-500">
+          {{cart.length===0?"No items in cart":""}}
+        </div>
+      </div>
+    </div>
+    <div class="w-full h-full flex-[25] sticky top-[35px] flex flex-col gap-[20px] mb-[30px] minw">
+      <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
+        <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Address</div>
+        <div class="w-full h-[1px] bg-black"></div>
+        <div
+          *ngIf="address && (address.street || address.city || address.state || address.zipCode || address.phoneNumber)"
+          class="text-adj">
+          {{ address.street }} {{ address.city }} {{ address.state }} {{ address.zipCode }} {{ address.phoneNumber }}
+        </div>
+        <div
+          class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-black self-center flex justify-center items-center cursor-pointer"
+          (click)="toggleVisibility(1)">
+          <div class="text-white font-semibold head-adj">Change Address</div>
+        </div>
+      </div>
+      <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
+        <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Service</div>
+        <div class="w-full h-[1px] bg-black"></div>
+        <div *ngIf="delivery && delivery.length > 0" class="flex flex-col">
+          <div class="font-bold">{{activeDeliveryService.serviceName}} - ({{activeDeliveryService.deliveryDays}} days) - (${{activeDeliveryService.price}})</div>
+          <div
+          class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-black self-center flex justify-center items-center cursor-pointer"
+          (click)="toggleVisibility(2)">
+          <div class="text-white font-semibold head-adj">Change Service</div>
+        </div>
+        </div>
+        <div *ngIf="!delivery || delivery.length === 0">
+          Loading delivery services...
+        </div>
+      </div>
+      <div class="parent w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]">
+        <div class="font-bold text-[24px] leading-[28px] head-adj">Cart Summary</div>
+        <div class="w-full h-[1px] bg-white mb-[10px]"></div>
+        <div class="flex justify-between items-center leading-[16px] text-adj">
+          <div class="">Cart Subtotal</div>
+          <div class="">$ 1200</div>
+        </div>
+        <div class="flex justify-between items-center leading-[16px] text-adj">
+          <div class="">Delivery Charges</div>
+          <div class="">$ 19.61</div>
+        </div>
+        <div class="flex justify-between items-center leading-[16px] text-adj">
+          <div class="">Taxes</div>
+          <div class="">$ 11.46</div>
+        </div>
+        <div class="flex justify-between items-center leading-[16px] text-adj">
+          <div class="">Discount</div>
+          <div class="">$ 5.00</div>
+        </div>
+        <div class="w-full h-[1px] bg-white mt-[10px]"></div>
+        <div class="flex justify-between items-center leading-[16px] font-semibold text-adj">
+          <div class="">Grand Total</div>
+          <div class="">$ 11.46</div>
+        </div>
+        <div class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer" (click)="placeOrder()">
+          <div class="text-black font-semibold head-adj">Buy Now</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="absolute bg w-[100vw] h-[100vh] top-0 left-0 flex items-center justify-center z-[20] bg-[#00000050]"
+  *ngIf="isVisible">
+  <div
+    class="floating-window relative w-[90%] py-[5px] h-fit min-h-[100px] z-10 bg-white rounded-[10px] max-w-[800px] flex flex-col">
+    <div class="w-full mb-[10px] h-[30px] flex items-center justify-between px-[10px] cursor-pointer"
+      (click)="toggleVisibility(0)">
+      <div class="font-bold text-[20px] relative und head-adj">{{clickedIndex===1?'Change Address': clickedIndex === 2? 'Change Service': 'Choose Payment Method'}}</div>
+      <span class="font-bold">X</span>
+    </div>
+    <div class="w-full h-full" *ngIf="clickedIndex===1">
+      <app-change-address></app-change-address>
+    </div>
+    <div class="w-full h-full" *ngIf="clickedIndex===2">
+      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex" (activeDeliveryIndex)="updateActiveDeliveryIndex($event)" (closeWindow)="toggleVisibility(0)"></app-change-service>
+    </div>
+    <div class="w-full h-full" *ngIf="clickedIndex===3">
+      <app-payment-method></app-payment-method>
+    </div>
+</div>
