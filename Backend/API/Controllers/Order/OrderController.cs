@@ -23,7 +23,7 @@ namespace API.Controllers.Order
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
         private readonly ICartService _cartService;
-        private readonly string _domain = "https://localhost:4200/";
+        private readonly string _domain = "http://localhost:4200/";
 
         public OrderController(IConfiguration configuration, ICartService cartService)
         {
