@@ -46,9 +46,6 @@
     .p-adj{
         padding: 20px;
     }
-    .p-parent{
-        padding: 0;
-    }
 }
 @media (max-width: 400px) {
     .text-adj{
