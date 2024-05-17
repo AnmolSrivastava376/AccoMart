@@ -1,17 +1,25 @@
-<div class="navbar position-sticky top-0 z-10">
-    <app-navbar></app-navbar>
-  </div>
+<div class="navbar fixed top-0 left-0 w-full z-50"> <!-- Add z-50 to ensure navbar is above other elements -->
+  <app-navbar></app-navbar>
+</div>
+
+<div class="flex">
+  <!-- Sidebar -->
+
+  <div class="sidebar  top-0  h-full "> <!-- Add z-40 to ensure sidebar is below navbar -->
+    <app-sidebar></app-sidebar>
+</div>
   
-  <div class="flex">
-    <!-- Sidebar -->
-  
-      <app-sidebar></app-sidebar>
-  
+
     
   
     <!-- Main content -->
     <div class="ml-4">
         <h1 class="text-2xl font-bold mb-4">Delivery Services</h1>
+        <h2 class="text-2xl font-bold mb-4 mt-5">Products</h2>
+        <div class="mb-8 text-center">
+          <button  class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"> + Delviery Service</button>
+      </div>
+  
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div *ngFor="let deliveryService of deliveryServicesList"
                  class="bg-white rounded-lg shadow-md p-4">

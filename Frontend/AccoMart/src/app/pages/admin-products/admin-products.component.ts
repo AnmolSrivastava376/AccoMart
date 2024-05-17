@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [NavbarComponent,CommonModule,SidebarComponent],
+  imports: [NavbarComponent,CommonModule,SidebarComponent,HttpClientModule],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css'
 })
