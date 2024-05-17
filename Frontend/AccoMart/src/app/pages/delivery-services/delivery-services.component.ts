@@ -4,6 +4,7 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { deliveryServices } from '../../services/delivery.service';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { CommonModule } from '@angular/common';
+import { createDeliveryService } from '../../interfaces/createDeliveryService';
 
 @Component({
   selector: 'app-delivery-services',
@@ -28,7 +29,9 @@ export class DeliveryServicesComponent {
   }
 
   deleteDeliveryService(id: number) {
+    
     this.deliveryService.deleteDeliveryService(id).then(() => {
+
       // After successful deletion, fetch the updated list of delivery services
       this.fetchDeliveryServices();
     }).catch(error => {
@@ -36,4 +39,22 @@ export class DeliveryServicesComponent {
     });
   }
 
+
+  editDeliveryService(deliveryService: createDeliveryService,id:number) {
+    this.deliveryService.editDeliveryService(deliveryService,id).then(() => {
+      console.log("Delivery Service succesfully updated")
+      this.fetchDeliveryServices();
+    }).catch(error => {
+      console.error('Error editing delivery service:', error);
+    });
+  }
+
+  createDeliveryService(newDeliveryService: createDeliveryService) {
+    this.deliveryService.addDeliveryService(newDeliveryService).then(() => {
+      // After successful creation, fetch the updated list of delivery services
+      this.fetchDeliveryServices();
+    }).catch(error => {
+      console.error('Error creating delivery service:', error);
+    });
+  }
 }

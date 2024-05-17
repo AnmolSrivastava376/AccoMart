@@ -3,12 +3,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [NavbarComponent],
+  imports: [NavbarComponent,SidebarComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
