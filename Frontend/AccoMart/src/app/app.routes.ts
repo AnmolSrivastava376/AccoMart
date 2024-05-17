@@ -20,29 +20,29 @@ import { EditProductComponent } from './pages/edit-product/edit-product.componen
 import { AddProductComponent } from './pages/add-product/add-product.component';
 import { DeliveryServicesComponent } from './pages/delivery-services/delivery-services.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { BuyProductComponent } from './pages/buy-product/buy-product.component';
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
     { path: 'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent },
+    { path: 'home/buy-product/:productId', component: BuyProductComponent},
     { path: 'home/auth', component: AuthComponent },
-    {path :'home/forgotpassword', component:ForgetpasswordPageComponent},
-    {path :'home/reset-password', component:ResetPasswordComponent},
-    { path : 'login', component: LoginComponent},
+    { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
+    { path: 'home/reset-password', component:ResetPasswordComponent},
+    { path: 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
-    { path:  'login-two-factor',component:Login2FAComponent},
-    { path:  'register',component:RegisterComponent},
-    { path:  'admin',component:AdminComponent},
-    { path:  'admin/products',component:AdminProductsComponent},
-    { path:  'admin/categories',component:AdminCategoriesComponent},
-    { path:  'admin/product/edit/:productId',component:EditProductComponent},
-    { path:  'admin/product/add',component:AddProductComponent},
-    { path:  'admin/delivery',component:DeliveryServicesComponent}
-
-
+    { path: 'login-two-factor',component:Login2FAComponent},
+    { path: 'register',component:RegisterComponent},
+    { path: 'admin',component:AdminComponent},
+    { path: 'admin/products',component:AdminProductsComponent},
+    { path: 'admin/categories',component:AdminCategoriesComponent},
+    { path: 'admin/product/edit/:productId',component:EditProductComponent},
+    { path: 'admin/product/add',component:AddProductComponent},
+    { path: 'admin/delivery',component:DeliveryServicesComponent}
 ];
 
 @NgModule({

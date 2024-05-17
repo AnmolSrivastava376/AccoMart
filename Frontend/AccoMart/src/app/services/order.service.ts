@@ -12,5 +12,8 @@ export class orderServices{
         return axios.post<string>(`http://localhost:5239/OrderController/PlaceOrderByCart?userId=${userId}&cartId=${cartId}&addressId=${addressId}&deliveryId=${deliveryId}`);
      }
 
+     placeOrderByProduct(userId : string, addressId : number, deliveryId : number, productId : number){
+      return axios.post<string>(`http://localhost:5239/OrderController/PlaceOrderByCart?userId=${userId}&addressId=${addressId}&deliveryId=${deliveryId}&productId=${productId}`);
+   }
 
 }

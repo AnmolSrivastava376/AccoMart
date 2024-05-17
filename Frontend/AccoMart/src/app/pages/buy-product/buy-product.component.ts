@@ -2,7 +2,7 @@ import { Component} from '@angular/core';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { CartProductCardComponent } from '../../components/cart-product-card/cart-product-card.component';
 import { CommonModule, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { cartItemService } from '../../services/cartItem.services';
 import { HttpClientModule } from '@angular/common/http';
 import { cartItem } from '../../interfaces/cartItem';
@@ -12,31 +12,30 @@ import { Address } from '../../interfaces/address';
 import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { deliveryServices } from '../../services/delivery.service';
-import { FormsModule } from '@angular/forms';
 import { orderServices } from '../../services/order.service';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
 import { ChangeServiceComponent } from '../../components/change-service/change-service.component';
-import { productService } from '../../services/product.services';
+import { FormsModule } from '@angular/forms';
 import { Product } from '../../interfaces/product';
+import { productService } from '../../services/product.services';
 
 @Component({
-  selector: 'app-cart',
+  selector: 'app-buy-product',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
-  providers : [cartItemService],
-  templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  templateUrl: './buy-product.component.html',
+  styleUrl: './buy-product.component.css'
 })
-export class CartComponent {
+export class BuyProductComponent {
   isVisible = false;
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
   constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices, private productService: productService,
-    private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService) {}
+    private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService,private route : ActivatedRoute) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -46,7 +45,7 @@ export class CartComponent {
   activeDeliveryService: DeliveryService;
   products: Product[] = [];
   decoded: { CartId: number,AddressId : number, UserId: string};
-
+  selectedProductId: number;
   ngOnInit(): void {
     this.cartItemLength = this.cartService.fetchQuantityInCart();
     this.cart = this.cartService.fetchCart();
@@ -89,6 +88,10 @@ export class CartComponent {
     .catch((error) => {
       console.error('Error fetching delivery services:', error);
     });
+
+    this.route.params.subscribe(params => {
+      this.selectedProductId = +params['productId'];
+    });
   }
   getCartTotal(): number {
     let total = 0;
@@ -110,7 +113,7 @@ export class CartComponent {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
   placeOrder() {
-    this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
+    this.orderService.placeOrderByProduct(this.decoded.UserId,this.decoded.AddressId, 6, this.selectedProductId)
       .then((response: { data: string; }) => {
         const result: string = response.data;
         window.location.href = result;
