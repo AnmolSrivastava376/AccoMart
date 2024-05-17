@@ -9,4 +9,5 @@ import { ForgetpasswordComponent } from '../../components/forgetpassword/forgetp
 })
 export class ForgetpasswordPageComponent {
 
+  
 }
