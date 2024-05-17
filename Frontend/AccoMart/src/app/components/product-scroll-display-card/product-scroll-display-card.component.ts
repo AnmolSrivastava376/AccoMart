@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { cartItem } from '../../interfaces/cartItem';
 import { CartStore } from '../../store/cart-store';
 import { CartService } from '../../services/cart.services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-scroll-display-card',
@@ -17,7 +18,7 @@ export class ProductScrollDisplayCardComponent {
   @Input() products?: Product[];
   cart?: cartItem[];
   i = 0;
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService, private router: Router) {
     this.cart = this.cartService.fetchCart();
   }
   handleNextButtonClick() {
@@ -47,5 +48,8 @@ export class ProductScrollDisplayCardComponent {
   }
   removeElementByProductId(productId: number): void{
     this.cartService.removeFromCart(productId);
+  }
+  navigateToProduct(productId:number){
+    this.router.navigate(['/home/productdetail/'+productId.toString()])
   }
 }

@@ -4,7 +4,7 @@
   <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] bg-gray-300 col p-adj">
     <div class="w-full h-full flex-[75] flex flex-col">
       <div class="font-bold text-[28px] leading-[32px]">Shopping Cart</div>
-      <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} items</span> in your cart</div>
+      <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} item<span *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
       <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
         <div *ngFor="let item of cart">
           <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
@@ -49,24 +49,24 @@
         <div class="w-full h-[1px] bg-white mb-[10px]"></div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
           <div class="">Cart Subtotal</div>
-          <div class="">$ 1200</div>
+          <div class="">$ {{getCartTotal()}}</div>
         </div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
           <div class="">Delivery Charges</div>
-          <div class="">$ 19.61</div>
+          <div class="">$ {{getDeliveryCharges()}}</div>
         </div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
           <div class="">Taxes</div>
-          <div class="">$ 11.46</div>
+          <div class="">$ {{getTaxes()}}</div>
         </div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
           <div class="">Discount</div>
-          <div class="">$ 5.00</div>
+          <div class="">$ {{getDiscounts()}}</div>
         </div>
         <div class="w-full h-[1px] bg-white mt-[10px]"></div>
         <div class="flex justify-between items-center leading-[16px] font-semibold text-adj">
           <div class="">Grand Total</div>
-          <div class="">$ 11.46</div>
+          <div class="">$ {{getGrandTotal()}}</div>
         </div>
         <div class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer" (click)="placeOrder()">
           <div class="text-black font-semibold head-adj">Buy Now</div>

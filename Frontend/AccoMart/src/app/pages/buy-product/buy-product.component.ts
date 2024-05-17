@@ -61,7 +61,6 @@ export class BuyProductComponent {
     if (token) {
       this.decoded = jwtDecode(token);
     }
-    const cartId = this.decoded.CartId;
     const addressId = this.decoded.AddressId;
     const userId = this.decoded.UserId;
 
@@ -88,7 +87,7 @@ export class BuyProductComponent {
   }
 
   placeOrder() {
-    this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
+    this.orderService.placeOrderByProduct(this.decoded.UserId, this.decoded.AddressId,6, 9)
       .then((response: { data: string; }) => {
         const result: string = response.data;
         window.location.href = result;
