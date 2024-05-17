@@ -30,6 +30,7 @@ export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   isLogin = true;
+  spinLoader= false;
   constructor(private router: Router) {}
 
   loginForm = this.builder.group({
@@ -42,6 +43,7 @@ export class AuthCardComponent {
     password: ['', Validators.required],
   });
 
+
   onRegister() {
     const username = this.registerForm.value.username!;
     const email = this.registerForm.value.email!;
@@ -53,6 +55,10 @@ export class AuthCardComponent {
     });
   }
   onLogin() {
+
+
+    this.spinLoader = true
+  
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
     this.httpService.login(email, password).subscribe((result) => {

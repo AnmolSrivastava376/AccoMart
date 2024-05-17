@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import axios from "axios";
+import { resetPassword } from '../interfaces/resetPassword';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -37,10 +39,9 @@ export class HttpService {
     });
   }
 
-  loginForogotPwd(email : string, password:string) {
-    return this.http.post<{OTP:Number}>('http://localhost:5239/AuthenticationController/Login',{
+  loginForgotPwd(email : string) {
+    return this.http.post<{OTP:Number}>(`http://localhost:5239/AuthenticationController/LoginForgotPassword?email=${email}`,{
       "email": email,
-      "password": password
     });
   }
 
@@ -61,12 +62,21 @@ export class HttpService {
       email: email
     });
 
-
-
-
   }
-  login2FA2()
-  {
-    return this.http.post(`http://localhost:5239/AuthenticationController`, {});
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post<any>(`http://localhost:5239/AuthenticationController/forgot-password?email=${email}`, {});
   }
+
+  resetPassword(token: string, email: string, resetPasswords: resetPassword): Observable<any> {
+    resetPasswords.token = token;
+    resetPasswords.email = email;
+    return this.http.post<any>('http://localhost:5239/AuthenticationController/reset-password', resetPasswords);
+}
+
+
+
+
+
+
+
 }

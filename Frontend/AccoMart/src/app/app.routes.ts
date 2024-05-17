@@ -15,10 +15,11 @@ import { AdminComponent } from './pages/admin/admin.component';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
 import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
-import { ForgetpasswordPageComponent } from './pages/forgetpassword-page/forgetpassword-page.component';
+import { ForgetpasswordPageComponent } from './pages/forget-password/forgetpassword-page.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
 import { AddProductComponent } from './pages/add-product/add-product.component';
 import { DeliveryServicesComponent } from './pages/delivery-services/delivery-services.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
@@ -27,6 +28,7 @@ export const routes: Routes = [
     { path: 'home/cart', component: CartComponent },
     { path: 'home/auth', component: AuthComponent },
     {path :'home/forgotpassword', component:ForgetpasswordPageComponent},
+    {path :'home/reset-password', component:ResetPasswordComponent},
     { path : 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
