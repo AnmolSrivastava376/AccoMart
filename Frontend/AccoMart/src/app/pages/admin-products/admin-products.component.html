@@ -1,17 +1,16 @@
-<div class="navbar position-sticky top-0 z-10">
+<div class="navbar fixed top-0 left-0 w-full z-50"> <!-- Add z-50 to ensure navbar is above other elements -->
   <app-navbar></app-navbar>
 </div>
 
-<div class="flex">
+<div class="flex h-full">
   <!-- Sidebar -->
-
-    <app-sidebar></app-sidebar>
-
-  
+  <div class="sidebar fixed top-0 left-0 h-full z-40"> <!-- Add z-40 to ensure sidebar is below navbar -->
+      <app-sidebar></app-sidebar>
+  </div>
 
   <!-- Main content -->
-  <div class="flex-grow bg-gray-200 p-8 overflow-scroll">
-      <h2 class="text-2xl font-bold mb-4">Products</h2>
+  <div class="flex-grow bg-gray-200 p-8 overflow-scroll ml-64 ">
+      <h2 class="text-2xl font-bold mb-4 mt-5">Products</h2>
       <div class="mb-8 text-center">
         <button (click)="openAddProductPage()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"> Add New Product</button>
     </div>
