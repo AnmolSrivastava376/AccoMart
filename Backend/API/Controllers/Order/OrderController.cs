@@ -183,7 +183,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<IActionResult> PlaceOrder(string userId, int addressId, int deliveryId, int productId)
+        public async Task<string> PlaceOrder(string userId, int addressId, int deliveryId, int productId)
         {
           
             try
@@ -238,7 +238,7 @@ namespace API.Controllers.Order
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while placing the order: {ex.Message}");
+                return "An error occurred while placing the order";
             }
         }
 
@@ -246,13 +246,13 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Product")]
-        public async Task<IActionResult> Checkout(int productId)
+        public async Task<string> Checkout(int productId)
         {
 
             var options = new SessionCreateOptions
             {
-                SuccessUrl = _domain + "Checkout/OrderConfirmation",
-                CancelUrl = _domain + "Cart/GetCart",
+                SuccessUrl = _domain + "home/yourorders",
+                CancelUrl = _domain + "home/buy-product/:productId",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = "sdfgh@gmail.com",
@@ -307,8 +307,8 @@ namespace API.Controllers.Order
             var service = new SessionService();
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
-            Response.Headers.Add("Location", session.Url);       
-            return new StatusCodeResult(303);
+            Response.Headers.Add("Location", session.Url);
+            return session.Url;
         }
 
 
