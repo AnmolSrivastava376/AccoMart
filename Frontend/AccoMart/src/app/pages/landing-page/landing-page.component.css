@@ -2,6 +2,7 @@
     background-image: url('../../../assets/Image/landing-bg.jpg');
     background-position: center;
     background-size: cover;
+    filter: blur(5px);
 }
 
 .landing-img{
@@ -10,7 +11,20 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
-
+@keyframes slidein{
+    from{top: 700px;}
+    to{top: 0px;}
+}
+@keyframes slideout{
+    from{top: -700px;}
+    to{top: 0px;}
+}
+.slidein{
+    animation: slidein 1400ms;
+}
+.slideout{
+    animation: slideout 1400ms;
+}
 .child{
     background-color: white;
 }
@@ -73,7 +87,7 @@
     }
 }
 @media (max-width: 1000px){
-    .landing-img{
+    .landing-img, .hide{
         display: none;
     }
 }
