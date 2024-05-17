@@ -31,8 +31,6 @@ namespace Data.Repository.Implementation
                 SqlCommand checkProductCommand = new SqlCommand(checkProductQuery, connection);
                 checkProductCommand.Parameters.AddWithValue("@OrderId", orderId);
                 await checkProductCommand.ExecuteScalarAsync();
-
-
             }
         }
 

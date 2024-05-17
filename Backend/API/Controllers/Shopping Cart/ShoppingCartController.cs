@@ -43,6 +43,13 @@ namespace API.Controllers.ShoppingCart
             return await _cartService.GetCartItemsAsync(cartId);      
         }
 
+        /*[HttpGet("Get/CartItemPrice")]
+
+        public async Task<IEnumerable<CartItem>> GetCartItems(int cartId)
+        {
+
+        }*/
+
 
         [HttpPut("Update/CartItem")]
         public async  Task<CartItem> UpdateCartItem(int productId, int quantity)
