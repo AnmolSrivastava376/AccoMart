@@ -6,7 +6,7 @@ using Data.Models.DTO;
 namespace API.Controllers.Admins
 {
 
-   
+
 
     [Route("AdminDashboard")]
     [ApiController]
@@ -17,13 +17,20 @@ namespace API.Controllers.Admins
         {
             _productService = productService;
         }
-        
+
         [HttpGet("Products/CategoryId={id}")]
-        public async Task<List<Product>> GetAllProducts(int id,string orderBy)
+        public async Task<List<Product>> GetAllProducts(int id, string orderBy)
         {
-           
-            return await _productService.GetAllProductsByCategoryAsync(id,orderBy); 
+
+            return await _productService.GetAllProductsByCategoryAsync(id, orderBy);
         }
+
+        [HttpGet("Products")]
+        public async Task<List<Product>> GetProducts()
+        {
+            return await _productService.GetAllProductsAsync();
+        }
+
 
         [HttpGet("Products/SearchBy={prefix}")]
         public async Task<Product> GetProductBySearchName(string prefix = "")
