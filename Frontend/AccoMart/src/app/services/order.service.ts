@@ -13,7 +13,7 @@ export class orderServices{
      }
 
      placeOrderByProduct(userId : string, addressId : number, deliveryId : number, productId : number){
-      return axios.post<string>(`http://localhost:5239/OrderController/PlaceOrderByCart?userId=${userId}&addressId=${addressId}&deliveryId=${deliveryId}&productId=${productId}`);
+      return axios.post<string>(`http://localhost:5239/OrderController/PlaceOrderByProduct?userId=${userId}&addressId=${addressId}&deliveryId=${deliveryId}&productId=${productId}`);
    }
 
 }

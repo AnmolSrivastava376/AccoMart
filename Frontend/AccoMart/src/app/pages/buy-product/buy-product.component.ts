@@ -46,7 +46,12 @@ export class BuyProductComponent {
   products: Product[] = [];
   decoded: { CartId: number,AddressId : number, UserId: string};
   selectedProductId: number;
+
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.selectedProductId = +params['productId'];
+    });
+    this.cartService.addToCart(this.selectedProductId);
     this.cartItemLength = this.cartService.fetchQuantityInCart();
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
@@ -89,9 +94,7 @@ export class BuyProductComponent {
       console.error('Error fetching delivery services:', error);
     });
 
-    this.route.params.subscribe(params => {
-      this.selectedProductId = +params['productId'];
-    });
+
   }
   getCartTotal(): number {
     let total = 0;
