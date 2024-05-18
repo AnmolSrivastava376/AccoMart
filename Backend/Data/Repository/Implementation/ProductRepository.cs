@@ -57,6 +57,7 @@ namespace Data.Repository.Implementation
             List<Category> categories;
 
             // Check if categories are cached in Redis
+
             string cacheKey = "Categories";
             string cachedCategories = await _database.StringGetAsync(cacheKey);
 
@@ -304,17 +305,13 @@ namespace Data.Repository.Implementation
                 };
 
                 // Update cache (if needed)
-                string cacheKey = $"Category_{categoryId}";
-                string cachedCategory = await _database.StringGetAsync(cacheKey);
-
-                if (cachedCategory != null)
-                {
-                    await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
-                }
+                string cacheKey = $"Categories"; // Update the cache key for categories
+                await _database.KeyDeleteAsync(cacheKey); // Invalidate the categories cache
 
                 return category;
             }
         }
+
 
 
 
@@ -477,6 +474,10 @@ namespace Data.Repository.Implementation
             // Remove category from cache
             string cacheKey = $"Category_{categoryId}";
             await _database.KeyDeleteAsync(cacheKey);
+
+            // Also remove the list of categories cache
+            string categoriesCacheKey = $"Categories";
+            await _database.KeyDeleteAsync(categoriesCacheKey);
         }
 
 
