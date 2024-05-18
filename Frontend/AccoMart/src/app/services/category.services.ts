@@ -21,4 +21,9 @@ export class CategoryService {
   {
     return axios.delete(`http://localhost:5239/AdminDashboard/Delete/Category/${categoryId}`)
   }
+
+  editCategory(categoryId:number,newName:string)
+  {
+    return axios.put(`http://localhost:5239/AdminDashboard/Update/Category?Id=${categoryId}&NewCategoryName=${newName}`)
+  }
 }

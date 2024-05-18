@@ -73,9 +73,9 @@ namespace Service.Services.Implementation
             return await _productRepository.GetProductBySearchName(prefix);
         }
 
-        async Task<Category> IProductService.UpdateCategoryAsync(string categoryName, string NewCategoryName)
+        async Task<Category> IProductService.UpdateCategoryAsync(int Id, string NewCategoryName)
         {
-            return await _productRepository.UpdateCategory(categoryName, NewCategoryName);
+            return await _productRepository.UpdateCategory(Id, NewCategoryName);
         }
 
         async Task<Product> IProductService.UpdateProductAsync(int productId, UpdateProductDto productDto)

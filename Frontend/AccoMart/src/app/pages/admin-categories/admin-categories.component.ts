@@ -55,16 +55,19 @@ export class AdminCategoriesComponent implements OnInit {
 
 
 
-  editCategory(category: Category) {
-    this.selectedCategory = { ...category }; 
-    this.isEditPopupOpen = true; 
+  editCategory() {
+    this.categoryService.editCategory(this.selectedCategory.categoryId,this.selectedCategory.categoryName).then(response=>{
+      this.isEditPopupOpen = false;
+      this.fetchCategories();
+    });
     
   }
 
-  openEditPopup(category: Category){
+  openEditPopup(newCategory: Category){
     this.isEditPopupOpen = true;
-    this.selectedCategory = { ...category }; 
-    console.log(this.selectedCategory);
+    this.selectedCategory = { ...newCategory }; 
+    // console.log(this.selectedCategory);
+
   }
 
   openAddPopup()
@@ -82,6 +85,7 @@ export class AdminCategoriesComponent implements OnInit {
     this.categoryService.addCategory(categoryName).then(response => {
       // After successfully adding the category, fetch the updated list of categories
       this.isAddPopupOpen = false;
+      this.categoryToAdd ='';
       this.fetchCategories();
       console.log("Category added successfully");
     }).catch(err => {

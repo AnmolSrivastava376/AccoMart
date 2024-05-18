@@ -348,7 +348,7 @@ namespace Data.Repository.Implementation
             return product;
         }
 
-        public async Task<Category> UpdateCategory(string categoryName, string newCategoryName)
+        public async Task<Category> UpdateCategory(int categoryId, string newCategoryName)
         {
             Category category = new Category();
 
@@ -356,11 +356,7 @@ namespace Data.Repository.Implementation
             {
                 await connection.OpenAsync();
 
-                // Get the category ID based on the old category name
-                string sqlCategoryIdQuery = "SELECT CategoryId FROM Category WHERE CategoryName = @CategoryName";
-                SqlCommand categoryIdCommand = new SqlCommand(sqlCategoryIdQuery, connection);
-                categoryIdCommand.Parameters.AddWithValue("@CategoryName", categoryName);
-                int categoryId = Convert.ToInt32(await categoryIdCommand.ExecuteScalarAsync());
+
 
                 // Update the category name in the database
                 string sqlQuery = "UPDATE Category SET CategoryName = @NewCategoryName WHERE CategoryId = @CategoryId";
@@ -377,6 +373,9 @@ namespace Data.Repository.Implementation
             // Update cache
             string cacheKey = $"Category_{category.CategoryId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
+
+            string categoriesCacheKey = $"Categories";
+            await _database.KeyDeleteAsync(categoriesCacheKey);
 
             return category;
         }
@@ -437,6 +436,8 @@ namespace Data.Repository.Implementation
             // Update cache
             string cacheKey = $"Product_{product.ProductId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
+
+            
 
             return product;
         }
