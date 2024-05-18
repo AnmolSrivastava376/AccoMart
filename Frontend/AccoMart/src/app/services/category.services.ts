@@ -9,4 +9,16 @@ export class CategoryService {
   fetchCategories() {
     return axios.get<Category[]>('http://localhost:5239/AdminDashboard/GetAllCategories');
   }
+
+  addCategory(categororyName:string)
+  {
+    return axios.post(`http://localhost:5239/AdminDashboard/Category/Create?categoryName=${categororyName}`);
+  }
+
+  
+
+  deleteCategory(categoryId: number)
+  {
+    return axios.delete(`http://localhost:5239/AdminDashboard/Delete/Category/${categoryId}`)
+  }
 }
