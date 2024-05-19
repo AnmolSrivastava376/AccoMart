@@ -26,7 +26,7 @@ import { Product } from '../../interfaces/product';
   selector: 'app-cart',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent,HttpClientModule],
-  providers : [addressService, deliveryService,productService,orderService,cartService],
+  providers : [addressService, deliveryService,productService,orderService,cartService,cartItemService],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -50,16 +50,14 @@ export class CartComponent {
     this.cartItemLength = this.cartService.fetchQuantityInCart();
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items=>{
+      items => {
         this.cart = items;
         this.cartItemLength = items.length;
-        this.cart.forEach(item=>{
-          this.productService.fetchProductById(item.productId).then((response)=>{
-            this.products.push(response.data)
-          })
-        })
-      }
-    )
+        // Use a combination of map and forkJoin to fetch products in parallel
+        const productRequests = items.map(item =>
+          this.productService.fetchProductById(item.productId)
+       );
+      });
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
@@ -71,11 +69,11 @@ export class CartComponent {
     // Fetching address
     this.addressService.getAddress(addressId)
   .subscribe(
-    (response: Address) => {
+    (response) => {
       console.log(response);
       this.address = response;
     },
-    (error: any) => {
+    (error) => {
       console.error('Error fetching address:', error);
     }
   );
@@ -84,13 +82,13 @@ export class CartComponent {
     // Fetching delivery
     this.deliveryService.getDeliveryServices()
     .subscribe(
-      (response: DeliveryService[]) => {
+      (response) => {
         this.delivery = response;
         if (this.delivery) {
           this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
         }
       },
-      (error: any) => {
+      (error) => {
         console.error('Error fetching delivery services:', error);
       }
     );
@@ -118,11 +116,11 @@ export class CartComponent {
   placeOrder() {
     this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
     .subscribe(
-      (response: string) => {
+      (response) => {
         window.location.href = response;
         console.log(response);
       },
-      (error: any) => {
+      (error) => {
         console.error('Error placing order:', error);
       }
     );

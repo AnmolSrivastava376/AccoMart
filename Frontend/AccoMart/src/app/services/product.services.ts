@@ -1,41 +1,36 @@
-import { Injectable, inject } from '@angular/core';
-import axios from 'axios';
-import { Product } from '../interfaces/product';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Product } from '../interfaces/product';
 import { CreateProduct } from '../interfaces/createProduct';
 
-
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root'
 })
 export class productService {
-  http = inject(HttpClient);
-  fetchProductByCategoryID(categoryId:Number) {
+  constructor(private http: HttpClient) {}
+
+  fetchProductByCategoryID(categoryId: number): Observable<Product[]> {
     return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`);
   }
-  fetchProductById(productId: number) {
-    return axios.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
+
+  fetchProductById(productId: number): Observable<Product> {
+    return this.http.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
   }
 
-  fetchAllProducts(){
-    return axios.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
+  fetchAllProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
   }
 
-  editProductById(productId: number, updatedProduct: Product) {
-    return axios.put<Product>(`http://localhost:5239/AdminDashboard/Update/Product/${productId}`, updatedProduct);
+  editProductById(productId: number, updatedProduct: Product): Observable<Product> {
+    return this.http.put<Product>(`http://localhost:5239/AdminDashboard/Update/Product/${productId}`, updatedProduct);
   }
 
-  addProduct(product:CreateProduct)
-  {
-    return axios.post('http://localhost:5239/AdminDashboard/Product/Create',product);
-  }
-  deleteProductById(productId:number)
-  {
-    return axios.delete(`http://localhost:5239/AdminDashboard/Delete/Product/${productId}`);
+  addProduct(product: CreateProduct): Observable<any> {
+    return this.http.post('http://localhost:5239/AdminDashboard/Product/Create', product);
   }
 
-
+  deleteProductById(productId: number): Observable<any> {
+    return this.http.delete(`http://localhost:5239/AdminDashboard/Delete/Product/${productId}`);
   }
-
-
-
+}

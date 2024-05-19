@@ -1,55 +1,55 @@
 import { Injectable } from '@angular/core';
-import { CartStore } from '../store/cart-store';
 import { cartItem } from '../interfaces/cartItem';
 import { Observable } from 'rxjs';
+import { cartItemService } from './cartItem.services';
 
 @Injectable({
   providedIn: 'root',
 })
 export class cartService {
-  constructor(private cartStore: CartStore) {}
+  constructor(private cartItemService : cartItemService) {}
 
   getCartItems$(): Observable<cartItem[]> {
-    return this.cartStore.cartItems$;
+    return this.cartItemService.cartItems$;
   }
   setCartItems(items: cartItem[]): void {
-    this.cartStore.cartItems = items;
+    this.cartItemService.cartItems = items;
     localStorage.setItem('cartItems', JSON.stringify(items));
   }
   fetchCart(): cartItem[] {
-    return this.cartStore.cartItems;
+    return this.cartItemService.cartItems;
   }
 
   addToCart(productId: number): void {
     if (!this.isPresentInCart(productId)) {
       const newItem: cartItem = { productId: productId, quantity: 1 };
-      this.cartStore.cartItems = [...this.cartStore.cartItems, newItem];
+      this.cartItemService.cartItems = [...this.cartItemService.cartItems, newItem];
     }
   }
 
   removeFromCart(productId: number): void {
-    const updatedCart = this.cartStore.cartItems.filter(
+    const updatedCart = this.cartItemService.cartItems.filter(
       (item) => item.productId !== productId
     );
-    this.cartStore.cartItems = updatedCart;
+    this.cartItemService.cartItems = updatedCart;
   }
 
   clearCart(): void {
-    this.cartStore.cartItems = [];
+    this.cartItemService.cartItems = [];
   }
 
   incrementCountByProductId(productId: number): void {
-    const updatedCart = this.cartStore.cartItems.map((item) => {
+    const updatedCart = this.cartItemService.cartItems.map((item) => {
       if (item.productId === productId) {
         return { ...item, quantity: item.quantity + 1 };
       }
       return item;
     });
-    this.cartStore.cartItems = updatedCart;
+    this.cartItemService.cartItems = updatedCart;
   }
 
   decrementCountByProductId(productId: number): void {
-    const updatedCart = this.cartStore.cartItems
+    const updatedCart = this.cartItemService.cartItems
       .map((item) => {
         if (item.productId === productId && item.quantity > 0) {
           return { ...item, quantity: item.quantity - 1 };
@@ -57,23 +57,23 @@ export class cartService {
         return item;
       })
       .filter((item) => item.quantity !== 0);
-    this.cartStore.cartItems = updatedCart;
+    this.cartItemService.cartItems = updatedCart;
   }
 
   findQuantityByProductId(productId: number): number {
-    const item = this.cartStore.cartItems.find(
+    const item = this.cartItemService.cartItems.find(
       (item) => item.productId === productId
     );
     return item ? item.quantity : 0;
   }
 
   isPresentInCart(productId: number): boolean {
-    return this.cartStore.cartItems.some(
+    return this.cartItemService.cartItems.some(
       (item) => item.productId === productId
     );
   }
 
   fetchQuantityInCart(): number {
-    return this.cartStore.cartItems.length;
+    return this.cartItemService.cartItems.length;
   }
 }

@@ -9,7 +9,6 @@ import { cartItem } from '../../interfaces/cartItem';
 import { jwtDecode } from 'jwt-decode';
 import { addressService } from '../../services/address.service';
 import { Address } from '../../interfaces/address';
-import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { deliveryService } from '../../services/delivery.service';
 import { orderService } from '../../services/order.service';
@@ -26,7 +25,7 @@ import { productService } from '../../services/product.services';
   selector: 'app-buy-product',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
-  providers : [cartItemService, addressService, deliveryService,productService,orderService,cartService],
+  providers : [cartItemService, addressService, deliveryService,productService,orderService,cartService,cartItemService],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css'
 })
@@ -36,7 +35,7 @@ export class BuyProductComponent {
   cartItemLength=0;
   private cartSubscription: Subscription;
   constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
-    private orderService : orderService, private cdr: ChangeDetectorRef, private cartService: cartService,private route : ActivatedRoute) {}
+    private orderService : orderService, private cartService: cartService,private route : ActivatedRoute) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -56,16 +55,14 @@ export class BuyProductComponent {
     this.cartItemLength = this.cartService.fetchQuantityInCart();
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items=>{
+      items => {
         this.cart = items;
         this.cartItemLength = items.length;
-        this.cart.forEach(item=>{
-          this.productService.fetchProductById(item.productId).then((response)=>{
-            this.products.push(response.data)
-          })
-        })
-      }
-    )
+        // Use a combination of map and forkJoin to fetch products in parallel
+        const productRequests = items.map(item =>
+          this.productService.fetchProductById(item.productId)
+       );
+      });
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);

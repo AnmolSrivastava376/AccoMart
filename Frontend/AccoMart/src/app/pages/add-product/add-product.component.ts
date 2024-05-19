@@ -35,7 +35,7 @@ export class AddProductComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   constructor(private route: ActivatedRoute , private router:Router, private productService:productService) { }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
   }
 
   Cancel(): void {
@@ -51,20 +51,19 @@ export class AddProductComponent implements OnInit {
     this.router.navigate(['/admin/categories']);
   }
 
-
-
-
-  AddProduct(){
+  AddProduct() {
     this.productService.addProduct(this.product)
-    .then((response:any) => {
-      // Handle success, e.g., show a success message
-      console.log('Product added successfully:', response.data);
-    })
-    .catch((error:any) => {
-      // Handle error, e.g., show an error message
-      console.error('Error adding product:', error);
-    });
-   
+      .subscribe(
+        (response: any) => {
+          // Handle success, e.g., show a success message
+          console.log('Product added successfully:', response);
+        },
+        (error: any) => {
+          // Handle error, e.g., show an error message
+          console.error('Error adding product:', error);
+        }
+      );
   }
+
 
 }

@@ -37,12 +37,18 @@ export class EditProductComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const productId = +params['productId'];
-      this.productService.fetchProductById(productId).then(response => {
-        this.product = response.data; 
-      });
+      this.productService.fetchProductById(productId)
+        .subscribe(
+          response => {
+            this.product = response;
+          },
+          error => {
+            console.error('Error fetching product:', error);
+          }
+        );
     });
 
-    
+
   }
 
   CancelEdit(): void {
@@ -60,17 +66,18 @@ export class EditProductComponent implements OnInit {
 
 
   submitForm(): void {
-
     this.productService.editProductById(this.product.productId, this.product)
-    .then((response:any) => {
-      // Handle success, e.g., show a success message
-      console.log('Product updated successfully:', response.data);
-    })
-    .catch((error:any) => {
-      // Handle error, e.g., show an error message
-      console.error('Error updating product:', error);
-    });
-   
+      .subscribe(
+        (response: any) => {
+          // Handle success, e.g., show a success message
+          console.log('Product updated successfully:', response);
+        },
+        (error: any) => {
+          // Handle error, e.g., show an error message
+          console.error('Error updating product:', error);
+        }
+      );
   }
+
 
 }

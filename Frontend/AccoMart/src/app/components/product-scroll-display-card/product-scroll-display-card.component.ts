@@ -3,7 +3,7 @@ import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { cartItem } from '../../interfaces/cartItem';
-import { CartStore } from '../../store/cart-store';
+
 import { cartService } from '../../services/cart.services';
 import { Router } from '@angular/router';
 

@@ -10,6 +10,7 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
   selector: 'app-admin-products',
   standalone: true,
   imports: [NavbarComponent,CommonModule,SidebarComponent,HttpClientModule],
+  providers : [productService],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css'
 })
@@ -33,16 +34,14 @@ export class AdminProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchProducts();
-    
+
   }
 
   async fetchProducts() {
-    this.productService.fetchAllProducts().then((response)=>{
-      
-      this.products = response.data;      
-    }).catch((error)=>{
-      console.error('Error fetching products:', error);
-    })
+    this.productService.fetchAllProducts().subscribe((response)=>{
+
+      this.products = response;
+    });
 
   }
 
@@ -65,21 +64,24 @@ export class AdminProductsComponent implements OnInit {
 
 
   deleteProduct(productId: number) {
-    // Call your service method to delete the product by ID
-    this.productService.deleteProductById(productId).then(() => {
-      // After successful deletion, remove the product from the products array
-      this.products = this.products.filter(product => product.productId !== productId);
-    });
+    this.productService.deleteProductById(productId).subscribe(
+      () => {
+        this.products = this.products.filter(product => product.productId !== productId);
+      },
+      error => {
+        console.error('Error deleting product:', error);
+      }
+    );
   }
- 
-  openDeletePopup(product: Product) 
+
+  openDeletePopup(product: Product)
   {
     // Ask the user for confirmation before deleting the product
-    
+
     const confirmDelete = window.confirm(`Are you sure you want to delete ${product.productName}?`);
 
     // If the user confirms, proceed with deleting the product
-    if (confirmDelete) 
+    if (confirmDelete)
     {
       this.deleteProduct(product.productId);
     }

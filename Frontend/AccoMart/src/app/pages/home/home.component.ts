@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { cartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
-import { CartStore } from '../../store/cart-store';
 import { invoiceService } from '../../services/invoiceService';
 import { jwtDecode } from 'jwt-decode';
 import { cartItemService } from '../../services/cartItem.services';
@@ -22,7 +21,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   imports: [CategoryNavbarComponent, ProductCardComponent, NavbarComponent, CommonModule,HttpClientModule],
-  providers : [CategoryService, productService,Router,cartService,CartStore,invoiceService,cartItemService]
+  providers : [CategoryService, productService,Router,cartService,invoiceService,cartItemService]
 
 })
 export class HomeComponent implements OnInit {
@@ -49,7 +48,7 @@ export class HomeComponent implements OnInit {
   activeCategoryIndex: number=0;
   cartItemLength = 0
   private cartSubscription: Subscription;
-  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:cartService, private cartStore: CartStore,private invoiceService : invoiceService, private cartItemService: cartItemService) {
+  constructor(private categoryService: CategoryService, private productService: productService,private router: Router, private cartService:cartService,private invoiceService : invoiceService, private cartItemService: cartItemService) {
   }
   decodedToken:any;
   ngOnInit(): void {

@@ -28,12 +28,14 @@ export class CartProductCardComponent {
       }
     )
     this.productService.fetchProductById(this.productId)
-      .then((response) => {
-        this.product = response.data;
-      })
-      .catch((error) => {
+    .subscribe(
+      (response: any) => {
+        this.product = response;
+      },
+      (error: any) => {
         console.error('Error fetching product:', error);
-      })
+      }
+    );
   }
   incrementProductCount(productId: number){
     this.cartService.incrementCountByProductId(productId);
