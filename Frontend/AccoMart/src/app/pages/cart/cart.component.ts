@@ -15,12 +15,13 @@ import { deliveryService } from '../../services/delivery.service';
 import { FormsModule } from '@angular/forms';
 import { orderService } from '../../services/order.service';
 import { cartService } from '../../services/cart.services';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
 import { ChangeServiceComponent } from '../../components/change-service/change-service.component';
 import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
+import { CartOrder } from '../../interfaces/placeOrder';
 
 @Component({
   selector: 'app-cart',
@@ -53,11 +54,25 @@ export class CartComponent {
       items => {
         this.cart = items;
         this.cartItemLength = items.length;
-        // Use a combination of map and forkJoin to fetch products in parallel
-        const productRequests = items.map(item =>
+        // Use forkJoin to fetch products in parallel
+        const fetchProductPromises = this.cart.map(item =>
           this.productService.fetchProductById(item.productId)
-       );
-      });
+        );
+        forkJoin(fetchProductPromises).subscribe(
+          responses => {
+            // responses will be an array of products
+            this.products = responses.map(response => response);
+          },
+          error => {
+            console.error('Error fetching products:', error);
+          }
+        );
+      },
+      error => {
+        console.error('Error fetching cart items:', error);
+      }
+    );
+
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
@@ -65,6 +80,7 @@ export class CartComponent {
     const cartId = this.decoded.CartId;
     const addressId = this.decoded.AddressId;
     const userId = this.decoded.UserId;
+
 
     // Fetching address
     this.addressService.getAddress(addressId)
@@ -113,11 +129,19 @@ export class CartComponent {
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
+
+  cartOrder : CartOrder = {
+  userId : "",
+  cartId : 0,
+  addressId: 0,
+  deliveryId : 0,
+  }
+
   placeOrder() {
-    this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
+    this.orderService.placeOrderByCart(this.cartOrder)
     .subscribe(
       (response) => {
-        window.location.href = response;
+        window.location.href = response.url;
         console.log(response);
       },
       (error) => {

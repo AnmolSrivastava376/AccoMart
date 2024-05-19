@@ -2,7 +2,9 @@
 {
     public class CartOrderDto
     {
-        public int AddressId { get; set; }
-        public int DeliveryServiceID { get; set; }
+       public string userId {  get; set; }  
+       public int cartId { get; set; }
+       public int addressId {  get; set; }
+       public int deliveryId {  get; set; }
     }
 }

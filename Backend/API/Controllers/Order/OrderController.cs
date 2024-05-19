@@ -33,7 +33,7 @@ namespace API.Controllers.Order
         }
 
         [HttpPost("PlaceOrderByCart")]
-        public async Task<string> PlaceOrderByCart(string userId, int cartId, int addressId, int deliveryId)
+        public async Task<StripeDto> PlaceOrderByCart(CartOrderDto cartOrderDto)
         {
             int newOrderId = 0;
 
@@ -52,7 +52,7 @@ namespace API.Controllers.Order
 
                     using (var getProductAmountCommand = new SqlCommand(getProductAmountQuery, connection))
                     {
-                        getProductAmountCommand.Parameters.AddWithValue("@CartId", cartId);
+                        getProductAmountCommand.Parameters.AddWithValue("@CartId", cartOrderDto.cartId);
                         object result = await getProductAmountCommand.ExecuteScalarAsync();
 
                         if (result != DBNull.Value)
@@ -69,7 +69,7 @@ namespace API.Controllers.Order
 
                     using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
                     {
-                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", deliveryId);
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", cartOrderDto.deliveryId);
                         deliveryPrice = (decimal)await getDeliveryPriceCommand.ExecuteScalarAsync();
                     }
 
@@ -82,27 +82,27 @@ namespace API.Controllers.Order
 
                     using (var insertOrderCommand = new SqlCommand(insertOrderQuery, connection))
                     {
-                        insertOrderCommand.Parameters.AddWithValue("@UserId", userId);
-                        insertOrderCommand.Parameters.AddWithValue("@AddressId", addressId);
-                        insertOrderCommand.Parameters.AddWithValue("@CartId", cartId);
-                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", deliveryId);
+                        insertOrderCommand.Parameters.AddWithValue("@UserId", cartOrderDto.userId);
+                        insertOrderCommand.Parameters.AddWithValue("@AddressId", cartOrderDto.addressId);
+                        insertOrderCommand.Parameters.AddWithValue("@CartId",  cartOrderDto.cartId);
+                        insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", cartOrderDto.deliveryId);
                         insertOrderCommand.Parameters.AddWithValue("@OrderAmount", totalAmount);
 
                         newOrderId = Convert.ToInt32(await insertOrderCommand.ExecuteScalarAsync());
                     }
                 }
 
-                return await CheckoutByCart(userId, cartId);
+                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId);
             }
             catch (Exception ex)
             {
-                return $"An error occurred while placing the order";
+                return null;
             }
         }
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<string> CheckoutByCart(string userId, int cartId)
+        public async Task<StripeDto> CheckoutByCart(string userId, int cartId)
         {
             var options = new SessionCreateOptions
             {
@@ -178,7 +178,9 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            return session.Url;
+            StripeDto url = new StripeDto();
+            url.StripeUrl = session.Url;
+            return url;
         }
 
         //[Authorize]

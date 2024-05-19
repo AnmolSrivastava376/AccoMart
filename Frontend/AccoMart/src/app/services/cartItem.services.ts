@@ -17,6 +17,31 @@ export class cartItemService {
     }
   }
 
+
+  private _cartItems: cartItem[] = [];
+  private _cartItemsSubject = new BehaviorSubject<cartItem[]>([]);
+  decoded: { CartId: number,AddressId : number, UserId: string};
+  cartItems$ = this._cartItemsSubject.asObservable();
+
+  get cartItems(): cartItem[] {
+    return this._cartItems
+  }
+
+  set cartItems(items: cartItem[]) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.decoded = jwtDecode(token);
+    }
+    const cartId = this.decoded.CartId;
+    this._cartItems = items;
+    this._cartItemsSubject.next(items);
+    this.updateLocalStorage();
+    this.addCartByCartId(this._cartItems, cartId);
+  }
+  private updateLocalStorage(): void {
+    localStorage.setItem('cartItems', JSON.stringify(this._cartItems));
+  }
+
   addCartByCartId(cart: cartItem[], cartId: number): Observable<cartItem[]> {
     return this.http.post<cartItem[]>(
       `http://localhost:5239/ShoppingCartController/Add/CartItem?cartId=${cartId}`,
@@ -41,30 +66,6 @@ export class cartItemService {
     return this.http.delete<cartItem>(
       `http://localhost:5239/ShoppingCartController/Delete/CartItem?productId=${productId}`
     );
-  }
-
-  private _cartItems: cartItem[] = [];
-  private _cartItemsSubject = new BehaviorSubject<cartItem[]>([]);
-  decoded: { CartId: number,AddressId : number, UserId: string};
-  cartItems$ = this._cartItemsSubject.asObservable();
-
-  get cartItems(): cartItem[] {
-    return this._cartItems
-  }
-
-  set cartItems(items: cartItem[]) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.decoded = jwtDecode(token);
-    }
-    const cartId = this.decoded.CartId;
-    this._cartItems = items;
-    this._cartItemsSubject.next(items);
-    this.updateLocalStorage();
-    this.addCartByCartId(this._cartItems, cartId);
-  }
-  private updateLocalStorage(): void {
-    localStorage.setItem('cartItems', JSON.stringify(this._cartItems));
   }
 
 

@@ -20,6 +20,7 @@ import { ChangeServiceComponent } from '../../components/change-service/change-s
 import { FormsModule } from '@angular/forms';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
+import { stripeDto } from '../../interfaces/StripeDto';
 
 @Component({
   selector: 'app-buy-product',
@@ -118,18 +119,18 @@ export class BuyProductComponent {
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
-  placeOrder() {
-    this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
-    .subscribe(
-      (response: string) => {
-        window.location.href = response;
-        console.log(response);
-      },
-      (error: any) => {
-        console.error('Error placing order:', error);
-      }
-    );
-  }
+  // placeOrder() {
+  //   this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
+  //   .subscribe(
+  //     (response) => {
+  //       window.location.href = response.url;
+  //       console.log(response);
+  //     },
+  //     (error) => {
+  //       console.error('Error placing order:', error);
+  //     }
+  //   );
+  // }
   updateActiveDeliveryService(service: DeliveryService) {
     this.activeDeliveryService = service;
   }
