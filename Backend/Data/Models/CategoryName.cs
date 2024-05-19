@@ -2,5 +2,6 @@
 {
     public class CategoryName
     {
+        public string name { get; set; }
     }
 }

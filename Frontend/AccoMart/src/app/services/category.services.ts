@@ -14,9 +14,8 @@ export class CategoryService {
   }
 
   addCategory(categoryName: string): Observable<any> {
-    return this.http.post('http://localhost:5239/AdminDashboard/Category/Create', { categoryName });
-  }
-
+    return this.http.post(`http://localhost:5239/AdminDashboard/Category/Create`, { name: categoryName });
+}
   deleteCategory(categoryId: number): Observable<any> {
     return this.http.delete(`http://localhost:5239/AdminDashboard/Delete/Category/${categoryId}`);
   }

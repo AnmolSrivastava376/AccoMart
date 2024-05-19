@@ -275,6 +275,7 @@ namespace Data.Repository.Implementation
         }
 
 
+        
         public async Task<Category> CreateCategory(string categoryName)
         {
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))

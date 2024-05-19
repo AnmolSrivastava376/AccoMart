@@ -62,10 +62,10 @@ namespace API.Controllers.Admins
 
 
          [HttpPost("Category/Create")]
-         public async Task<ActionResult<Category>> CreateCategory(string categoryName)
+         public async Task<ActionResult<Category>> CreateCategory([FromBody] CategoryName category_name)
          {
 
-            var category = await _productService.CreateCategoryAsync(categoryName);
+            var category = await _productService.CreateCategoryAsync(category_name.name);
             return Ok(category);    
          }
 
