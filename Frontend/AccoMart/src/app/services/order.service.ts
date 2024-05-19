@@ -1,19 +1,30 @@
 import { Injectable } from "@angular/core";
-import axios from "axios";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 import { CartOrder } from "../interfaces/placeOrder";
-
 
 @Injectable({
     providedIn:'root'
-  })
-export class orderServices{
+})
+export class orderService {
 
-      placeOrderByCart(userId : string, cartId : number, addressId : number, deliveryId : number){
-        return axios.post<string>(`http://localhost:5239/OrderController/PlaceOrderByCart?userId=${userId}&cartId=${cartId}&addressId=${addressId}&deliveryId=${deliveryId}`);
-     }
+    constructor(private http: HttpClient) {}
 
-     placeOrderByProduct(userId : string, addressId : number, deliveryId : number, productId : number){
-      return axios.post<string>(`http://localhost:5239/OrderController/PlaceOrderByProduct?userId=${userId}&addressId=${addressId}&deliveryId=${deliveryId}&productId=${productId}`);
-   }
+    placeOrderByCart(userId: string, cartId: number, addressId: number, deliveryId: number): Observable<string> {
+        return this.http.post<string>(`http://localhost:5239/OrderController/PlaceOrderByCart`, {
+            userId,
+            cartId,
+            addressId,
+            deliveryId
+        });
+    }
 
+    placeOrderByProduct(userId: string, addressId: number, deliveryId: number, productId: number): Observable<string> {
+        return this.http.post<string>(`http://localhost:5239/OrderController/PlaceOrderByProduct`, {
+            userId,
+            addressId,
+            deliveryId,
+            productId
+        });
+    }
 }

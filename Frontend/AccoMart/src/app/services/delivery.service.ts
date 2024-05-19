@@ -1,27 +1,31 @@
 import { Injectable } from "@angular/core";
-import axios from "axios";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 import { createDeliveryService } from "../interfaces/createDeliveryService";
 import { DeliveryService } from "../interfaces/deliveryService";
 
-
 @Injectable({
-    providedIn:'root'
-  })
-export class deliveryServices{
+    providedIn: 'root'
+})
+export class deliveryService {
 
-     getDeliveryServices(){
-        return axios.get<DeliveryService[]>(`http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices`);
-     }
+    constructor(private http: HttpClient) { }
 
-     addDeliveryService(deliveryService:createDeliveryService){
-      return axios.post('http://localhost:5239/DeliveryServiceController/AddDeliveryService',deliveryService);
-     }
+    getDeliveryServices(): Observable<DeliveryService[]> {
+        return this.http.get<DeliveryService[]>('http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices');
+    }
 
-     editDeliveryService(deliveryService:createDeliveryService, id:number)     {
-      return axios.put(`http://localhost:5239/DeliveryServiceController/UpdateDeliveryService/${id}`,deliveryService);
-     }
 
-     deleteDeliveryService(id:number)     {
-        return axios.delete(`http://localhost:5239/DeliveryServiceController/DeleteDeliveryService/${id}`);
-     }
+    addDeliveryService(deliveryService: createDeliveryService): Observable<any> {
+        return this.http.post('http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices', deliveryService);
+    }
+
+
+    editDeliveryService(deliveryService: createDeliveryService, id: number): Observable<any> {
+        return this.http.put(`http://localhost:5239/DeliveryServiceController/UpdateDeliveryService/${id}`, deliveryService);
+    }
+
+    deleteDeliveryService(id: number): Observable<any> {
+        return this.http.delete(`http://localhost:5239/DeliveryServiceController/DeleteDeliveryService/${id}`);
+    }
 }
