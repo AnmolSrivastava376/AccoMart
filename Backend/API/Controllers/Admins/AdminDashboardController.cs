@@ -78,9 +78,9 @@ namespace API.Controllers.Admins
 
 
         [HttpPut("Update/Category")]
-        async public Task<ActionResult<Category>> UpdateCategory(string categoryName, string NewCategoryName)
+        async public Task<ActionResult<Category>> UpdateCategory(int Id, string NewCategoryName)
         {
-           var category = await _productService.UpdateCategoryAsync(categoryName, NewCategoryName); 
+           var category = await _productService.UpdateCategoryAsync( Id, NewCategoryName); 
            return  Ok(category);   
         }
 

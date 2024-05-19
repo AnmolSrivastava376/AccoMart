@@ -34,6 +34,8 @@ export class AdminCategoriesComponent implements OnInit {
     this.fetchCategories();
   }
   isEditPopupOpen:boolean = false;
+  isAddPopupOpen:boolean =false;
+  categoryToAdd:string ='';
 
   fetchCategories() {
     this.categoryService.fetchCategories().then(response => {
@@ -59,21 +61,60 @@ export class AdminCategoriesComponent implements OnInit {
     this.selectedCategory = { ...category };
     this.isEditPopupOpen = true;
 
+
+
+  editCategory() {
+    this.categoryService.editCategory(this.selectedCategory.categoryId,this.selectedCategory.categoryName).then(response=>{
+      this.isEditPopupOpen = false;
+      this.fetchCategories();
+    });
+
   }
 
-  openEditPopup(category: Category){
+  openEditPopup(newCategory: Category){
     this.isEditPopupOpen = true;
     this.selectedCategory = { ...category };
     console.log(this.selectedCategory);
   }
+
+  openAddPopup()
+  {
+    this.isAddPopupOpen = true;
+
+  }
+
+  closeAddPopup()
+  {
+    this.isAddPopupOpen = false;
+  }
+
+  saveCategory(categoryName: string) {
+    this.categoryService.addCategory(categoryName).then(response => {
+      // After successfully adding the category, fetch the updated list of categories
+      this.isAddPopupOpen = false;
+      this.categoryToAdd ='';
+      this.fetchCategories();
+      console.log("Category added successfully");
+    }).catch(err => {
+      console.error("Error adding category:", err);
+    });
+  }
+
+  deleteCategory(Id:number)
+  {
+    if (confirm("Are you sure you want to delete this category?")) {
+      this.categoryService.deleteCategory(Id).then(response=>{
+        this.fetchCategories();
+        console.log("deleted");
+      });
+    }
+  }
+
   closeEditPopup()
   {
     this.isEditPopupOpen = false;
   }
 
-  saveChanges()
-  {
 
-  }
 
 }

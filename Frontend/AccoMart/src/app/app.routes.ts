@@ -11,7 +11,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { Login2FAComponent } from './pages/login-2-fa/login-2-fa.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {RegisterComponent} from './pages/register/register.component'
-import { AdminComponent } from './pages/admin/admin.component';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
 import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
@@ -37,7 +36,6 @@ export const routes: Routes = [
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
     { path: 'login-two-factor',component:Login2FAComponent},
     { path: 'register',component:RegisterComponent},
-    { path: 'admin',component:AdminComponent},
     { path: 'admin/products',component:AdminProductsComponent},
     { path: 'admin/categories',component:AdminCategoriesComponent},
     { path: 'admin/product/edit/:productId',component:EditProductComponent},

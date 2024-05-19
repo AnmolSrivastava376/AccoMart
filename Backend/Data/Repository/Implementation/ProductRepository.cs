@@ -57,6 +57,7 @@ namespace Data.Repository.Implementation
             List<Category> categories;
 
             // Check if categories are cached in Redis
+
             string cacheKey = "Categories";
             string cachedCategories = await _database.StringGetAsync(cacheKey);
 
@@ -304,17 +305,13 @@ namespace Data.Repository.Implementation
                 };
 
                 // Update cache (if needed)
-                string cacheKey = $"Category_{categoryId}";
-                string cachedCategory = await _database.StringGetAsync(cacheKey);
-
-                if (cachedCategory != null)
-                {
-                    await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
-                }
+                string cacheKey = $"Categories"; // Update the cache key for categories
+                await _database.KeyDeleteAsync(cacheKey); // Invalidate the categories cache
 
                 return category;
             }
         }
+
 
 
 
@@ -351,7 +348,7 @@ namespace Data.Repository.Implementation
             return product;
         }
 
-        public async Task<Category> UpdateCategory(string categoryName, string newCategoryName)
+        public async Task<Category> UpdateCategory(int categoryId, string newCategoryName)
         {
             Category category = new Category();
 
@@ -359,11 +356,7 @@ namespace Data.Repository.Implementation
             {
                 await connection.OpenAsync();
 
-                // Get the category ID based on the old category name
-                string sqlCategoryIdQuery = "SELECT CategoryId FROM Category WHERE CategoryName = @CategoryName";
-                SqlCommand categoryIdCommand = new SqlCommand(sqlCategoryIdQuery, connection);
-                categoryIdCommand.Parameters.AddWithValue("@CategoryName", categoryName);
-                int categoryId = Convert.ToInt32(await categoryIdCommand.ExecuteScalarAsync());
+
 
                 // Update the category name in the database
                 string sqlQuery = "UPDATE Category SET CategoryName = @NewCategoryName WHERE CategoryId = @CategoryId";
@@ -380,6 +373,9 @@ namespace Data.Repository.Implementation
             // Update cache
             string cacheKey = $"Category_{category.CategoryId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
+
+            string categoriesCacheKey = $"Categories";
+            await _database.KeyDeleteAsync(categoriesCacheKey);
 
             return category;
         }
@@ -441,6 +437,8 @@ namespace Data.Repository.Implementation
             string cacheKey = $"Product_{product.ProductId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
 
+            
+
             return product;
         }
 
@@ -477,6 +475,10 @@ namespace Data.Repository.Implementation
             // Remove category from cache
             string cacheKey = $"Category_{categoryId}";
             await _database.KeyDeleteAsync(cacheKey);
+
+            // Also remove the list of categories cache
+            string categoriesCacheKey = $"Categories";
+            await _database.KeyDeleteAsync(categoriesCacheKey);
         }
 
 
