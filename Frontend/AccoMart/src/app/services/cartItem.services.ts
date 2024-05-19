@@ -1,32 +1,37 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { cartItem } from '../interfaces/cartItem';
 
 @Injectable({
   providedIn: 'root',
 })
 export class cartItemService {
-  addCartByCartId(cart: cartItem[], cartId: number) {
-    return axios.post<cartItem[]>(
+
+  constructor(private http: HttpClient) {}
+
+  addCartByCartId(cart: cartItem[], cartId: number): Observable<cartItem[]> {
+    return this.http.post<cartItem[]>(
       `http://localhost:5239/ShoppingCartController/Add/CartItem?cartId=${cartId}`,
       cart
     );
   }
 
-  fetchCartItemByCartId(cartId: number) {
-    return axios.get<cartItem[]>(
+  fetchCartItemByCartId(cartId: number): Observable<cartItem[]> {
+    return this.http.get<cartItem[]>(
       `http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${cartId}`
     );
   }
 
-  updateCartItemByProductIdAndQuantity(productId: number, quantity: number) {
-    return axios.put<cartItem>(
-      `http://localhost:5239/ShoppingCartController/Update/CartItem?productId=${productId}&quantity=${quantity}`
+  updateCartItemByProductIdAndQuantity(productId: number, quantity: number): Observable<cartItem> {
+    return this.http.put<cartItem>(
+      `http://localhost:5239/ShoppingCartController/Update/CartItem?productId=${productId}&quantity=${quantity}`,
+      null // Pass null as the body since this endpoint doesn't require a request body
     );
   }
 
-  deleteCartItemByProductId(productId: number) {
-    return axios.delete<cartItem>(
+  deleteCartItemByProductId(productId: number): Observable<cartItem> {
+    return this.http.delete<cartItem>(
       `http://localhost:5239/ShoppingCartController/Delete/CartItem?productId=${productId}`
     );
   }

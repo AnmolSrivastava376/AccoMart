@@ -11,10 +11,10 @@ import { addressService } from '../../services/address.service';
 import { Address } from '../../interfaces/address';
 import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
-import { deliveryServices } from '../../services/delivery.service';
+import { deliveryService } from '../../services/delivery.service';
 import { FormsModule } from '@angular/forms';
-import { orderServices } from '../../services/order.service';
-import { CartService } from '../../services/cart.services';
+import { orderService } from '../../services/order.service';
+import { cartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
@@ -35,8 +35,8 @@ export class CartComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices, private productService: productService,
-    private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService) {}
+  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
+    private orderService : orderService, private cdr: ChangeDetectorRef, private cartService: cartService) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -71,24 +71,31 @@ export class CartComponent {
 
     // Fetching address
     this.addressService.getAddress(addressId)
-    .then((response) => {
-      console.log(response.data);
-      this.address = response.data;
-    })
-    .catch((error) => {
+  .subscribe(
+    (response: Address) => {
+      console.log(response);
+      this.address = response;
+    },
+    (error: any) => {
       console.error('Error fetching address:', error);
-    });
+    }
+  );
+
 
     // Fetching delivery
     this.deliveryService.getDeliveryServices()
-    .then((response) => {
-      this.delivery = response.data;
-      if(this.delivery)
-      this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
-    })
-    .catch((error) => {
-      console.error('Error fetching delivery services:', error);
-    });
+    .subscribe(
+      (response: DeliveryService[]) => {
+        this.delivery = response;
+        if (this.delivery) {
+          this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching delivery services:', error);
+      }
+    );
+
   }
   getCartTotal(): number {
     let total = 0;
