@@ -11,7 +11,7 @@ import { CreateProduct } from '../interfaces/createProduct';
 export class productService {
   http = inject(HttpClient);
   fetchProductByCategoryID(categoryId:Number) {
-    return axios.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`);
+    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`);
   }
   fetchProductById(productId: number) {
     return axios.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
@@ -24,7 +24,7 @@ export class productService {
   editProductById(productId: number, updatedProduct: Product) {
     return axios.put<Product>(`http://localhost:5239/AdminDashboard/Update/Product/${productId}`, updatedProduct);
   }
-  
+
   addProduct(product:CreateProduct)
   {
     return axios.post('http://localhost:5239/AdminDashboard/Product/Create',product);
@@ -34,7 +34,7 @@ export class productService {
     return axios.delete(`http://localhost:5239/AdminDashboard/Delete/Product/${productId}`);
   }
 
-  
+
   }
 
 

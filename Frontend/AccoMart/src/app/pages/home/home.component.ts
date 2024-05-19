@@ -14,13 +14,16 @@ import { CartStore } from '../../store/cart-store';
 import { InvoiceService } from '../../services/invoiceService';
 import { jwtDecode } from 'jwt-decode';
 import { cartItemService } from '../../services/cartItem.services';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
-  imports: [CategoryNavbarComponent, ProductCardComponent, NavbarComponent, CommonModule],
+  imports: [CategoryNavbarComponent, ProductCardComponent, NavbarComponent, CommonModule,HttpClientModule],
+  providers : [CategoryService, productService,Router,CartService,CartStore,InvoiceService,cartItemService]
+
 })
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
@@ -42,7 +45,7 @@ export class HomeComponent implements OnInit {
     link.click();
     window.URL.revokeObjectURL(url);
   }
-  activeCategory: number=-1;
+  activeCategory: number=-1 || null;
   activeCategoryIndex: number=0;
   cartItemLength = 0
   private cartSubscription: Subscription;
@@ -59,42 +62,52 @@ export class HomeComponent implements OnInit {
         this.cartService.setCartItems(response.data)
       })
     }
-
-    this.cartItemLength = this.cartService.fetchQuantityInCart();
-    this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items => {
-        this.cartItemLength = items.length;
-      }
-    );
     this.categoryService.fetchCategories()
-      .then((response) => {
-        this.categories = response.data;
-        this.activeCategory=this.categories[0].categoryId;
-      })
-      .catch((error) => {
-        console.error('Error fetching categories:', error);
-      }).then(()=>{
-        if(this.activeCategory!=-1){
-          this.productService.fetchProductByCategoryID(this.activeCategory).then((response)=>{
-            this.products = response.data;
-          }).catch((error)=>{
-            console.error('Error fetching products:', error);
-          })
+      .subscribe(
+        (response) => {
+          this.categories = response;
+          this.activeCategory = this.categories.length > 0 ? this.categories[0].categoryId : 0;
+          this.fetchProductsByCategory();
+        },
+        (error) => {
+          console.error('Error fetching categories:', error);
         }
-      })
+      );
   }
+
+  fetchProductsByCategory(): void {
+    if (this.activeCategory !== null) {
+      this.productService.fetchProductByCategoryID(this.activeCategory)
+        .subscribe(
+          (response) => {
+            this.products = response;
+          },
+          (error) => {
+            console.error('Error fetching products:', error);
+          }
+        );
+    }
+  }
+
+
   ngOnDestroy(): void {
     if (this.cartSubscription) {
       this.cartSubscription.unsubscribe();
     }
   }
-  onCategorySelected(categoryId: number){
+  onCategorySelected(categoryId: number): void {
     this.activeCategory = categoryId;
-    this.productService.fetchProductByCategoryID(this.activeCategory).then((response)=>{
-      this.products = response.data;
-    }).catch((error)=>{
-      console.error('Error fetching categories:', error);
-    })
+    if (this.activeCategory !== null) {
+      this.productService.fetchProductByCategoryID(this.activeCategory)
+        .subscribe(
+          (response) => {
+            this.products = response;
+          },
+          (error) => {
+            console.error('Error fetching products:', error);
+          }
+        );
+    }
   }
   onIndexSelected(index: number){
     this.activeCategoryIndex = index;

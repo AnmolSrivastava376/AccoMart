@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { Login2FAComponent } from '../../pages/login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
+import { TokenHttpInterceptor } from '../../services/token-http-interceptor';
+import { TokenService } from '../../services/token.service';
 
 
 @Component({
@@ -18,9 +20,9 @@ import { HttpService } from '../../services/http.service';
     MatCardModule,
     ReactiveFormsModule,
     MatButtonModule,
-    HttpClientModule,
     CommonModule,
-    Login2FAComponent
+    Login2FAComponent,
+    HttpClientModule
   ],
   providers: [HttpService],
   templateUrl: './auth-card.component.html',
@@ -31,7 +33,7 @@ export class AuthCardComponent {
   httpService = inject(HttpService);
   isLogin = true;
   spinLoader= false;
-  constructor(private router: Router) {}
+  constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
     email: ['', Validators.required],
@@ -55,14 +57,13 @@ export class AuthCardComponent {
     });
   }
   onLogin() {
-
-
     this.spinLoader = true
-  
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
     this.httpService.login(email, password).subscribe((result) => {
-      localStorage.setItem("token", result.response.accessToken.token);
+    this.tokenService.setToken(result.response.accessToken.token);
+    //localStorage.setItem("token", result.response.accessToken.token);
+
       console.log(result);
       this.router.navigate(['/home']);
     });

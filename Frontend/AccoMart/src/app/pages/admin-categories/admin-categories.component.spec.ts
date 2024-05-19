@@ -11,7 +11,7 @@ describe('AdminCategoriesComponent', () => {
       imports: [AdminCategoriesComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(AdminCategoriesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

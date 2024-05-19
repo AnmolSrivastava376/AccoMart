@@ -23,12 +23,12 @@ export class AdminCategoriesComponent implements OnInit {
     selectedCategory:Category = {
       categoryId:-1,
       categoryName:''
-   };  
+   };
 
    defaultCategory:Category = {
     categoryId:-1,
     categoryName:''
- };  
+ };
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -53,6 +53,14 @@ export class AdminCategoriesComponent implements OnInit {
     this.router.navigate(['/admin/categories']);
   }
 
+  deleteCategory(categoryId: number) {
+    // Implement delete functionality
+  }
+
+  editCategory(category: Category) {
+    this.selectedCategory = { ...category };
+    this.isEditPopupOpen = true;
+
 
 
   editCategory() {
@@ -60,14 +68,13 @@ export class AdminCategoriesComponent implements OnInit {
       this.isEditPopupOpen = false;
       this.fetchCategories();
     });
-    
+
   }
 
   openEditPopup(newCategory: Category){
     this.isEditPopupOpen = true;
-    this.selectedCategory = { ...newCategory }; 
-    // console.log(this.selectedCategory);
-
+    this.selectedCategory = { ...category };
+    console.log(this.selectedCategory);
   }
 
   openAddPopup()
@@ -101,7 +108,7 @@ export class AdminCategoriesComponent implements OnInit {
         this.fetchCategories();
         console.log("deleted");
       });
-    }  
+    }
   }
 
   closeEditPopup()
