@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CategoryService } from '../../services/category.services';
+import { NavbarComponent } from '../../components/navbar/navbar.component';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { Category } from '../../interfaces/category';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-admin-categories',
+  standalone:true,
+  imports: [NavbarComponent, SidebarComponent,CommonModule,FormsModule,HttpClientModule],
+  providers:[CategoryService],
   templateUrl: './admin-categories.component.html',
   styleUrls: ['./admin-categories.component.css']
 })
