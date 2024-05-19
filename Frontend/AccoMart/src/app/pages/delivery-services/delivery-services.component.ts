@@ -67,10 +67,12 @@ export class DeliveryServicesComponent {
   }
 
   editDeliveryService(deliveryService: createDeliveryService) {
+
+    console.log(deliveryService,this.editServiceId);
     this.deliveryService.editDeliveryService(deliveryService,this.editServiceId).subscribe(
       () => {
         console.log("Delivery Service successfully updated");
-        this.openAddServicePopup= false;
+        this.openEditServicePopup= false;
         this.fetchDeliveryServices();
       },
       error => {
@@ -81,7 +83,8 @@ export class DeliveryServicesComponent {
 
   createDeliveryService(newDeliveryService: createDeliveryService) {
     this.deliveryService.addDeliveryService(newDeliveryService).subscribe(
-      () => {
+      response => {
+        console.log("success",response);
         // After successful creation, fetch the updated list of delivery services
         this.openAddServicePopup =false;
         this.fetchDeliveryServices();
@@ -98,7 +101,7 @@ export class DeliveryServicesComponent {
 
   openEditPopup(Id:number,service:createDeliveryService) {
     this.editServiceId = Id;
-    this.openAddServicePopup = true;
+    this.openEditServicePopup = true;
     this.serviceToEdit = {...service};
   }
 
@@ -107,6 +110,6 @@ export class DeliveryServicesComponent {
   }
 
   closeEditPopup() {
-    this.openAddServicePopup = false;
+    this.openEditServicePopup = false;
   }
 }
