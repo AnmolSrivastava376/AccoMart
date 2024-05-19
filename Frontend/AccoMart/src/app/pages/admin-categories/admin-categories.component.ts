@@ -23,12 +23,12 @@ export class AdminCategoriesComponent implements OnInit {
     selectedCategory:Category = {
       categoryId:-1,
       categoryName:''
-   };  
+   };
 
    defaultCategory:Category = {
     categoryId:-1,
     categoryName:''
- };  
+ };
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -56,14 +56,14 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   editCategory(category: Category) {
-    this.selectedCategory = { ...category }; 
-    this.isEditPopupOpen = true; 
-    
+    this.selectedCategory = { ...category };
+    this.isEditPopupOpen = true;
+
   }
 
   openEditPopup(category: Category){
     this.isEditPopupOpen = true;
-    this.selectedCategory = { ...category }; 
+    this.selectedCategory = { ...category };
     console.log(this.selectedCategory);
   }
   closeEditPopup()

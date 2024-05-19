@@ -25,7 +25,7 @@ import { Product } from '../../interfaces/product';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
+  imports: [NavbarComponent, CartProductCardComponent, CommonModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent,HttpClientModule],
   providers : [cartItemService],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
