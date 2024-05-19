@@ -72,6 +72,7 @@ export class AdminCategoriesComponent implements OnInit {
 
   openAddPopup()
   {
+    
     this.isAddPopupOpen = true;
 
   }

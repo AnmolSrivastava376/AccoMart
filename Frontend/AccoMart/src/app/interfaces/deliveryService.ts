@@ -1,5 +1,5 @@
 export interface DeliveryService {
-  deliveryId : number,
+  dServiceId : number,
   imageUrl : string,
   serviceName : string,
   price : number,

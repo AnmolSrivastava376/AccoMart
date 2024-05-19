@@ -14,7 +14,7 @@ export class deliveryServices{
      }
 
      addDeliveryService(deliveryService:createDeliveryService){
-      return axios.post('http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices',deliveryService);
+      return axios.post('http://localhost:5239/DeliveryServiceController/AddDeliveryService',deliveryService);
      }
 
      editDeliveryService(deliveryService:createDeliveryService, id:number)     {
