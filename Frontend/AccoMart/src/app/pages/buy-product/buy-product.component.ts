@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
 import { stripeDto } from '../../interfaces/StripeDto';
+import { ProductOrder } from '../../interfaces/placeOrder';
 
 @Component({
   selector: 'app-buy-product',
@@ -47,6 +48,13 @@ export class BuyProductComponent {
   products: Product[] = [];
   decoded: { CartId: number,AddressId : number, UserId: string};
   selectedProductId: number;
+  productOrder : ProductOrder = {
+    userId : "",
+    addressId: 0,
+    deliveryId : 0,
+    productId : 0
+    }
+
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -68,9 +76,12 @@ export class BuyProductComponent {
     if (token) {
       this.decoded = jwtDecode(token);
     }
-    const cartId = this.decoded.CartId;
     const addressId = this.decoded.AddressId;
     const userId = this.decoded.UserId;
+    this.productOrder.addressId = this.decoded.AddressId;
+    this.productOrder.userId = this.decoded.UserId;
+    this.productOrder.deliveryId = 6;
+    this.productOrder.productId = this.selectedProductId;
 
     // Fetching address
     this.addressService.getAddress(addressId)
@@ -119,18 +130,18 @@ export class BuyProductComponent {
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
-  // placeOrder() {
-  //   this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
-  //   .subscribe(
-  //     (response) => {
-  //       window.location.href = response.url;
-  //       console.log(response);
-  //     },
-  //     (error) => {
-  //       console.error('Error placing order:', error);
-  //     }
-  //   );
-  // }
+  placeOrder() {
+    this.orderService.placeOrderByProduct(this.productOrder)
+    .subscribe(
+      (response) => {
+        window.location.href = response.url;
+        console.log(response);
+      },
+      (error) => {
+        console.error('Error placing order:', error);
+      }
+    );
+  }
   updateActiveDeliveryService(service: DeliveryService) {
     this.activeDeliveryService = service;
   }

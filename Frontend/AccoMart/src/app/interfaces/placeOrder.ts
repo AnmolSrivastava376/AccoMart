@@ -5,3 +5,10 @@ export interface CartOrder{
   deliveryId : number
 }
 
+export interface ProductOrder{
+  userId : string
+  addressId: number
+  deliveryId : number
+  productId : number
+}
+

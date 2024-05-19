@@ -46,8 +46,26 @@ export class CartComponent {
   activeDeliveryService: DeliveryService;
   products: Product[] = [];
   decoded: { CartId: number,AddressId : number, UserId: string};
+  cartOrder : CartOrder = {
+    userId : "",
+    cartId : 0,
+    addressId: 0,
+    deliveryId : 0,
+    }
 
   ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.decoded = jwtDecode(token);
+    }
+    const cartId = this.decoded.CartId;
+    const addressId = this.decoded.AddressId;
+    const userId = this.decoded.UserId;
+    this.cartOrder.addressId = this.decoded.AddressId;
+    this.cartOrder.userId = this.decoded.UserId;
+    this.cartOrder.deliveryId = 6;
+    this.cartOrder.cartId = cartId;
+    
     this.cartItemLength = this.cartService.fetchQuantityInCart();
     this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
@@ -73,13 +91,7 @@ export class CartComponent {
       }
     );
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.decoded = jwtDecode(token);
-    }
-    const cartId = this.decoded.CartId;
-    const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId;
+
 
 
     // Fetching address
@@ -128,13 +140,6 @@ export class CartComponent {
   }
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
-  }
-
-  cartOrder : CartOrder = {
-  userId : "",
-  cartId : 0,
-  addressId: 0,
-  deliveryId : 0,
   }
 
   placeOrder() {

@@ -185,7 +185,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<string> PlaceOrder(string userId, int addressId, int deliveryId, int productId)
+        public async Task<StripeDto> PlaceOrder(ProductOrderDto productOrderDto)
         {
           
             try
@@ -206,7 +206,7 @@ namespace API.Controllers.Order
                     string deliveryPriceQuery = "SELECT Price FROM DeliveryService WHERE DServiceId = @DServiceId";
                     using (SqlCommand deliveryPriceCommand = new SqlCommand(deliveryPriceQuery, connection))
                     {
-                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", deliveryId);
+                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", productOrderDto.DeliveryId);
                         deliveryPrice = (decimal)await deliveryPriceCommand.ExecuteScalarAsync();
                     }
 
@@ -214,7 +214,7 @@ namespace API.Controllers.Order
 
                     using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
                     {
-                        fetchPriceCommand.Parameters.AddWithValue("@ProductId", productId);
+                        fetchPriceCommand.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
                         decimal productPrice = (decimal)await fetchPriceCommand.ExecuteScalarAsync();
                         decimal orderAmount = productPrice + deliveryPrice;
 
@@ -224,10 +224,10 @@ namespace API.Controllers.Order
 
                         using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                         {
-                            command.Parameters.AddWithValue("@AddressId", addressId);
-                            command.Parameters.AddWithValue("@UserId", userId);
-                            command.Parameters.AddWithValue("@ProductId", productId);
-                            command.Parameters.AddWithValue("@DeliveryServiceID", deliveryId);
+                            command.Parameters.AddWithValue("@AddressId", productOrderDto.AddressId);
+                            command.Parameters.AddWithValue("@UserId", productOrderDto.UserId);
+                            command.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
+                            command.Parameters.AddWithValue("@DeliveryServiceID", productOrderDto.DeliveryId);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
                             orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
@@ -236,19 +236,17 @@ namespace API.Controllers.Order
 
                 //await _cartService.GenerateInvoiceAsync(orderId);
                 //await _cartService.DeleteCartAsync(cartId);
-                return await Checkout(productId);
+                return await Checkout(productOrderDto.ProductId);
             }
             catch (Exception ex)
             {
-                return "An error occurred while placing the order";
+                return null;
             }
         }
 
-   
-
         //[Authorize]
         [HttpPost("Checkout/Product")]
-        public async Task<string> Checkout(int productId)
+        public async Task<StripeDto> Checkout(int productId)
         {
 
             var options = new SessionCreateOptions
@@ -310,7 +308,9 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            return session.Url;
+            StripeDto url = new StripeDto();
+            url.StripeUrl = session.Url;
+            return url;
         }
 
 
