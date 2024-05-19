@@ -1,40 +1,48 @@
-<div class="navbar position-sticky top-0 z-10">
+<div class="navbar fixed top-0 left-0 w-full z-50 bg-white shadow-lg">
     <app-navbar></app-navbar>
-  </div>
+</div>
 
-<div class="flex">
+<div class="flex h-full mt-20"> <!-- Adjust margin-top to create space below navbar -->
     <!-- Sidebar -->
-    <app-sidebar></app-sidebar>
+    <div class="sidebar fixed top-0 left-0 h-full z-40 bg-gray-800 text-white">
+        <app-sidebar></app-sidebar>
+    </div>
 
-    <div class="editform mt-30 p-8 bg-slate-300 shadow-md rounded-md w-full lg:w-1/2 xl:w-1/3">
-        <h2 class="text-2xl font-bold mb-4">Add Product</h2>
+    <div class="editform ml-64 p-8 bg-slate-300 shadow-md rounded-md w-full lg:w-1/2 xl:w-1/3">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Add Product</h2>
         <form (submit)="AddProduct()">
             <div class="mb-4">
-                <label for="productName" class="block   text-gray-700">Product Name</label>
+                <label for="productName" class="block text-gray-700">Product Name</label>
                 <input type="text" id="productName" name="productName" [(ngModel)]="product.productName"
                     placeholder="Enter product name" required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
             <div class="mb-4">
-                <label for="productDesc" class="block   text-gray-700">Product Description</label>
+                <label for="productDesc" class="block text-gray-700">Product Description</label>
                 <textarea id="productDesc" name="productDesc" [(ngModel)]="product.productDesc"
                     placeholder="Enter product description" required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
             </div>
             <div class="mb-4">
-                <label for="productPrice" class="block   text-gray-700">Product Price</label>
+                <label for="productPrice" class="block text-gray-700">Product Price</label>
                 <input type="number" id="productPrice" name="productPrice" [(ngModel)]= "product.productPrice"
                     placeholder="Enter product price" required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
             </div>
+            <div class="mb-4">
+                <label for="categoryId" class="block text-gray-700">Category</label>
+                <select id="categoryId" name="categoryId" [(ngModel)]="product.categoryId"
+                        class="mt-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName }}</option>
+                </select>
+            </div>
             <div class="mb-4 w-full ">
-                
                 <div *ngIf="product.productImageUrl">
-                    <img  src="{{product.productImageUrl}}" alt="Product Image" class="h-42 w-48">
+                    <img src="{{product.productImageUrl}}" alt="Product Image" class="h-42 w-48">
                 </div>
             </div>
             <div class="mb-4">
-                <label for="productImageUrl" class="block   text-gray-700">Product Image URL</label>
+                <label for="productImageUrl" class="block text-gray-700">Product Image URL</label>
                 <input type="text" id="productImageUrl" name="productImageUrl" [(ngModel)]="product.productImageUrl"
                     placeholder="Enter product image URL" required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
