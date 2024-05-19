@@ -19,6 +19,7 @@ export class deliveryService {
         return this.http.post('http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices', deliveryService);
     }
 
+
     editDeliveryService(deliveryService: createDeliveryService, id: number): Observable<any> {
         return this.http.put(`http://localhost:5239/DeliveryServiceController/UpdateDeliveryService/${id}`, deliveryService);
     }
