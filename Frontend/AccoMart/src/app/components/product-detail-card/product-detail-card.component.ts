@@ -3,11 +3,12 @@ import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-product-detail-card',
   standalone: true,
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent,HttpClientModule],
   templateUrl: './product-detail-card.component.html',
   styleUrl: './product-detail-card.component.css'
 })

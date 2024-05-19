@@ -26,7 +26,7 @@ import { Product } from '../../interfaces/product';
   selector: 'app-cart',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent,HttpClientModule],
-  providers : [cartItemService],
+  providers : [addressService, deliveryService,productService,orderService,cartService],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -35,8 +35,7 @@ export class CartComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
-    private orderService : orderService, private cdr: ChangeDetectorRef, private cartService: cartService) {}
+  constructor(private router: Router, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: cartService) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -118,14 +117,15 @@ export class CartComponent {
   }
   placeOrder() {
     this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
-      .then((response: { data: string; }) => {
-        const result: string = response.data;
-        window.location.href = result;
-        console.log(result);
-      })
-      .catch((error: any) => {
+    .subscribe(
+      (response: string) => {
+        window.location.href = response;
+        console.log(response);
+      },
+      (error: any) => {
         console.error('Error placing order:', error);
-      });
+      }
+    );
   }
   updateActiveDeliveryService(service: DeliveryService) {
     this.activeDeliveryService = service;

@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Category } from '../../interfaces/category';
 import {MatIconModule} from '@angular/material/icon';
+import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-category-navbar',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule,HttpClientModule],
   templateUrl: './category-navbar.component.html',
   styleUrl: './category-navbar.component.css'
 })

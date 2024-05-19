@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { cartItem } from '../../interfaces/cartItem';
 import { CartStore } from '../../store/cart-store';
-import { CartService } from '../../services/cart.services';
+import { cartService } from '../../services/cart.services';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,7 +18,7 @@ export class ProductScrollDisplayCardComponent {
   @Input() products?: Product[];
   cart?: cartItem[];
   i = 0;
-  constructor(private cartService: CartService, private router: Router) {
+  constructor(private cartService: cartService, private router: Router) {
     this.cart = this.cartService.fetchCart();
   }
   handleNextButtonClick() {

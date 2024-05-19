@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { cartItemService } from '../../services/cartItem.services';
-import { CartService } from '../../services/cart.services';
+import { cartService } from '../../services/cart.services';
 
 @Component({
   selector: 'app-navbar',

@@ -11,9 +11,9 @@ import { addressService } from '../../services/address.service';
 import { Address } from '../../interfaces/address';
 import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
-import { deliveryServices } from '../../services/delivery.service';
-import { orderServices } from '../../services/order.service';
-import { CartService } from '../../services/cart.services';
+import { deliveryService } from '../../services/delivery.service';
+import { orderService } from '../../services/order.service';
+import { cartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
@@ -26,6 +26,7 @@ import { productService } from '../../services/product.services';
   selector: 'app-buy-product',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
+  providers : [cartItemService, addressService, deliveryService,productService,orderService,cartService],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css'
 })
@@ -34,8 +35,8 @@ export class BuyProductComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryServices, private productService: productService,
-    private orderService : orderServices, private cdr: ChangeDetectorRef, private cartService: CartService,private route : ActivatedRoute) {}
+  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
+    private orderService : orderService, private cdr: ChangeDetectorRef, private cartService: cartService,private route : ActivatedRoute) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -75,27 +76,32 @@ export class BuyProductComponent {
 
     // Fetching address
     this.addressService.getAddress(addressId)
-    .then((response) => {
-      console.log(response.data);
-      this.address = response.data;
-    })
-    .catch((error) => {
+  .subscribe(
+    (response) => {
+      console.log(response);
+      this.address = response;
+    },
+    (error) => {
       console.error('Error fetching address:', error);
-    });
+    }
+  );
+
 
     // Fetching delivery
     this.deliveryService.getDeliveryServices()
-    .then((response) => {
-      this.delivery = response.data;
-      if(this.delivery)
-      this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
-    })
-    .catch((error) => {
-      console.error('Error fetching delivery services:', error);
-    });
-
-
+    .subscribe(
+      (response: DeliveryService[]) => {
+        this.delivery = response;
+        if (this.delivery) {
+          this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching delivery services:', error);
+      }
+    );
   }
+
   getCartTotal(): number {
     let total = 0;
     this.cart.forEach((item, index) => {
@@ -116,15 +122,16 @@ export class BuyProductComponent {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
   placeOrder() {
-    this.orderService.placeOrderByProduct(this.decoded.UserId,this.decoded.AddressId, 6, this.selectedProductId)
-      .then((response: { data: string; }) => {
-        const result: string = response.data;
-        window.location.href = result;
-        console.log(result);
-      })
-      .catch((error: any) => {
+    this.orderService.placeOrderByCart(this.decoded.UserId, this.decoded.CartId, this.decoded.AddressId, 6)
+    .subscribe(
+      (response: string) => {
+        window.location.href = response;
+        console.log(response);
+      },
+      (error: any) => {
         console.error('Error placing order:', error);
-      });
+      }
+    );
   }
   updateActiveDeliveryService(service: DeliveryService) {
     this.activeDeliveryService = service;

@@ -6,18 +6,19 @@ import { GridDisplayCardComponent } from '../grid-display-card/grid-display-card
 import { ScrollDisplayCardComponent } from '../scroll-display-card/scroll-display-card.component';
 import { ProductScrollDisplayCardComponent } from '../product-scroll-display-card/product-scroll-display-card.component';
 import { cartItem } from '../../interfaces/cartItem';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule,GridDisplayCardComponent,ScrollDisplayCardComponent, ProductScrollDisplayCardComponent],
+  imports: [CommonModule,GridDisplayCardComponent,ScrollDisplayCardComponent, ProductScrollDisplayCardComponent,HttpClientModule],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
 export class ProductCardComponent{
   @Input() products?: Product[]
   @Input() categoryName?: string
-  
+
   constructor(private router: Router) { }
   handleClick(productId: number) {
   this.router.navigate(['home/productdetail', productId.toString()]);
