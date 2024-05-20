@@ -13,4 +13,25 @@ export class TokenService {
     localStorage.setItem('token', token);
   }
 
+  setRefreshToken(refreshToken:any):void{
+    const refreshTokenString = JSON.stringify(refreshToken);
+    localStorage.setItem('refreshtoken',refreshTokenString);
+  }
+
+  setAccessToken(accessToken:any):void
+  {
+    const accessTokenString = JSON.stringify(accessToken);
+    localStorage.setItem('accesstoken',accessTokenString);
+
+  }
+
+  getAccessToken():any|null{
+    const accessTokenString = localStorage.getItem('accesstoken');
+    return accessTokenString;
+  }
+
+  getRefreshToken():any|null{
+    const refreshTokenString = localStorage.getItem('accesstoken');
+    return refreshTokenString;
+  }
 }
