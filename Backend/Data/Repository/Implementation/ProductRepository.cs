@@ -344,11 +344,15 @@ namespace Data.Repository.Implementation
                 product.ProductDesc = productDto.ProductDesc;
                 product.ProductImageUrl = productDto.ProductImageUrl;
                 product.ProductPrice = productDto.ProductPrice;
+                product.CategoryId = productDto.CategoryId;
             }
 
+            string cacheKey = $"ProductByCategory_{productDto.CategoryId}";
+            await _database.KeyDeleteAsync(cacheKey);
+
             // Update cache
-            string cacheKey = $"Product_{product.ProductId}";
-            await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
+            string cacheKey2 = $"Product_{product.ProductId}";
+            await _database.StringSetAsync(cacheKey2, JsonConvert.SerializeObject(product));
 
             return product;
         }
