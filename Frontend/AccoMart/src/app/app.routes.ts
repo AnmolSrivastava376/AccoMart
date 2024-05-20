@@ -5,12 +5,12 @@ import { CartComponent } from './pages/cart/cart.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
-import { Component, NgModule } from '@angular/core';
-import {ProductDetailComponent  } from './pages/product-detail/product-detail.component';
+import { NgModule } from '@angular/core';
+import { ProductDetailComponent  } from './pages/product-detail/product-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { Login2FAComponent } from './pages/login-2-fa/login-2-fa.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {RegisterComponent} from './pages/register/register.component'
+import { RegisterComponent} from './pages/register/register.component'
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
 import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
@@ -37,7 +37,7 @@ export const routes: Routes = [
     { path: 'login-two-factor',component:Login2FAComponent},
     { path: 'register',component:RegisterComponent},
     { path: 'admin/products',component:AdminProductsComponent},
-   { path: 'admin/categories',component:AdminCategoriesComponent},
+    { path: 'admin/categories',component:AdminCategoriesComponent},
     { path: 'admin/product/edit/:productId',component:EditProductComponent},
     { path: 'admin/product/add',component:AddProductComponent},
     { path: 'admin/delivery',component:DeliveryServicesComponent}

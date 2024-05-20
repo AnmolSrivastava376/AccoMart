@@ -3,8 +3,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { cartItemService } from '../../services/cartItem.services';
-import { cartService } from '../../services/cart.services';
 
 @Component({
   selector: 'app-navbar',
