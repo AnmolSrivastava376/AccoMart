@@ -1,14 +1,14 @@
 <div class="parent w-[100vw] flex items-center justify-center h-[100vh]">
-    <div class="child w-[95%] h-adj min-w-[90vw] h-[80%] flex items-center justify-center rounded-[20px]">
-        <div class="Mainimg w-full h-full flex-[1] min-w-[400px] ml-[30px]">
+    <div class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px]">
+        <div class="landing-img w-full h-full flex-[1] min-w-[400px] ml-[30px]">
         </div>
         <div
             class="w-full h-full flex-col flex-[1] min-w-[300px] flex items-center justify-center py-[40px] px-[40px] gap-[20px] p-adj">
             <div class="flex justify-center w-full h-full">
                 <div class="w-full h-full px-[20px] slide-down flex flex-col justify-center">
-                    <div class="bg-gray-50 rounded-lg shadow-md px-[20px] pt-[20px] pb-[30px]">
-                        <div class="text-[32px] text-center font-bold" *ngIf="!isLogin">Register</div>
-                        <div class="text-[32px] text-center font-bold" *ngIf="isLogin">Login</div>
+                    <div class="px-[20px] pt-[20px] pb-[30px]">
+                        <div class="text-[#36737c] text-[32px] text-center font-bold" *ngIf="!isLogin">Register</div>
+                        <div class="text-[#36737c] text-[32px] text-center font-bold" *ngIf="isLogin">Login</div>
                         <!-- Register box -->
                         <form [formGroup]="registerForm" class="" *ngIf="!isLogin">
                             <div>
@@ -47,7 +47,7 @@
                                     class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
                             </div>
                             <div class="">
-                                <a href="#" class="text-blue-500 text-[14px] hover:underline">Forgot your password?</a>
+                                <a href="home/forgotpassword" class=" text-[#6cc0bc] text-[14px] hover:underline">Forgot your password?</a>
                             </div>
                             <div class="flex justify-center">
                                 <button type="button" (click)="onLogin()"
@@ -67,7 +67,7 @@
                             </div>
                         </form>
                         <div class="my-2">
-                            <span class="text-blue-500 text-[14px]">{{isLogin?'Not Signed Up?':'Already a User?'}}</span>
+                            <span class="text-[#6cc0bc] text-[14px]">{{isLogin?'Not Signed Up?':'Already a User?'}}</span>
                         </div>
                         <div class="flex justify-center mt-1">
                             <button type="button" (click)="onSwitch()"

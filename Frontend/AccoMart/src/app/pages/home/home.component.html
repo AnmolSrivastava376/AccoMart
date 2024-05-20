@@ -3,6 +3,7 @@
         <div class="w-full h-[60px] shadow-2xl">
             <app-navbar></app-navbar>
         </div>
+        <div class="w-full h-full absolute parent"></div>
         <div class="w-full h-full border flex py-[20px] col relative">
             <div class="w-full h-full flex-[25] sticky top-[20px] min-h-[20vh] px-[20px] notsticky">
                 <app-category-navbar [categories]="categories" (categorySelected)="onCategorySelected($event)" (categoryIndex)="onIndexSelected($event)">
