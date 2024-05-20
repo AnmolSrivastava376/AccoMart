@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -5,7 +6,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [MatIcon],
+  imports: [MatIcon,HttpClientModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
@@ -14,7 +15,7 @@ export class SidebarComponent {
 
   showProducts() {
     this.router.navigate(['/admin/products']);
-    
+
   }
 
   showCategories() {

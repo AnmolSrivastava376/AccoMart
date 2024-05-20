@@ -1,5 +1,5 @@
 <div class="navbar fixed top-0 left-0 w-full z-50"> <!-- Add z-50 to ensure navbar is above other elements -->
-    <app-navbar></app-navbar>
+  <app-navbar></app-navbar>
 </div>
 
 <div class="flex h-full">
@@ -60,7 +60,7 @@
         <input type="text" placeholder="Enter category name" [(ngModel)]="selectedCategory.categoryName" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
       </div>
       <div class="flex justify-center pb-4">
-        <button (click)="editCategory()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+        <button (click)="editCategory(selectedCategory)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
           Save
         </button>
       </div>

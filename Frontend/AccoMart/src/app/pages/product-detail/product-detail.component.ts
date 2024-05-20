@@ -3,11 +3,13 @@ import { Product } from '../../interfaces/product';
 import { ActivatedRoute } from '@angular/router';
 import { productService } from '../../services/product.services';
 import { ProductDetailCardComponent } from '../../components/product-detail-card/product-detail-card.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [ProductDetailCardComponent],
+  imports: [ProductDetailCardComponent,HttpClientModule],
+  providers : [productService],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
@@ -27,13 +29,17 @@ export class ProductDetailComponent implements OnInit {
       this.fetchProductDetails();
     });
   }
-  
+
 
   fetchProductDetails(): void {
-    this.productService.fetchProductById(this.productId).then(response => {
-      this.product = response.data;
-    }).catch(error => {
-      console.error('Error fetching product:', error);
-    });
+    this.productService.fetchProductById(this.productId)
+      .subscribe(
+        response => {
+          this.product = response;
+        },
+        error => {
+          console.error('Error fetching product:', error);
+        }
+      );
   }
 }

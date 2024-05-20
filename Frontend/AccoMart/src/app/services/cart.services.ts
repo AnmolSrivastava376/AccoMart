@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class cartService {
+export class CartService {
   constructor(private cartStore: CartStore) {}
 
   getCartItems$(): Observable<cartItem[]> {

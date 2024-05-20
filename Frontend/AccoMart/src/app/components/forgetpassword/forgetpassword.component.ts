@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { Route, Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-forgetpassword',
   standalone: true,
-  imports: [],
+  imports: [HttpClientModule],
+  providers : [HttpService],
   templateUrl: './forgetpassword.component.html',
   styleUrl: './forgetpassword.component.css'
 })

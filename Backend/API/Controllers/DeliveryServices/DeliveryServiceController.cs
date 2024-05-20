@@ -42,7 +42,7 @@ namespace API.Controllers.DeliveryServices
                     }
                 }
 
-                return Ok("Delivery service added successfully.");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace API.Controllers.DeliveryServices
             }
         }
 
-                return Ok("Delivery service deleted successfully.");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -112,7 +112,7 @@ namespace API.Controllers.DeliveryServices
                     }
                 }
 
-                return Ok("Delivery service updated successfully.");
+                return Ok();
             }
             catch (Exception ex)
             {

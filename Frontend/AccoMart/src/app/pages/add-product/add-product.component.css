@@ -1,3 +1,15 @@
 .navbar {
     border-bottom: 1px solid #c2baba; /* Add a thin solid border at the bottom */
   }
+
+  .dropdown-container {
+    position: relative;
+}
+
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    max-height: 200px; /* Set your desired max-height here */
+    overflow-y: auto;
+    z-index: 1000; /* Adjust as needed */
+}

@@ -15,9 +15,8 @@ export class deliveryService {
         return this.http.get<DeliveryService[]>('http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices');
     }
 
-
     addDeliveryService(deliveryService: createDeliveryService): Observable<any> {
-        return this.http.post('http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices', deliveryService);
+        return this.http.post('http://localhost:5239/DeliveryServiceController/AddDeliveryService', deliveryService);
     }
 
 

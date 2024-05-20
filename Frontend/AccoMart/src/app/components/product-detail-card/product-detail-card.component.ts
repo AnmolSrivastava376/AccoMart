@@ -3,25 +3,23 @@ import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-product-detail-card',
   standalone: true,
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, HttpClientModule],
   templateUrl: './product-detail-card.component.html',
-  styleUrl: './product-detail-card.component.css'
+  styleUrl: './product-detail-card.component.css',
 })
 export class ProductDetailCardComponent implements OnInit {
-   @Input() product?:Product;
-   productId: number
+  @Input() product?: Product;
+  productId: number;
 
-   constructor(private route : ActivatedRoute) {
-
-
-   }
+  constructor(private route: ActivatedRoute) {}
+  
   ngOnInit(): void {
-
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.productId = +params['productId'];
     });
   }

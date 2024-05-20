@@ -129,7 +129,7 @@ namespace Data.Repository.Implementation
 
 
 
-        public async Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy )
+        public async Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy)
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();
@@ -138,13 +138,14 @@ namespace Data.Repository.Implementation
             string cacheKey = $"ProductByCategory_{id}";
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
-            if (!string.IsNullOrEmpty(cachedProducts))
+            if ((!string.IsNullOrWhiteSpace(cachedProducts) && cachedProducts.Trim() != "[]"))
             {
                 // If products are cached, deserialize the JSON string
                 products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
             }
             else
             {
+                // If products are not cached, fetch them from the SQL database
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     string sqlQuery = $"SELECT * FROM Product WHERE CategoryId = {id}";
@@ -171,9 +172,11 @@ namespace Data.Repository.Implementation
                     }
                 }
 
+                // Cache the fetched products
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(products));
             }
 
+            // Apply sorting based on the price order
             switch (orderBy)
             {
                 case "price_dsc":
@@ -186,6 +189,7 @@ namespace Data.Repository.Implementation
 
             return products;
         }
+
 
 
         public async Task<Category> GetCategoryById(int id)
@@ -275,6 +279,7 @@ namespace Data.Repository.Implementation
         }
 
 
+        
         public async Task<Category> CreateCategory(string categoryName)
         {
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -339,11 +344,15 @@ namespace Data.Repository.Implementation
                 product.ProductDesc = productDto.ProductDesc;
                 product.ProductImageUrl = productDto.ProductImageUrl;
                 product.ProductPrice = productDto.ProductPrice;
+                product.CategoryId = productDto.CategoryId;
             }
 
+            string cacheKey = $"ProductByCategory_{productDto.CategoryId}";
+            await _database.KeyDeleteAsync(cacheKey);
+
             // Update cache
-            string cacheKey = $"Product_{product.ProductId}";
-            await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
+            string cacheKey2 = $"Product_{product.ProductId}";
+            await _database.StringSetAsync(cacheKey2, JsonConvert.SerializeObject(product));
 
             return product;
         }

@@ -61,7 +61,12 @@ export class AuthCardComponent {
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
     this.httpService.login(email, password).subscribe((result) => {
+
+
     this.tokenService.setToken(result.response.accessToken.token);
+    this.tokenService.setAccessToken(result.response.accessToken);
+    this.tokenService.setRefreshToken(result.response.refreshToken);
+
     //localStorage.setItem("token", result.response.accessToken.token);
 
       console.log(result);
