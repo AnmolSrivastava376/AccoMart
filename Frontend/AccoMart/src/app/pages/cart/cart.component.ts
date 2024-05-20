@@ -34,7 +34,7 @@ export class CartComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: CartService) {}
+  constructor(private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: CartService) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -58,7 +58,6 @@ export class CartComponent {
     }
     const cartId = this.decoded.CartId;
     const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId;
     this.cartOrder.addressId = this.decoded.AddressId;
     this.cartOrder.userId = this.decoded.UserId;
     this.cartOrder.deliveryId = 6;
@@ -67,6 +66,13 @@ export class CartComponent {
       item=>{
         this.cart = item;
         this.cartItemLength = item.length
+        item.forEach(cartItem => {
+          this.productService.fetchProductById(cartItem.productId).subscribe(
+            (product) => {
+              this.products.push(product);
+            }
+          );
+        });
       }
     )
     // Fetching address
@@ -111,15 +117,6 @@ export class CartComponent {
 
   placeOrder() {
     this.orderService.placeOrderByCart(this.cartOrder)
-    .subscribe(
-      (response) => {
-        window.location.href = response.url;
-        console.log(response);
-      },
-      (error) => {
-        console.error('Error placing order:', error);
-      }
-    );
   }
   updateActiveDeliveryService(service: DeliveryService) {
     this.activeDeliveryService = service;
