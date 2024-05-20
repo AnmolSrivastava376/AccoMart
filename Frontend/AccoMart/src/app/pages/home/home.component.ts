@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CategoryNavbarComponent } from '../../components/category-navbar/category-navbar.component';
 import { Category } from '../../interfaces/category';
 import { CategoryService } from '../../services/category.services';
@@ -12,6 +12,7 @@ import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { invoiceService } from '../../services/invoiceService';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     NavbarComponent,
     CommonModule,
     HttpClientModule,
+    LoaderComponent
   ],
   providers: [
     CategoryService,
@@ -33,7 +35,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     invoiceService,
   ],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit,OnDestroy {
   categories: Category[] = [];
   products: Product[] = [
     {
@@ -58,7 +60,9 @@ export class HomeComponent implements OnInit {
   activeCategory: number = -1 || null;
   activeCategoryIndex: number = 0;
   cartItemLength = 0;
+  isLoading : boolean =false;
   private cartSubscription: Subscription;
+
   constructor(
     private categoryService: CategoryService,
     private productService: productService,
@@ -88,13 +92,16 @@ export class HomeComponent implements OnInit {
 
   fetchProductsByCategory(): void {
     if (this.activeCategory !== null) {
+      this.isLoading = true;
       this.productService.fetchProductByCategoryID(this.activeCategory)
         .subscribe({
           next: (response) => {
             this.products = response;
+            this.isLoading=false;
           },
           error: (error) => {
             console.error('Error fetching products:', error);
+            this.isLoading=false;
           }
         });
     }
@@ -107,17 +114,18 @@ export class HomeComponent implements OnInit {
   }
   onCategorySelected(categoryId: number): void {
     this.activeCategory = categoryId;
-    if (this.activeCategory !== null) {
-      this.productService.fetchProductByCategoryID(this.activeCategory)
-        .subscribe({
-          next: (response) => {
-            this.products = response;
-          },
-          error: (error) => {
-            console.error('Error fetching products:', error);
-          }
-        });
-    }
+    // if (this.activeCategory !== null) {
+    //   this.productService.fetchProductByCategoryID(this.activeCategory)
+    //     .subscribe({
+    //       next: (response) => {
+    //         this.products = response;
+    //       },
+    //       error: (error) => {
+    //         console.error('Error fetching products:', error);
+    //       }
+    //     });
+    // }
+    this.fetchProductsByCategory();
   }
   onIndexSelected(index: number) {
     this.activeCategoryIndex = index;
