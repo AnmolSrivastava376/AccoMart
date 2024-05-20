@@ -10,6 +10,7 @@ import { Login2FAComponent } from '../../pages/login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
 import { TokenHttpInterceptor } from '../../services/token-http-interceptor';
 import { TokenService } from '../../services/token.service';
+import { LoaderComponent } from '../loader/loader.component';
 
 
 @Component({
@@ -22,7 +23,8 @@ import { TokenService } from '../../services/token.service';
     MatButtonModule,
     CommonModule,
     Login2FAComponent,
-    HttpClientModule
+    HttpClientModule,
+    LoaderComponent
   ],
   providers: [HttpService],
   templateUrl: './auth-card.component.html',
@@ -31,8 +33,8 @@ import { TokenService } from '../../services/token.service';
 export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
-  isLogin = true;
-  spinLoader= false;
+  isLogin :boolean= true;
+  spinLoader:boolean= false;
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({

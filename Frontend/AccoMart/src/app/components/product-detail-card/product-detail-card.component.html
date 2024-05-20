@@ -3,7 +3,10 @@
         <app-navbar></app-navbar>
     </div>
     <div class="w-[80%] h-full flex">
-        <div class="w-full h-full flex-[60] bg-white relative flex items-center">
+      <div *ngIf="isLoading" class="flex justify-center items-center w-full h-full">
+        <app-loader></app-loader>
+    </div>
+        <div *ngIf="!isLoading" class="w-full h-full flex-[60] bg-white relative flex items-center">
           <div class="content animated fadeInLeft absolute z-[3] left-[20px]">
             <span class="bg animated fadeInDown inline-block text-white italic py-1 px-2 ">EXCLUSIVE</span>
             <h1 class="text-black font-bold text-[32px]">{{product?.productName}}</h1>
@@ -15,7 +18,7 @@
             </div>
           </div>
         </div>
-        <div class="w-full h-full flex-[40] bg-gray-500 bg-100" style="background-image: url({{product?.productImageUrl}});" ></div>
+        <div *ngIf="!isLoading" class="w-full h-full flex-[40] bg-gray-500 bg-100" style="background-image: url({{product?.productImageUrl}});" ></div>
     </div>
 </div>
 
