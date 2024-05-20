@@ -3,18 +3,16 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { CartProductCardComponent } from '../../components/cart-product-card/cart-product-card.component';
 import { CommonModule, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
-import { cartItemService } from '../../services/cartItem.services';
 import { HttpClientModule } from '@angular/common/http';
 import { cartItem } from '../../interfaces/cartItem';
 import { jwtDecode } from 'jwt-decode';
 import { addressService } from '../../services/address.service';
 import { Address } from '../../interfaces/address';
-import { ChangeDetectorRef } from '@angular/core';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { deliveryService } from '../../services/delivery.service';
 import { FormsModule } from '@angular/forms';
 import { orderService } from '../../services/order.service';
-import { cartService } from '../../services/cart.services';
+import { CartService } from '../../services/cart.services';
 import { Subscription, forkJoin } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
@@ -27,7 +25,7 @@ import { CartOrder } from '../../interfaces/placeOrder';
   selector: 'app-cart',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent,HttpClientModule],
-  providers : [addressService, deliveryService,productService,orderService,cartService,cartItemService],
+  providers : [addressService, deliveryService,productService,orderService,CartService],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -36,7 +34,7 @@ export class CartComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: cartService) {}
+  constructor(private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: CartService) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -60,53 +58,30 @@ export class CartComponent {
     }
     const cartId = this.decoded.CartId;
     const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId;
     this.cartOrder.addressId = this.decoded.AddressId;
     this.cartOrder.userId = this.decoded.UserId;
     this.cartOrder.deliveryId = 6;
     this.cartOrder.cartId = cartId;
-    
-    this.cartItemLength = this.cartService.fetchQuantityInCart();
-    this.cart = this.cartService.fetchCart();
     this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items => {
-        this.cart = items;
-        this.cartItemLength = items.length;
-        // Use forkJoin to fetch products in parallel
-        const fetchProductPromises = this.cart.map(item =>
-          this.productService.fetchProductById(item.productId)
-        );
-        forkJoin(fetchProductPromises).subscribe(
-          responses => {
-            // responses will be an array of products
-            this.products = responses.map(response => response);
-          },
-          error => {
-            console.error('Error fetching products:', error);
-          }
-        );
-      },
-      error => {
-        console.error('Error fetching cart items:', error);
+      item=>{
+        this.cart = item;
+        this.cartItemLength = item.length
+        item.forEach(cartItem => {
+          this.productService.fetchProductById(cartItem.productId).subscribe(
+            (product) => {
+              this.products.push(product);
+            }
+          );
+        });
       }
-    );
-
-
-
-
+    )
     // Fetching address
-    this.addressService.getAddress(addressId)
-  .subscribe(
+    this.addressService.getAddress(addressId).subscribe(
     (response) => {
       console.log(response);
       this.address = response;
-    },
-    (error) => {
-      console.error('Error fetching address:', error);
     }
   );
-
-
     // Fetching delivery
     this.deliveryService.getDeliveryServices()
     .subscribe(
@@ -115,18 +90,16 @@ export class CartComponent {
         if (this.delivery) {
           this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
         }
-      },
-      (error) => {
-        console.error('Error fetching delivery services:', error);
       }
     );
-
   }
   getCartTotal(): number {
     let total = 0;
-    this.cart.forEach((item, index) => {
-      total += this.products[index].productPrice * item.quantity;
-    });
+    if(this.cartItemLength>0){
+      this.cart.forEach((item, index) => {
+        total += this.products[index]?.productPrice * item.quantity;
+      });
+    }
     return total;
   }
   getDeliveryCharges(): number {
@@ -144,15 +117,6 @@ export class CartComponent {
 
   placeOrder() {
     this.orderService.placeOrderByCart(this.cartOrder)
-    .subscribe(
-      (response) => {
-        window.location.href = response.url;
-        console.log(response);
-      },
-      (error) => {
-        console.error('Error placing order:', error);
-      }
-    );
   }
   updateActiveDeliveryService(service: DeliveryService) {
     this.activeDeliveryService = service;

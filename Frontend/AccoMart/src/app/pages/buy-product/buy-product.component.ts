@@ -3,7 +3,6 @@ import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { CartProductCardComponent } from '../../components/cart-product-card/cart-product-card.component';
 import { CommonModule, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { cartItemService } from '../../services/cartItem.services';
 import { HttpClientModule } from '@angular/common/http';
 import { cartItem } from '../../interfaces/cartItem';
 import { jwtDecode } from 'jwt-decode';
@@ -12,7 +11,7 @@ import { Address } from '../../interfaces/address';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { deliveryService } from '../../services/delivery.service';
 import { orderService } from '../../services/order.service';
-import { cartService } from '../../services/cart.services';
+import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { PaymentMethodComponent } from '../../components/payment-method/payment-method.component';
 import { ChangeAddressComponent } from '../../components/change-address/change-address.component';
@@ -27,7 +26,7 @@ import { ProductOrder } from '../../interfaces/placeOrder';
   selector: 'app-buy-product',
   standalone: true,
   imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
-  providers : [cartItemService, addressService, deliveryService,productService,orderService,cartService,cartItemService],
+  providers : [addressService, deliveryService,productService,orderService,CartService],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css'
 })
@@ -36,8 +35,8 @@ export class BuyProductComponent {
   selectedDeliveryId: number;
   cartItemLength=0;
   private cartSubscription: Subscription;
-  constructor(private router: Router, private cartItemService : cartItemService, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
-    private orderService : orderService, private cartService: cartService,private route : ActivatedRoute) {}
+  constructor(private router: Router, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
+    private orderService : orderService, private cartService: CartService,private route : ActivatedRoute) {}
 
   cart: cartItem[] = [];
   clickedIndex=0;
@@ -67,7 +66,6 @@ export class BuyProductComponent {
       items => {
         this.cart = items;
         this.cartItemLength = items.length;
-        // Use a combination of map and forkJoin to fetch products in parallel
         const productRequests = items.map(item =>
           this.productService.fetchProductById(item.productId)
        );
