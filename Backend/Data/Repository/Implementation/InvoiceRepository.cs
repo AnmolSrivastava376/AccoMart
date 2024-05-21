@@ -130,12 +130,10 @@ namespace Data.Repository.Implementation
 
         var document = new PdfDocument();
 
-        string[] copies = { "Customer copy", "Company Copy" };
-        for (int i = 0; i < copies.Length; i++)
-        {
+       
+       
             string htmlcontent = "<div style='width:100%; text-align:center'>";
             htmlcontent += "<img style='width:80px;height:80%' src='' />";
-            htmlcontent += "<h2>" + copies[i] + "</h2>";
             htmlcontent += "<h2>Welcome to AccoMart</h2>";
 
             htmlcontent += "<h2> Invoice No:" + "1 " + " & Invoice Date:" + invoiceDto.OrderDate + "</h2>";
@@ -193,7 +191,7 @@ namespace Data.Repository.Implementation
             htmlcontent += "</div>";
 
                 PdfGenerator.AddPdfPages(document, htmlcontent, PageSize.A4);
-            }
+            
 
             byte[] response = null;
             using (MemoryStream ms = new MemoryStream())
@@ -283,12 +281,11 @@ namespace Data.Repository.Implementation
             }
             var document = new PdfDocument();
 
-            string[] copies = { "Customer copy", "Company Copy" };
-            for (int i = 0; i < copies.Length; i++)
-            {
+  
+            
                 string htmlcontent = "<div style='width:100%; text-align:center'>";
                 htmlcontent += "<img style='width:80px;height:80%' src='' />";
-                htmlcontent += "<h2>" + copies[i] + "</h2>";
+               
                 htmlcontent += "<h2>Welcome to AccoMart</h2>";
 
                 htmlcontent += "<h2> Invoice No:" + "1 " + " & Invoice Date:" + invoiceDto.OrderDate + "</h2>";
@@ -311,8 +308,9 @@ namespace Data.Repository.Implementation
                 htmlcontent += "<tbody>";
                 if (invoiceDto != null)
                 {
+                   
                     htmlcontent += "<tr>";
-                    htmlcontent += "<td>" + invoiceDto.UserName + "</td>";
+                    htmlcontent += "<td>" + invoiceDto + "</td>";
                     htmlcontent += "<td>" + invoiceDto.UserName + "</td>";
                     htmlcontent += "<td>" + invoiceDto.UserName + "</td >";
                     htmlcontent += "<td>" + invoiceDto.UserName + "</td>";
@@ -348,7 +346,7 @@ namespace Data.Repository.Implementation
                 PdfGenerator.AddPdfPages(document, htmlcontent, PageSize.A4);
 
 
-            }
+            
 
 
             byte[] response = null;

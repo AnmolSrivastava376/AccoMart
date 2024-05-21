@@ -19,16 +19,9 @@
 
 .landing-img{
     background-image: url('../../../assets/Image/landing-img.jpg');
-    background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
-
-/* .Mainimg{
-    background-image: url('../../../assets/Image/Landing-image.webp');
-    background-position: center;
-    background-repeat: no-repeat;
-} */
 
 .form{
     margin: 0 auto;

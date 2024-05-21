@@ -1,10 +1,16 @@
 
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
+  constructor() {} // Inject HttpClient here
+  // constructor(private http: HttpClient) {} // Inject HttpClient here
+
+
+
   getToken(): string | null {
     return localStorage.getItem('token');
   }
@@ -14,24 +20,50 @@ export class TokenService {
   }
 
   setRefreshToken(refreshToken:any):void{
-    const refreshTokenString = JSON.stringify(refreshToken);
-    localStorage.setItem('refreshtoken',refreshTokenString);
+    localStorage.setItem('refreshtoken',refreshToken);
   }
 
   setAccessToken(accessToken:any):void
   {
-    const accessTokenString = JSON.stringify(accessToken);
-    localStorage.setItem('accesstoken',accessTokenString);
+    localStorage.setItem('accesstoken',accessToken);
 
+  }
+
+  setExpiryAccess(expiry_accesstoken:any):void
+  {
+    localStorage.setItem('expiry_accesstoken',expiry_accesstoken);
+  }
+
+  setExpiryRefresh(expiry_refreshtoken:any):void
+  {
+    localStorage.setItem('expiry_refreshtoken',expiry_refreshtoken);
   }
 
   getAccessToken():any|null{
-    const accessTokenString = localStorage.getItem('accesstoken');
-    return accessTokenString;
+    const accessToken = localStorage.getItem('accesstoken');
+    return accessToken;
   }
 
-  getRefreshToken():any|null{
-    const refreshTokenString = localStorage.getItem('accesstoken');
-    return refreshTokenString;
+  getRefreshToken():any|null
+  {
+    const refreshToken = localStorage.getItem('accesstoken');
+    return refreshToken;
   }
+
+  getAccessExpiry():any|null
+  {
+    const expiry_accesstoken = localStorage.getItem('expiry_accesstoken');
+    return expiry_accesstoken;
+  }
+  getRefreshExpiry():any|null
+  {
+    const expiry_refreshtoken = localStorage.getItem('expiry_refreshtoken');
+    return expiry_refreshtoken;
+
+  }
+
+
+
+
+
 }

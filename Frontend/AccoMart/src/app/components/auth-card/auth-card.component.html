@@ -1,6 +1,6 @@
 <div class="parent w-[100vw] flex items-center justify-center h-[100vh]">
-    <div class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px]">
-        <div class="landing-img w-full h-full flex-[1] min-w-[400px] ml-[30px]">
+    <div class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px] overflow-hidden">
+        <div class="landing-img w-full h-full flex-[1] min-w-[400px]">
         </div>
         <div
             class="w-full h-full flex-col flex-[1] min-w-[300px] flex items-center justify-center py-[40px] px-[40px] gap-[20px] p-adj">
@@ -49,7 +49,7 @@
                             <div class="">
                                 <a href="home/forgotpassword" class=" text-[#6cc0bc] text-[14px] hover:underline">Forgot your password?</a>
                             </div>
-                            <div class="flex justify-center">
+                            <div class="flex justify-center h-fit">
                                 <button type="button" (click)="onLogin()"
                                     class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring flex justify-center items-center">
                                     <app-loader *ngIf="spinLoader"></app-loader>
