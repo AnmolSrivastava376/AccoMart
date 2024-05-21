@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 import { RefreshToken } from '../interfaces/RefreshToken';
 
 
@@ -36,16 +36,12 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.tokenService.getToken();
-    console.log("TokenHttpInterceptor", token);
-    console.log(this.tokenService.getAccessToken());
-
     if (token) {
       const authReq = req.clone({
         setHeaders: {
           'Authorization': `Bearer ${token}`
         }
       });
-
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -68,7 +64,6 @@ export class TokenHttpInterceptor implements HttpInterceptor {
         })
       );
     }
-
     return next.handle(req);
   }
 

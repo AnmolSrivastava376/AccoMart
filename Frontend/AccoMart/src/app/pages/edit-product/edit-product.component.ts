@@ -1,6 +1,5 @@
-// edit-product-popup.component.ts
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Product } from '../../interfaces/product'; // adjust the path as needed
+import { Product } from '../../interfaces/product'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,8 +10,6 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
-// import { AngularFireStorage } from '@angular/fire/storage';
-
 
 @Component({
   selector: 'app-edit-product-popup',
@@ -24,7 +21,7 @@ import { Category } from '../../interfaces/category';
 })
 
 export class EditProductComponent implements OnInit {
-  productImageUrl: string; // This will hold the URL of the uploaded image
+  productImageUrl: string; 
   uploading: boolean = false;
   product: Product = {
     productId: 0,
@@ -52,9 +49,6 @@ export class EditProductComponent implements OnInit {
           response => {
             this.product = response;
             console.log(this.product);
-          },
-          error => {
-            console.error('Error fetching product:', error);
           }
         );
     });
@@ -70,16 +64,15 @@ export class EditProductComponent implements OnInit {
    }
 
   CancelEdit(): void {
-    this.router.navigate(['/admin/products']);
-
+    window.location.href = '/admin/products';
   }
 
   showProducts() {
-    this.router.navigate(['/admin/products']);
+    window.location.href = '/admin/products';
   }
 
   showCategories() {
-    this.router.navigate(['/admin/categories']);
+    window.location.href = '/admin/categories';
   }
 
 

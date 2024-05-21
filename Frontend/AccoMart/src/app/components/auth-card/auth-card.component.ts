@@ -8,8 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { Login2FAComponent } from '../../pages/login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
-import { TokenHttpInterceptor } from '../../services/token-http-interceptor';
 import { TokenService } from '../../services/token.service';
+import { LoaderComponent } from '../loader/loader.component';
 
 
 @Component({
@@ -22,7 +22,8 @@ import { TokenService } from '../../services/token.service';
     MatButtonModule,
     CommonModule,
     Login2FAComponent,
-    HttpClientModule
+    HttpClientModule,
+    LoaderComponent
   ],
   providers: [HttpService],
   templateUrl: './auth-card.component.html',
@@ -31,8 +32,8 @@ import { TokenService } from '../../services/token.service';
 export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
-  isLogin = true;
-  spinLoader= false;
+  isLogin :boolean= true;
+  spinLoader:boolean= false;
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
@@ -61,25 +62,16 @@ export class AuthCardComponent {
     const email = this.loginForm.value.email!;
     const password = this.loginForm.value.password!;
     this.httpService.login(email, password).subscribe((result) => {
-
-
     this.tokenService.setToken(result.response.accessToken.token);
     this.tokenService.setAccessToken(result.response.accessToken.token);
     this.tokenService.setRefreshToken(result.response.refreshToken.token);
     this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
     this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
-    
-
-    //localStorage.setItem("token", result.response.accessToken.token);
-
-      console.log(result);
-      this.router.navigate(['/home']);
+    console.log(result);
+    window.location.href = '/home'
     });
   }
-
   onSwitch() {
     this.isLogin = !this.isLogin
   }
-
-
 }

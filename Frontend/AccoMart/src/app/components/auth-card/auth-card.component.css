@@ -1,16 +1,26 @@
-.parent{
-    background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+.parent {
+    position: relative;
+    overflow: hidden;
 }
 
-.child{
-    background-image: linear-gradient(to bottom right,#112f47,#035094, #035094);
-
-}
-
-.Mainimg{
-    background-image: url('../../../assets/Image/Landing-image.webp');
+.parent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../../assets/Image/landing-bg.jpg');
     background-position: center;
+    background-size: cover;
+    filter: blur(5px);
+    z-index: -1;    
+}
+
+.landing-img{
+    background-image: url('../../../assets/Image/landing-img.jpg');
     background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .form{
@@ -169,7 +179,7 @@ input[type="submit"]:hover {
         padding: 1rem 0;
         
     }
-    .Mainimg{
+    .landing-img{
         display: none;
     }
     

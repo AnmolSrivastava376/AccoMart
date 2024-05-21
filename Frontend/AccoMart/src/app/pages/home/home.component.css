@@ -1,6 +1,10 @@
 .parent{
-    background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+    background-image: url('../../../assets/Image/landing-bg.jpg');
+    background-position: center;
+    background-size: cover;
+    filter: blur(5px);
 }
+
 
 @media (max-width: 650px){
     .col{
