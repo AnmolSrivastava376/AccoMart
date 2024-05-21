@@ -53,7 +53,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddControllers();
-using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Server=tcp:acco-mart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=anmol;Password=kamal.kumar@799;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;\";"));
+using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Server=tcp:acco-mart-2.database.windows.net,1433;Initial Catalog=accomart;Persist Security Info=False;User ID=guptakhushboo81537@gmail.com@acco-mart-2;Password=Finalstep@2111;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 
 
 //Services and Repo 
