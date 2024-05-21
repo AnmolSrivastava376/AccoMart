@@ -12,6 +12,28 @@ import { RefreshToken } from '../interfaces/RefreshToken';
 export class TokenHttpInterceptor implements HttpInterceptor {
       constructor(private tokenService: TokenService, private router: Router) {}
 
+      ref:RefreshToken={
+
+        "accessToken": {
+          "token": '',
+          "expiryTokenDate": ''
+        },
+        "refreshToken": {
+          "token": '',
+          "expiryTokenDate": ''
+      }
+    }
+
+    ansRef : RefreshToken={
+      "accessToken": {
+          "token": '',
+          "expiryTokenDate": ''
+        },
+        "refreshToken": {
+          "token": '',
+          "expiryTokenDate": ''
+      }
+    }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.tokenService.getToken();
     console.log("TokenHttpInterceptor", token);
@@ -27,9 +49,20 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
-            // Redirect to /home/auth when unauthorized
+            // Redirect to /home/auth when unauthorize
 
-            this.generateRefreshToken();
+            this.refreshToken(this.ref).then(response => {
+              // Handle response here
+              this.ansRef = response.data;
+            }).catch(error => {
+              // Handle error here
+              console.error("Error refreshing token:", error);
+            });
+
+            this.tokenService.setAccessToken(this.ansRef.accessToken.token);
+            this.tokenService.setExpiryAccess(this.ansRef.accessToken.expiryTokenDate);
+            this.tokenService.setRefreshToken(this.ansRef.refreshToken.token);
+            this.tokenService.setExpiryRefresh(this.ansRef.refreshToken.expiryTokenDate);
           }
           return throwError(error);
         })
@@ -56,17 +89,7 @@ export class TokenHttpInterceptor implements HttpInterceptor {
   }
 
 
-  ref:RefreshToken={
 
-    "accessToken": {
-      "token": '',
-      "expiryTokenDate": ''
-    },
-    "refreshToken": {
-      "token": '',
-      "expiryTokenDate": ''
-  }
-}
   generateRefreshToken(): void {
     const accessToken = this.tokenService.getAccessToken();
     const access_exp = this.tokenService.getAccessExpiry();
@@ -78,7 +101,6 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     this.ref.refreshToken.token = "Ik1zk5FupV4nTtu/TXsrIxqKC+480k0LpgHBTTSMdOgum9bL/QgGM9g8FqEWt3mSXO0O+hvL9VUnrK4hAWi7oA==";
     this.ref.refreshToken.expiryTokenDate = refresh_expiry;
 
-    this.refreshToken(this.ref);
 
   }
 
