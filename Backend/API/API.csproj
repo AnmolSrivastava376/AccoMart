@@ -27,7 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Backend.EmailService\Service.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\StripeView\StripeView.csproj" />
   </ItemGroup>
 
 </Project>
