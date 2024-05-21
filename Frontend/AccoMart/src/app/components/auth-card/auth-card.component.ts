@@ -64,8 +64,11 @@ export class AuthCardComponent {
 
 
     this.tokenService.setToken(result.response.accessToken.token);
-    this.tokenService.setAccessToken(result.response.accessToken);
-    this.tokenService.setRefreshToken(result.response.refreshToken);
+    this.tokenService.setAccessToken(result.response.accessToken.token);
+    this.tokenService.setRefreshToken(result.response.refreshToken.token);
+    this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
+    this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
+    
 
     //localStorage.setItem("token", result.response.accessToken.token);
 
@@ -77,5 +80,6 @@ export class AuthCardComponent {
   onSwitch() {
     this.isLogin = !this.isLogin
   }
+
 
 }

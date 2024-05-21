@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {  HttpClientModule } from '@angular/common/http';
 import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,7 @@ import { Category } from '../../interfaces/category';
   styleUrl: './admin-products.component.css'
 })
 export class AdminProductsComponent implements OnInit {
-  constructor(private router: Router ,private http:HttpClient,private productService: productService,private categoryService:CategoryService) { }
+  constructor(private router: Router ,private productService: productService,private categoryService:CategoryService) { }
 
   products: Product[]=[{
     productId: 0,
