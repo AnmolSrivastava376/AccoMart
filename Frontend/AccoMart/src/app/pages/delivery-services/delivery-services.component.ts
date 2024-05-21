@@ -6,7 +6,7 @@ import { DeliveryService } from '../../interfaces/deliveryService';
 import { CommonModule } from '@angular/common';
 import { createDeliveryService } from '../../interfaces/createDeliveryService';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-delivery-services',

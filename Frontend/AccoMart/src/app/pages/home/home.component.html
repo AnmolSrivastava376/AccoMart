@@ -1,18 +1,18 @@
-<div class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col items-center justify-center">
-    <div class="w-full bg-gray-300 relative rounded-t-[10px] r-adj">
+<div class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col justify-start bg-gray-300 ">
+    <div class="w-full relative rounded-t-[10px] r-adj">
         <div class="w-full h-[60px] shadow-2xl">
             <app-navbar></app-navbar>
         </div>
-        <div class="w-full h-full absolute parent"></div>
-        <div class="w-full h-full border flex py-[20px] col relative">
+        <div class="w-full h-full flex py-[20px] col relative">
             <div class="w-full h-full flex-[25] sticky top-[20px] min-h-[20vh] px-[20px] notsticky">
                 <app-category-navbar [categories]="categories" (categorySelected)="onCategorySelected($event)" (categoryIndex)="onIndexSelected($event)">
                 </app-category-navbar>
             </div>
             <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="products && categories[activeCategoryIndex]">
-                <app-loader *ngIf="isLoading"></app-loader>
-                <!-- <app-product-card [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-product-card> -->
                 <app-product-card *ngIf="!isLoading && products && categories[activeCategoryIndex]" [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-product-card>
+            </div>
+            <div class="h-[80vh] bg-white mr-[20px] rounded-[10px] flex items-center justify-center" *ngIf="!(products && categories[activeCategoryIndex])">
+                <app-loader></app-loader>
             </div>
         </div>
     </div>

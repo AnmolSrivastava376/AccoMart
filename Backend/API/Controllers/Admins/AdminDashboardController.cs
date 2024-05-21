@@ -2,12 +2,10 @@
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Data.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Admins
 {
-
-
-
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller

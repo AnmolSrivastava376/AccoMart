@@ -62,6 +62,7 @@ namespace Service.Services
 
         }
 
+
         private string GenerateRefreshToken()
         {
             var randomNumber = new Byte[64];

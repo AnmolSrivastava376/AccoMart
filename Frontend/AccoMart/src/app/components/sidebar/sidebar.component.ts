@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,20 +10,17 @@ import { Router } from '@angular/router';
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent {
-  constructor(private router: Router) { }
+  constructor() { }
 
   showProducts() {
-    this.router.navigate(['/admin/products']);
-
+    window.location.href = '/admin/products';
   }
 
   showCategories() {
-    this.router.navigate(['/admin/categories']);
+    window.location.href = '/admin/categories';
   }
 
   showDeliveryServices(){
-    this.router.navigate(['/admin/delivery'])
+    window.location.href = '/admin/delivery';
   }
-
-
 }
