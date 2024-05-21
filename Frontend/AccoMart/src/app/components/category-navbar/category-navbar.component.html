@@ -17,21 +17,23 @@
         <div class="">Filters</div>
         <div class="w-[24px]"></div>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold">
+    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer "[ngClass]="{'bg-gray-200': isActiveAscendingFilter}"  (click)="sortPriceAscending()">
         <mat-icon>trending_upward</mat-icon>
         <div class="">Price Ascending</div>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold">
+    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer" [ngClass]="{'bg-gray-200': isActiveDescendingFilter}" (click)="sortPriceDscending()">
         <mat-icon>trending_down</mat-icon>
         <div class="">Price Descending</div>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold">
+    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer" [ngClass]="{'bg-gray-200': isActiveMinPriceFilter}">
         <mat-icon>attach_money</mat-icon>
         <div class="">Min Price</div>
+        <input type="number" [(ngModel)]="minprice" (ngModelChange)="filterByPrice()" class="ml-2 p-1 border border-gray-300 rounded"/>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold">
+    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer" [ngClass]="{'bg-gray-200': isActiveMaxPriceFilter}">
         <mat-icon>attach_money</mat-icon>
         <div class="">Max Price</div>
+        <input type="number" [(ngModel)]="maxprice" (ngModelChange)="filterByPrice()" class="ml-2 p-1 border border-gray-300 rounded"/>
     </div>
     <div class="pb-4"></div>
 </div>

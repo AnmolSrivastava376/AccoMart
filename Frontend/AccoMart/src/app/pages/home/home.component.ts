@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { invoiceService } from '../../services/invoiceService';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +26,8 @@ import { LoaderComponent } from '../../components/loader/loader.component';
     NavbarComponent,
     CommonModule,
     HttpClientModule,
-    LoaderComponent
+    LoaderComponent,
+    FormsModule
   ],
   providers: [
     CategoryService,
@@ -47,6 +49,9 @@ export class HomeComponent implements OnInit,OnDestroy {
       categoryId: 0,
     },
   ];
+  minprice: number=0;
+  maxprice: number=Infinity;
+  filteredProducts: Product[] = [];
 
   downloadFile(data: Blob): void {
     const blob = new Blob([data], { type: 'application/pdf' });
@@ -143,5 +148,22 @@ export class HomeComponent implements OnInit,OnDestroy {
         console.error('Error fetching invoice:', error);
       }
     );
+  }
+
+  sortPriceAscending() {
+    this.filteredProducts.sort((a, b) => a.productPrice - b.productPrice);
+  }
+
+  sortPriceDescending() {
+    this.filteredProducts.sort((a, b) => b.productPrice - a.productPrice);
+  }
+
+  filterByPrice() {
+    this.filteredProducts = this.products.filter(product => 
+      product.productPrice >= this.minprice && product.productPrice <= this.maxprice
+    );
+  }
+  onFilteredProducts(filtered: Product[]) {
+    this.filteredProducts = filtered;
   }
 }
