@@ -1,11 +1,10 @@
 .parent {
     position: relative;
-  
 }
 
 .parent::before {
     content: "";
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -13,7 +12,7 @@
     background-image: url('../../../assets/Image/landing-bg.jpg');
     background-position: center;
     background-size: cover;
-    filter: blur(5px);
+    /* filter: blur(5px); */
     z-index: -1;    
 }
 
