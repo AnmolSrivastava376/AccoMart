@@ -11,7 +11,7 @@
             <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="products && categories[activeCategoryIndex]">
                 <app-product-card *ngIf="!isLoading && products && categories[activeCategoryIndex]" [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-product-card>
             </div>
-            <div class="h-[80vh] bg-white mr-[20px] rounded-[10px] flex items-center justify-center" *ngIf="!(products && categories[activeCategoryIndex])">
+            <div class="h-[80vh] bg-white mr-[20px] rounded-[10px] w-full flex items-center justify-center" *ngIf="!(products && categories[activeCategoryIndex])">
                 <app-loader></app-loader>
             </div>
         </div>
