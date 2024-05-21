@@ -1,6 +1,6 @@
 .parent {
     position: relative;
-    overflow: hidden;
+  
 }
 
 .parent::before {
