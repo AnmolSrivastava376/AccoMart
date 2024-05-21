@@ -1,9 +1,8 @@
 // edit-product-popup.component.ts
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import {CreateProduct} from '../../interfaces/createProduct'
+import { CreateProduct } from '../../interfaces/createProduct';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
@@ -11,22 +10,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { Category } from '../../interfaces/category';
 import { CategoryService } from '../../services/category.services';
 
-
-
 @Component({
   selector: 'app-add-product-popup',
   templateUrl: './add-product.component.html',
-  imports:[CommonModule,FormsModule,NavbarComponent,SidebarComponent,HttpClientModule],
-  providers:[productService,CategoryService],
-  standalone:true,
-  styleUrls: ['./add-product.component.css']
+  imports: [
+    CommonModule,
+    FormsModule,
+    NavbarComponent,
+    SidebarComponent,
+    HttpClientModule,
+  ],
+  providers: [productService, CategoryService],
+  standalone: true,
+  styleUrls: ['./add-product.component.css'],
 })
-
 export class AddProductComponent implements OnInit {
-  productImageUrl: string; // This will hold the URL of the uploaded image
+  productImageUrl: string;
   uploading: boolean = false;
-  categories:Category[];
-  
+  categories: Category[];
 
   product: CreateProduct = {
     productName: '',
@@ -37,47 +38,42 @@ export class AddProductComponent implements OnInit {
   };
 
   @Output() close = new EventEmitter<void>();
-  constructor(private route: ActivatedRoute , private router:Router, private productService:productService,private categoryService:CategoryService) { }
+  constructor(
+    private productService: productService,
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
   }
 
-  fetchCategories(){
-   this.categoryService.fetchCategories().subscribe(response=>{
-    this.categories = response;
-    console.log(this.categories);
-   },err=>{
-    console.log(err);
-   })
+  fetchCategories() {
+    this.categoryService.fetchCategories().subscribe(
+      (response) => {
+        this.categories = response;
+        console.log(this.categories);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   Cancel(): void {
-    this.router.navigate(['/admin/products']);
-
+    window.location.href = '/admin/products';
   }
 
   showProducts() {
-    this.router.navigate(['/admin/products']);
+    window.location.href = '/admin/products';
   }
 
   showCategories() {
-    this.router.navigate(['/admin/categories']);
+    window.location.href = '/admin/categories';
   }
 
   AddProduct() {
-    this.productService.addProduct(this.product)
-      .subscribe(
-        (response: any) => {
-          // Handle success, e.g., show a success message
-          console.log('Product added successfully:', response);
-        },
-        (error: any) => {
-          // Handle error, e.g., show an error message
-          console.error('Error adding product:', error);
-        }
-      );
+    this.productService.addProduct(this.product).subscribe((response: any) => {
+      console.log('Product added successfully:', response);
+    });
   }
-
-
 }

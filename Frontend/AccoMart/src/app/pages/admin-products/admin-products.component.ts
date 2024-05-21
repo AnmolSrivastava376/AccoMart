@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import {  HttpClientModule } from '@angular/common/http';
 import { productService } from '../../services/product.services';
@@ -17,7 +16,7 @@ import { Category } from '../../interfaces/category';
   styleUrl: './admin-products.component.css'
 })
 export class AdminProductsComponent implements OnInit {
-  constructor(private router: Router ,private productService: productService,private categoryService:CategoryService) { }
+  constructor(private productService: productService,private categoryService:CategoryService) { }
 
   products: Product[]=[{
     productId: 0,
@@ -64,20 +63,20 @@ export class AdminProductsComponent implements OnInit {
   }
 
   showProducts() {
-    this.router.navigate(['/admin/products']);
+    window.location.href = '/admin/products';
   }
 
   showCategories() {
-    this.router.navigate(['/admin/categories']);
+    window.location.href = '/admin/categories';
   }
 
   openAddProductPage()
   {
-    this.router.navigate([`/admin/product/add`]);
+    window.location.href = '/admin/product/add'
   }
   openEditPage(product: Product): void {
     this.selectedProduct = product;
-    this.router.navigate([`/admin/product/edit/${product.productId}`]);
+    window.location.href = `/admin/product/edit/${product.productId}`;
   }
 
 

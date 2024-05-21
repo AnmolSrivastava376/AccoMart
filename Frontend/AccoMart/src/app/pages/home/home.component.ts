@@ -123,7 +123,7 @@ export class HomeComponent implements OnInit {
     this.activeCategoryIndex = index;
   }
   gotoCart() {
-    this.router.navigate(['/home/cart']);
+    window.location.href = '/home/cart';
   }
 
   getInvoice(): void {

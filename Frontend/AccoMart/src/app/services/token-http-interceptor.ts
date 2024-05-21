@@ -14,28 +14,21 @@ export class TokenHttpInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.tokenService.getToken();
-    console.log("TokenHttpInterceptor", token);
-    console.log(this.tokenService.getAccessToken());
-    
     if (token) {
       const authReq = req.clone({
         setHeaders: {
           'Authorization': `Bearer ${token}`
         }
       });
-
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
-            // Redirect to /home/auth when unauthorized
-            
             this.generateRefreshToken();
           }
           return throwError(error);
         })
       );
     }
-    
     return next.handle(req);
   }
 

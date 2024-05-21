@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { resetPassword } from '../../interfaces/resetPassword';
 import { HttpService } from '../../services/http.service';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-reset-password',
@@ -12,11 +12,9 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent {
-  resetPasswords: resetPassword = { password: '', confirmPassword: '', email: '', token: '' }; // Define the resetPasswords object
-
-  constructor(private httpService: HttpService, private route : ActivatedRoute,private router : Router ){ }
+  resetPasswords: resetPassword = { password: '', confirmPassword: '', email: '', token: '' };
+  constructor(private httpService: HttpService, private route : ActivatedRoute){ }
   ngOnInit(): void {
-    // Fetch token and email from route parameters
     this.route.queryParams.subscribe(params => {
       this.resetPasswords.token = params['token'] || '';
       this.resetPasswords.email = params['email'] || '';
@@ -24,17 +22,11 @@ export class ResetPasswordComponent {
   }
 
   resetPassword() {
-    // Call the resetPassword method from the authentication service
     this.httpService.resetPassword(this.resetPasswords.token, this.resetPasswords.email, this.resetPasswords)
       .subscribe(
         response => {
           console.log('Password reset successfully.');
-          this.router.navigate(['/auth/login']);
-        
-
-        },
-        error => {
-          console.error('Error resetting password:', error);
+          window.location.href = '/home/auth'
         }
       );
   }

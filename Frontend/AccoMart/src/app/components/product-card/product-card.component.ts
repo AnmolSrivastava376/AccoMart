@@ -1,11 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { GridDisplayCardComponent } from '../grid-display-card/grid-display-card.component';
 import { ScrollDisplayCardComponent } from '../scroll-display-card/scroll-display-card.component';
 import { ProductScrollDisplayCardComponent } from '../product-scroll-display-card/product-scroll-display-card.component';
-import { cartItem } from '../../interfaces/cartItem';
 import { HttpClientModule } from '@angular/common/http';
 
 @Component({
@@ -19,8 +17,8 @@ export class ProductCardComponent{
   @Input() products?: Product[]
   @Input() categoryName?: string
 
-  constructor(private router: Router) { }
+  constructor() { }
   handleClick(productId: number) {
-  this.router.navigate(['home/productdetail', productId.toString()]);
+  window.location.href = `home/productdetail/${productId}`
 }
 }
