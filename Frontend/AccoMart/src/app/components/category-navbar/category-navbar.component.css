@@ -23,3 +23,8 @@
         display: block;
     }
 }
+@media (max-width: 650px){
+    .justify-adjust{
+        justify-content: flex-start;
+    }
+}
