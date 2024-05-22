@@ -19,7 +19,6 @@ import { ChangeServiceComponent } from '../../components/change-service/change-s
 import { FormsModule } from '@angular/forms';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
-import { stripeDto } from '../../interfaces/StripeDto';
 import { ProductOrder } from '../../interfaces/placeOrder';
 
 @Component({
@@ -82,14 +81,11 @@ export class BuyProductComponent {
     this.productOrder.productId = this.selectedProductId;
 
     // Fetching address
-    this.addressService.getAddress(addressId)
+    this.addressService.getAddress(userId)
   .subscribe(
     (response) => {
       console.log(response);
-      this.address = response;
-    },
-    (error) => {
-      console.error('Error fetching address:', error);
+      this.address = response[0];
     }
   );
 

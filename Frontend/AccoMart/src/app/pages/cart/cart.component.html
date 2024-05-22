@@ -19,9 +19,9 @@
         <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Address</div>
         <div class="w-full h-[1px] bg-black"></div>
         <div
-          *ngIf="address && (address.street || address.city || address.state || address.zipCode || address.phoneNumber)"
+          *ngIf="address"
           class="text-adj">
-          {{ address.street }} {{ address.city }} {{ address.state }} {{ address.zipCode }} {{ address.phoneNumber }}
+          {{ activeAddress.street }} {{ activeAddress.city }} {{ activeAddress.state }} {{ activeAddress.zipCode }} {{ activeAddress.phoneNumber }}
         </div>
 
         <!-- <app-change-address *ngIf="isVisible" (addressAdded)="onAddressAdded($event)"></app-change-address>

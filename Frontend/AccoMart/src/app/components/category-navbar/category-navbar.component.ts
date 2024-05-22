@@ -21,8 +21,6 @@ export class CategoryNavbarComponent {
   @Output() categorySelected = new EventEmitter<number>();
   @Output() categoryIndex = new EventEmitter<number>();
   @Output() filteredProducts = new EventEmitter<Product[]>();
-  isActiveMinPriceFilter: boolean = false;
-  isActiveMaxPriceFilter: boolean = false;
   isCategoryNavbarActive: boolean = false;
   isActiveAscendingFilter: boolean = false;
   isActiveDescendingFilter: boolean = false;
@@ -53,20 +51,7 @@ export class CategoryNavbarComponent {
     this.isActiveDescendingFilter = true;
     this.products?.sort((a, b)=> b.productPrice - a.productPrice);
   }
-
-//   filterByMinPrice() {
-//     const filtered = this.products?.filter(product => product.productPrice >= this.minprice);
-//     this.filteredProducts.emit(filtered);
-//   }
-
-//   filterByMaxPrice() {
-//     const filtered = this.products?.filter(product => product.productPrice <= this.maxprice);
-//     this.filteredProducts.emit(filtered); 
-
-// }
   filterByPrice() {
-    this.isActiveMinPriceFilter = this.minprice > 0;
-    this.isActiveMaxPriceFilter = this.maxprice < Infinity;
     const filtered = this.products?.filter(product => 
       (product.productPrice >= (this.minprice || 0)) && (product.productPrice <= (this.maxprice || Infinity))
     ) ?? [];
