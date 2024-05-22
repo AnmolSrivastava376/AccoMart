@@ -2,13 +2,14 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Order } from '../../interfaces/order';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
-  selector: 'app-order-card',
-  standalone: true,
-  imports: [CommonModule,HttpClientModule],
-  templateUrl: './order-card.component.html',
-  styleUrl: './order-card.component.css'
+    selector: 'app-order-card',
+    standalone: true,
+    templateUrl: './order-card.component.html',
+    styleUrl: './order-card.component.css',
+    imports: [CommonModule, HttpClientModule, LoaderComponent]
 })
 export class OrderCardComponent implements OnChanges{
  ngOnChanges(changes: SimpleChanges): void {
