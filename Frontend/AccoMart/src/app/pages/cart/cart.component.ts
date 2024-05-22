@@ -111,6 +111,9 @@ export class CartComponent {
       }
     });
   }
+  
+
+ 
   getCartTotal(): number {
     let total = 0;
     if (this.cartItemLength > 0) {
@@ -150,4 +153,9 @@ export class CartComponent {
     this.clickedIndex = clickedIndex;
     this.isVisible = !this.isVisible;
   }
+
+  // onAddressAdded(address: Address) {
+  //   this.addresses.push(address); // Add the newly added address to the array
+  //   this.isVisible = false; // Close the change address form
+  // }
 }
