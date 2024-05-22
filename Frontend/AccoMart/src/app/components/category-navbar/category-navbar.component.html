@@ -14,24 +14,23 @@
         </div>
     </div>
 </div>
-<div class="w-full h-full flex flex-col rounded-[10px] bg-white mt-[20px] gap-[10px]">
-    <div class="text-[24px] font-bold px-[16px] flex items-center gap-2 min-h-[60px] justify-between">
+<div class="w-full h-full flex flex-col rounded-[10px] bg-white mt-[20px] px-[20px]">
+    <div class="text-[24px] font-bold flex items-center gap-2 min-h-[60px] justify-between">
         <mat-icon>filter_list</mat-icon>
         <div class="">Filters</div>
         <div class="w-[24px]"></div>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer "
+    <div class="w-full flex items-center gap-2 font-semibold cursor-pointer py-[5px] rounded-[5px] px-[5px]"
         [ngClass]="{'bg-gray-200': isActiveAscendingFilter}" (click)="sortPriceAscending()">
         <mat-icon>trending_upward</mat-icon>
         <div class="">Price Ascending</div>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer"
+    <div class="w-full flex items-center gap-2 font-semibold cursor-pointer py-[5px] rounded-[5px] px-[5px]"
         [ngClass]="{'bg-gray-200': isActiveDescendingFilter}" (click)="sortPriceDscending()">
         <mat-icon>trending_down</mat-icon>
         <div class="">Price Descending</div>
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer overflow-hidden justify-between justify-adjust"
-        [ngClass]="{'bg-gray-200': isActiveMinPriceFilter}">
+    <div class="w-full flex items-center gap-2 font-semibold cursor-pointer overflow-hidden justify-between justify-adjust py-[5px] rounded-[5px] px-[5px]">
         <div class="flex gap-2 items-center">
             <mat-icon>attach_money</mat-icon>
             <div class="">Min Price</div>
@@ -39,8 +38,7 @@
         <input type="number" [(ngModel)]="minprice" (ngModelChange)="filterByPrice()"
             class="p-1 border w-[100px] border-gray-300 rounded h-[32px]" />
     </div>
-    <div class="w-full px-[20px] flex items-center gap-2 font-semibold cursor-pointer overflow-hidden justify-between justify-adjust"
-        [ngClass]="{'bg-gray-200': isActiveMaxPriceFilter}">
+    <div class="w-full flex items-center gap-2 font-semibold cursor-pointer overflow-hidden justify-between justify-adjust py-[5px] rounded-[5px] px-[5px]">
         <div class="flex gap-2 justify-center items-center">
             <mat-icon>attach_money</mat-icon>
             <div class="">Max Price</div>
