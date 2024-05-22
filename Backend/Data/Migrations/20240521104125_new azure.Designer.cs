@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240505065953_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240521104125_new azure")]
+    partial class newazure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,14 +128,14 @@ namespace Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "93cb5859-0603-4485-86a5-79322d2a0b75",
+                            Id = "a13a4584-fb15-4d7a-bc45-f7863dadbd21",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "bb004458-4c73-4737-ab6e-5e38cf8341fe",
+                            Id = "f42e5529-0538-4332-9be9-d5285e70d4a5",
                             ConcurrencyStamp = "1",
                             Name = "User",
                             NormalizedName = "User"
