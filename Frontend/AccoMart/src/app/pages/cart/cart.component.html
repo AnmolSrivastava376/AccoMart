@@ -1,7 +1,7 @@
 <div class="max-w-[100vw] min-h-[100vh] flex flex-col relative"
   [ngClass]="{'overflow-hidden max-h-[100vh]': isVisible}">
   <app-navbar></app-navbar>
-  <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] bg-gray-300 col p-adj min-h-[100vh]">
+  <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] parent col p-adj min-h-[100vh]">
     <div class="w-full h-full flex-[75] flex flex-col">
       <div class="font-bold text-[28px] leading-[32px]">Shopping Cart</div>
       <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} item<span *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
@@ -44,7 +44,7 @@
           Loading delivery services...
         </div>
       </div>
-      <div class="parent w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]" *ngIf="!(cartItemLength===0)">
+      <div class="checkout w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]" *ngIf="!(cartItemLength===0)">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Cart Summary</div>
         <div class="w-full h-[1px] bg-white mb-[10px]"></div>
         <div class="flex justify-between items-center leading-[16px] text-adj">

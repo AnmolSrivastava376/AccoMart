@@ -5,14 +5,15 @@ import { Product } from '../../interfaces/product';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { LoaderComponent } from "../loader/loader.component";
 
 @Component({
-  selector: 'app-cart-product-card',
-  standalone: true,
-  imports: [HttpClientModule,CommonModule],
-  providers: [productService,CartService],
-  templateUrl: './cart-product-card.component.html',
-  styleUrl: './cart-product-card.component.css'
+    selector: 'app-cart-product-card',
+    standalone: true,
+    providers: [productService, CartService],
+    templateUrl: './cart-product-card.component.html',
+    styleUrl: './cart-product-card.component.css',
+    imports: [HttpClientModule, CommonModule, LoaderComponent]
 })
 export class CartProductCardComponent {
   quantity=0
