@@ -58,8 +58,8 @@ namespace API.Controllers.Admins
             return Ok(category);
         }
 
-
-         [HttpPost("Category/Create")]
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Category/Create")]
          public async Task<ActionResult<Category>> CreateCategory([FromBody] CategoryName category_name)
          {
 
@@ -67,6 +67,8 @@ namespace API.Controllers.Admins
             return Ok(category);    
          }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("Product/Create")]
         public async Task<ActionResult<Product>> CreateProduct(ProductDto productDto)
         {
@@ -74,13 +76,15 @@ namespace API.Controllers.Admins
             return Ok(product); 
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("Update/Category")]
         async public Task<ActionResult<Category>> UpdateCategory(int Id, string NewCategoryName)
         {
            var category = await _productService.UpdateCategoryAsync( Id, NewCategoryName); 
            return  Ok(category);   
         }
+
+        [Authorize(Roles = "Admin")]
 
         [HttpPut("Update/Product/{productId}")]
 
@@ -90,6 +94,7 @@ namespace API.Controllers.Admins
             return Ok(product);
         }
 
+        [Authorize(Roles = "Admin")]
 
         [HttpDelete("Delete/Category/{CategoryId}")]
         async public Task<ActionResult> DeleteCategory(int CategoryId)
@@ -97,6 +102,7 @@ namespace API.Controllers.Admins
             await _productService.DeleteCategoryAsync(CategoryId);
             return Ok();
         }
+        [Authorize(Roles = "Admin")]
 
         [HttpDelete("Delete/Product/{ProductId}")]
         async public Task<ActionResult> DeleteProduct(int ProductId)

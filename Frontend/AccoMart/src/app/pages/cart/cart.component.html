@@ -5,12 +5,12 @@
     <div class="w-full h-full flex-[75] flex flex-col">
       <div class="font-bold text-[28px] leading-[32px]">Shopping Cart</div>
       <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} item<span *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
-      <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] pt-[30px] gap-[30px]">
+      <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
         <div *ngFor="let item of cart">
           <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
         </div>
-        <div class="text-gray-500 pb-[30px]">
-          {{cart.length===0?"No items added in cart":""}}
+        <div class="text-gray-500" *ngIf="cartItemLength===0">
+          No items added in cart
         </div>
       </div>
     </div>

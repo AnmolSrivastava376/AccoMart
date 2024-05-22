@@ -18,7 +18,7 @@ export class HttpService {
       userName: username,
       email: email,
       password: password,
-      roles:["Admin"]
+      roles:["User"]
     });
   }
 
@@ -55,20 +55,7 @@ export class HttpService {
     }>('http://localhost:5239/AuthenticationController/Refresh-Token',{refreshToken});
   }
 
-  generateRefreshToken(body:any)
-  {
-    this.http.post('http://localhost:5239/AuthenticationController/Refresh-Token', body)
-    .subscribe(
-      (response) => {
-        console.log('Refresh token success:', response);
-        // Handle successful refresh token response
-      },
-      (error) => {
-        console.error('Refresh token error:', error);
-        // Handle error refreshing token
-      }
-    );
-  }
+
 
   // login(email: string, password: string): Observable<any> {
   //   return this.http.post<any>('http://localhost:5239/AuthenticationController/Login', {
