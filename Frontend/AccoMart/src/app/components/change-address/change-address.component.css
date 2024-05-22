@@ -1,0 +1,63 @@
+.ffbox1 { 
+    flex: 1; 
+    padding: 20px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+} 
+  
+.ffbox1 label { 
+    display: block; 
+    margin-bottom: 8px; 
+} 
+  
+.ffbox1 input, 
+.ffbox1 textarea { 
+    width: 100%; 
+    padding: 8px; 
+    margin-bottom: 16px; 
+    box-sizing: border-box; 
+    border-radius: 15px; 
+    background-color: #dcdce1; 
+    border: none; 
+} 
+  
+.ffbox1 textarea { 
+    resize: vertical; 
+} 
+  
+.ffbox1 { 
+    margin-bottom: 16px; 
+} 
+  
+.ffbox1 label { 
+    margin-right: 16px; 
+} 
+  
+button { 
+    width: 100%; 
+    padding: 8px; 
+    margin-bottom: 16px; 
+    box-sizing: border-box; 
+    border-radius: 15px; 
+    /* background-color: rgb(3, 47, 58);  */
+    color: rgb(183, 213, 179); 
+    font-size: 17px; 
+    font-weight: 700; 
+    border: #a2c2ee; 
+}   
+
+  
+button:hover { 
+    background-color: rgb(6, 124, 124); 
+} 
+  
+
+p,
+label {
+  font:
+    1rem 'Fira Sans',
+    sans-serif;
+}
+
+input {
+  margin: 0.4rem;
+}

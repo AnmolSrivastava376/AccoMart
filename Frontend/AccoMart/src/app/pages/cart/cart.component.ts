@@ -30,12 +30,14 @@ import { CartOrder } from '../../interfaces/placeOrder';
   styleUrl: './cart.component.css'
 })
 export class CartComponent {
+[x: string]: any;
   isVisible = false;
   selectedDeliveryId: number;
   cartItemLength=0;
+  // newAddress: Address | null = null; 
   private cartSubscription: Subscription;
   constructor(private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: CartService) {}
-
+  // addresses: Address[] = [];
   cart: cartItem[] = [];
   clickedIndex=0;
   address: Address;
@@ -77,11 +79,21 @@ export class CartComponent {
     )
     // Fetching address
     this.addressService.getAddress(addressId).subscribe(
-    (response) => {
-      console.log(response);
-      this.address = response;
-    }
-  );
+      (response) => {
+        console.log(response);
+        this.address = response;
+      }
+    );
+
+    // this.addressService.getAddress(addressId).subscribe(
+    //   (addresses) => {
+    //     this.newAddress = addresses;
+    //   },
+    //   (error) => {
+    //     console.error('Error fetching addresses:', error);
+    //   }
+    // );
+    
     // Fetching delivery
     this.deliveryService.getDeliveryServices()
     .subscribe(
@@ -93,6 +105,9 @@ export class CartComponent {
       }
     );
   }
+  
+
+ 
   getCartTotal(): number {
     let total = 0;
     if(this.cartItemLength>0){
@@ -129,4 +144,9 @@ export class CartComponent {
     this.clickedIndex = clickedIndex
     this.isVisible = !this.isVisible;
   }
+
+  // onAddressAdded(address: Address) {
+  //   this.addresses.push(address); // Add the newly added address to the array
+  //   this.isVisible = false; // Close the change address form
+  // }
 }
