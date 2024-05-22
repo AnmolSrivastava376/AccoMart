@@ -45,8 +45,8 @@ namespace Service.Services
         {
             var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
             _ = int.TryParse(_configuration["JWT:TokenValidiyInMinutes"], out int tokenValidityInMinutes);
-            tokenValidityInMinutes += 500;  // increasing the token validity time
-            var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
+            tokenValidityInMinutes += 10;  // increasing the token validity time
+            var expirationTimeUtc = DateTime.UtcNow.AddSeconds(tokenValidityInMinutes);
             var localTimeZone = TimeZoneInfo.Local;
             var expirationTimeInLocalTimeZone = TimeZoneInfo.ConvertTimeFromUtc(expirationTimeUtc, localTimeZone);
             var token = new JwtSecurityToken(

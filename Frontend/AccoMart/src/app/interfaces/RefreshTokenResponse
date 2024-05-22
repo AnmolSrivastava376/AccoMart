@@ -1,0 +1,15 @@
+export interface RefreshTokenResponse {
+  isSuccess: boolean;
+  message: string;
+  statusCode: number;
+  response: {
+    accessToken: {
+      token: string;
+      expiryTokenDate: string; // You may need to adjust this based on the actual format
+    };
+    refreshToken: {
+      token: string;
+      expiryTokenDate: string; // You may need to adjust this based on the actual format
+    };
+  };
+}

@@ -7,13 +7,14 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import { TokenHttpInterceptor } from '../../services/token-http-interceptor';
 
 
 @Component({
   selector: 'app-admin-categories',
   standalone:true,
   imports: [CommonModule, FormsModule, HttpClientModule,NavbarComponent,SidebarComponent],
-  providers:[CategoryService],
+  providers:[CategoryService,TokenHttpInterceptor],
   templateUrl: './admin-categories.component.html',
 })
 export class AdminCategoriesComponent implements OnInit {
@@ -24,7 +25,7 @@ export class AdminCategoriesComponent implements OnInit {
   categoryToAdd: string = '';
   
 
-  constructor(private router: Router, private categoryService: CategoryService) { }
+  constructor(private router: Router, private categoryService: CategoryService, private interceptor:TokenHttpInterceptor) { }
 
   ngOnInit(): void {
     this.fetchCategories();

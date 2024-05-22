@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Admins
 {
+    [Authorize]
     [Route("AdminDashboard")]
     [ApiController]
     public class AdminDashboardController : Controller
