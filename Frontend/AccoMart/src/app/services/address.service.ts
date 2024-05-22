@@ -9,8 +9,16 @@ import { Address } from "../interfaces/address";
 export class addressService {
 
     constructor(private http: HttpClient) { }
+   
 
     getAddress(addressId: number): Observable<Address> {
         return this.http.get<Address>(`http://localhost:5239/AddressController/GetAddress/addressId=${addressId}`);
     }
+
+  
+    addAddress(address: Address): Observable<Address> {
+        return this.http.post<Address>(`http://localhost:5239/AddressController/PostAddress`, address);
+      }
+    
+
 }

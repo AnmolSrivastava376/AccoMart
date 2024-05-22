@@ -23,6 +23,14 @@
           class="text-adj">
           {{ address.street }} {{ address.city }} {{ address.state }} {{ address.zipCode }} {{ address.phoneNumber }}
         </div>
+
+        <!-- <app-change-address *ngIf="isVisible" (addressAdded)="onAddressAdded($event)"></app-change-address>
+
+        <div *ngIf="addresses.length > 0">
+          <h3>Delivery Address</h3>
+          <p>{{ addresses[0].street }}, {{ addresses[0].city }}, {{ addresses[0].state }}, {{ addresses[0].zipCode }}</p>
+          <p>{{ addresses[0].phoneNumber }}</p>
+        </div> -->
         <div
           class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-black self-center flex justify-center items-center cursor-pointer"
           (click)="toggleVisibility(1)">
