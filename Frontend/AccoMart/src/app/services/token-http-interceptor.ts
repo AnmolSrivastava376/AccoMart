@@ -5,8 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TokenService } from './token.service';
 import axios from 'axios';
-import { RefreshToken,RefreshTokenResponse } from '../interfaces/RefreshToken';
-import { HttpService } from './http.service';
+import { RefreshToken } from '../interfaces/RefreshToken';
 
 
 @Injectable()
@@ -41,8 +40,6 @@ export class TokenHttpInterceptor implements HttpInterceptor {
           if (error.status === 401) {
             // Redirect to /home/auth when unauthorize
               this.generateRefreshToken();
-       
-
      
           }
           return throwError(error);

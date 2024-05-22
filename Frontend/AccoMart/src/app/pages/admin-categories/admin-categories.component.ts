@@ -25,7 +25,7 @@ export class AdminCategoriesComponent implements OnInit {
   categoryToAdd: string = '';
   
 
-  constructor(private router: Router, private categoryService: CategoryService, private interceptor:TokenHttpInterceptor) { }
+  constructor(private router: Router, private categoryService: CategoryService) { }
 
   ngOnInit(): void {
     this.fetchCategories();
