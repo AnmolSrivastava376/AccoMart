@@ -1,6 +1,5 @@
 .parent {
     position: relative;
-    overflow: hidden;
 }
 
 .parent::before {
@@ -168,16 +167,12 @@ input[type="submit"]:hover {
         margin-bottom: 2px ;
     }
 }
+
 @media screen and (max-width: 900px){
-    .parent{
-        display: block;
-    }
     .social-login{
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 1rem 0;
-        
     }
     .landing-img{
         display: none;
