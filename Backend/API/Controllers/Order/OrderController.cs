@@ -1,3 +1,4 @@
+using Data.Models;
 using Data.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,46 @@ namespace API.Controllers.Order
             _configuration = configuration;
             _cartService = cartService;
             _connectionString = _configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
+        }
+        [HttpGet("FetchAllOrders/{userId}")]
+        public async Task<IActionResult> FetchAllOrders(string userId)
+        {
+            List<Orders> orders = new List<Orders>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    string getAllOrdersQuery = "SELECT * FROM Orders WHERE UserId = @UserId";
+                    using (SqlCommand command = new SqlCommand(getAllOrdersQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                Orders order = new Orders
+                                {
+                                    OrderId = Convert.ToInt32(reader["OrderId"]),
+                                    OrderDate = Convert.ToDateTime(reader["OrderDate"]),
+                                    OrderAmount = Convert.ToInt32(reader["OrderAmount"]),
+                                    UserId = Convert.ToString(reader["UserId"]),
+                                    AddressId = Convert.ToInt32(reader["AddressId"]),
+                                    CartId = Convert.ToInt32(reader["CartId"]),
+                                    DeliveryServiceID = Convert.ToInt32(reader["DeliveryServiceId"]),
+                                    isCancelled = Convert.ToBoolean(reader["IsCancelled"]),
+                                };
+                                orders.Add(order);
+                            }
+                        }
+                    }
+                }
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost("PlaceOrderByCart")]
