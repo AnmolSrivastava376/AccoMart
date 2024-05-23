@@ -11,12 +11,7 @@ import { LoaderComponent } from '../loader/loader.component';
     styleUrl: './order-card.component.css',
     imports: [CommonModule, HttpClientModule, LoaderComponent]
 })
-export class OrderCardComponent implements OnChanges{
- ngOnChanges(changes: SimpleChanges): void {
-   if(changes['orders']){
-    console.log(this.orders)
-   }
- }
+export class OrderCardComponent{
  @Input() orders?:Order[]
  format(date: Date): string {
   const months = [
