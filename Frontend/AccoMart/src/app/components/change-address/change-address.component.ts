@@ -22,33 +22,24 @@ export class ChangeAddressComponent implements OnInit {
     phoneNumber: ''
   };
 
-  // addresses: Address[] = [];
+  @Input() address: Address[];
+  @Input() userId: string;
   @Output() addressAdded = new EventEmitter<Address>();
 
   constructor(private router: Router, private addressService : addressService) { }
 
   ngOnInit(): void {
-    // Load existing address if needed
-    // this.address = loadAddressFromService();
+    
   }
  
   addAddress() {
     if (this.isAddressValid(this.newAddress)) {
-      // Convert zip code to string
       this.newAddress.zipCode = this.newAddress.zipCode.toString();
-  
-      this.addressService.addAddress(this.newAddress).subscribe(
+      this.addressService.addAddress(this.newAddress, this.userId).subscribe(
         (address) => {
           console.log('Address saved:', address);
           this.addressAdded.emit(address);
-          this.router.navigate(['/home/cart']); // Navigate to cart after saving
-        },
-        (error) => {
-          console.error('Error saving address:', error);
-          if (error.status === 400 && error.error && error.error.errors) {
-            console.error('Validation errors:', error.error.errors);
-            alert('Validation errors: ' + JSON.stringify(error.error.errors));
-          }
+          window.location.href = '/home/cart'
         }
       );
     } else {
@@ -65,19 +56,16 @@ export class ChangeAddressComponent implements OnInit {
   }
 
   onSubmit() {
-    this.addressService.addAddress(this.newAddress).subscribe(
+    this.addressService.addAddress(this.newAddress,this.userId).subscribe(
       (address) => {
         console.log('Address saved:', address);
         this.router.navigate(['/home/cart']); 
-      },
-      (error) => {
-        console.error('Error saving address:', error);
       }
     );
   }
 
 
   cancel() {
-    this.router.navigate(['/home/cart']); 
+    window.location.href = '/home/cart'
   }
 }

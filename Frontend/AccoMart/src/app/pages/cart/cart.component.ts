@@ -98,7 +98,7 @@ export class CartComponent {
         });
       });
     // Fetching address
-    this.addressService.getAddress(this.userId).subscribe((response) => {
+    this.addressService.getAddressByUserId(this.userId).subscribe((response) => {
       this.address = response;
       this.activeAddress = this.address[0]
     });
@@ -112,8 +112,6 @@ export class CartComponent {
     });
   }
   
-
- 
   getCartTotal(): number {
     let total = 0;
     if (this.cartItemLength > 0) {
@@ -149,13 +147,11 @@ export class CartComponent {
     this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
     this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
   }
+  updateActiveAddress(address:Address){
+    this.activeAddress = address
+  }
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;
     this.isVisible = !this.isVisible;
   }
-
-  // onAddressAdded(address: Address) {
-  //   this.addresses.push(address); // Add the newly added address to the array
-  //   this.isVisible = false; // Close the change address form
-  // }
 }

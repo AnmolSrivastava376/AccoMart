@@ -18,8 +18,8 @@ namespace API.Controllers.Addresses
             _configuration = configuration;
         }
 
-        [HttpPost("PostAddress")]
-        public async Task<IActionResult> PostAddress(AddressModel address, int userId)
+        [HttpPost("PostAddress/{userId}")]
+        public async Task<IActionResult> PostAddress(AddressModel address, string userId)
         {
             if (!ModelState.IsValid)
             {
@@ -46,7 +46,6 @@ namespace API.Controllers.Addresses
             }
             catch (Exception ex)
             {
-                // Log or handle the exception as needed
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
