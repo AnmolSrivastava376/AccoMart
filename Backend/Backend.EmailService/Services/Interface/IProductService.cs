@@ -16,7 +16,7 @@ namespace Service.Services.Interface
         Task<Product> UpdateProductAsync(int productId, UpdateProductDto productDto);
         Task DeleteCategoryAsync(int CategoryId);
         Task DeleteProductAsync(int ProductId);
-        Task<Product> GetProductBySearchNameAsync(string prefix);
+        Task<List<Product>> GetProductBySearchNameAsync(string prefix);
         //Task<Product> GetProductByPriceOrderAsync(string OrderBy);
     }
 }
