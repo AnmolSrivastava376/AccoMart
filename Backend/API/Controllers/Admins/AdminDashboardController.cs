@@ -31,7 +31,7 @@ namespace API.Controllers.Admins
 
 
         [HttpGet("Products/SearchBy={prefix}")]
-        public async Task<Product> GetProductBySearchName(string prefix = "")
+        public async Task<List<Product>> GetProductBySearchName(string prefix = "")
         {
             return await _productService.GetProductBySearchNameAsync(prefix);  
         }

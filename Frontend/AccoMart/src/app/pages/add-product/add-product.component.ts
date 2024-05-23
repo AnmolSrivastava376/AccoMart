@@ -117,6 +117,7 @@ export class AddProductComponent implements OnInit {
     productPrice: 0,
     productImageUrl: '',
     categoryId: -1,
+    stock:0
   };
 
 

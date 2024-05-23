@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using System.Diagnostics;
 using System.Linq;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -116,7 +117,8 @@ namespace Data.Repository.Implementation
                             ProductDesc = Convert.ToString(reader["ProductDesc"]),
                             ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]),
                             ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
-                            CategoryId = Convert.ToInt32(reader["CategoryId"])
+                            CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                            Stock = Convert.ToInt32(reader["Stock"])
                         };
                         products.Add(product);
                     }
@@ -164,7 +166,8 @@ namespace Data.Repository.Implementation
                                 ProductDesc = Convert.ToString(reader["ProductDesc"]),
                                 ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]),
                                 ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
-                                CategoryId = Convert.ToInt32(reader["CategoryId"])
+                                CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                                Stock = Convert.ToInt32(reader["Stock"])
                             };
                             products.Add(product);
                         }
@@ -266,6 +269,7 @@ namespace Data.Repository.Implementation
                         product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
                         product.ProductPrice = Convert.ToInt32(reader["ProductPrice"]);
                         product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
+                        product.Stock = Convert.ToInt32(reader["Stock"]);
                         //product.Category = Convert.ToString(reader["Category"]);
                     }
                     reader.Close();
@@ -328,14 +332,16 @@ namespace Data.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-                string sqlQuery = "INSERT INTO Product (ProductName, ProductDesc, ProductPrice, ProductImageUrl, CategoryId) " +
-                                  "VALUES (@ProductName, @ProductDesc, @ProductPrice, @ProductImageUrl, @CategoryId); SELECT SCOPE_IDENTITY()";
+                string sqlQuery = "INSERT INTO Product (ProductName, ProductDesc, ProductPrice, ProductImageUrl, CategoryId,Stock) " +
+                                  "VALUES (@ProductName, @ProductDesc, @ProductPrice, @ProductImageUrl, @CategoryId,@Stock); SELECT SCOPE_IDENTITY()";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@ProductName", productDto.ProductName);
                 command.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
                 command.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
                 command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
                 command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
+                command.Parameters.AddWithValue("@Stock", productDto.Stock);
+
 
                 int productId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
@@ -345,6 +351,7 @@ namespace Data.Repository.Implementation
                 product.ProductImageUrl = productDto.ProductImageUrl;
                 product.ProductPrice = productDto.ProductPrice;
                 product.CategoryId = productDto.CategoryId;
+                product.Stock = productDto.Stock;
             }
 
             string cacheKey = $"ProductByCategory_{productDto.CategoryId}";
@@ -424,7 +431,8 @@ namespace Data.Repository.Implementation
                 // Update the product in the database
                 string sqlQuery = "UPDATE Product SET ProductName = @ProductName, ProductDesc = @ProductDesc, " +
                                   "ProductPrice = @ProductPrice, ProductImageUrl = @ProductImageUrl, " +
-                                  "CategoryId = @CategoryId WHERE ProductId = @ProductId";
+                                  "CategoryId = @CategoryId,Stock =@Stock  WHERE ProductId = @ProductId";
+
                 SqlCommand updateCommand = new SqlCommand(sqlQuery, connection);
                 updateCommand.Parameters.AddWithValue("@ProductName", productDto.ProductName);
                 updateCommand.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
@@ -432,6 +440,8 @@ namespace Data.Repository.Implementation
                 updateCommand.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
                 updateCommand.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
                 updateCommand.Parameters.AddWithValue("@ProductId", productId);
+                updateCommand.Parameters.AddWithValue("@Stock", productDto.Stock);
+
                 await updateCommand.ExecuteNonQueryAsync();
 
                 // Update the product object
@@ -440,6 +450,7 @@ namespace Data.Repository.Implementation
                 product.ProductDesc = productDto.ProductDesc;
                 product.ProductImageUrl = productDto.ProductImageUrl;
                 product.ProductPrice = productDto.ProductPrice;
+                product.Stock = productDto.Stock;
             }
 
             // Update cache
@@ -600,10 +611,10 @@ namespace Data.Repository.Implementation
             await _database.KeyDeleteAsync(cacheKey);
         }
 
-        async Task<Product> IProductRepository.GetProductBySearchName(string prefix = "")
+        public async Task<List<Product>> GetProductBySearchName(string prefix = "")
         {
             prefix = string.IsNullOrEmpty(prefix) ? "" : prefix.ToLower();
-            Product product = new Product();
+            List<Product> products = new List<Product>();
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -614,24 +625,24 @@ namespace Data.Repository.Implementation
 
                 while (await reader.ReadAsync())
                 {
+                    Product product = new Product(); 
                     product.ProductId = Convert.ToInt32(reader["ProductId"]);
                     product.ProductName = Convert.ToString(reader["ProductName"]);
                     product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
                     product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
-                    product.ProductPrice = Convert.ToInt32(reader["ProductPrice"]);
+                    product.ProductPrice = Convert.ToDecimal(reader["ProductPrice"]);
                     product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
-                    //product.Category = Convert.ToString(reader["Category"]);
+                    product.Stock = Convert.ToInt32(reader["Stock"]); 
+
+                    products.Add(product); 
                 }
                 reader.Close();
             }
 
-            // Store product in cache
-            //await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
-
-            return product;
+            return products;
         }
-       
-        
+
+
     }
 }
 

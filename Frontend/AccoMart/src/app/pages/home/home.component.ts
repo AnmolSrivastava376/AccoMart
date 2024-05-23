@@ -47,6 +47,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       productPrice: 0,
       productImageUrl: '',
       categoryId: 0,
+      stock:0
     },
   ];
   minprice: number=0;
