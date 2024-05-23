@@ -81,7 +81,7 @@ export class BuyProductComponent {
     this.productOrder.productId = this.selectedProductId;
 
     // Fetching address
-    this.addressService.getAddress(userId)
+    this.addressService.getAddressByUserId(userId)
   .subscribe(
     (response) => {
       console.log(response);
