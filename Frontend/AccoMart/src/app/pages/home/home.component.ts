@@ -139,16 +139,16 @@ export class HomeComponent implements OnInit,OnDestroy {
     window.location.href = '/home/cart';
   }
 
-  getInvoice(): void {
-    this.invoiceService.getInvoice().subscribe(
-      (response: Blob) => {
-        this.downloadFile(response);
-      },
-      (error) => {
-        console.error('Error fetching invoice:', error);
-      }
-    );
-  }
+  // getInvoice(): void {
+  //   this.invoiceService.getInvoice(orderId).subscribe(
+  //     (response: Blob) => {
+  //       this.downloadFile(response);
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching invoice:', error);
+  //     }
+  //   );
+  // }
 
   sortPriceAscending() {
     this.filteredProducts.sort((a, b) => a.productPrice - b.productPrice);
@@ -159,7 +159,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   filterByPrice() {
-    this.filteredProducts = this.products.filter(product => 
+    this.filteredProducts = this.products.filter(product =>
       product.productPrice >= this.minprice && product.productPrice <= this.maxprice
     );
   }

@@ -194,7 +194,7 @@ namespace API.Controllers.DeliveryServices
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while retrieving delivery services: {ex.Message}");
+                return StatusCode(500, $"An error occurred while retrieving delivery days: {ex.Message}");
             }
         }
     }

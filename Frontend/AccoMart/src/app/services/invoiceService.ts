@@ -11,8 +11,8 @@ export class invoiceService {
   http = inject(HttpClient);
   constructor() {}
 
-  getInvoice() :Observable<Blob> {
-    return this.http.get('http://localhost:5239/GetInvoice/34', {
+  getInvoice(orderId : number) :Observable<Blob> {
+    return this.http.get(`http://localhost:5239/GetInvoice/${orderId}`, {
       responseType: 'blob'
     });
   }
