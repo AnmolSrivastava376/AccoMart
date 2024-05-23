@@ -1,3 +1,9 @@
+.scrollable-content {
+    max-height: 500px; 
+    overflow-y: auto; 
+    
+  }
+
 .ffbox1 { 
     flex: 1; 
     padding: 20px; 
@@ -32,7 +38,7 @@
     margin-right: 16px; 
 } 
   
-button { 
+.use { 
     width: 100%; 
     padding: 8px; 
     margin-bottom: 16px; 
@@ -46,7 +52,7 @@ button {
 }   
 
   
-button:hover { 
+.use:hover { 
     background-color: rgb(6, 124, 124); 
 } 
   
