@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repository.Implementation
 {
-    internal class OrderRepository
+    public class OrderRepository
     {
     }
 }

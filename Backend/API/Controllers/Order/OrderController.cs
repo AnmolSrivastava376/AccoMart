@@ -314,25 +314,6 @@ namespace API.Controllers.Order
         }
 
 
-        [HttpGet("OrderConfirmation")]
-        public IActionResult OrderConfirmation()
-        {
-            var service = new SessionService();
-            Session session = new Session();
-            HttpContext.Session.GetString("Session");
-            using var httpClient = new HttpClient();
-            if (session.PaymentStatus == "Paid")
-            {
-                var response = httpClient.GetAsync(_domain);
-
-                if (response.IsCompletedSuccessfully)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-            return BadRequest();
-        }
-
         private string GetProductName(int productId)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -347,35 +328,6 @@ namespace API.Controllers.Order
             }
         }
 
-        [HttpPut("CancelOrder/{orderId}")]
-        public async Task<IActionResult> CancelOrder(int orderId)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
-                {
-                    await connection.OpenAsync();
-
-                    string sql = "UPDATE [Orders] SET isCancelled = 1 WHERE orderId = @orderId";
-
-                    using (var command = new SqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@orderId", orderId);
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                        if (rowsAffected == 0)
-                        {
-                            return NotFound("Order not found.");
-                        }
-                    }
-                }
-
-                return Ok("Order has been cancelled successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+       
     }
 }
