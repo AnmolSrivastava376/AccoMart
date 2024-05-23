@@ -77,7 +77,6 @@ namespace API.Controllers.Order
         public async Task<StripeDto> PlaceOrderByCart(CartOrderDto cartOrderDto)
         {
             int newOrderId = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -131,9 +130,12 @@ namespace API.Controllers.Order
 
                         newOrderId = Convert.ToInt32(await insertOrderCommand.ExecuteScalarAsync());
                     }
+                    
                 }
 
-                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId);
+
+
+                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId,newOrderId);
             }
             catch (Exception ex)
             {
@@ -143,7 +145,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeDto> CheckoutByCart(string userId, int cartId)
+        public async Task<StripeDto> CheckoutByCart(string userId, int cartId,int orderId)
         {
             var options = new SessionCreateOptions
             {
@@ -176,6 +178,27 @@ namespace API.Controllers.Order
                         }
 
                         await cartItemReader.CloseAsync();
+
+                        foreach(Tuple<int,int> CartItem in CartItems)
+                        {
+                            string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
+
+                            using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery,connection))
+                            {
+                                insertHistoryCommand.Parameters.AddWithValue("@OrderId", orderId);
+                                insertHistoryCommand.Parameters.AddWithValue("@ProductId", CartItem.Item1);
+                                insertHistoryCommand.Parameters.AddWithValue("@Quantity", CartItem.Item2);
+                                await insertHistoryCommand.ExecuteNonQueryAsync(); 
+
+                            }
+
+                        }
+
+                        _cartService.DeleteCartAsync(cartId);
+
+                        
+
+
 
                         foreach (Tuple<int, int> CartItem in CartItems)
                         {
@@ -367,8 +390,6 @@ namespace API.Controllers.Order
                     return getProductCommand.ExecuteScalar()?.ToString() ?? "Unknown Product";
                 }
             }
-        }
-
-       
+        }      
     }
 }
