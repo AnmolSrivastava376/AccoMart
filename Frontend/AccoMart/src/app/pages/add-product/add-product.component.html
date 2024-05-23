@@ -36,6 +36,11 @@
                     <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName }}</option>
                 </select>
             </div>
+            <input type="file" (change)="handleFileChange($event)" />
+            <button (click)="uploadFile()" [disabled]="uploading">
+              {{ uploading ? 'Uploading...' : 'Upload' }}
+            </button>
+       
             <div class="mb-4 w-full ">
                 <div *ngIf="product.productImageUrl">
                     <img src="{{product.productImageUrl}}" alt="Product Image" class="h-42 w-48">
