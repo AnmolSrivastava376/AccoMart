@@ -49,7 +49,6 @@ export class YourOrdersComponent implements OnInit {
       this.orderService.fetchOrderByOrderId(order.orderId).subscribe(
         response=>{
           order.itemArray = this.fetchProductsByCart(response);
-          console.log(order.itemArray)
         }
       )
     })

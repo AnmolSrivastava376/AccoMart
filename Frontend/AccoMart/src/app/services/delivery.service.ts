@@ -17,8 +17,6 @@ export class deliveryService {
     addDeliveryService(deliveryService: createDeliveryService): Observable<any> {
         return this.http.post('http://localhost:5239/DeliveryServiceController/AddDeliveryService', deliveryService);
     }
-
-
     editDeliveryService(deliveryService: createDeliveryService, id: number): Observable<any> {
         return this.http.put(`http://localhost:5239/DeliveryServiceController/UpdateDeliveryService/${id}`, deliveryService);
     }
@@ -26,5 +24,7 @@ export class deliveryService {
     deleteDeliveryService(id: number): Observable<any> {
         return this.http.delete(`http://localhost:5239/DeliveryServiceController/DeleteDeliveryService/${id}`);
     }
-
+    getDeliveryDate(deliveryServiceId:number): Observable<number>{
+        return this.http.get<number>(`http://localhost:5239/DeliveryServiceController/GetDeliveryDays/${deliveryServiceId}`);
+    }
 }
