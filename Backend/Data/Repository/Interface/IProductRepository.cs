@@ -19,7 +19,7 @@ namespace Data.Repository.Interfaces
         Task<Product> UpdateProduct(int productId, UpdateProductDto productDto);
         Task DeleteCategory(int CategoryId);
         Task DeleteProduct(int productId);
-        Task<Product> GetProductBySearchName(string prefix);
+        Task<List<Product>> GetProductBySearchName(string prefix);
         
     }
 }

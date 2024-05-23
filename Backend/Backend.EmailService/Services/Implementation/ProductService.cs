@@ -68,7 +68,7 @@ namespace Service.Services.Implementation
 
         }*/
 
-        async Task<Product> IProductService.GetProductBySearchNameAsync(string prefix)
+        async Task<List<Product>> IProductService.GetProductBySearchNameAsync(string prefix)
         {
             return await _productRepository.GetProductBySearchName(prefix);
         }

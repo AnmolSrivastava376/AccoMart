@@ -110,7 +110,8 @@ export class EditProductComponent implements OnInit {
     productDesc: '',
     productPrice: 0,
     productImageUrl: '',
-    categoryId: 0
+    categoryId: 0,
+    stock:0
   };
   categories:Category[];
 

@@ -8,7 +8,8 @@ const products: Product[] = [
         productDesc: "Description for Product 1",
         productPrice: 10,
         productImageUrl: "https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg",
-        categoryId: 1
+        categoryId: 1,
+        stock:1
     },
     {
         productId: 2,
@@ -16,7 +17,8 @@ const products: Product[] = [
         productDesc: "Description for Product 2",
         productPrice: 20,
         productImageUrl: "https://static.remove.bg/sample-gallery/graphics/bird-thumbnail.jpg",
-        categoryId: 2
+        categoryId: 2,
+        stock:3
     },
 ];
 
