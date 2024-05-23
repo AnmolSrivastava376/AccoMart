@@ -161,5 +161,42 @@ namespace API.Controllers.DeliveryServices
                 return StatusCode(500, $"An error occurred while retrieving delivery services: {ex.Message}");
             }
         }
+
+        [HttpGet("GetDeliveryDays/{deliveryId}")]
+        public IActionResult GetDeliveryDays(int deliveryId) {
+            int days = 0;
+            try
+            {
+            
+
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    connection.Open();
+
+                    string sqlQuery = "SELECT DeliveryDays FROM DeliveryService WHERE DServiceId = @DServiceId";
+
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@DServiceId", deliveryId);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                days = Convert.ToInt32(reader["DeliveryDays"]);
+                            
+                            }
+                        }
+                    }
+                }
+
+                return Ok(days);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving delivery services: {ex.Message}");
+            }
+        }
     }
-}
+    }
+
