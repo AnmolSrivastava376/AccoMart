@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Services.Implementation
+namespace Data.Repository.Implementation
 {
-    public class OrderService
+    public class OrderRepository
     {
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Service.Services.Interface
 {
-    internal class IOrderService
+    public class IOrderService
     {
     }
 }

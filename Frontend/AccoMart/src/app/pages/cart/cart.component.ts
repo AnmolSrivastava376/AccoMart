@@ -1,8 +1,7 @@
-import { Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { CartProductCardComponent } from '../../components/cart-product-card/cart-product-card.component';
 import { CommonModule, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { cartItem } from '../../interfaces/cartItem';
 import { jwtDecode } from 'jwt-decode';
@@ -24,78 +23,98 @@ import { CartOrder } from '../../interfaces/placeOrder';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [NavbarComponent, CartProductCardComponent, CommonModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent,HttpClientModule],
-  providers : [addressService, deliveryService,productService,orderService,CartService],
+  imports: [
+    NavbarComponent,
+    CartProductCardComponent,
+    CommonModule,
+    FormsModule,
+    PaymentMethodComponent,
+    ChangeAddressComponent,
+    ChangeServiceComponent,
+    HttpClientModule,
+  ],
+  providers: [
+    addressService,
+    deliveryService,
+    productService,
+    orderService,
+    CartService,
+  ],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrl: './cart.component.css',
 })
 export class CartComponent {
   isVisible = false;
   selectedDeliveryId: number;
-  cartItemLength=0;
+  cartItemLength = 0;
   private cartSubscription: Subscription;
-  constructor(private addressService: addressService,private deliveryService : deliveryService, private productService: productService,private orderService : orderService, private cartService: CartService) {}
+  constructor(
+    private addressService: addressService,
+    private deliveryService: deliveryService,
+    private productService: productService,
+    private orderService: orderService,
+    private cartService: CartService
+  ) {}
 
   cart: cartItem[] = [];
-  clickedIndex=0;
-  address: Address;
+  clickedIndex = 0;
+  address: Address[];
+  activeAddress: Address;
   delivery: DeliveryService[] = [];
-  activeDeliveryIndex=0;
+  activeDeliveryIndex = 0;
   activeDeliveryService: DeliveryService;
   products: Product[] = [];
-  decoded: { CartId: number,AddressId : number, UserId: string};
-  cartOrder : CartOrder = {
-    userId : "",
-    cartId : 0,
+  decoded: { CartId: number; AddressId: number; UserId: string };
+  cartOrder: CartOrder = {
+    userId: '',
+    cartId: 0,
     addressId: 0,
-    deliveryId : 0,
-    }
-
+    deliveryId: 0,
+  };
+  cartId: number;
+  addressId: number;
+  userId: string;
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
+      this.cartId = this.decoded.CartId;
+      this.addressId = 1;
+      this.userId = this.decoded.UserId;
     }
-    const cartId = this.decoded.CartId;
-    const addressId = this.decoded.AddressId;
-    this.cartOrder.addressId = this.decoded.AddressId;
-    this.cartOrder.userId = this.decoded.UserId;
-    this.cartOrder.deliveryId = 6;
-    this.cartOrder.cartId = cartId;
-    this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      item=>{
+
+    this.cartOrder.addressId = this.addressId
+    this.cartOrder.userId = this.userId;
+    this.cartOrder.cartId = this.cartId;
+    this.cartSubscription = this.cartService.getCartItems$().subscribe((item) => {
         this.cart = item;
-        this.cartItemLength = item.length
-        item.forEach(cartItem => {
-          this.productService.fetchProductById(cartItem.productId).subscribe(
-            (product) => {
+        this.cartItemLength = item.length;
+        item.forEach((cartItem) => {
+          this.productService
+            .fetchProductById(cartItem.productId)
+            .subscribe((product) => {
               this.products.push(product);
-            }
-          );
+            });
         });
-      }
-    )
+      });
     // Fetching address
-    this.addressService.getAddress(addressId).subscribe(
-    (response) => {
-      console.log(response);
+    this.addressService.getAddressByUserId(this.userId).subscribe((response) => {
       this.address = response;
-    }
-  );
+      this.activeAddress = this.address[0]
+    });
     // Fetching delivery
-    this.deliveryService.getDeliveryServices()
-    .subscribe(
-      (response) => {
-        this.delivery = response;
-        if (this.delivery) {
-          this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
-        }
+    this.deliveryService.getDeliveryServices().subscribe((response) => {
+      this.delivery = response;
+      if (this.delivery) {
+        this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
+        this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
       }
-    );
+    });
   }
+  
   getCartTotal(): number {
     let total = 0;
-    if(this.cartItemLength>0){
+    if (this.cartItemLength > 0) {
       this.cart.forEach((item, index) => {
         total += this.products[index]?.productPrice * item.quantity;
       });
@@ -106,9 +125,9 @@ export class CartComponent {
     return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
   }
   getDiscounts(): number {
-    return 5.00;
+    return 5.0;
   }
-  getTaxes(): number{
+  getTaxes(): number {
     return 10;
   }
   getGrandTotal(): number {
@@ -116,17 +135,23 @@ export class CartComponent {
   }
 
   placeOrder() {
-    this.orderService.placeOrderByCart(this.cartOrder)
+    console.log(this.cartOrder)
+    this.orderService.placeOrderByCart(this.cartOrder).subscribe(
+      response=>{
+        console.log(response)
+      }
+    );
   }
-  updateActiveDeliveryService(service: DeliveryService) {
-    this.activeDeliveryService = service;
-  }
-  updateActiveDeliveryIndex(index:number){
+  updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
-    this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
+    this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
+    this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
+  }
+  updateActiveAddress(address:Address){
+    this.activeAddress = address
   }
   toggleVisibility(clickedIndex: number) {
-    this.clickedIndex = clickedIndex
+    this.clickedIndex = clickedIndex;
     this.isVisible = !this.isVisible;
   }
 }

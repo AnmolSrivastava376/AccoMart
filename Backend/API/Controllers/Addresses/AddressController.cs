@@ -18,8 +18,8 @@ namespace API.Controllers.Addresses
             _configuration = configuration;
         }
 
-        [HttpPost("PostAddress")]
-        public async Task<IActionResult> PostAddress(AddressModel address, int userId)
+        [HttpPost("PostAddress/{userId}")]
+        public async Task<IActionResult> PostAddress(AddressModel address, string userId)
         {
             if (!ModelState.IsValid)
             {
@@ -46,7 +46,6 @@ namespace API.Controllers.Addresses
             }
             catch (Exception ex)
             {
-                // Log or handle the exception as needed
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -87,6 +86,49 @@ namespace API.Controllers.Addresses
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("GetAddress/{userId}")]
+        public async Task<IActionResult> GetAddressByUserId(string userId)
+        {
+            try
+            {   
+                List<AddressModel> addresses = new List<AddressModel>();
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    await connection.OpenAsync();
+                    using (var command = new SqlCommand("SELECT * FROM Addresses WHERE UserId = @userId", connection))
+                    {
+                        command.Parameters.AddWithValue("@userId", userId);
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                AddressModel address = new AddressModel
+                                {
+                                    Street = Convert.ToString(reader["Street"]),
+                                    City = Convert.ToString(reader["City"]),
+                                    PhoneNumber = Convert.ToString(reader["PhoneNumber"]),
+                                    State = Convert.ToString(reader["States"]),
+                                    ZipCode = Convert.ToString(reader["ZipCode"]),
+                                };
+                                addresses.Add(address);
+                            }
+                            if (addresses.Count > 0)
+                            {
+                                return Ok(addresses);
+                            }
+                            else
+                            {
+                                return NotFound("Addresses not found.");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Internal server error: {e.Message}");
             }
         }
 
