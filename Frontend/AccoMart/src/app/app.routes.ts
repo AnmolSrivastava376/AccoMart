@@ -17,7 +17,6 @@ import { InvoicePageComponent } from './pages/invoice-page/invoice-page.componen
 import { ForgetpasswordPageComponent } from './pages/forget-password/forgetpassword-page.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
 import { AddProductComponent } from './pages/add-product/add-product.component';
-import { DeliveryServicesComponent } from './pages/delivery-services/delivery-services.component';
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
 import { BuyProductComponent } from './pages/buy-product/buy-product.component';
 
@@ -41,7 +40,6 @@ export const routes: Routes = [
     { path: 'admin/categories',component:AdminCategoriesComponent},
     { path: 'admin/product/edit/:productId',component:EditProductComponent},
     { path: 'admin/product/add',component:AddProductComponent},
-    { path: 'admin/delivery',component:DeliveryServicesComponent}
 ];
 
 @NgModule({

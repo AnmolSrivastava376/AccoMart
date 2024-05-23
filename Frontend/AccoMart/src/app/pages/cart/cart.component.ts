@@ -135,10 +135,9 @@ export class CartComponent {
   }
 
   placeOrder() {
-    console.log(this.cartOrder)
     this.orderService.placeOrderByCart(this.cartOrder).subscribe(
       response=>{
-        console.log(response)
+        window.location.href = response.stripeUrl
       }
     );
   }
