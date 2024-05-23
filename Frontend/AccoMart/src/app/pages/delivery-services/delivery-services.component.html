@@ -1,0 +1,123 @@
+<div class="navbar fixed top-0 left-0 w-full z-50"> <!-- Add z-50 to ensure navbar is above other elements -->
+  <app-navbar></app-navbar>
+</div>
+
+<div class="flex">
+  <!-- Sidebar -->
+
+  <div class="sidebar fixed top-0 left-0 h-full z-40"> <!-- Add z-40 to ensure sidebar is below navbar -->
+    <app-sidebar></app-sidebar>
+</div>
+  
+
+    
+  
+    <!-- Main content -->
+
+    <div class="w-full ml-64 text-center">
+
+      <div class="mx-10  overflow-auto mt-8 ">
+        <h2 class="text-2xl font-bold mb-4 mt-8 ml-2">Delivery Services</h2>
+        <div class="mb-8 text-center">
+          <button (click)="openAddPopup()"  class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"> + Delviery Service</button>
+      </div>
+  
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div *ngFor="let deliveryService of deliveryServicesList"
+                 class="bg-blue-100 rounded-lg shadow-md p-4">
+                <img src={{deliveryService.imageUrl}} alt="Delivery Service Image"
+                     class="w-full h-32 object-cover mb-4">
+                <h2 class="text-lg font-semibold mb-2">{{ deliveryService.serviceName }}</h2>
+                <p class="text-gray-600">Price: ₹{{ deliveryService.price }}</p>
+                <p class="text-gray-600">Delivery Days: {{ deliveryService.deliveryDays }}</p>
+                <div class="mt-4">
+                    <!-- <button (click)="editDeliveryService(deliveryService)" class="bg-blue-500 text-white px-4 py-2 rounded-md mr-2">Edit</button> -->
+                    <button (click)="deleteDeliveryService(deliveryService.dServiceId)"
+                            class="bg-red-500 text-white px-4 py-2 rounded-md mr-2">Delete</button>
+
+                    <button (click)="openEditPopup(deliveryService.dServiceId,deliveryService)"
+                            class="bg-green-500 text-white px-4 py-2 rounded-md ml-2">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+  </div>
+  </div>
+ 
+
+
+
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" *ngIf="openAddServicePopup">
+    <div class="floating-window relative w-5/6 md:w-1/2 lg:w-1/3 xl:w-1/4 bg-white rounded-lg shadow-lg">
+      <div class="px-4 py-2 bg-gray-200 rounded-t-lg flex justify-between items-center">
+        <div class="font-semibold">Add Delivery Service</div>
+        <button class="text-red-500 hover:text-red-700" (click)="closeAddPopup()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="px-4 py-2">
+        <p>Service Name</p>
+        <input type="text" placeholder="Enter service name" [(ngModel)]="serviceToAdd.serviceName" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="px-4 py-2">
+        <p>Price</p>
+
+        <input type="number" placeholder="Enter price" [(ngModel)]="serviceToAdd.price" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="px-4 py-2">
+        <p>Delivery Days</p>
+        <input type="number" placeholder="Enter delivery days" [(ngModel)]="serviceToAdd.deliveryDays" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="px-4 py-2">
+        <p>Image URL</p>
+        <input type="text" placeholder="Enter image URL" [(ngModel)]="serviceToAdd.imageUrl" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="flex justify-center pb-4">
+        <button (click)="createDeliveryService(serviceToAdd)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+  
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" *ngIf="openEditServicePopup">
+    <div class="floating-window relative w-5/6 md:w-1/2 lg:w-1/3 xl:w-1/4 bg-white rounded-lg shadow-lg">
+      <div class="px-4 py-2 bg-gray-200 rounded-t-lg flex justify-between items-center">
+        <div class="font-semibold">Edit Delivery Service</div>
+        <button class="text-red-500 hover:text-red-700" (click)="closeEditPopup()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="px-4 py-2">
+        <p>Service Name</p>
+        <input type="text" placeholder="Enter service name" [(ngModel)]="serviceToEdit.serviceName" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="px-4 py-2">
+        <p>Price</p>
+        <input type="number" placeholder="Enter price" [(ngModel)]="serviceToEdit.price" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="px-4 py-2">
+        <p>Delivery Days</p>
+        <input type="number" placeholder="Enter delivery days" [(ngModel)]="serviceToEdit.deliveryDays" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="px-4 py-2">
+        <p>Image URL</p>
+        <input type="text" placeholder="Enter image URL" [(ngModel)]="serviceToEdit.imageUrl" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+      </div>
+      <div class="flex justify-center pb-4">
+        <button (click)="editDeliveryService(serviceToEdit)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+  

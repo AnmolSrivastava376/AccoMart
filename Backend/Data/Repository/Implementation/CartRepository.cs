@@ -100,12 +100,6 @@ namespace Data.Repository.Implementation
                     }
                 }
 
-
-
-                // Remove cart item from cache
-                /* string cacheKey = $"Category_{categoryId}";
-                 await _database.KeyDeleteAsync(cacheKey);*/
-
             }
 
         }
@@ -114,12 +108,7 @@ namespace Data.Repository.Implementation
         async Task<IEnumerable<CartItem>> ICartRepository.GetCartItems(int cartId)
         {
             List<CartItem> cartItems = new List<CartItem>();
-            /*string cacheKey = "CartItems";
-            string cachedCartItems = await _database.StringGetAsync(cacheKey);*/
-            /*if (!string.IsNullOrEmpty(cachedCartItems))
-            {
-                cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cachedCartItems);
-            }*/
+    
 
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -145,9 +134,6 @@ namespace Data.Repository.Implementation
                 }
                 reader.Close();
 
-
-
-                //await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(cartItems));
             }
 
             return cartItems;
