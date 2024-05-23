@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Data.Models;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Service.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace API.Controllers.Addresses
@@ -13,6 +14,7 @@ namespace API.Controllers.Addresses
     public class AddressController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+
         public AddressController(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -23,8 +25,9 @@ namespace API.Controllers.Addresses
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<string> { IsSuccess = false, Message = "Invalid input data.", StatusCode = 400 });
             }
+
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -42,12 +45,12 @@ namespace API.Controllers.Addresses
                         await command.ExecuteNonQueryAsync();
                     }
                 }
-                return Ok("Address added successfully.");
+
+                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address added successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
             {
-                // Log or handle the exception as needed
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"Internal server error: {ex.Message}", StatusCode = 500 });
             }
         }
 
@@ -74,11 +77,11 @@ namespace API.Controllers.Addresses
                                     State = Convert.ToString(reader["States"]),
                                     ZipCode = Convert.ToString(reader["ZipCode"]),
                                 };
-                                return Ok(address);
+                                return Ok(new ApiResponse<AddressModel> { IsSuccess = true, Response = address, StatusCode = 200 });
                             }
                             else
                             {
-                                return NotFound("Address not found.");
+                                return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
                             }
                         }
                     }
@@ -86,14 +89,15 @@ namespace API.Controllers.Addresses
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"Internal server error: {ex.Message}", StatusCode = 500 });
             }
         }
+
         [HttpGet("GetAddress/{userId}")]
         public async Task<IActionResult> GetAddressByUserId(string userId)
         {
             try
-            {   
+            {
                 List<AddressModel> addresses = new List<AddressModel>();
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
@@ -117,11 +121,11 @@ namespace API.Controllers.Addresses
                             }
                             if (addresses.Count > 0)
                             {
-                                return Ok(addresses);
+                                return Ok(new ApiResponse<List<AddressModel>> { IsSuccess = true, Response = addresses, StatusCode = 200 });
                             }
                             else
                             {
-                                return NotFound("Addresses not found.");
+                                return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Addresses not found.", StatusCode = 404 });
                             }
                         }
                     }
@@ -129,7 +133,7 @@ namespace API.Controllers.Addresses
             }
             catch (Exception e)
             {
-                return StatusCode(500, $"Internal server error: {e.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"Internal server error: {e.Message}", StatusCode = 500 });
             }
         }
 
@@ -138,7 +142,7 @@ namespace API.Controllers.Addresses
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ApiResponse<string> { IsSuccess = false, Message = "Invalid input data.", StatusCode = 400 });
             }
             try
             {
@@ -156,16 +160,15 @@ namespace API.Controllers.Addresses
                         int rowsAffected = await command.ExecuteNonQueryAsync();
                         if (rowsAffected == 0)
                         {
-                            return NotFound("Address not found.");
+                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
                         }
                     }
                 }
-                return Ok("Address updated successfully.");
+                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address updated successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
             {
-                // Log or handle the exception as needed
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"Internal server error: {ex.Message}", StatusCode = 500 });
             }
         }
 
@@ -183,16 +186,15 @@ namespace API.Controllers.Addresses
                         int rowsAffected = await command.ExecuteNonQueryAsync();
                         if (rowsAffected == 0)
                         {
-                            return NotFound("Address not found.");
+                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
                         }
                     }
                 }
-                return Ok("Address deleted successfully.");
+                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address deleted successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
             {
-                // Log or handle the exception as needed
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"Internal server error: {ex.Message}", StatusCode = 500 });
             }
         }
     }

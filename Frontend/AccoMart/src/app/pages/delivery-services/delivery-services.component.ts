@@ -87,13 +87,11 @@ export class DeliveryServicesComponent {
         console.log("success",response);
         // After successful creation, fetch the updated list of delivery services
         this.openAddServicePopup =false;
-        
+
         this.serviceToAdd.deliveryDays =0;
         this.serviceToAdd.imageUrl ='';
         this.serviceToAdd.serviceName ='';
         this.serviceToAdd.price =0;
-
-
         this.fetchDeliveryServices();
       },
       error => {

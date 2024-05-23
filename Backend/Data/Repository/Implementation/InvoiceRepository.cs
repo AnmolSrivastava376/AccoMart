@@ -133,7 +133,7 @@ namespace Data.Repository.Implementation
        
        
             string htmlcontent = "<div style='width:100%; text-align:center'>";
-            htmlcontent += "<img style='width:80px;height:80%' src='' />";
+            htmlcontent += "<img style='width:80px;height:80%' src='./Static/landing-img.jpg' />";
             htmlcontent += "<h2>Welcome to AccoMart</h2>";
 
             htmlcontent += "<h2> Invoice No:" + "1 " + " & Invoice Date:" + invoiceDto.OrderDate + "</h2>";
@@ -145,7 +145,7 @@ namespace Data.Repository.Implementation
             htmlcontent += "<table style ='width:100%; border: 1px solid #000'>";
             htmlcontent += "<thead style='font-weight:bold'>";
             htmlcontent += "<tr>";
-            htmlcontent += "<td style='border:1px solid #000'> Product Code </td>";
+            htmlcontent += "<td style='border:1px solid #000'> Product Name </td>";
             htmlcontent += "<td style='border:1px solid #000'> Description </td>";
             htmlcontent += "<td style='border:1px solid #000'>Qty</td>";
             htmlcontent += "<td style='border:1px solid #000'>Price</td >";
