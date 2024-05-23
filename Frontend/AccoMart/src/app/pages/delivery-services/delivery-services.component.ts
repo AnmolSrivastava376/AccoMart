@@ -17,7 +17,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrl: './delivery-services.component.css'
 })
 export class DeliveryServicesComponent {
-
+ 
+  
   constructor(private deliveryService: deliveryService) {}
   deliveryServicesList: DeliveryService[] = [];
   openAddServicePopup:boolean = false;
