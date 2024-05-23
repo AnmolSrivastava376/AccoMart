@@ -1,6 +1,7 @@
 using Data.Models;
 using Data.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ using System.Data.SqlClient;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Order
 {
@@ -307,7 +309,36 @@ namespace API.Controllers.Order
                 return null;
             }
         }
-
+        [HttpGet("GetCartItemsByOrderId/{orderId}")]
+        public async Task<IActionResult> FetchHistory(int orderId)
+        {
+            try
+            {
+                List<OrderedItem> orderedItems = new List<OrderedItem>();
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    string sqlQuery = "SELECT * FROM OrderHistory WHERE OrderId = @OrderId";
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    command.Parameters.AddWithValue("@OrderId", orderId);
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        OrderedItem item = new OrderedItem
+                        {
+                            ProductId = Convert.ToInt32(reader["ProductId"]),
+                            Quantity = Convert.ToInt32(reader["Quantity"]),
+                        };
+                        orderedItems.Add(item);
+                    }
+                }
+                    return Ok(orderedItems);
+            }
+            catch
+            {
+                return null;
+            }
+        }
         //[Authorize]
         [HttpPost("Checkout/Product")]
         public async Task<StripeDto> Checkout(int productId)
