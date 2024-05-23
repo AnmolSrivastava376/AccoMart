@@ -56,18 +56,6 @@ export class HttpService {
   }
 
 
-
-  // login(email: string, password: string): Observable<any> {
-  //   return this.http.post<any>('http://localhost:5239/AuthenticationController/Login', {
-  //     email: email,
-  //     password: password
-  //   });
-  // }
-
-  // refreshToken(refreshToken: string): Observable<any> {
-  //   return this.http.post<any>('http://localhost:5239/AuthenticationController/Refresh-Token', { refreshToken });
-  // }
-
   loginForgotPwd(email : string) {
     return this.http.post<{OTP:Number}>(`http://localhost:5239/AuthenticationController/LoginForgotPassword?email=${email}`,{
       "email": email,
