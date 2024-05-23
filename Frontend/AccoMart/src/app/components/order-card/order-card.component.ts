@@ -16,7 +16,7 @@ import { addressService } from '../../services/address.service';
 export class OrderCardComponent implements OnInit{
   @Input() orders?: Order[];
 
-  constructor(private addressService: addressService){}
+  constructor(){}
 
   ngOnInit(): void {
   }

@@ -8,6 +8,10 @@ import { jwtDecode } from 'jwt-decode';
 import { HttpClientModule } from '@angular/common/http';
 import { deliveryService } from '../../services/delivery.service';
 import { addressService } from '../../services/address.service';
+import { Product } from '../../interfaces/product';
+import { Item } from '../../interfaces/item';
+import { cartItem } from '../../interfaces/cartItem';
+import { productService } from '../../services/product.services';
 
 @Component({
   selector: 'app-your-orders',
@@ -15,7 +19,7 @@ import { addressService } from '../../services/address.service';
   imports: [CommonModule, NavbarComponent, OrderCardComponent, HttpClientModule],
   templateUrl: './your-orders.component.html',
   styleUrl: './your-orders.component.css',
-  providers: [orderService, deliveryService, addressService]
+  providers: [orderService, deliveryService, addressService, productService]
 })
 export class YourOrdersComponent implements OnInit {
   orders:Order[] = []
@@ -23,7 +27,7 @@ export class YourOrdersComponent implements OnInit {
   historyOrders: Order[]=[];
   userId: string
   decoded: any
-  constructor(private orderService: orderService, private deliveryService: deliveryService, private addressService: addressService) {
+  constructor(private orderService: orderService, private deliveryService: deliveryService, private addressService: addressService, private productService: productService) {
   }
   ngOnInit(): void {
     const token = localStorage.getItem('token')
@@ -33,17 +37,39 @@ export class YourOrdersComponent implements OnInit {
       this.orderService.fetchAllOrders(this.userId).subscribe(
         response=>{
           this.orders = response;
+          this.addProducts();
           this.addAddresses();
           this.sortOrders();
         }
       )
     }
   }
+  addProducts(){
+    this.orders.forEach(order=>{
+      this.orderService.fetchOrderByOrderId(order.orderId).subscribe(
+        response=>{
+          order.itemArray = this.fetchProductsByCart(response);
+          console.log(order.itemArray)
+        }
+      )
+    })
+  }
+  fetchProductsByCart(cartItem: cartItem[]):Item[]{
+    const products:Item[]=[];
+    cartItem.forEach(item=>{
+      this.productService.fetchProductById(item.productId).subscribe(
+        response=>{
+          products.push({"product": response, "quantity": item.quantity})
+        }
+      )
+    })
+    return products
+  }
   addAddresses(){
     this.orders.forEach(order=>{
       this.addressService.getAddressByAddressId(order.addressId).subscribe(
         response=>{
-          order.address = response.street + ", " + response.city + response.state + " - " + response.zipCode
+          order.address = response.street + ", " + response.city+ ", " + response.state + " - " + response.zipCode
         }
       )
     })
