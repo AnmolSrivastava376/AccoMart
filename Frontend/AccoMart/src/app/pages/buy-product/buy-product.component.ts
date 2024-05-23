@@ -19,7 +19,6 @@ import { ChangeServiceComponent } from '../../components/change-service/change-s
 import { FormsModule } from '@angular/forms';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
-import { stripeDto } from '../../interfaces/StripeDto';
 import { ProductOrder } from '../../interfaces/placeOrder';
 
 @Component({
