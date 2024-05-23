@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Address } from '../../interfaces/address';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { addressService } from '../../services/address.service';
 @Component({
   selector: 'app-change-address',
   standalone: true,
-  imports:[FormsModule, CommonModule],
+  imports:[FormsModule,CommonModule],
   templateUrl: './change-address.component.html',
   styleUrls: ['./change-address.component.css']
 })
@@ -24,22 +24,32 @@ export class ChangeAddressComponent implements OnInit {
 
   @Input() address: Address[];
   @Input() userId: string;
+  showAddressform: boolean=false;
+  selectAddress: Address;
   @Output() addressAdded = new EventEmitter<Address>();
-
+  @Output() closeWindow = new EventEmitter<boolean>();
   constructor(private router: Router, private addressService : addressService) { }
 
   ngOnInit(): void {
     
   }
- 
+  
+  toogleAddressForm(){
+    this.showAddressform=!this.showAddressform;
+  }
+
   addAddress() {
     if (this.isAddressValid(this.newAddress)) {
       this.newAddress.zipCode = this.newAddress.zipCode.toString();
       this.addressService.addAddress(this.newAddress, this.userId).subscribe(
         (address) => {
           console.log('Address saved:', address);
+          this.address.push(address); 
           this.addressAdded.emit(address);
-          window.location.href = '/home/cart'
+          this.showAddressform = false;
+          alert('Successfully Added');
+          // window.location.href = '/home/cart'
+          
         }
       );
     } else {
@@ -64,6 +74,21 @@ export class ChangeAddressComponent implements OnInit {
     );
   }
 
+  saveChanges(){
+    if(this.selectAddress){
+      this.addressAdded.emit(this.selectAddress);
+      console.log('Selected Address: ' ,this.selectAddress);
+      this.closeWindow.emit(true);
+      window.close();
+    }
+    else{
+      alert('Please select an address.');
+    }
+  }
+ 
+  selectedAddress(address: Address){
+    this.selectAddress={...address};
+  }
 
   cancel() {
     window.location.href = '/home/cart'
