@@ -1,13 +1,4 @@
-.navbar {
-    border-bottom: 1px solid #c2baba; /* Add a thin solid border at the bottom */
-  }
-  ::-webkit-scrollbar{
-    display: none;
-  }
-
-
-
-  .box::-webkit-scrollbar{
+.box::-webkit-scrollbar{
     display: none;
 }
 @media (max-width: 1100px){

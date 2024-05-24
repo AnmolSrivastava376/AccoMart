@@ -23,4 +23,7 @@ export class SidebarComponent {
   showDeliveryServices(){
     window.location.href = '/admin/delivery';
   }
+  showDashboard(){
+    window.location.href = '/admin';
+  }
 }
