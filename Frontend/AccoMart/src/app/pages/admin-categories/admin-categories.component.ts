@@ -16,6 +16,8 @@ import { TokenHttpInterceptor } from '../../services/token-http-interceptor';
   imports: [CommonModule, FormsModule, HttpClientModule,NavbarComponent,SidebarComponent],
   providers:[CategoryService,TokenHttpInterceptor],
   templateUrl: './admin-categories.component.html',
+  styleUrl: './admin-categories.component.css'
+
 })
 export class AdminCategoriesComponent implements OnInit {
   categories: Category[] = [];
