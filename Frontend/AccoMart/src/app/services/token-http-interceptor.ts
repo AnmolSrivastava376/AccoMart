@@ -104,6 +104,4 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     this.refreshToken(this.ref);
 
   }
-
-
 }
