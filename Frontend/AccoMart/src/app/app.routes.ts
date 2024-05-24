@@ -20,7 +20,7 @@ import { BuyProductComponent } from './pages/buy-product/buy-product.component';
 import { DeliveryServicesComponent } from './pages/delivery-services/delivery-services.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
-
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
@@ -34,13 +34,14 @@ export const routes: Routes = [
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
+    { path: 'admin', component: AdminDashboardComponent},
     { path: 'admin/products',component:AdminProductsComponent,canActivate: [AuthGuard]},
     { path: 'admin/categories',component:AdminCategoriesComponent,canActivate: [AuthGuard]},
     { path: 'admin/product/edit/:productId',component:EditProductComponent,canActivate: [AuthGuard]},
     { path: 'admin/product/add',component:AddProductComponent,canActivate: [AuthGuard]},
     { path: 'admin/delivery',component:DeliveryServicesComponent,canActivate: [AuthGuard]},
     { path: 'unauthorized',component:UnauthorizedComponent},
-    { path: '**', component: NotfoundComponent } // Wildcard route for 404 page
+    { path: '**', component: NotfoundComponent }
 
 ];
 
