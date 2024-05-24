@@ -4,5 +4,6 @@ export interface Product {
     productDesc:string,
     productPrice:number,
     productImageUrl:string,
-    categoryId:number
+    categoryId:number,
+    stock:number
 }

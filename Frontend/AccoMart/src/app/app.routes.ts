@@ -1,4 +1,5 @@
 import { RouterModule, Routes, RouterLink } from '@angular/router';
+import { AuthGuard } from './auth.guard';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CartComponent } from './pages/cart/cart.component';
@@ -7,19 +8,18 @@ import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { NgModule } from '@angular/core';
 import { ProductDetailComponent  } from './pages/product-detail/product-detail.component';
-import { LoginComponent } from './pages/login/login.component';
-import { Login2FAComponent } from './pages/login-2-fa/login-2-fa.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RegisterComponent} from './pages/register/register.component'
+import { HttpClientModule } from '@angular/common/http';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
 import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
 import { ForgetpasswordPageComponent } from './pages/forget-password/forgetpassword-page.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
 import { AddProductComponent } from './pages/add-product/add-product.component';
-import { DeliveryServicesComponent } from './pages/delivery-services/delivery-services.component';
 import { ResetPasswordPageComponent } from './pages/reset-password-page/reset-password-page.component';
 import { BuyProductComponent } from './pages/buy-product/buy-product.component';
+import { DeliveryServicesComponent } from './pages/delivery-services/delivery-services.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { NotfoundComponent } from './components/notfound/notfound.component';
 
 
 export const routes: Routes = [
@@ -31,17 +31,17 @@ export const routes: Routes = [
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
     { path:'home/resetpassword', component:ResetPasswordPageComponent},
-    { path: 'login', component: LoginComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
-    { path: 'login-two-factor',component:Login2FAComponent},
-    { path: 'register',component:RegisterComponent},
-    { path: 'admin/products',component:AdminProductsComponent},
-    { path: 'admin/categories',component:AdminCategoriesComponent},
-    { path: 'admin/product/edit/:productId',component:EditProductComponent},
-    { path: 'admin/product/add',component:AddProductComponent},
-    { path: 'admin/delivery',component:DeliveryServicesComponent}
+    { path: 'admin/products',component:AdminProductsComponent,canActivate: [AuthGuard]},
+    { path: 'admin/categories',component:AdminCategoriesComponent,canActivate: [AuthGuard]},
+    { path: 'admin/product/edit/:productId',component:EditProductComponent,canActivate: [AuthGuard]},
+    { path: 'admin/product/add',component:AddProductComponent,canActivate: [AuthGuard]},
+    { path: 'admin/delivery',component:DeliveryServicesComponent,canActivate: [AuthGuard]},
+    { path: 'unauthorized',component:UnauthorizedComponent},
+    { path: '**', component: NotfoundComponent } // Wildcard route for 404 page
+
 ];
 
 @NgModule({

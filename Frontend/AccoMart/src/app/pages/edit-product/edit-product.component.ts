@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
 
@@ -21,19 +21,101 @@ import { Category } from '../../interfaces/category';
 })
 
 export class EditProductComponent implements OnInit {
+
+  @Output() close = new EventEmitter<void>();
+  constructor(private route: ActivatedRoute , private router:Router, private productService:productService,private categoryService:CategoryService,    private http:HttpClient
+  ) { }
   productImageUrl: string; 
   uploading: boolean = false;
+
+  file: File | null = null;
+  uploadComplete = false;
+  cldResponse: any;
+
+
+  handleFileChange(event: any): void {
+    this.file = event.target.files[0];
+  }
+
+  async uploadFile(): Promise<void> {
+    if (!this.file) {
+      console.error('Please select a file.');
+      return;
+    }
+
+    const uniqueUploadId = this.generateUniqueUploadId();
+    const chunkSize = 5 * 1024 * 1024;
+    const totalChunks = Math.ceil(this.file.size / chunkSize);
+    let currentChunk = 0;
+
+    this.uploading = true;
+
+    const uploadChunk = async (start: number, end: number): Promise<void> => {
+      const formData = new FormData();
+      formData.append('file', this.file!.slice(start, end));
+      formData.append('cloud_name', 'diiyfgi9r');
+      formData.append('upload_preset', 'pqfmff0z');
+      const contentRange = `bytes ${start}-${end - 1}/${this.file!.size}`;
+
+      console.log(
+        `Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${
+          end - 1
+        }`
+      );
+
+
+      try {
+        const response = await this.http.post(
+          `https://api.cloudinary.com/v1_1/diiyfgi9r/auto/upload`,
+          formData,
+          {
+            headers: {
+              'X-Unique-Upload-Id': uniqueUploadId,
+              'Content-Range': contentRange,
+            },
+          }
+        ).toPromise();
+
+        currentChunk++;
+
+        if (currentChunk < totalChunks) {
+          const nextStart = currentChunk * chunkSize;
+          const nextEnd = Math.min(nextStart + chunkSize, this.file!.size);
+          uploadChunk(nextStart, nextEnd);
+        } else {
+          this.uploadComplete = true;
+          this.uploading = false;
+          this.cldResponse = response;
+          console.info('File upload complete.');
+          this.product.productImageUrl = this.cldResponse.url;
+        }
+      } catch (error) {
+        console.error('Error uploading chunk:', error);
+        this.uploading = false;
+      }
+    };
+
+    const start = 0;
+    const end = Math.min(chunkSize, this.file.size);
+    uploadChunk(start, end);
+  }
+
+  generateUniqueUploadId(): string {
+    return `uqid-${Date.now()}`;
+  }
+
   product: Product = {
     productId: 0,
     productName: '',
     productDesc: '',
     productPrice: 0,
     productImageUrl: '',
-    categoryId: 0
+    categoryId: 0,
+    stock:0
   };
   categories:Category[];
-  @Output() close = new EventEmitter<void>();
-  constructor(private route: ActivatedRoute , private router:Router, private productService:productService,private categoryService:CategoryService) { }
+
+
 
   ngOnInit(): void {
     this.fetchProduct();

@@ -1,5 +1,7 @@
+using Data.Models;
 using Data.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +15,7 @@ using System.Data.SqlClient;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controllers.Order
 {
@@ -31,12 +34,51 @@ namespace API.Controllers.Order
             _cartService = cartService;
             _connectionString = _configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
         }
+        [HttpGet("FetchAllOrders/{userId}")]
+        public async Task<IActionResult> FetchAllOrders(string userId)
+        {
+            List<Orders> orders = new List<Orders>();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    string getAllOrdersQuery = "SELECT * FROM Orders WHERE UserId = @UserId";
+                    using (SqlCommand command = new SqlCommand(getAllOrdersQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                Orders order = new Orders
+                                {
+                                    OrderId = Convert.ToInt32(reader["OrderId"]),
+                                    OrderDate = Convert.ToDateTime(reader["OrderDate"]),
+                                    OrderAmount = Convert.ToInt32(reader["OrderAmount"]),
+                                    UserId = Convert.ToString(reader["UserId"]),
+                                    AddressId = Convert.ToInt32(reader["AddressId"]),
+                                    CartId = Convert.ToInt32(reader["CartId"]),
+                                    DeliveryServiceID = Convert.ToInt32(reader["DeliveryServiceId"]),
+                                    isCancelled = Convert.ToBoolean(reader["IsCancelled"]),
+                                };
+                                orders.Add(order);
+                            }
+                        }
+                    }
+                }
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpPost("PlaceOrderByCart")]
         public async Task<StripeDto> PlaceOrderByCart(CartOrderDto cartOrderDto)
         {
             int newOrderId = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -90,9 +132,12 @@ namespace API.Controllers.Order
 
                         newOrderId = Convert.ToInt32(await insertOrderCommand.ExecuteScalarAsync());
                     }
+                    
                 }
 
-                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId);
+
+
+                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId,newOrderId);
             }
             catch (Exception ex)
             {
@@ -102,7 +147,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeDto> CheckoutByCart(string userId, int cartId)
+        public async Task<StripeDto> CheckoutByCart(string userId, int cartId,int orderId)
         {
             var options = new SessionCreateOptions
             {
@@ -135,6 +180,27 @@ namespace API.Controllers.Order
                         }
 
                         await cartItemReader.CloseAsync();
+
+                        foreach(Tuple<int,int> CartItem in CartItems)
+                        {
+                            string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
+
+                            using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery,connection))
+                            {
+                                insertHistoryCommand.Parameters.AddWithValue("@OrderId", orderId);
+                                insertHistoryCommand.Parameters.AddWithValue("@ProductId", CartItem.Item1);
+                                insertHistoryCommand.Parameters.AddWithValue("@Quantity", CartItem.Item2);
+                                await insertHistoryCommand.ExecuteNonQueryAsync(); 
+
+                            }
+
+                        }
+
+                        _cartService.DeleteCartAsync(cartId);
+
+                        
+
+
 
                         foreach (Tuple<int, int> CartItem in CartItems)
                         {
@@ -243,7 +309,36 @@ namespace API.Controllers.Order
                 return null;
             }
         }
-
+        [HttpGet("GetCartItemsByOrderId/{orderId}")]
+        public async Task<IActionResult> FetchHistory(int orderId)
+        {
+            try
+            {
+                List<OrderedItem> orderedItems = new List<OrderedItem>();
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+                    string sqlQuery = "SELECT * FROM OrderHistory WHERE OrderId = @OrderId";
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    command.Parameters.AddWithValue("@OrderId", orderId);
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        OrderedItem item = new OrderedItem
+                        {
+                            ProductId = Convert.ToInt32(reader["ProductId"]),
+                            Quantity = Convert.ToInt32(reader["Quantity"]),
+                        };
+                        orderedItems.Add(item);
+                    }
+                }
+                    return Ok(orderedItems);
+            }
+            catch
+            {
+                return null;
+            }
+        }
         //[Authorize]
         [HttpPost("Checkout/Product")]
         public async Task<StripeDto> Checkout(int productId)
@@ -326,8 +421,6 @@ namespace API.Controllers.Order
                     return getProductCommand.ExecuteScalar()?.ToString() ?? "Unknown Product";
                 }
             }
-        }
-
-       
+        }      
     }
 }

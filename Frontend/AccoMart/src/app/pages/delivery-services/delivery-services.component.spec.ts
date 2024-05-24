@@ -10,6 +10,7 @@ describe('DeliveryServicesComponent', () => {
     await TestBed.configureTestingModule({
       imports: [DeliveryServicesComponent]
     })
+    
     .compileComponents();
     
     fixture = TestBed.createComponent(DeliveryServicesComponent);
@@ -20,4 +21,4 @@ describe('DeliveryServicesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});
+}); 

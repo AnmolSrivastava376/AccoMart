@@ -30,11 +30,18 @@ export class TokenHttpInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.tokenService.getToken();
     if (token) {
-      const authReq = req.clone({
-        setHeaders: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      let authReq: HttpRequest<any>;
+      if (req.url.includes('api.cloudinary.com')) {
+        // Clone the request without setting Authorization header
+        authReq = req.clone();
+      } else {
+        // Clone the request with Authorization header
+        authReq = req.clone({
+          setHeaders: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+      }
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
@@ -97,6 +104,4 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     this.refreshToken(this.ref);
 
   }
-
-
 }
