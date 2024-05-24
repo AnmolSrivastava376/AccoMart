@@ -2,7 +2,11 @@
 using Microsoft.Data.SqlClient;
 using Data.Models;
 using Data.Models.DTO;
-
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Service.Models;
 
 namespace API.Controllers.DeliveryServices
 {
@@ -10,23 +14,21 @@ namespace API.Controllers.DeliveryServices
     [Route("DeliveryServiceController")]
     public class DeliveryServiceController : ControllerBase
     {
-
         private readonly IConfiguration _configuration;
+
         public DeliveryServiceController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-
-
         [HttpPost("AddDeliveryService")]
-        public IActionResult AddDeliveryService(CreateDeliveryServiceDto deliveryService)
+        public async Task<IActionResult> AddDeliveryService(CreateDeliveryServiceDto deliveryService)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
 
                     string sqlQuery = @"INSERT INTO DeliveryService (ImageUrl, ServiceName, Price, DeliveryDays) 
                                         VALUES (@ImageUrl, @ServiceName, @Price, @DeliveryDays)";
@@ -38,58 +40,58 @@ namespace API.Controllers.DeliveryServices
                         command.Parameters.AddWithValue("@Price", deliveryService.Price);
                         command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
 
-                        command.ExecuteNonQuery();
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
 
-                return Ok();
+                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Delivery service added successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while adding the delivery service: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"An error occurred while adding the delivery service: {ex.Message}", StatusCode = 500 });
             }
         }
 
         [HttpDelete("DeleteDeliveryService/{id}")]
-        public IActionResult DeleteDeliveryService(int id)
-        {
-            try
-            {
-        using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-        {
-            connection.Open();
-
-            string sqlQuery = @"DELETE FROM DeliveryService WHERE DServiceId = @DServiceId";
-
-            using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-            {
-                command.Parameters.AddWithValue("@DServiceId", id);
-
-                int rowsAffected = command.ExecuteNonQuery();
-
-                if (rowsAffected == 0)
-                {
-                    return NotFound("Delivery service not found.");
-                }
-            }
-        }
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while deleting the delivery service: {ex.Message}");
-            }
-        }
-
-        [HttpPut("UpdateDeliveryService/{id}")]
-        public IActionResult UpdateDeliveryService(int id, CreateDeliveryServiceDto deliveryService)
+        public async Task<IActionResult> DeleteDeliveryService(int id)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
+
+                    string sqlQuery = @"DELETE FROM DeliveryService WHERE DServiceId = @DServiceId";
+
+                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@DServiceId", id);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                        if (rowsAffected == 0)
+                        {
+                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Delivery service not found.", StatusCode = 404 });
+                        }
+                    }
+                }
+
+                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Delivery service deleted successfully.", StatusCode = 200 });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"An error occurred while deleting the delivery service: {ex.Message}", StatusCode = 500 });
+            }
+        }
+
+        [HttpPut("UpdateDeliveryService/{id}")]
+        public async Task<IActionResult> UpdateDeliveryService(int id, CreateDeliveryServiceDto deliveryService)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    await connection.OpenAsync();
 
                     string sqlQuery = @"UPDATE DeliveryService 
                                         SET ImageUrl = @ImageUrl, ServiceName = @ServiceName, Price = @Price, DeliveryDays = @DeliveryDays 
@@ -103,25 +105,25 @@ namespace API.Controllers.DeliveryServices
                         command.Parameters.AddWithValue("@Price", deliveryService.Price);
                         command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
 
-                        int rowsAffected = command.ExecuteNonQuery();
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
 
                         if (rowsAffected == 0)
                         {
-                            return NotFound("Delivery service not found.");
+                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Delivery service not found.", StatusCode = 404 });
                         }
                     }
                 }
 
-                return Ok();
+                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Delivery service updated successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while updating the delivery service: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"An error occurred while updating the delivery service: {ex.Message}", StatusCode = 500 });
             }
         }
 
         [HttpGet("GetAllDeliveryServices")]
-        public IActionResult GetAllDeliveryServices()
+        public async Task<IActionResult> GetAllDeliveryServices()
         {
             try
             {
@@ -129,15 +131,15 @@ namespace API.Controllers.DeliveryServices
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
 
                     string sqlQuery = "SELECT DServiceId, ImageUrl, ServiceName, Price, DeliveryDays FROM DeliveryService";
 
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync())
                             {
                                 DeliveryService deliveryService = new DeliveryService
                                 {
@@ -154,49 +156,47 @@ namespace API.Controllers.DeliveryServices
                     }
                 }
 
-                return Ok(deliveryServices);
+                return Ok(new ApiResponse<List<DeliveryService>> { IsSuccess = true, Message = "Delivery services retrieved successfully.", StatusCode = 200, Response = deliveryServices });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while retrieving delivery services: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"An error occurred while retrieving delivery services: {ex.Message}", StatusCode = 500 });
             }
         }
 
         [HttpGet("GetDeliveryDays/{deliveryId}")]
-        public IActionResult GetDeliveryDays(int deliveryId) {
-            int days = 0;
+        public async Task<IActionResult> GetDeliveryDays(int deliveryId)
+        {
             try
             {
-            
+                int days = 0;
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
 
                     string sqlQuery = "SELECT DeliveryDays FROM DeliveryService WHERE DServiceId = @DServiceId";
-
 
                     using (SqlCommand command = new SqlCommand(sqlQuery, connection))
                     {
                         command.Parameters.AddWithValue("@DServiceId", deliveryId);
-                        using (SqlDataReader reader = command.ExecuteReader())
+
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (reader.Read())
+                            while (await reader.ReadAsync())
                             {
                                 days = Convert.ToInt32(reader["DeliveryDays"]);
-                            
                             }
                         }
                     }
                 }
 
-                return Ok(days);
+                return Ok(new ApiResponse<int> { IsSuccess = true, Message = "Delivery days retrieved successfully.", StatusCode = 200, Response = days });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while retrieving delivery days: {ex.Message}");
+                return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"An error occurred while retrieving delivery days: {ex.Message}", StatusCode = 500 });
             }
         }
     }
-    }
-
+}
