@@ -15,3 +15,15 @@
         position: relative;
     }
 }
+@media (max-width: 900px){
+    .col900{
+        flex-direction: column;
+        flex: 100;
+    }
+    .h-adj{
+        height: 150vh;
+    }
+    .f1,.f2,.f3{
+        flex: 1;
+    }
+}
