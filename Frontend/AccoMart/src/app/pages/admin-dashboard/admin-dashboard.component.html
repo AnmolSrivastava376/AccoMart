@@ -1,0 +1,19 @@
+<div class="w-[100vw] h-fit relative flex flex-col main bg-gray-800">
+    <div class="border-b-[1px] bg-[#a3a7a6] sticky top-0 z-[200]">
+        <app-navbar></app-navbar>
+    </div>
+    <div class="w-full h-fit flex col">
+        <div class="w-[20%] h-fit relative sidebar overflow-hidden">
+           <div class="bg-white fixed unfix">
+            <app-sidebar></app-sidebar>
+           </div>
+        </div>
+        <div class="w-[80%] h-[100vh] bg-white box flex flex-col p-[20px] gap-[20px] h-adj">
+            <div class="w-full h-full flex-[40] flex gap-[20px] col900">
+                <div class="w-full h-full flex-[40] border bg-gray-200 f1"></div>
+                <div class="w-full h-full flex-[60] border bg-gray-200 f2"></div>
+            </div>
+            <div class="w-full h-full flex-[60] border bg-gray-200 f0"></div>
+        </div>
+    </div>
+</div>
