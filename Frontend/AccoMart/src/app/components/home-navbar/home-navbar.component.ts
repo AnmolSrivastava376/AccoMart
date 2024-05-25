@@ -16,7 +16,6 @@ export class HomeNavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   username: string = '';
   prefix: string = '';
-  // @Output() searchCompleted: EventEmitter<string> = new EventEmitter<string>();
   @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<Product[]>();
   constructor(private router: Router) {}
 
@@ -39,10 +38,10 @@ export class HomeNavbarComponent implements OnInit {
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
-    window.location.href = '/home/auth';
+    this.router.navigate(['/home/auth'])
   }
   navigateToAuth(){
-    window.location.href = '/home/auth';
+    this.router.navigate(['/home/auth'])
   }
   
   onSearchCompleted(products: Product[]): void {

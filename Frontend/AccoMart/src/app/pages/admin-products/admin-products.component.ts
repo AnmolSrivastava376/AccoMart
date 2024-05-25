@@ -8,6 +8,7 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
 import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-products',
@@ -18,7 +19,7 @@ import { forkJoin } from 'rxjs';
   styleUrl: './admin-products.component.css'
 })
 export class AdminProductsComponent implements OnInit {
-  constructor(private productService: productService,private categoryService:CategoryService) { }
+  constructor(private productService: productService,private categoryService:CategoryService , private router:Router) { }
 
   products: Product[];
 
@@ -57,21 +58,15 @@ export class AdminProductsComponent implements OnInit {
     });
   }
 
-  showProducts() {
-    window.location.href = '/admin/products';
-  }
-
-  showCategories() {
-    window.location.href = '/admin/categories';
-  }
-
   openAddProductPage()
   {
-    window.location.href = '/admin/product/add'
+
+    this.router.navigate(['/admin/product/add'])
+
   }
   openEditPage(product: Product): void {
     this.selectedProduct = product;
-    window.location.href = `/admin/product/edit/${product.productId}`;
+    this.router.navigate(['/admin/product/edit',product.productId])
   }
 
 

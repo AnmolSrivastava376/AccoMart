@@ -128,7 +128,6 @@ export class BuyProductComponent {
     .subscribe(
       (response) => {
         window.location.href = response.url;
-        console.log(response);
       },
       (error) => {
         console.error('Error placing order:', error);

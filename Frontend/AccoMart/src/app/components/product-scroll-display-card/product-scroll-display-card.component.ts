@@ -54,6 +54,7 @@ export class ProductScrollDisplayCardComponent {
     this.cartService.removeFromCart(productId);
   }
   navigateToProduct(productId:number){
-    window.location.href = `/home/productdetail/${productId}`
+    this.router.navigate(['/home/productdetail', productId])
+
   }
 }

@@ -48,7 +48,6 @@ export class ChangeAddressComponent implements OnInit {
           this.addressAdded.emit(address);
           this.showAddressform = false;
           alert('Successfully Added');
-          // window.location.href = '/home/cart'
           
         }
       );
@@ -91,6 +90,6 @@ export class ChangeAddressComponent implements OnInit {
   }
 
   cancel() {
-    window.location.href = '/home/cart'
+    this.router.navigate(['/home/cart'])
   }
 }

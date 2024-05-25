@@ -144,15 +144,7 @@ export class EditProductComponent implements OnInit {
    }
 
   CancelEdit(): void {
-    window.location.href = '/admin/products';
-  }
-
-  showProducts() {
-    window.location.href = '/admin/products';
-  }
-
-  showCategories() {
-    window.location.href = '/admin/categories';
+    this.router.navigate(['/admin/products']);
   }
 
 
@@ -160,11 +152,11 @@ export class EditProductComponent implements OnInit {
     this.productService.editProductById(this.product.productId, this.product)
       .subscribe(
         (response: any) => {
-          // Handle success, e.g., show a success message
           console.log('Product updated successfully:', response);
+          this.router.navigate(['/admin/products']);
+
         },
         (error: any) => {
-          // Handle error, e.g., show an error message
           console.error('Error updating product:', error);
         }
       );

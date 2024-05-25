@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { GridDisplayCardComponent } from '../grid-display-card/grid-display-card.component';
@@ -24,11 +25,13 @@ export class ProductCardComponent {
   @Input() categoryName?: string;
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor() {}
+  constructor(private router: Router) {}
+
   handleClick(productId: number) {
-    window.location.href = `home/productdetail/${productId}`;
+    this.router.navigate(['home/productdetail', productId]);
   }
-  handleEmitter(){
-    this.fetchNextPage.emit(true)
+
+  handleEmitter() {
+    this.fetchNextPage.emit(true);
   }
 }

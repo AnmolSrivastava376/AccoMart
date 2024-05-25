@@ -91,7 +91,7 @@ onLogin() {
         this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
 
         this.successMessage = result.message;
-        window.location.href = '/home';
+        this.router.navigate(['/home'])
       } else {
         this.spinLoader = false;
         this.loginErrorMessage = result.message;

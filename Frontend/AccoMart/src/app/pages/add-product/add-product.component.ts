@@ -9,6 +9,7 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { HttpClient } from '@angular/common/http';
 import { Category } from '../../interfaces/category';
 import { CategoryService } from '../../services/category.services';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-product-popup',
@@ -25,17 +26,21 @@ import { CategoryService } from '../../services/category.services';
 })
 export class AddProductComponent implements OnInit {
 
+  @Output() close = new EventEmitter<void>();
+  constructor(
+    private productService: productService,
+    private categoryService: CategoryService,
+    private http:HttpClient,
+    private router:Router
+  ) {}
+
+
   file: File | null = null;
   uploading = false;
   uploadComplete = false;
   cldResponse: any;
 
-  @Output() close = new EventEmitter<void>();
-  constructor(
-    private productService: productService,
-    private categoryService: CategoryService,
-    private http:HttpClient
-  ) {}
+
   handleFileChange(event: any): void {
     this.file = event.target.files[0];
   }
@@ -138,20 +143,18 @@ export class AddProductComponent implements OnInit {
   }
 
   Cancel(): void {
-    window.location.href = '/admin/products';
+    this.router.navigate(['/admin/products'])
   }
 
-  showProducts() {
-    window.location.href = '/admin/products';
-  }
-
-  showCategories() {
-    window.location.href = '/admin/categories';
-  }
+ 
+ 
 
   AddProduct() {
     this.productService.addProduct(this.product).subscribe((response: any) => {
       console.log('Product added successfully:', response);
+      this.router.navigate(['/admin/products'])
+
+      
     });
   }
 }
