@@ -93,7 +93,7 @@
       <span class="font-bold">X</span>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===1">
-      <app-change-address [address]="address" [userId]="userId" (addressAdded)="updateActiveAddress($event)"></app-change-address>
+      <app-change-address [address]="address" [userId]="userId" (addressAdded)="updateActiveAddress($event)" (closeWindow)="toggleVisibility(0)"></app-change-address>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===2">
       <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex"
