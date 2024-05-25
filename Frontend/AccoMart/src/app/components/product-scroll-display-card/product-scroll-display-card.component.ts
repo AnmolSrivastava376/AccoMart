@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 })
 export class ProductScrollDisplayCardComponent {
   @Input() products?: Product[];
+  @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
   cart?: cartItem[];
   i = 0;
   constructor(private cartService: CartService, private router: Router) {
@@ -24,6 +25,9 @@ export class ProductScrollDisplayCardComponent {
   handleNextButtonClick() {
     if (this.products && this.i + 2 < this.products.length) {
       this.i++;
+      if(this.i+3===this.products.length){
+        this.fetchNextPage.emit(true);
+      }
     }
   }
   handlePreviousButtonClick() {

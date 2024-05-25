@@ -134,7 +134,6 @@ namespace Data.Repository.Implementation
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    pageSize = 5;
                     int offset = (pageNo - 1) * pageSize;
 
                     string sqlQuery = $"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product WHERE CategoryId = @CategoryId) AS Temp WHERE RowNum >= @Offset AND RowNum < @Limit";

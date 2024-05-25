@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChange, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Category } from '../../interfaces/category';
 import {MatIconModule} from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './category-navbar.component.html',
   styleUrl: './category-navbar.component.css'
 })
-export class CategoryNavbarComponent {
+export class CategoryNavbarComponent implements OnChanges{
   @Input() categories?: Category[];
   @Input() products?: Product[];
   @Input() minprice: number=0;
@@ -26,6 +26,18 @@ export class CategoryNavbarComponent {
   isActiveDescendingFilter: boolean = false;
   isFirstLoad: boolean = true;
   shouldAnimate:boolean = false;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['products']){
+      if (this.isActiveAscendingFilter) {
+        console.log("sorted asc")
+        this.sortPriceAscending();
+      } else if (this.isActiveDescendingFilter) {
+        console.log("sorted desc")
+        this.sortPriceDscending();
+      }
+    }
+  }
 
   onCategoryClick(categoryId: number, index: number) {
     this.categorySelected.emit(categoryId);
@@ -41,14 +53,14 @@ export class CategoryNavbarComponent {
     }
   }
   sortPriceAscending(){
-    this.isActiveAscendingFilter = true;
+    this.isActiveAscendingFilter = !this.isActiveAscendingFilter;
     this.isActiveDescendingFilter = false;
     this.products?.sort((a, b) => a.productPrice - b.productPrice);
   }
 
   sortPriceDscending(){
     this.isActiveAscendingFilter = false;
-    this.isActiveDescendingFilter = true;
+    this.isActiveDescendingFilter = !this.isActiveDescendingFilter;
     this.products?.sort((a, b)=> b.productPrice - a.productPrice);
   }
   filterByPrice() {
