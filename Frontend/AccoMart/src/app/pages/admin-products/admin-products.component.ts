@@ -97,7 +97,10 @@ export class AdminProductsComponent implements OnInit {
     { 
       this.productService.fetchProductById(searchNumber).subscribe(response => {
         this.products=[];
-        this.products.push(response);
+        if(response.categoryId)
+          {
+            this.products.push(response);
+          }
         this.isLoading = false;
       });
     } else {
@@ -105,6 +108,7 @@ export class AdminProductsComponent implements OnInit {
         this.productService.fetchProductByName(searchValue),
         this.productService.fetchProductByCategoryName(searchValue)
       ]).subscribe(([productsByName, productsByCategory]) => {
+        this.products=[];
         this.products = [...productsByName, ...productsByCategory];
         this.isLoading = false;
       });
