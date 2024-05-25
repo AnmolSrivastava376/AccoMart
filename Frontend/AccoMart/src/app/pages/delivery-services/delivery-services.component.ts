@@ -51,7 +51,7 @@ export class DeliveryServicesComponent {
       (response: any) => {
         if (response.isSuccess) {
           this.deliveryServicesList = response.response as DeliveryService[];
-        } 
+        }
         else {
           console.error('Error fetching delivery services:', response.message);
 
