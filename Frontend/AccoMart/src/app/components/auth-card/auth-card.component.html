@@ -96,6 +96,14 @@
               >
                 {{ errorMessage }}
               </div>
+
+              <!--User created Message-->
+              <div
+              *ngIf="successMessage"
+              class="text-green-600 text-sm text-center mt-2"
+            >
+              {{ successMessage }}
+            </div>
               <!-- Register Button -->
               <div class="flex justify-center">
                 <button
@@ -116,7 +124,7 @@
             >
               <div class="">
                 <label for="email" class="block text-sm font-semibold mb-1"
-                  >Email</label
+                  >Email<span class="text-red-500">*</span></label
                 >
                 <input
                   type="email"
@@ -125,10 +133,21 @@
                   placeholder="Enter your email"
                   class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
                 />
+                <div *ngIf="loginForm.get('email')?.errors">
+
+                  <div *ngIf="loginForm.get('email')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-1 mb-1">
+                    Email is required.
+                 </div>
+                 <div *ngIf="loginForm.get('email')?.errors?.['email']"  class="text-red-600 text-sm text-left mt-1 mb-1">
+                  Email is invalid.
+                 </div>
+
+
+                </div>
               </div>
               <div class="">
                 <label for="password" class="block text-sm font-semibold mb-1"
-                  >Password</label
+                  >Password<span class="text-red-500">*</span></label
                 >
                 <input
                   type="password"
@@ -137,7 +156,26 @@
                   placeholder="Enter your password"
                   class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
                 />
+                <div *ngIf="loginForm.get('password')?.errors">
+
+                  <div *ngIf="loginForm.get('password')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-1 mb-1">
+                    Password is required.
+                 </div>
+                </div>
               </div>
+              <div
+                *ngIf="successMessage"
+                class="text-green-600 text-sm text-center mt-2"
+              >
+                {{successMessage }}
+              </div>
+              <div
+                *ngIf="loginErrorMessage"
+                class="text-red-600 text-sm text-center mt-2"
+              >
+                {{ loginErrorMessage }}
+              </div>
+
               <div class="">
                 <a
                   href="home/forgotpassword"
@@ -151,10 +189,10 @@
                   (click)="onLogin()"
                   class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring flex justify-center items-center"
                 >
-                  <app-loader *ngIf="spinLoader"></app-loader>
+                  <!-- <app-loader *ngIf="spinLoader"></app-loader>
                   <span *ngIf="!spinLoader">{{
                     isLogin ? "Login" : "Register"
-                  }}</span>
+                  }}</span> -->
                 </button>
               </div>
             </form>
