@@ -8,6 +8,7 @@ namespace Service.Services.Interface
         Task<Product> GetProductByIdAsync(int id);
         Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy);
         Task<List<Product>> GetAllProductsAsync();
+        Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize);
         Task<List<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> CreateCategoryAsync(string categoryName);

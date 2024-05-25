@@ -49,8 +49,10 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.GetAllProductsAsync();
         }
-
-
+        async Task<List<Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
+        {
+            return await _productRepository.GetProductsByPageNoAsync(id, pageNo, pageSize);
+        }
 
         async Task<Category> IProductService.GetCategoryByIdAsync(int id)
         {
