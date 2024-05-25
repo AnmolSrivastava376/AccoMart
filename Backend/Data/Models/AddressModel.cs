@@ -1,19 +1,24 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data.Models
 {
-    public class AddressModel
+    public class AddressModel 
     {
-        [Required]
+        [Required(ErrorMessage = "Street is required")]
         public string Street { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "State is required")]
         public string State { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Zip code is required")]
         public string ZipCode { get; set; }
 
         public string PhoneNumber { get; set; }
 
+       
     }
 }
