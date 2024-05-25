@@ -19,10 +19,14 @@ namespace API.Controllers.Admins
         [HttpGet("Products/CategoryId={id}")]
         public async Task<List<Product>> GetAllProducts(int id, string orderBy)
         {
-
             return await _productService.GetAllProductsByCategoryAsync(id, orderBy);
         }
-
+        [HttpGet("ProductsByPageNo")]
+        public async Task<List<Product>> GetProductsByPageNo(int id, int pageNo)
+        {
+            const int pageSize = 10;
+            return await _productService.GetProductsByPageNoAsync(id, pageNo, pageSize);
+        }
         [HttpGet("Products")]
         public async Task<List<Product>> GetProducts()
         {
