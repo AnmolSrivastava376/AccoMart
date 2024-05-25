@@ -3,5 +3,5 @@
     <app-grid-display-card class="hide" [products]="products"></app-grid-display-card>
     <app-scroll-display-card class="unhide" [products]="products"></app-scroll-display-card>
     <div class="font-bold text-[24px] px-[20px] py-[10px]">{{categoryName?categoryName:'Category Name'}}</div>
-    <app-product-scroll-display-card [products]="products"></app-product-scroll-display-card>
+    <app-product-scroll-display-card [products]="products" (fetchNextPage)="handleEmitter()"></app-product-scroll-display-card>
 </div>

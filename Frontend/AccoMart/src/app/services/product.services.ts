@@ -17,11 +17,9 @@ export class productService {
   fetchProductById(productId: number): Observable<Product> {
     return this.http.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
   }
-
-  fetchProductByName(productName:string): Observable<Product[]>{
-    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/SearchBy=${productName}`);
+  fetchProductByPageNo(categoryId: number, pageNo: number): Observable<Product[]>{
+    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/ProductsByPageNo?id=${categoryId}&pageNo=${pageNo}`);
   }
-
   fetchAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
   }

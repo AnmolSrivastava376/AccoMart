@@ -76,7 +76,10 @@ export class CartComponent {
   cartId: number;
   addressId: number;
   userId: string;
+  
   ngOnInit(): void {
+    this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
+    console.log(this.cartItemLength)
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);

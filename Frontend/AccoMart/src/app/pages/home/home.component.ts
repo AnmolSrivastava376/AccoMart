@@ -56,6 +56,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       stock:0
     },
   ];
+  page=1;
   minprice: number=0;
   maxprice: number=Number.MAX_SAFE_INTEGER;
   filteredProducts: Product[] = [];
@@ -106,7 +107,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   fetchProductsByCategory(): void {
     if (this.activeCategory !== null) {
       this.isLoading = true;
-      this.productService.fetchProductByCategoryID(this.activeCategory)
+      this.productService.fetchProductByPageNo(this.activeCategory, this.page)
         .subscribe({
           next: (response) => {
             this.products = response;
@@ -135,7 +136,15 @@ export class HomeComponent implements OnInit,OnDestroy {
   gotoCart() {
     window.location.href = '/home/cart';
   }
-
+  handleNextPageLoad(){
+    this.page++;
+    console.log(this.page, " : page")
+    this.productService.fetchProductByPageNo(this.activeCategory, this.page).subscribe(
+      response=>{
+        response.forEach(item=> this.products=[...this.products, item])
+      }
+    )
+  }
   // getInvoice(): void {
   //   this.invoiceService.getInvoice(orderId).subscribe(
   //     (response: Blob) => {
