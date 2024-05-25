@@ -104,8 +104,6 @@ export class AdminProductsComponent implements OnInit {
         this.products=[];
         this.products.push(response);
         this.isLoading = false;
-        console.log("here");
-        console.log(this.products);
       });
     } else {
       forkJoin([

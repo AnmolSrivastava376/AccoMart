@@ -130,7 +130,6 @@ export class AddProductComponent implements OnInit {
     this.categoryService.fetchCategories().subscribe(
       (response) => {
         this.categories = response;
-        console.log(this.categories);
       },
       (err) => {
         console.log(err);

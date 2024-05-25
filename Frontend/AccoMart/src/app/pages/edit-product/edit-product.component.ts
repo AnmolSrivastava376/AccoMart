@@ -130,7 +130,6 @@ export class EditProductComponent implements OnInit {
         .subscribe(
           response => {
             this.product = response;
-            console.log(this.product);
           }
         );
     });
@@ -139,7 +138,6 @@ export class EditProductComponent implements OnInit {
   fetchCategories(){
     this.categoryService.fetchCategories().subscribe(response=>{
      this.categories = response;
-     console.log(this.categories);
     },err=>{
      console.log(err);
     })

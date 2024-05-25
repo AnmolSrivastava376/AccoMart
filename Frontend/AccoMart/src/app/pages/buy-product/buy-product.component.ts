@@ -84,7 +84,6 @@ export class BuyProductComponent {
     this.addressService.getAddressByUserId(userId)
   .subscribe(
     (response) => {
-      console.log(response);
       this.address = response[0];
     }
   );

@@ -18,14 +18,11 @@ export class ForgetpasswordComponent {
   constructor(private httpService: HttpService, private router : Router) { }
 
   forgotPassword(email: string) {
-    // Call your AuthService method to reset the password
     this.httpService.forgotPassword(email)
       .subscribe(
         (response) => {
-          // Handle success response
           this.verificationResponse = response.status;
           console.log('Password reset email sent successfully:', response);
-           //this.router.navigate(['home/reset-password']);
 
         },
         (error) => {

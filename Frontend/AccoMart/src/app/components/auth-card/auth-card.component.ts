@@ -58,7 +58,6 @@ export class AuthCardComponent {
 
         this.httpService.register(username, email, password).subscribe(
             (result) => {
-                console.log(result);
                 if (result.status === 'Success') {
                    this.successMessage = result.message
                     this.isLogin = true;
@@ -91,7 +90,6 @@ onLogin() {
         this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
         this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
 
-        console.log(result);
         this.successMessage = result.message;
         window.location.href = '/home';
       } else {

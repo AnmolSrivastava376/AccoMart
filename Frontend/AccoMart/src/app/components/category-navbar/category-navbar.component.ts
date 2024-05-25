@@ -30,10 +30,8 @@ export class CategoryNavbarComponent implements OnChanges{
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['products']){
       if (this.isActiveAscendingFilter) {
-        console.log("sorted asc")
         this.sortPriceAscending();
       } else if (this.isActiveDescendingFilter) {
-        console.log("sorted desc")
         this.sortPriceDscending();
       }
     }
