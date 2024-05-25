@@ -1,0 +1,15 @@
+<div class="w-full h-[60px] py-[10px] bg-white flex justify-between px-[20px] items-center rounded-t-[10px] radius-adj">
+    <div class="font-[900] text-[28px] text-[#245963]"><a href="home">AccoMart</a></div>
+    <div class="flex-grow mx-4">
+        <app-searchbar (searchCompleted)="onSearchCompleted($event)"></app-searchbar>
+    </div>
+
+    <div class="flex gap-[10px] text-[20px] font-[600]">
+        <div *ngIf="username" class="hide text-gray-500">Welcome, {{username}}</div>
+        <div *ngIf="username" class="flex  gap-2 cursor-pointer hover:scale-110">
+            <div class="" (click)="logout()">Logout</div>
+            <div class="">&rarr; </div>
+        </div>
+        <div *ngIf="!username" class="cursor-pointer" (click)="navigateToAuth()">Login</div>
+    </div>
+</div>

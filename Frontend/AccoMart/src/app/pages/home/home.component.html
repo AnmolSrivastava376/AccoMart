@@ -1,7 +1,7 @@
 <div class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col justify-start parent">
     <div class="w-full relative rounded-t-[10px] r-adj">
         <div class="w-full h-[60px] shadow-2xl">
-            <app-navbar></app-navbar>
+          <app-home-navbar (searchCompleted)="onSearchCompleted($event)"></app-home-navbar>
         </div>
         <div class="w-full h-full flex py-[20px] col relative">
             <div class="w-full h-full flex-[25] sticky top-[20px] min-h-[20vh] px-[20px] notsticky">
@@ -14,12 +14,28 @@
                 (filteredProducts)="onFilteredProducts($event)">
                 </app-category-navbar>
             </div>
-            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="products && categories[activeCategoryIndex]">
-                <app-product-card *ngIf="!isLoading && products && categories[activeCategoryIndex]" [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-product-card>
+            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden" *ngIf="filteredProducts.length > 0">
+                <app-product-card *ngFor="let product of filteredProducts" [products]="products"></app-product-card>
             </div>
-            <div class="h-[80vh] bg-white mr-[20px] rounded-[10px] w-full flex flex-[75] items-center justify-center" *ngIf="!(products && categories[activeCategoryIndex])">
-                <app-loader></app-loader>
+            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="filteredProducts.length === 0 && searchActive">
+                <div  *ngIf="products && categories[activeCategoryIndex]">
+                    <app-search-product-card *ngIf="!isLoading && products && categories[activeCategoryIndex]" [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-search-product-card>
+                </div>
+                <div class="h-[80vh] bg-white mr-[20px] rounded-[10px] w-full flex flex-[75] items-center justify-center" *ngIf="!(products && categories[activeCategoryIndex])">
+                    <app-loader></app-loader>
+                </div>
             </div>
+
+            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="filteredProducts.length === 0 && !searchActive">
+                <div  *ngIf="products && categories[activeCategoryIndex]">
+                    <app-product-card *ngIf="!isLoading && products && categories[activeCategoryIndex]" [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-product-card>
+                </div>
+                <div class="h-[80vh] bg-white mr-[20px] rounded-[10px] w-full flex flex-[75] items-center justify-center" *ngIf="!(products && categories[activeCategoryIndex])">
+                    <app-loader></app-loader>
+                </div>
+            </div>
+
+           
         </div>
     </div>
     <div class="w-full h-0 fixed bottom-[90px] right-[40px] flex justify-end z-[100]">
@@ -28,5 +44,6 @@
             <div class="absolute top-0 right-[0px] w-[20px] h-[20px] bg-blue-700 flex p-2 text-white items-center justify-center rounded-[50%]"><div class="text-[12px] leading-[12px] font-bold">{{cartItemLength}}</div></div>
         </div>
     </div>
-    <!-- <div class="absolute [100px] h-[50px] bg-white cursor-pointer" (click)="getInvoice()">getInvoice</div> -->
+   <!-- <div class="absolute [100px] h-[50px] bg-white cursor-pointer" (click)="getInvoice()">getInvoice</div> -->
 </div>
+

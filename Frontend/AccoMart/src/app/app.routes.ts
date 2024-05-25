@@ -21,7 +21,7 @@ import { DeliveryServicesComponent } from './pages/delivery-services/delivery-se
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-
+import { SearchbarComponent } from './components/searchbar/searchbar.component';
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
@@ -41,6 +41,7 @@ export const routes: Routes = [
     { path: 'admin/product/add',component:AddProductComponent,canActivate: [AuthGuard]},
     { path: 'admin/delivery',component:DeliveryServicesComponent,canActivate: [AuthGuard]},
     { path: 'unauthorized',component:UnauthorizedComponent},
+    // { path: 'search/:prefix',component: SearchbarComponent},
     { path: '**', component: NotfoundComponent }
 
 ];
