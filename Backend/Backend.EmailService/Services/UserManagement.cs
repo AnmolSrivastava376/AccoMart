@@ -93,9 +93,14 @@ namespace Service.Services
         public async Task<ApiResponse<CreateUserResponse>> CreateUserWithTokenAsync(SignUp register)
         {
             var userExist = await _userManager.FindByEmailAsync(register.Email);
+            var userNameExist = await _userManager.FindByNameAsync(register.UserName);
             if (userExist != null)
             {
-                return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 403, Message = "User already exists" };
+                return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 403, Message = "User has already been registered through this email" };
+            }
+            if (userNameExist != null)
+            {
+                return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 403, Message = "This username has already been taken" };
             }
 
             int cartId = await _cartService.AddToCartAsync();
@@ -121,7 +126,7 @@ namespace Service.Services
 
 
             else
-                return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 500, Message = "User Failed to create" };
+                return new ApiResponse<CreateUserResponse> { IsSuccess = false, StatusCode = 500, Message = "Registration failed" };
 
         }
 
@@ -297,6 +302,16 @@ namespace Service.Services
         public async Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string password, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            if(user == null )
+            {
+                return new ApiResponse<LoginResponse>()
+                {
+                    Response = new LoginResponse(),
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Message = "Email not registered"
+                };
+            }
 
             if (user != null && await _userManager.CheckPasswordAsync(user, password))
             {
@@ -314,7 +329,7 @@ namespace Service.Services
                 Response = new LoginResponse(),
                 IsSuccess = false,
                 StatusCode = 400,
-                Message = "Invalid email or password"
+                Message = "Password is incorrect"
             };
         }
 

@@ -35,10 +35,12 @@ export class AuthCardComponent {
   isLogin:boolean= true;
   spinLoader:boolean= false;
   errorMessage: any;
+  loginErrorMessage : any
+  successMessage: any;
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
-    email: ['', Validators.required],
+    email: ['', Validators.required,Validators.email],
     password: ['', Validators.required],
   });
   registerForm = this.builder.group({
@@ -58,6 +60,7 @@ export class AuthCardComponent {
             (result) => {
                 console.log(result);
                 if (result.status === 'Success') {
+                   this.successMessage = result.message
                     this.isLogin = true;
                 } else {
                     console.error('Registration failed:', result.message);
@@ -73,21 +76,35 @@ export class AuthCardComponent {
 }
 
 
+onLogin() {
+  this.spinLoader = true;
+  const email : string = String(this.loginForm.value.email);
+  const password : string  = String(this.loginForm.value.password);
 
-  onLogin() {
-    this.spinLoader = true
-    const email = this.loginForm.value.email!;
-    const password = this.loginForm.value.password!;
-    this.httpService.login(email, password).subscribe((result) => {
-    this.tokenService.setToken(result.response.accessToken.token);
-    this.tokenService.setAccessToken(result.response.accessToken.token);
-    this.tokenService.setRefreshToken(result.response.refreshToken.token);
-    this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
-    this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
-    console.log(result);
-    window.location.href = '/home'
-    });
-  }
+  this.httpService.login(email, password).subscribe(
+    (result: any) => {
+      if (result.isSuccess) {
+        // Assuming token and response structure are similar to the C# model
+        this.tokenService.setToken(result.response.accessToken.token);
+        this.tokenService.setAccessToken(result.response.accessToken.token);
+        this.tokenService.setRefreshToken(result.response.refreshToken.token);
+        this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
+        this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
+
+        console.log(result);
+        this.successMessage = result.message;
+        window.location.href = '/home';
+      } else {
+        this.loginErrorMessage = result.message;
+        console.error(result.message);
+      }
+    },
+    (error) => {
+      this.loginErrorMessage = error.error.message;
+      console.error(error);
+    }
+  );
+}
   onSwitch() {
     this.isLogin = !this.isLogin
   }

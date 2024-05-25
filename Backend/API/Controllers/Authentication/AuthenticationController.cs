@@ -102,7 +102,7 @@ namespace API.Controllers.Authentication
 
             }
 
-            return StatusCode(StatusCodes.Status404NotFound, new Response { Status = $"Invalid OTP" });
+            return StatusCode(StatusCodes.Status404NotFound, new Response { Status = $"Failure", Message = jwt.Message });
 
 
 
@@ -218,11 +218,7 @@ namespace API.Controllers.Authentication
             }
             return StatusCode(StatusCodes.Status400BadRequest, StatusCode(StatusCodes.Status200OK, new Response { Status = "Couldn't find link to email" }));
         }
-
-                      
-                                                                           
-      
-       
+                                                               
 
     }
 }
