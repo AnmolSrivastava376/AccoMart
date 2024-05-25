@@ -7,6 +7,7 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { NgModule } from '@angular/core';
+import { ChartModule } from 'angular-highcharts';
 import { ProductDetailComponent  } from './pages/product-detail/product-detail.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
@@ -47,7 +48,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes), HttpClientModule],
+    imports: [RouterModule.forRoot(routes), HttpClientModule,ChartModule],
     exports: [RouterModule]
 })
 export class AppRoutingModule {}
