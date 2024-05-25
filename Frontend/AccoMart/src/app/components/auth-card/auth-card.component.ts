@@ -32,8 +32,9 @@ import { LoaderComponent } from '../loader/loader.component';
 export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
-  isLogin :boolean= true;
+  isLogin:boolean= true;
   spinLoader:boolean= false;
+  errorMessage: any;
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
@@ -41,22 +42,38 @@ export class AuthCardComponent {
     password: ['', Validators.required],
   });
   registerForm = this.builder.group({
-    username: ['',Validators.required],
-    email: ['', Validators.required],
-    password: ['', Validators.required],
+    username: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)]],
   });
 
 
   onRegister() {
-    const username = this.registerForm.value.username!;
-    const email = this.registerForm.value.email!;
-    const password = this.registerForm.value.password!;
-    console.log({username,email,password})
-    this.httpService.register(username,email, password).subscribe((result) => {
-      console.log(result)
-      this.isLogin=true;
-    });
-  }
+    if (this.registerForm.valid) {
+      const username: string = String(this.registerForm.value.username);
+      const email: string = String(this.registerForm.value.email);
+      const password: string = String(this.registerForm.value.password);
+
+        this.httpService.register(username, email, password).subscribe(
+            (result) => {
+                console.log(result);
+                if (result.status === 'Success') {
+                    this.isLogin = true;
+                } else {
+                    console.error('Registration failed:', result.message);
+                    this.errorMessage = result.message;
+                }
+            },
+            (error) => {
+                console.error(error.error.message);
+                this.errorMessage = error.error.message;
+            }
+        );
+    }
+}
+
+
+
   onLogin() {
     this.spinLoader = true
     const email = this.loginForm.value.email!;
