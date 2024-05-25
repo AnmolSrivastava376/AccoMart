@@ -201,7 +201,7 @@ namespace API.Controllers.Authentication
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("rest-password")]
+        [Route("reset-password")]
         public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
         {
             var user = await _userManager.FindByEmailAsync(resetPassword.Email);
@@ -218,7 +218,7 @@ namespace API.Controllers.Authentication
                     return Ok(ModelState);
                 }
           
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = $"Reset Password Link has been sent on {user.Email}" });
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = $"Password has been reset" });
             }
             return StatusCode(StatusCodes.Status400BadRequest, StatusCode(StatusCodes.Status200OK, new Response { Status = "Couldn't find link to email" }));
         }
