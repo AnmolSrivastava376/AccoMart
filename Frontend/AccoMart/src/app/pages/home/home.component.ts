@@ -14,6 +14,9 @@ import { invoiceService } from '../../services/invoiceService';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { FormsModule } from '@angular/forms';
+import { HomeNavbarComponent } from '../../components/home-navbar/home-navbar.component';
+import { SearchbarComponent } from '../../components/searchbar/searchbar.component';
+import { SearchProductCardComponent } from '../../components/search-product-card/search-product-card.component';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +24,9 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   imports: [
+    SearchProductCardComponent,
+    HomeNavbarComponent,
+    SearchbarComponent,
     CategoryNavbarComponent,
     ProductCardComponent,
     NavbarComponent,
@@ -51,8 +57,9 @@ export class HomeComponent implements OnInit,OnDestroy {
     },
   ];
   minprice: number=0;
-  maxprice: number=Infinity;
+  maxprice: number=Number.MAX_SAFE_INTEGER;
   filteredProducts: Product[] = [];
+  searchActive: boolean =false;
 
   downloadFile(data: Blob): void {
     const blob = new Blob([data], { type: 'application/pdf' });
@@ -120,17 +127,6 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
   onCategorySelected(categoryId: number): void {
     this.activeCategory = categoryId;
-    // if (this.activeCategory !== null) {
-    //   this.productService.fetchProductByCategoryID(this.activeCategory)
-    //     .subscribe({
-    //       next: (response) => {
-    //         this.products = response;
-    //       },
-    //       error: (error) => {
-    //         console.error('Error fetching products:', error);
-    //       }
-    //     });
-    // }
     this.fetchProductsByCategory();
   }
   onIndexSelected(index: number) {
@@ -166,5 +162,10 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
   onFilteredProducts(filtered: Product[]) {
     this.filteredProducts = filtered;
+  }
+  
+  onSearchCompleted(products: Product[]): void {
+    this.products = products;
+    this.searchActive=true;
   }
 }

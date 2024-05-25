@@ -10,13 +10,13 @@ import { ChartProductItem } from "../interfaces/chartProductItem";
 })
 export class ChartService{
     constructor (private http: HttpClient){}
-    fetchDailyOrderQuantity(): Observable<ChartOrderItem>{
-        return this.http.get<ChartOrderItem>('http://localhost:5239/ChartController/FetchDailyOrderQuantity');
+    fetchDailyOrderQuantity(): Observable<ChartOrderItem[]>{
+        return this.http.get<ChartOrderItem[]>('http://localhost:5239/ChartController/FetchDailyOrderQuantity');
     }
-    fetchCategoryWiseQuantity():Observable<ChartCategoryItem>{
-        return this.http.get<ChartCategoryItem>('http://localhost:5239/ChartController/FetchCategoryWiseQuantity');
+    fetchCategoryWiseQuantity():Observable<ChartCategoryItem[]>{
+        return this.http.get<ChartCategoryItem[]>('http://localhost:5239/ChartController/FetchCategoryWiseQuantity');
     }
-    fetchProductWiseQuantity():Observable<ChartProductItem>{
-        return this.http.get<ChartProductItem>('http://localhost:5239/ChartController/FetchProductWiseQuantity');
+    fetchProductWiseQuantity():Observable<ChartProductItem[]>{
+        return this.http.get<ChartProductItem[]>('http://localhost:5239/ChartController/FetchProductWiseQuantity');
     }
 }

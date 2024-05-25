@@ -17,17 +17,17 @@
                         </div>
                     </div>
                     <div class="w-full h-fit flex gap-[4px]">
-                        <div class="w-full h-[40px] py-[4px] px-[8px] rounded-[4px] cursor-pointer flex parent items-center justify-center"
+                        <div class="w-full h-[40px] py-[4px] px-[8px] rounded-[4px] cursor-pointer flex parent items-center justify-center bg-yellow-400"
                             (click)="addToCart(product.productId)">
-                            <div class="font-bold text-white" *ngIf="!isPresentInCart(product.productId)">ADD TO CART
+                            <div class="font-bold text-black" *ngIf="!isPresentInCart(product.productId)">ADD TO CART
                             </div>
                             <div class="w-full h-full flex items-center font-bold text-white"
                                 *ngIf="isPresentInCart(product.productId)">
                                 <div class="w-full h-full flex-[1] text-[32px] flex items-center justify-center"
                                     (click)="incrementCountByProductId(product.productId)">+</div>
-                                <div class="w-full h-full flex-[2] flex text-[20px] items-center justify-center">
+                                <div class="w-full h-full flex-[2] text-[20px] flex items-center justify-center">
                                     {{findQuantityByProductId(product.productId)}}</div>
-                                <div class="w-full h-full flex-[1] flex text-[32px] items-center justify-center"
+                                <div class="w-full h-full flex-[1] text-[32px] flex items-center justify-center"
                                     (click)="decrementCountByProductId(product.productId)">-</div>
                             </div>
                         </div>

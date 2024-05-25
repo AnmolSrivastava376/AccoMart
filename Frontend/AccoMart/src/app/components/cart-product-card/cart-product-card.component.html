@@ -10,10 +10,10 @@
         <div class="text-[14px] text-start hide">{{ product && product.productDesc.slice(0,100) }}</div>
         <div class="font-semibold pt-[8px] nopad subheading">{{ product && product.productPrice }}</div>
       </div>
-      <div class="w-[120px] h-[40px] border border-black flex rounded-[10px] box self-end">
-        <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer" (click)="incrementProductCount(product.productId)">+</div>
+      <div class="w-[120px] h-[40px] border-[2px] border-black flex rounded-[10px] box self-end">
+        <div class="w-full h-full flex items-center text-[24px] justify-center flex-[25] cursor-pointer" (click)="incrementProductCount(product.productId)">+</div>
         <div class="w-full h-full flex items-center justify-center flex-[32] border border-x-black font-bold">{{quantity}}</div>
-        <div class="w-full h-full flex items-center justify-center flex-[25] cursor-pointer" (click)="decrementProductCount(product.productId)">-</div>
+        <div class="w-full h-full flex items-center text-[24px] justify-center flex-[25] cursor-pointer" (click)="decrementProductCount(product.productId)">-</div>
       </div>
     </div>
   </div>

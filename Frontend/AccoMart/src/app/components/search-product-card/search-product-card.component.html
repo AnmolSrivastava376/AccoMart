@@ -1,0 +1,7 @@
+<div class="w-full h-fit border flex bg-white flex-col rounded-[10px]">
+    <!-- <div class="font-bold text-[24px] px-[20px] py-[10px]">Trending</div>
+    <app-grid-display-card class="hide" [products]="products"></app-grid-display-card>
+    <app-scroll-display-card class="unhide" [products]="products"></app-scroll-display-card> -->
+    <div class="font-bold text-[24px] px-[20px] py-[10px]">{{categoryName?categoryName:'Category Name'}}</div>
+    <app-search-product-card-without-scroll [products]="products"></app-search-product-card-without-scroll>
+</div>

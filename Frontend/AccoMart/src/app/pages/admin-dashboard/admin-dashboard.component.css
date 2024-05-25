@@ -27,3 +27,14 @@
         flex: 1;
     }
 }
+
+.bar-chart-container {
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+  }
+  
+  /* Ensure that the chart itself fills the container */
+  .bar-chart {
+    width: 100%;
+    height: 100%;
+  }
