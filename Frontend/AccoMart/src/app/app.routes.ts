@@ -7,6 +7,7 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { NgModule } from '@angular/core';
+import { ChartModule } from 'angular-highcharts';
 import { ProductDetailComponent  } from './pages/product-detail/product-detail.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
@@ -21,7 +22,7 @@ import { DeliveryServicesComponent } from './pages/delivery-services/delivery-se
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-
+import { SearchbarComponent } from './components/searchbar/searchbar.component';
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
@@ -41,12 +42,13 @@ export const routes: Routes = [
     { path: 'admin/product/add',component:AddProductComponent,canActivate: [AuthGuard]},
     { path: 'admin/delivery',component:DeliveryServicesComponent,canActivate: [AuthGuard]},
     { path: 'unauthorized',component:UnauthorizedComponent},
+    // { path: 'search/:prefix',component: SearchbarComponent},
     { path: '**', component: NotfoundComponent }
 
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes), HttpClientModule],
+    imports: [RouterModule.forRoot(routes), HttpClientModule,ChartModule],
     exports: [RouterModule]
 })
 export class AppRoutingModule {}

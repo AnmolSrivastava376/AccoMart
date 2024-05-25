@@ -9,11 +9,12 @@
            </div>
         </div>
         <div class="w-[80%] h-[100vh] bg-white box flex flex-col p-[20px] gap-[20px] h-adj">
+
             <div class="w-full h-full flex-[40] flex gap-[20px] col900">
-                <div class="w-full h-full flex-[40] border bg-gray-200 f1"></div>
-                <div class="w-full h-full flex-[60] border bg-gray-200 f2"></div>
+                <div class="w-full h-full flex-[40] border bg-gray-200 f1"  [chart]="pieChart"></div>
+                <div class="w-full h-full flex-[60] border bg-gray-200 f2 "  [chart]="barChart"></div>
             </div>
-            <div class="w-full h-full flex-[60] border bg-gray-200 f0"></div>
+            <div class="w-full h-full flex-[60] border bg-gray-200 f0" [chart]="lineChart" ></div>
         </div>
     </div>
 </div>
