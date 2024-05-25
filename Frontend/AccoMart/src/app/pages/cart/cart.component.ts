@@ -19,6 +19,7 @@ import { ChangeServiceComponent } from '../../components/change-service/change-s
 import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CartOrder } from '../../interfaces/placeOrder';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cart',
@@ -53,7 +54,8 @@ export class CartComponent {
     private deliveryService: deliveryService,
     private productService: productService,
     private orderService: orderService,
-    private cartService: CartService
+    private cartService: CartService,
+    private toastr : ToastrService
   ) {}
 
   cart: cartItem[] = [];
@@ -97,21 +99,36 @@ export class CartComponent {
             });
         });
       });
+
     // Fetching address
-    this.addressService.getAddressByUserId(this.userId).subscribe((response) => {
-      this.address = response;
-      this.activeAddress = this.address[0]
-    });
-    // Fetching delivery
-    this.deliveryService.getDeliveryServices().subscribe((response) => {
-      this.delivery = response;
-      if (this.delivery) {
-        this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
-        this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
+
+    this.addressService.getAddressByUserId(this.userId).subscribe((response: any) => {
+      if (response.isSuccess) {
+        this.address = response.response;
+        this.activeAddress = this.address[0];
+        console.log('Address retrieved successfully:', this.address);
+      } else {
+        console.error('Failed to retrieve addresses:', response.message);
+        this.toastr.error("Failed to retrieve addresses");
       }
     });
+
+    // Fetching delivery
+    this.deliveryService.getDeliveryServices().subscribe((response: any) => {
+    if (response.isSuccess) {
+    this.delivery = response.response;
+    if (this.delivery && this.delivery.length > 0) {
+      this.activeDeliveryService = this.delivery[0];
+      this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
+    }
+    console.log('Delivery services retrieved successfully:', this.delivery);
+  } else {
+    console.error('Failed to retrieve delivery services:', response.message);
+    this.toastr.error("Failed to retrieve delivery services");
   }
-  
+});
+  }
+
   getCartTotal(): number {
     let total = 0;
     if (this.cartItemLength > 0) {
@@ -133,7 +150,6 @@ export class CartComponent {
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
-
   placeOrder() {
     this.orderService.placeOrderByCart(this.cartOrder).subscribe(
       response=>{

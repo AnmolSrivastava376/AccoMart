@@ -51,8 +51,8 @@ export class DeliveryServicesComponent {
       (response: any) => {
         if (response.isSuccess) {
           this.deliveryServicesList = response.response as DeliveryService[];
-
-        } else {
+        } 
+        else {
           console.error('Error fetching delivery services:', response.message);
 
         }
@@ -82,11 +82,10 @@ export class DeliveryServicesComponent {
       (response: any) => {
         if (response.isSuccess) {
           this.toastr.success('Delivery Service successfully updated');
-          console.log("Delivery Service successfully updated");
           this.openEditServicePopup = false;
           this.fetchDeliveryServices();
         } else {
-          console.error('Error editing delivery service:', response.message);
+          this.toastr.error("Error editing delivery service:");
         }
       },
       error => {
@@ -99,7 +98,6 @@ export class DeliveryServicesComponent {
     this.deliveryService.addDeliveryService(newDeliveryService).subscribe(
       (response: any) => {
         if (response.isSuccess) {
-          console.log("Success:", response.message);
           this.toastr.success("Delivery service created");
           this.openAddServicePopup = false;
           this.serviceToAdd.deliveryDays = 0;
@@ -109,11 +107,11 @@ export class DeliveryServicesComponent {
 
           this.fetchDeliveryServices();
         } else {
-          console.error('Error creating delivery service:', response.message);
+          this.toastr.error("Error creating delivery service:");
         }
       },
       error => {
-        console.error('Error creating delivery service:', error);
+        this.toastr.error("Error creating delivery service:",error);
       }
     );
   }
