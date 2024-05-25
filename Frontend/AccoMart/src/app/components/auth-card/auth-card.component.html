@@ -134,15 +134,12 @@
                   class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
                 />
                 <div *ngIf="loginForm.get('email')?.errors">
-
-                  <div *ngIf="loginForm.get('email')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-1 mb-1">
+                  <div *ngIf="loginForm.get('email')?.errors?.['required']" class="text-red-600 text-sm text-left mt-1 mb-1">
                     Email is required.
-                 </div>
-                 <div *ngIf="loginForm.get('email')?.errors?.['email']"  class="text-red-600 text-sm text-left mt-1 mb-1">
-                  Email is invalid.
-                 </div>
-
-
+                  </div>
+                  <div *ngIf="loginForm.get('email')?.errors?.['email']" class="text-red-600 text-sm text-left mt-1 mb-1">
+                    Email is invalid.
+                  </div>
                 </div>
               </div>
               <div class="">
@@ -189,10 +186,10 @@
                   (click)="onLogin()"
                   class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring flex justify-center items-center"
                 >
-                  <!-- <app-loader *ngIf="spinLoader"></app-loader>
+                  <app-loader *ngIf="spinLoader"></app-loader>
                   <span *ngIf="!spinLoader">{{
                     isLogin ? "Login" : "Register"
-                  }}</span> -->
+                  }}</span>
                 </button>
               </div>
             </form>
