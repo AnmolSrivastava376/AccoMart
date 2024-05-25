@@ -31,7 +31,7 @@ export const routes: Routes = [
     { path: 'home/buy-product/:productId', component: BuyProductComponent},
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
-    { path: 'home/reset-password/:token/:email', component: ResetPasswordPageComponent},
+    { path: 'home/reset-password', component: ResetPasswordPageComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent },

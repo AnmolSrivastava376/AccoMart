@@ -7,17 +7,17 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-reset-password-page',
-  standalone: true,
-  imports: [FormsModule,HttpClientModule],
+  imports : [FormsModule,HttpClientModule],
+  standalone : true,
   providers : [HttpService],
   templateUrl: './reset-password-page.component.html',
-  styleUrl: './reset-password-page.component.css'
+  styleUrls: ['./reset-password-page.component.css']
 })
-
 export class ResetPasswordPageComponent {
-  resetPasswords: resetPassword = { password: '', confirmPassword: '', email: '', token: '' }; // Define the resetPasswords object
+  resetPasswords: resetPassword = { password: '', confirmPassword: '', email: '', token: '' };
 
-  constructor(private httpService: HttpService, private route : ActivatedRoute,private router : Router ){ }
+  constructor(private httpService: HttpService, private route: ActivatedRoute, private router: Router) { }
+
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.resetPasswords.token = params['token'] || '';
@@ -25,14 +25,17 @@ export class ResetPasswordPageComponent {
     });
   }
 
-  resetPassword() {
-    this.httpService.resetPassword(this.resetPasswords.token, this.resetPasswords.email, this.resetPasswords)
+  resetPassword(password: string, confirmPassword: string) {
+    this.resetPasswords.password = password;
+    this.resetPasswords.confirmPassword = confirmPassword;
+
+    console.log(this.resetPasswords.token, this.resetPasswords.email, this.resetPasswords.password,
+      this.resetPasswords.confirmPassword);
+    this.httpService.resetPassword(this.resetPasswords)
       .subscribe(
         response => {
           console.log('Password reset successfully.');
-          this.router.navigate(['/auth/login']);
-
-
+          this.router.navigate(['/home/auth']);
         },
         error => {
           console.error('Error resetting password:', error);
