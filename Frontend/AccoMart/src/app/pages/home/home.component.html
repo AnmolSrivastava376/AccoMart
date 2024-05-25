@@ -14,10 +14,10 @@
                 (filteredProducts)="onFilteredProducts($event)">
                 </app-category-navbar>
             </div>
-            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden" *ngIf="filteredProducts.length > 0">
+             <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden" *ngIf="filteredProducts.length > 0">
                 <app-product-card *ngFor="let product of filteredProducts" [products]="products"></app-product-card>
             </div>
-            <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="filteredProducts.length === 0 && searchActive">
+           <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"  *ngIf="filteredProducts.length === 0 && searchActive">
                 <div  *ngIf="products && categories[activeCategoryIndex]">
                     <app-search-product-card *ngIf="!isLoading && products && categories[activeCategoryIndex]" [products]="products" [categoryName]="categories[activeCategoryIndex].categoryName"></app-search-product-card>
                 </div>
@@ -44,6 +44,5 @@
             <div class="absolute top-0 right-[0px] w-[20px] h-[20px] bg-blue-700 flex p-2 text-white items-center justify-center rounded-[50%]"><div class="text-[12px] leading-[12px] font-bold">{{cartItemLength}}</div></div>
         </div>
     </div>
-   <!-- <div class="absolute [100px] h-[50px] bg-white cursor-pointer" (click)="getInvoice()">getInvoice</div> -->
+    <!-- <div class="absolute [100px] h-[50px] bg-white cursor-pointer" (click)="getInvoice()">getInvoice</div> -->
 </div>
-
