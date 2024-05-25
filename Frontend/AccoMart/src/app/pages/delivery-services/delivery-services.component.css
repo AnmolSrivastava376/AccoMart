@@ -1,3 +1,12 @@
+.navbar {
+  border-bottom: 1px solid #c2baba; 
+}
+::-webkit-scrollbar{
+  display: none;
+}
+
+
+
 .box::-webkit-scrollbar{
   display: none;
 }
