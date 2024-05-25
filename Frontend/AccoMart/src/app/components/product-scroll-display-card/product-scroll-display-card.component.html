@@ -23,11 +23,11 @@
                             </div>
                             <div class="w-full h-full flex items-center font-bold text-white"
                                 *ngIf="isPresentInCart(product.productId)">
-                                <div class="w-full h-full flex-[1] flex items-center justify-center"
+                                <div class="w-full h-full flex-[1] text-[32px] flex items-center justify-center"
                                     (click)="incrementCountByProductId(product.productId)">+</div>
-                                <div class="w-full h-full flex-[2] flex items-center justify-center">
+                                <div class="w-full h-full flex-[2] flex text-[20px] items-center justify-center">
                                     {{findQuantityByProductId(product.productId)}}</div>
-                                <div class="w-full h-full flex-[1] flex items-center justify-center"
+                                <div class="w-full h-full flex-[1] flex text-[32px] items-center justify-center"
                                     (click)="decrementCountByProductId(product.productId)">-</div>
                             </div>
                         </div>
