@@ -40,7 +40,7 @@ export class AuthCardComponent {
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
-    email: ['', Validators.required,Validators.email],
+    email: ['', [Validators.required,Validators.email]],
     password: ['', Validators.required],
   });
   registerForm = this.builder.group({
@@ -95,11 +95,13 @@ onLogin() {
         this.successMessage = result.message;
         window.location.href = '/home';
       } else {
+        this.spinLoader = false;
         this.loginErrorMessage = result.message;
         console.error(result.message);
       }
     },
     (error) => {
+      this.spinLoader = false;
       this.loginErrorMessage = error.error.message;
       console.error(error);
     }
