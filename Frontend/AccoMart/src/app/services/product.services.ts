@@ -18,6 +18,10 @@ export class productService {
     return this.http.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
   }
 
+  fetchProductByName(productName:string): Observable<Product[]>{
+    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/SearchBy=${productName}`);
+  }
+
   fetchAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
   }

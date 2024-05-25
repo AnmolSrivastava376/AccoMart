@@ -32,9 +32,8 @@ export class AdminProductsComponent implements OnInit {
 
   product:Product;
   categories:Category[];
-
   selectedProduct: Product;
-
+  isLoading =true;
 
 
   ngOnInit(): void {
@@ -60,6 +59,7 @@ export class AdminProductsComponent implements OnInit {
   async fetchProducts() {
     this.productService.fetchAllProducts().subscribe((response)=>{
       this.products = response;
+      this.isLoading = false;
     });
   }
 
@@ -94,15 +94,20 @@ export class AdminProductsComponent implements OnInit {
 
   openDeletePopup(product: Product)
   {
-    // Ask the user for confirmation before deleting the product
-
     const confirmDelete = window.confirm(`Are you sure you want to delete ${product.productName}?`);
-
-    // If the user confirms, proceed with deleting the product
     if (confirmDelete)
     {
       this.deleteProduct(product.productId);
     }
+  }
+
+  searchFunction(event: any) {
+    this.isLoading = true;
+    const searchValue = event.target.value;
+    this.productService.fetchProductByName(searchValue).subscribe(response=>{
+      this.products=response;
+      this.isLoading =false;
+    })
   }
 
 

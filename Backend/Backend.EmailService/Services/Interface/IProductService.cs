@@ -18,6 +18,10 @@ namespace Service.Services.Interface
         Task DeleteCategoryAsync(int CategoryId);
         Task DeleteProductAsync(int ProductId);
         Task<List<Product>> GetProductBySearchNameAsync(string prefix);
-        //Task<Product> GetProductByPriceOrderAsync(string OrderBy);
+
+        Task<List<Product>> GetProductsByCategoryNameAsync(string prefix);
+
+
+
     }
 }

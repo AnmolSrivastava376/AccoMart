@@ -37,11 +37,17 @@ namespace API.Controllers.Admins
         [HttpGet("Products/SearchBy={prefix}")]
         public async Task<List<Product>> GetProductBySearchName(string prefix = "")
         {
-            return await _productService.GetProductBySearchNameAsync(prefix);  
+            return await _productService.GetProductBySearchNameAsync(prefix);
+        }
+
+        [HttpGet("Products/CategoryName={name}")]
+        public async Task<List<Product>> GetProductsByCategoryName(string name = "")
+        {
+         return await _productService.GetProductsByCategoryNameAsync(name);
         }
 
 
-         [HttpGet("Product/{id}")]
+    [HttpGet("Product/{id}")]
          public async Task<Product> GetProductById(int id)
         {
 

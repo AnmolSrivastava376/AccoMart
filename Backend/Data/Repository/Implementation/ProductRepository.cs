@@ -680,6 +680,50 @@ namespace Data.Repository.Implementation
             return products;
         }
 
+        public async Task<List<Product>> GetProductsByCategoryName(string name = "")
+        {
+            name = string.IsNullOrEmpty(name) ? "" : name.ToLower();
+            List<Product> products = new List<Product>();
+
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+
+                string sqlQuery = @"
+            SELECT p.* 
+            FROM Product p 
+            INNER JOIN Category c ON p.CategoryId = c.CategoryId 
+            WHERE LOWER(c.CategoryName) = @name;
+        ";
+
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@name", name);
+
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Product product = new Product();
+                    product.ProductId = Convert.ToInt32(reader["ProductId"]);
+                    product.ProductName = Convert.ToString(reader["ProductName"]);
+                    product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
+                    product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
+                    product.ProductPrice = Convert.ToDecimal(reader["ProductPrice"]);
+                    product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
+                    product.Stock = Convert.ToInt32(reader["Stock"]);
+
+                    products.Add(product);
+                }
+                reader.Close();
+            }
+
+            return products;
+        }
+
+
+
+
+
 
     }
 }

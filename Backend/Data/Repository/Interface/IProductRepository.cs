@@ -21,6 +21,9 @@ namespace Data.Repository.Interfaces
         Task DeleteCategory(int CategoryId);
         Task DeleteProduct(int productId);
         Task<List<Product>> GetProductBySearchName(string prefix);
+        Task<List<Product>> GetProductsByCategoryName(string name);
+
         
+
     }
 }
