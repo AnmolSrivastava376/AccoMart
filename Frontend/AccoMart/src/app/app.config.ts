@@ -4,6 +4,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenHttpInterceptor } from './services/token-http-interceptor';
 import { TokenService } from './services/token.service';
 import { routes } from './app.routes';
+import { provideToastr } from 'ngx-toastr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,5 +16,13 @@ export const appConfig: ApplicationConfig = {
       multi: true,
       deps: [TokenService]
     },
+    provideToastr(
+    {
+      closeButton: true,
+      positionClass: 'toast-bottom-right',
+      timeOut: 1000000,
+      preventDuplicates: false
+    }
+  )
   ],
 };

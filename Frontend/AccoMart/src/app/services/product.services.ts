@@ -33,4 +33,6 @@ export class productService {
   deleteProductById(productId: number): Observable<any> {
     return this.http.delete(`http://localhost:5239/AdminDashboard/Delete/Product/${productId}`);
   }
+
+  
 }

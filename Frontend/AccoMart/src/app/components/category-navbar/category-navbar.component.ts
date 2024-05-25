@@ -17,7 +17,7 @@ export class CategoryNavbarComponent {
   @Input() categories?: Category[];
   @Input() products?: Product[];
   @Input() minprice: number=0;
-  @Input() maxprice: number=Infinity;
+  @Input() maxprice: number=Number.MAX_SAFE_INTEGER;
   @Output() categorySelected = new EventEmitter<number>();
   @Output() categoryIndex = new EventEmitter<number>();
   @Output() filteredProducts = new EventEmitter<Product[]>();

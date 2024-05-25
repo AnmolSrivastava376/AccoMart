@@ -32,45 +32,81 @@ import { LoaderComponent } from '../loader/loader.component';
 export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
-  isLogin :boolean= true;
+  isLogin:boolean= true;
   spinLoader:boolean= false;
+  errorMessage: any;
+  loginErrorMessage : any
+  successMessage: any;
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
-    email: ['', Validators.required],
+    email: ['', [Validators.required,Validators.email]],
     password: ['', Validators.required],
   });
   registerForm = this.builder.group({
-    username: ['',Validators.required],
-    email: ['', Validators.required],
-    password: ['', Validators.required],
+    username: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)]],
   });
 
 
   onRegister() {
-    const username = this.registerForm.value.username!;
-    const email = this.registerForm.value.email!;
-    const password = this.registerForm.value.password!;
-    console.log({username,email,password})
-    this.httpService.register(username,email, password).subscribe((result) => {
-      console.log(result)
-      this.isLogin=true;
-    });
-  }
-  onLogin() {
-    this.spinLoader = true
-    const email = this.loginForm.value.email!;
-    const password = this.loginForm.value.password!;
-    this.httpService.login(email, password).subscribe((result) => {
-    this.tokenService.setToken(result.response.accessToken.token);
-    this.tokenService.setAccessToken(result.response.accessToken.token);
-    this.tokenService.setRefreshToken(result.response.refreshToken.token);
-    this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
-    this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
-    console.log(result);
-    window.location.href = '/home'
-    });
-  }
+    if (this.registerForm.valid) {
+      const username: string = String(this.registerForm.value.username);
+      const email: string = String(this.registerForm.value.email);
+      const password: string = String(this.registerForm.value.password);
+
+        this.httpService.register(username, email, password).subscribe(
+            (result) => {
+                console.log(result);
+                if (result.status === 'Success') {
+                   this.successMessage = result.message
+                    this.isLogin = true;
+                } else {
+                    console.error('Registration failed:', result.message);
+                    this.errorMessage = result.message;
+                }
+            },
+            (error) => {
+                console.error(error.error.message);
+                this.errorMessage = error.error.message;
+            }
+        );
+    }
+}
+
+
+onLogin() {
+  this.spinLoader = true;
+  const email : string = String(this.loginForm.value.email);
+  const password : string  = String(this.loginForm.value.password);
+
+  this.httpService.login(email, password).subscribe(
+    (result: any) => {
+      if (result.isSuccess) {
+        // Assuming token and response structure are similar to the C# model
+        this.tokenService.setToken(result.response.accessToken.token);
+        this.tokenService.setAccessToken(result.response.accessToken.token);
+        this.tokenService.setRefreshToken(result.response.refreshToken.token);
+        this.tokenService.setExpiryAccess(result.response.accessToken.expiryTokenDate);
+        this.tokenService.setExpiryRefresh(result.response.refreshToken.expiryTokenDate);
+
+        console.log(result);
+        this.successMessage = result.message;
+        window.location.href = '/home';
+      } else {
+        this.spinLoader = false;
+        this.loginErrorMessage = result.message;
+        console.error(result.message);
+      }
+    },
+    (error) => {
+      this.spinLoader = false;
+      this.loginErrorMessage = error.error.message;
+      console.error(error);
+    }
+  );
+}
   onSwitch() {
     this.isLogin = !this.isLogin
   }

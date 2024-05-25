@@ -6,7 +6,9 @@ import { DeliveryService } from '../../interfaces/deliveryService';
 import { CommonModule } from '@angular/common';
 import { createDeliveryService } from '../../interfaces/createDeliveryService';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {HttpClientModule } from '@angular/common/http';
+import {ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-delivery-services',
@@ -17,9 +19,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrl: './delivery-services.component.css'
 })
 export class DeliveryServicesComponent {
- 
-  
-  constructor(private deliveryService: deliveryService) {}
+
+
+  constructor(private deliveryService: deliveryService,private toastr : ToastrService) {}
   deliveryServicesList: DeliveryService[] = [];
   openAddServicePopup:boolean = false;
   openEditServicePopup:boolean = false;
@@ -39,14 +41,21 @@ export class DeliveryServicesComponent {
     deliveryDays: 0
   };
 
+
   ngOnInit(): void {
     this.fetchDeliveryServices();
   }
 
   fetchDeliveryServices() {
     this.deliveryService.getDeliveryServices().subscribe(
-      (response: DeliveryService[]) => {
-        this.deliveryServicesList = response;
+      (response: any) => {
+        if (response.isSuccess) {
+          this.deliveryServicesList = response.response as DeliveryService[];
+        } 
+        else {
+          console.error('Error fetching delivery services:', response.message);
+
+        }
       },
       error => {
         console.error('Error fetching delivery services:', error);
@@ -68,13 +77,16 @@ export class DeliveryServicesComponent {
   }
 
   editDeliveryService(deliveryService: createDeliveryService) {
-
-    console.log(deliveryService,this.editServiceId);
-    this.deliveryService.editDeliveryService(deliveryService,this.editServiceId).subscribe(
-      () => {
-        console.log("Delivery Service successfully updated");
-        this.openEditServicePopup= false;
-        this.fetchDeliveryServices();
+    console.log(deliveryService, this.editServiceId);
+    this.deliveryService.editDeliveryService(deliveryService, this.editServiceId).subscribe(
+      (response: any) => {
+        if (response.isSuccess) {
+          this.toastr.success('Delivery Service successfully updated');
+          this.openEditServicePopup = false;
+          this.fetchDeliveryServices();
+        } else {
+          this.toastr.error("Error editing delivery service:");
+        }
       },
       error => {
         console.error('Error editing delivery service:', error);
@@ -84,21 +96,22 @@ export class DeliveryServicesComponent {
 
   createDeliveryService(newDeliveryService: createDeliveryService) {
     this.deliveryService.addDeliveryService(newDeliveryService).subscribe(
-      response => {
-        console.log("success",response);
-        // After successful creation, fetch the updated list of delivery services
-        this.openAddServicePopup =false;
-        
-        this.serviceToAdd.deliveryDays =0;
-        this.serviceToAdd.imageUrl ='';
-        this.serviceToAdd.serviceName ='';
-        this.serviceToAdd.price =0;
+      (response: any) => {
+        if (response.isSuccess) {
+          this.toastr.success("Delivery service created");
+          this.openAddServicePopup = false;
+          this.serviceToAdd.deliveryDays = 0;
+          this.serviceToAdd.imageUrl = '';
+          this.serviceToAdd.serviceName = '';
+          this.serviceToAdd.price = 0;
 
-
-        this.fetchDeliveryServices();
+          this.fetchDeliveryServices();
+        } else {
+          this.toastr.error("Error creating delivery service:");
+        }
       },
       error => {
-        console.error('Error creating delivery service:', error);
+        this.toastr.error("Error creating delivery service:",error);
       }
     );
   }

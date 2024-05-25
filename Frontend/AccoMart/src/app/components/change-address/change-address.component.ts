@@ -79,7 +79,7 @@ export class ChangeAddressComponent implements OnInit {
       this.addressAdded.emit(this.selectAddress);
       console.log('Selected Address: ' ,this.selectAddress);
       this.closeWindow.emit(true);
-      window.close();
+     
     }
     else{
       alert('Please select an address.');
