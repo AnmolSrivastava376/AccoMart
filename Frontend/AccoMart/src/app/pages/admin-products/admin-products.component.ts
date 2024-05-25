@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
+import { forkJoin } from 'rxjs';
+
 @Component({
   selector: 'app-admin-products',
   standalone: true,
@@ -18,15 +20,7 @@ import { Category } from '../../interfaces/category';
 export class AdminProductsComponent implements OnInit {
   constructor(private productService: productService,private categoryService:CategoryService) { }
 
-  products: Product[]=[{
-    productId: 0,
-    productName: '',
-    productDesc: '',
-    productPrice: 0,
-    productImageUrl: '',
-    categoryId: 0,
-    stock:0
-  }];
+  products: Product[];
 
 
 
@@ -101,14 +95,35 @@ export class AdminProductsComponent implements OnInit {
     }
   }
 
+  mergeResults(searchValue: string) {
+    const searchNumber = parseInt(searchValue);
+  
+    if (!isNaN(searchNumber)) 
+    { 
+      this.productService.fetchProductById(searchNumber).subscribe(response => {
+        this.products=[];
+        this.products.push(response);
+        this.isLoading = false;
+        console.log("here");
+        console.log(this.products);
+      });
+    } else {
+      forkJoin([
+        this.productService.fetchProductByName(searchValue),
+        this.productService.fetchProductByCategoryName(searchValue)
+      ]).subscribe(([productsByName, productsByCategory]) => {
+        this.products = [...productsByName, ...productsByCategory];
+        this.isLoading = false;
+      });
+    }
+  }
+  
+
   searchFunction(event: any) {
+
     this.isLoading = true;
     const searchValue = event.target.value;
-    this.productService.fetchProductByName(searchValue).subscribe(response=>{
-      this.products=response;
-      this.isLoading =false;
-    })
+    this.mergeResults(searchValue);
   }
-
 
 }

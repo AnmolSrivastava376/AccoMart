@@ -14,12 +14,23 @@ export class productService {
     return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`);
   }
 
+  fetchProductByCategoryName(categoryName:string):Observable<Product[]>
+  {
+    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/CategoryName=${categoryName}`)
+  }
+
   fetchProductById(productId: number): Observable<Product> {
     return this.http.get<Product>(`http://localhost:5239/AdminDashboard/Product/${productId}`);
   }
   fetchProductByPageNo(categoryId: number, pageNo: number): Observable<Product[]>{
     return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/ProductsByPageNo?id=${categoryId}&pageNo=${pageNo}`);
   }
+
+  fetchProductByName(productName:string): Observable<Product[]>{
+    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/Products/SearchBy=${productName}`);
+  }
+
+
   fetchAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>('http://localhost:5239/AdminDashboard/Products');
   }
