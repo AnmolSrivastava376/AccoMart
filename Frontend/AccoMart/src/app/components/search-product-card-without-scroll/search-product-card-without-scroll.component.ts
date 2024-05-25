@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
@@ -22,6 +22,7 @@ export class SearchProductCardWithoutScrollComponent {
   constructor(private cartService: CartService, private router: Router) {
     this.cart = this.cartService.fetchCart();
   }
+
   handleNextButtonClick() {
     if (this.products && this.i + 2 < this.products.length) {
       this.i++;
@@ -53,4 +54,6 @@ export class SearchProductCardWithoutScrollComponent {
   navigateToProduct(productId:number){
     window.location.href = `/home/productdetail/${productId}`
   }
+
+
 }
