@@ -103,7 +103,7 @@ onLogin() {
     },
     (error) => {
       this.spinLoader = false;
-      this.loginErrorMessage = error.error.message;
+      this.loginErrorMessage = error.message
       console.error(error);
       alert('Unsuccessfull login');
 
