@@ -149,14 +149,14 @@ namespace Service.Services
 
         }
 
-        public async Task<ApiResponse<LoginOtpResponse>> GetOtpByLoginAsync(Login login)
+        public async Task<ApiResponse<LoginOtpResponse>> GetOtpByLoginAsync(string email)
 
         {
-            var user = await _userManager.FindByEmailAsync(login.Email);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                await _signInManager.SignOutAsync();
-                await _signInManager.PasswordSignInAsync(user, login.Password, false, true);
+                /*await _signInManager.SignOutAsync();
+                await _signInManager.PasswordSignInAsync(user, login.Password, false, true);*/
                 if (user.TwoFactorEnabled)
                 {
                     var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
@@ -313,7 +313,7 @@ namespace Service.Services
                 };
             }
 
-            if (user != null && await _userManager.CheckPasswordAsync(user, password))
+            if (user != null)
             {
                // var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
                 /*var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
@@ -329,7 +329,7 @@ namespace Service.Services
                 Response = new LoginResponse(),
                 IsSuccess = false,
                 StatusCode = 400,
-                Message = "Password is incorrect"
+                Message = "Otp is incorrect"
             };
         }
 
@@ -338,8 +338,18 @@ namespace Service.Services
 
             var user = await _userManager.FindByEmailAsync(email);
            var signIn = await _userManager.VerifyTwoFactorTokenAsync(user,"Email", code);
-          //var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
-          if (signIn)
+            //var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
+            if (user == null)
+            {
+                return new ApiResponse<LoginResponse>()
+                {
+                    Response = new LoginResponse(),
+                    IsSuccess = false,
+                    StatusCode = 400,
+                    Message = "Email not registered"
+                };
+            }
+            if (signIn)
           {
               if (user != null)
               {
