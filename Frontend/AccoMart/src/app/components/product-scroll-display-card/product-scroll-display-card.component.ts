@@ -25,7 +25,7 @@ export class ProductScrollDisplayCardComponent {
   handleNextButtonClick() {
     if (this.products && this.i + 2 < this.products.length) {
       this.i++;
-      if(this.i+3===this.products.length){
+      if(this.i+5>=this.products.length){
         this.fetchNextPage.emit(true);
       }
     }
@@ -54,7 +54,6 @@ export class ProductScrollDisplayCardComponent {
     this.cartService.removeFromCart(productId);
   }
   navigateToProduct(productId:number){
-    this.router.navigate(['/home/productdetail', productId])
-
+    window.location.href=`home/productdetail/${productId}`
   }
 }
