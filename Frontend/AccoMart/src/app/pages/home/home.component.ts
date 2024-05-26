@@ -149,9 +149,9 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
 
   filterByPrice() {
-    this.filteredProducts = this.products.filter(product =>
-      product.productPrice >= this.minprice && product.productPrice <= this.maxprice
-    );
+    const minPrice = this.minprice || 0;
+    const maxPrice = this.maxprice || Number.MAX_SAFE_INTEGER;
+    this.products?.filter(product => product.productPrice >= minPrice && product.productPrice <= maxPrice) ?? [];
   }
   onFilteredProducts(filtered: Product[]) {
     this.filteredProducts = filtered;

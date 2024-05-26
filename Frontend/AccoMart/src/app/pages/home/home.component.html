@@ -7,7 +7,7 @@
             <div class="w-full h-full flex-[25] sticky top-[20px] min-h-[20vh] px-[20px] notsticky">
                 <app-category-navbar [categories]="categories" [products]="products" [minprice]="minprice"
                     [maxprice]="maxprice" (categorySelected)="onCategorySelected($event)"
-                    (categoryIndex)="onIndexSelected($event)" (filteredProducts)="onFilteredProducts($event)">
+                    (categoryIndex)="onIndexSelected($event)"  (filteredProducts)="onFilteredProducts($event)" >
                 </app-category-navbar>
             </div>
             <div class="w-full h-full flex-[75] rounded-[10px] mr-[20px] pad overflow-hidden"
@@ -54,3 +54,5 @@
     </div>
     <!-- <div class="absolute [100px] h-[50px] bg-white cursor-pointer" (click)="getInvoice()">getInvoice</div> -->
 </div>
+
+
