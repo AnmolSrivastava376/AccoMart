@@ -43,7 +43,7 @@ export class OrderCardComponent implements OnInit{
   }
 
   downloadInvoice(orderId : number) : void{
-      this.invoiceService.getInvoice(5).subscribe(
+      this.invoiceService.getInvoice(orderId).subscribe(
         (response: Blob) => {
                this.downloadFile(response);
             },
