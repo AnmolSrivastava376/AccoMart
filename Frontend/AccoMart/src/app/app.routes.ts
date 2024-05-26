@@ -24,18 +24,19 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { SearchbarComponent } from './components/searchbar/searchbar.component';
 import { AuthOtpComponent } from './pages/auth-otp/auth-otp.component';
+import { FrontendAuthGuard } from './frontend-auth.guard';
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
     { path: 'home/productdetail/:productId', component: ProductDetailComponent},
-    { path: 'home/cart', component: CartComponent },
+    { path: 'home/cart', component: CartComponent, canActivate: [FrontendAuthGuard] },
     { path: 'home/buy-product/:productId', component: BuyProductComponent},
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
     { path: 'home/reset-password', component: ResetPasswordPageComponent},
     { path: 'home/cart/payment', component: PaymentComponent },
-    { path: 'home/yourorders', component: YourOrdersComponent },
-    { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
+    { path: 'home/yourorders', component: YourOrdersComponent , canActivate: [FrontendAuthGuard]},
+    { path: 'home/cart/orders/invoice', component: InvoicePageComponent},
     {path: 'home/auth-otp', component: AuthOtpComponent},
     { path: 'admin', component: AdminDashboardComponent},
     { path: 'admin/products',component:AdminProductsComponent,canActivate: [AuthGuard]},
@@ -44,7 +45,6 @@ export const routes: Routes = [
     { path: 'admin/product/add',component:AddProductComponent,canActivate: [AuthGuard]},
     { path: 'admin/delivery',component:DeliveryServicesComponent,canActivate: [AuthGuard]},
     { path: 'unauthorized',component:UnauthorizedComponent},
-    // { path: 'search/:prefix',component: SearchbarComponent},
     { path: '**', component: NotfoundComponent }
 
 ];
