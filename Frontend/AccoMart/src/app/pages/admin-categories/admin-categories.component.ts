@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { TokenHttpInterceptor } from '../../services/token-http-interceptor';
+import {ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class AdminCategoriesComponent implements OnInit {
   isLoading:boolean =true;
   
 
-  constructor(private router: Router, private categoryService: CategoryService) { }
+  constructor(private router: Router, private categoryService: CategoryService, private toastr:ToastrService) { }
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -39,7 +40,7 @@ export class AdminCategoriesComponent implements OnInit {
       this.categories = response;
       this.isLoading = false;
     }, error => {
-      console.error('Error fetching categories:', error);
+      this.toastr.error("Error  Fetching products",undefined, { timeOut: 5000 })
     });
   }
 
@@ -47,7 +48,6 @@ export class AdminCategoriesComponent implements OnInit {
   openEditPopup(category: Category) {
     this.isEditPopupOpen = true;
     this.selectedCategory = { ...category };
-    console.log(this.selectedCategory);
   }
 
   openAddPopup() {
@@ -63,9 +63,9 @@ export class AdminCategoriesComponent implements OnInit {
     this.categoryService.editCategory(this.selectedCategory.categoryId,this.selectedCategory.categoryName).subscribe(response=>{
       this.isEditPopupOpen = false;
       this.fetchCategories();
-      console.log("category edited successfully");
+      this.toastr.success("Category edited",undefined, { timeOut: 5000 })
     },err=>{
-      console.error("Error editing category:", err);
+      this.toastr.error("Error editing category",undefined, { timeOut: 5000 })
 
     });
   }
@@ -76,9 +76,9 @@ export class AdminCategoriesComponent implements OnInit {
       this.isAddPopupOpen = false;
       this.categoryToAdd = '';
       this.fetchCategories();
-      console.log("Category added successfully");
+      this.toastr.success("Category added successfully",undefined, { timeOut: 5000 })
     }, err => {
-      console.error("Error adding category:", err);
+      this.toastr.error("Error creating category",undefined, { timeOut: 5000 })
     });
   }
 
@@ -86,7 +86,7 @@ export class AdminCategoriesComponent implements OnInit {
     if (confirm("Are you sure you want to delete this category?")) {
       this.categoryService.deleteCategory(Id).subscribe(response => {
         this.fetchCategories();
-        console.log("deleted");
+        this.toastr.success("Category deleted successfully",undefined, { timeOut: 5000 })
       });
     }
   }

@@ -25,6 +25,8 @@ import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard
 import { SearchbarComponent } from './components/searchbar/searchbar.component';
 import { AuthOtpComponent } from './pages/auth-otp/auth-otp.component';
 import { FrontendAuthGuard } from './frontend-auth.guard';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
@@ -50,7 +52,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes), HttpClientModule,ChartModule],
+    imports: [RouterModule.forRoot(routes), HttpClientModule,ChartModule,BrowserAnimationsModule],
     exports: [RouterModule]
 })
 export class AppRoutingModule {}
