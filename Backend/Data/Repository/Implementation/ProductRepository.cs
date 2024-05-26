@@ -26,51 +26,19 @@ namespace Data.Repository.Implementation
             _database = redis.GetDatabase();
         }
 
-        /*public async Task<IEnumerable<Category>> GetAllCategories()
-        {
-            List<Category> categories = new List<Category>();
-
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-            {
-                string sqlQuery = $"SELECT * FROM Category";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                connection.Open();
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                while (await reader.ReadAsync())
-                {
-                    Category category_ = new Category
-                    {
-                        CategoryId = Convert.ToInt32(reader["CategoryId"]),
-                        CategoryName = Convert.ToString(reader["CategoryName"]),
-
-                    };
-                    categories.Add(category_);
-                }
-                reader.Close();
-            }
-
-            return categories;
-        }*/
-
         public async Task<List<Category>> GetAllCategories()
         {
             List<Category> categories;
-
-            // Check if categories are cached in Redis
-
             string cacheKey = "Categories";
             string cachedCategories = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedCategories))
             {
-                // If categories are cached, deserialize the JSON string
                 categories = JsonConvert.DeserializeObject<List<Category>>(cachedCategories);
             }
             else
             {
-                // If categories are not cached, fetch them from the SQL database and cache them
-                categories = new List<Category>(); // Create a list to hold categories
+                categories = new List<Category>();
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     string sqlQuery = "SELECT * FROM Category";
@@ -85,12 +53,10 @@ namespace Data.Repository.Implementation
                             CategoryId = Convert.ToInt32(reader["CategoryId"]),
                             CategoryName = Convert.ToString(reader["CategoryName"])
                         };
-                        categories.Add(category_); // Add category to the list
+                        categories.Add(category_);
                     }
                     reader.Close();
                 }
-
-                // Cache categories in Redis for future requests
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categories));
             }
             return categories;
@@ -103,12 +69,10 @@ namespace Data.Repository.Implementation
             {
                 string sqlQuery = $"SELECT * FROM Product";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
-
-                await connection.OpenAsync(); // Open connection asynchronously
-
+                await connection.OpenAsync();
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync()) // Read asynchronously
+                    while (await reader.ReadAsync()) 
                     {
                         Product product = new Product
                         {
@@ -131,19 +95,19 @@ namespace Data.Repository.Implementation
         public async Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
         {
 
-           
+            List<Product> products = new List<Product>();
             string cacheKey = $"ProductsPage{id}_{pageNo}_{pageSize}";
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
             {
-                return JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+                products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
   
             }
 
             else
             {
-                List<Product> products = new List<Product>();
+                
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     int offset = (pageNo - 1) * pageSize;
@@ -175,38 +139,34 @@ namespace Data.Repository.Implementation
                         reader.Close();
                     }
                 }
-                await _database.StringSetAsync($"ProductsPage{id}_{pageNo}_{pageSize}", JsonConvert.SerializeObject(products)); // Cache for 10 minutes
-                return products;
+                await _database.StringSetAsync($"ProductsPage{id}_{pageNo}_{pageSize}", JsonConvert.SerializeObject(products));
             }
+            return products;
         }
 
         public async Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy)
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();
-
-            // Check if products are cached in Redis
             string cacheKey = $"ProductByCategory_{id}";
             string cachedProducts = null;
 
             if ((!string.IsNullOrWhiteSpace(cachedProducts) && cachedProducts.Trim() != "[]"))
             {
-                // If products are cached, deserialize the JSON string
                 products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
             }
             else
             {
-                // If products are not cached, fetch them from the SQL database
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     string sqlQuery = $"SELECT * FROM Product WHERE CategoryId = {id}";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
 
-                    await connection.OpenAsync(); // Open connection asynchronously
+                    await connection.OpenAsync();
 
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
-                        while (await reader.ReadAsync()) // Read asynchronously
+                        while (await reader.ReadAsync())
                         {
                             Product product = new Product
                             {
@@ -223,12 +183,8 @@ namespace Data.Repository.Implementation
                         reader.Close();
                     }
                 }
-
-                // Cache the fetched products
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(products));
             }
-
-            // Apply sorting based on the price order
             switch (orderBy)
             {
                 case "price_dsc":
@@ -254,10 +210,7 @@ namespace Data.Repository.Implementation
             }
             else
             {
-                // Fetch category from SQL database
                 Category category = await FetchCategoryFromSQL(id);
-
-                // Store category in Redis
                 await _database.StringSetAsync($"Category:{id}", JsonConvert.SerializeObject(category));
 
                 return category;
@@ -275,25 +228,16 @@ namespace Data.Repository.Implementation
             }
             else
             {
-                // Fetch category from SQL database
                 Category category = await FetchCategoryFromSQL(id);
-
-                // Store category in Redis
                 await _database.StringSetAsync($"Category:{id}", JsonConvert.SerializeObject(category));
 
                 return category;
             }
         }
 
-
-
-
-
         private async Task<Category> FetchCategoryFromSQL(int id)
         {
             Category category = new Category();
-
-            // Connect to SQL database and fetch category
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 string sqlQuery = $"SELECT * FROM Category WHERE CategoryId = {id}";
@@ -318,7 +262,7 @@ namespace Data.Repository.Implementation
             string cacheKey = $"Product_{id}";
             string cachedProduct = await _database.StringGetAsync(cacheKey);
 
-            if (cachedProduct != null) //------------------------------------------->cause of error
+            if (cachedProduct != null)
             {
                 return JsonConvert.DeserializeObject<Product>(cachedProduct);
             }
@@ -344,12 +288,9 @@ namespace Data.Repository.Implementation
                         product.ProductPrice = Convert.ToInt32(reader["ProductPrice"]);
                         product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
                         product.Stock = Convert.ToInt32(reader["Stock"]);
-                        //product.Category = Convert.ToString(reader["Category"]);
                     }
                     reader.Close();
                 }
-
-                // Store product in cache
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
 
                 return product;
@@ -371,7 +312,6 @@ namespace Data.Repository.Implementation
 
                 if (existingCategory != null)
                 {
-                    // Category already exists, return null or throw an exception
                     return null;
                 }
 
@@ -386,23 +326,16 @@ namespace Data.Repository.Implementation
                     CategoryId = categoryId,
                     CategoryName = categoryName
                 };
-
-                // Update cache (if needed)
-                string cacheKey = $"Categories"; // Update the cache key for categories
-                await _database.KeyDeleteAsync(cacheKey); // Invalidate the categories cache
+                string cacheKey = $"Categories";
+                await _database.KeyDeleteAsync(cacheKey);
 
                 return category;
             }
         }
 
-
-
-
         public async Task<Product> CreateProduct(ProductDto productDto)
         {
             Product product = new Product();
-            
-
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
@@ -415,7 +348,6 @@ namespace Data.Repository.Implementation
                 command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
                 command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
                 command.Parameters.AddWithValue("@Stock", productDto.Stock);
-
 
                 int productId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
@@ -430,8 +362,6 @@ namespace Data.Repository.Implementation
 
             string cacheKey = $"ProductByCategory_{productDto.CategoryId}";
             await _database.KeyDeleteAsync(cacheKey);
-
-            // Update cache
             string cacheKey2 = $"Product_{product.ProductId}";
             await _database.StringSetAsync(cacheKey2, JsonConvert.SerializeObject(product));
 
@@ -445,25 +375,16 @@ namespace Data.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-
-
-
-                // Update the category name in the database
                 string sqlQuery = "UPDATE Category SET CategoryName = @NewCategoryName WHERE CategoryId = @CategoryId";
                 SqlCommand updateCommand = new SqlCommand(sqlQuery, connection);
                 updateCommand.Parameters.AddWithValue("@NewCategoryName", newCategoryName);
                 updateCommand.Parameters.AddWithValue("@CategoryId", categoryId);
                 await updateCommand.ExecuteNonQueryAsync();
-
-                // Update the category object
                 category.CategoryId = categoryId;
                 category.CategoryName = newCategoryName;
             }
-
-            // Update cache
             string cacheKey = $"Category_{category.CategoryId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
-
             string categoriesCacheKey = $"Categories";
             await _database.KeyDeleteAsync(categoriesCacheKey);
 
@@ -477,8 +398,6 @@ namespace Data.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-
-                // Check if the product exists
                 string sqlProductIdQuery = "SELECT ProductId FROM Product WHERE ProductId = @ProductId";
                 SqlCommand productIdCommand = new SqlCommand(sqlProductIdQuery, connection);
                 productIdCommand.Parameters.AddWithValue("@ProductId", productId);
@@ -486,11 +405,8 @@ namespace Data.Repository.Implementation
 
                 if (productIdObj == null || productIdObj == DBNull.Value)
                 {
-                    // Product does not exist
                     return null;
                 }
-
-                // Check if the category exists
                 string sqlCategoryIdQuery = "SELECT CategoryId FROM Category WHERE CategoryId = @CategoryId";
                 SqlCommand categoryIdCommand = new SqlCommand(sqlCategoryIdQuery, connection);
                 categoryIdCommand.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
@@ -498,11 +414,8 @@ namespace Data.Repository.Implementation
 
                 if (categoryIdObj == null || categoryIdObj == DBNull.Value)
                 {
-                    // Category does not exist
                     return null;
                 }
-
-                // Update the product in the database
                 string sqlQuery = "UPDATE Product SET ProductName = @ProductName, ProductDesc = @ProductDesc, " +
                                   "ProductPrice = @ProductPrice, ProductImageUrl = @ProductImageUrl, " +
                                   "CategoryId = @CategoryId,Stock =@Stock  WHERE ProductId = @ProductId";
@@ -518,7 +431,6 @@ namespace Data.Repository.Implementation
 
                 await updateCommand.ExecuteNonQueryAsync();
 
-                // Update the product object
                 product.ProductId = productId;
                 product.ProductName = productDto.ProductName;
                 product.ProductDesc = productDto.ProductDesc;
@@ -526,13 +438,8 @@ namespace Data.Repository.Implementation
                 product.ProductPrice = productDto.ProductPrice;
                 product.Stock = productDto.Stock;
             }
-
-            // Update cache
             string cacheKey = $"Product_{product.ProductId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
-
-            
-
             return product;
         }
 
@@ -543,8 +450,6 @@ namespace Data.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-
-                // Check if the category exists
                 string sqlCategoryIdQuery = "SELECT 1 FROM Category WHERE CategoryId = @CategoryId";
                 using (SqlCommand checkCommand = new SqlCommand(sqlCategoryIdQuery, connection))
                 {
@@ -557,7 +462,6 @@ namespace Data.Repository.Implementation
                     }
                 }
 
-                // Delete the category from the database
                 string deleteQuery = "DELETE FROM Category WHERE CategoryId = @CategoryId";
                 using (SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection))
                 {
@@ -565,12 +469,9 @@ namespace Data.Repository.Implementation
                     await deleteCommand.ExecuteNonQueryAsync();
                 }
             }
-
-            // Remove category from cache
             string cacheKey = $"Category_{categoryId}";
             await _database.KeyDeleteAsync(cacheKey);
 
-            // Also remove the list of categories cache
             string categoriesCacheKey = $"Categories";
             await _database.KeyDeleteAsync(categoriesCacheKey);
         }
@@ -579,8 +480,6 @@ namespace Data.Repository.Implementation
         public async Task<Category> GetCategoryByName(string name)
         {
             int categoryId = 0;
-
-            // Check if the category exists in cache
             string cacheKey = $"CategoryByName_{name}";
             string cachedCategoryId = await _database.StringGetAsync(cacheKey);
 
@@ -603,15 +502,11 @@ namespace Data.Repository.Implementation
                         if (categoryIdObj != null && categoryIdObj != DBNull.Value)
                         {
                             categoryId = Convert.ToInt32(categoryIdObj);
-
-                            // Cache the category ID
                             await _database.StringSetAsync(cacheKey, categoryId.ToString());
                         }
                     }
                 }
             }
-
-            // Call GetCategoryById_ asynchronously
             var category = await GetCategoryById_(categoryId);
             return category;
         }
@@ -619,8 +514,6 @@ namespace Data.Repository.Implementation
         private async Task<Category> GetCategoryById_(int id)
         {
             Category category = new Category();
-
-            // Check if the category exists in cache
             string cacheKey = $"Category_{id}";
             string cachedCategory = await _database.StringGetAsync(cacheKey);
 
@@ -644,8 +537,6 @@ namespace Data.Repository.Implementation
                     }
                     reader.Close();
                 }
-
-                // Cache the category object
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
             }
 
@@ -657,8 +548,6 @@ namespace Data.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
-
-                // Check if the product exists
                 string sqlProductIdQuery = "SELECT 1 FROM Product WHERE ProductId = @ProductId";
                 using (SqlCommand checkCommand = new SqlCommand(sqlProductIdQuery, connection))
                 {
@@ -670,8 +559,6 @@ namespace Data.Repository.Implementation
                         throw new InvalidOperationException("Product does not exist.");
                     }
                 }
-
-                // Delete the product from the database
                 string deleteQuery = "DELETE FROM Product WHERE ProductId = @ProductId";
                 using (SqlCommand deleteCommand = new SqlCommand(deleteQuery, connection))
                 {
@@ -679,8 +566,6 @@ namespace Data.Repository.Implementation
                     await deleteCommand.ExecuteNonQueryAsync();
                 }
             }
-
-            // Remove product from cache
             string cacheKey = $"Product_{productId}";
             await _database.KeyDeleteAsync(cacheKey);
         }
@@ -755,12 +640,6 @@ namespace Data.Repository.Implementation
 
             return products;
         }
-
-
-
-
-
-
     }
 }
 
