@@ -23,6 +23,7 @@ import { UnauthorizedComponent } from './components/unauthorized/unauthorized.co
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { SearchbarComponent } from './components/searchbar/searchbar.component';
+import { AuthOtpComponent } from './pages/auth-otp/auth-otp.component';
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
     { path: 'home', component: HomeComponent },
@@ -35,6 +36,7 @@ export const routes: Routes = [
     { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent },
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent },
+    {path: 'home/auth-otp', component: AuthOtpComponent},
     { path: 'admin', component: AdminDashboardComponent},
     { path: 'admin/products',component:AdminProductsComponent,canActivate: [AuthGuard]},
     { path: 'admin/categories',component:AdminCategoriesComponent,canActivate: [AuthGuard]},

@@ -15,9 +15,10 @@ namespace Service.Services
     {
         Task<ApiResponse<CreateUserResponse>> CreateUserWithTokenAsync(SignUp register);
         Task<ApiResponse<List<string>>> AssignRoleToUserAsync(List<string> roles, ApplicationUser user); 
-        Task<ApiResponse<LoginOtpResponse>> GetOtpByLoginAsync(Login login);
+        Task<ApiResponse<LoginOtpResponse>> GetOtpByLoginAsync(string email);
         Task<ApiResponse<LoginResponse>> GetJwtTokenAsync(ApplicationUser user);
-        Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string code, string email);
+        Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string password, string email);
+        Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsyncForgotPassword(string code, string email);
         Task<ApiResponse<LoginResponse>> RenewAccessTokenAsync(LoginResponse token);
     }
 }

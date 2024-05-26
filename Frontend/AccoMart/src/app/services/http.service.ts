@@ -56,8 +56,8 @@ export class HttpService {
   }
 
 
-  loginForgotPwd(email : string) {
-    return this.http.post<{OTP:Number}>(`http://localhost:5239/AuthenticationController/LoginForgotPassword?email=${email}`,{
+  loginByEmail(email : string) {
+    return this.http.post<{OTP:Number}>(`http://localhost:5239/AuthenticationController/LoginByOtp?email=${email}`,{
       "email": email,
     });
   }

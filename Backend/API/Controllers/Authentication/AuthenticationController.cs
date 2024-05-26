@@ -102,11 +102,11 @@ namespace API.Controllers.Authentication
 
 
         [HttpPost]
-        [Route("LoginForgotPassword")]
+        [Route("LoginByOtp")]
 
-        public async Task<IActionResult> LoginForgotPassword(Login login)
+        public async Task<IActionResult> LoginForgotPassword(string email)
         {
-            var loginOtpResponse = await _userManagement.GetOtpByLoginAsync(login);
+            var loginOtpResponse = await _userManagement.GetOtpByLoginAsync(email);
             if (loginOtpResponse.Response! != null)
             {
                 var user = loginOtpResponse.Response.User;
@@ -120,13 +120,13 @@ namespace API.Controllers.Authentication
                     return StatusCode(StatusCodes.Status200OK,
                      new Response { IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
                 }
-                if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
+                /*if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
                 {
                     var serviceResponse = await _userManagement.GetJwtTokenAsync(user);
 
                     return Ok(serviceResponse);
 
-                }
+                }*/
             }
             return Unauthorized();
         }
@@ -136,7 +136,7 @@ namespace API.Controllers.Authentication
         [Route("Login-2FA")]
         public async Task<IActionResult> LoginWithOTP(string code, string email)
         {
-            var jwt = await _userManagement.LoginUserWithJWTokenAsync(code, email);
+            var jwt = await _userManagement.LoginUserWithJWTokenAsyncForgotPassword(code, email);
             if (jwt.IsSuccess)
             {
                 return Ok(jwt);
