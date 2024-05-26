@@ -80,8 +80,8 @@ export class YourOrdersComponent implements OnInit {
     this.orders.forEach(order=>{
       let deliveryDays=0;
       this.deliveryService.getDeliveryDate(order.deliveryServiceID).subscribe(
-        response=>{
-          deliveryDays = response;
+        (response:any)=>{
+          deliveryDays = response.response;
           const orderDate = new Date(order.orderDate);
           order.expectedDate = new Date(orderDate.getTime() + (deliveryDays * 24 * 60 * 60 * 1000));
           if (currentDate > order.expectedDate) {
