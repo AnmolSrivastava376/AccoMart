@@ -130,8 +130,20 @@ namespace Data.Repository.Implementation
 
         public async Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
         {
-            List<Product> products = new List<Product>();
 
+           
+            string cacheKey = $"ProductsPage{id}_{pageNo}_{pageSize}";
+            string cachedProducts = await _database.StringGetAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedProducts))
+            {
+                return JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+  
+            }
+
+            else
+            {
+                List<Product> products = new List<Product>();
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     int offset = (pageNo - 1) * pageSize;
@@ -162,10 +174,10 @@ namespace Data.Repository.Implementation
                         }
                         reader.Close();
                     }
-                
-
+                }
+                await _database.StringSetAsync($"ProductsPage{id}_{pageNo}_{pageSize}", JsonConvert.SerializeObject(products)); // Cache for 10 minutes
+                return products;
             }
-            return products;
         }
 
         public async Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy)
