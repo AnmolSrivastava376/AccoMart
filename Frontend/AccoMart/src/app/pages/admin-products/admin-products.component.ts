@@ -9,6 +9,8 @@ import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
+import {ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-admin-products',
@@ -19,7 +21,7 @@ import { Router } from '@angular/router';
   styleUrl: './admin-products.component.css'
 })
 export class AdminProductsComponent implements OnInit {
-  constructor(private productService: productService,private categoryService:CategoryService , private router:Router) { }
+  constructor(private productService: productService,private categoryService:CategoryService , private router:Router,private toastr:ToastrService) { }
 
   products: Product[];
 
@@ -46,8 +48,10 @@ export class AdminProductsComponent implements OnInit {
     this.categoryService.fetchCategories().subscribe(response=>{
      this.categories = response;
      this.fetchProducts();
+
     },err=>{
-     console.log(err);
+      this.isLoading = false;
+      this.toastr.error("Error fetching products",undefined, { timeOut: 5000 })
     })
    }
 
@@ -55,6 +59,10 @@ export class AdminProductsComponent implements OnInit {
     this.productService.fetchAllProducts().subscribe((response)=>{
       this.products = response;
       this.isLoading = false;
+    },err=>{
+      this.isLoading = false;
+      this.toastr.error("Error fetching products",undefined, { timeOut: 5000 })
+
     });
   }
 
@@ -73,10 +81,12 @@ export class AdminProductsComponent implements OnInit {
   deleteProduct(productId: number) {
     this.productService.deleteProductById(productId).subscribe(
       () => {
+        this.toastr.success("Product Deleted",undefined, { timeOut: 5000 })
         this.products = this.products.filter(product => product.productId !== productId);
+
       },
       error => {
-        console.error('Error deleting product:', error);
+        this.toastr.error("Error deleting products",undefined, { timeOut: 5000 })
       }
     );
   }
@@ -111,6 +121,9 @@ export class AdminProductsComponent implements OnInit {
         this.products=[];
         this.products = [...productsByName, ...productsByCategory];
         this.isLoading = false;
+      },error=>{
+        this.toastr.error("Error searching products",undefined, { timeOut: 5000 })
+
       });
     }
   }

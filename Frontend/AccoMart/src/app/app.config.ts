@@ -5,6 +5,8 @@ import { TokenHttpInterceptor } from './services/token-http-interceptor';
 import { TokenService } from './services/token.service';
 import { routes } from './app.routes';
 import { provideToastr } from 'ngx-toastr';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,9 +22,10 @@ export const appConfig: ApplicationConfig = {
     {
       closeButton: true,
       positionClass: 'toast-bottom-right',
-      timeOut: 1000000,
+      timeOut: 10000,
       preventDuplicates: false
-    }
-  )
+    },
+  ),
+  provideAnimations(),
   ],
 };

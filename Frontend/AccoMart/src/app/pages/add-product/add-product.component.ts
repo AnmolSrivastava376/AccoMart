@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { Category } from '../../interfaces/category';
 import { CategoryService } from '../../services/category.services';
 import { Router } from '@angular/router';
+import {ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-product-popup',
@@ -31,7 +32,8 @@ export class AddProductComponent implements OnInit {
     private productService: productService,
     private categoryService: CategoryService,
     private http:HttpClient,
-    private router:Router
+    private router:Router,
+    private toastr:ToastrService
   ) {}
 
 
@@ -47,7 +49,7 @@ export class AddProductComponent implements OnInit {
 
   async uploadFile(): Promise<void> {
     if (!this.file) {
-      console.error('Please select a file.');
+      this.toastr.error("Please select a file",undefined, { timeOut: 2000 })
       return;
     }
 
@@ -94,11 +96,11 @@ export class AddProductComponent implements OnInit {
           this.uploadComplete = true;
           this.uploading = false;
           this.cldResponse = response;
-          console.info('File upload complete.');
+          this.toastr.success("File uploaded",undefined, { timeOut: 5000 })
           this.product.productImageUrl = this.cldResponse.url;
         }
       } catch (error) {
-        console.error('Error uploading chunk:', error);
+        this.toastr.error("Error uploading",undefined, { timeOut: 5000 })
         this.uploading = false;
       }
     };
@@ -137,7 +139,7 @@ export class AddProductComponent implements OnInit {
         this.categories = response;
       },
       (err) => {
-        console.log(err);
+        this.toastr.error("Error",undefined, { timeOut: 5000 })
       }
     );
   }
@@ -146,15 +148,13 @@ export class AddProductComponent implements OnInit {
     this.router.navigate(['/admin/products'])
   }
 
- 
- 
-
   AddProduct() {
     this.productService.addProduct(this.product).subscribe((response: any) => {
-      console.log('Product added successfully:', response);
-      this.router.navigate(['/admin/products'])
+      this.toastr.success("Product added successfully",undefined, { timeOut: 5000 })
+      this.router.navigate(['/admin/products'])      
+    },err=>{
+      this.toastr.success("Error adding product",undefined, { timeOut: 5000 })
 
-      
     });
   }
 }

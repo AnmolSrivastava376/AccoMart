@@ -70,9 +70,12 @@ export class DeliveryServicesComponent {
       this.deliveryService.deleteDeliveryService(id).subscribe(
         () => {
           this.fetchDeliveryServices();
+          this.toastr.success("Delivery Service deleted",undefined, { timeOut: 5000 })
         },
         error => {
           console.error('Error deleting delivery service:', error);
+          this.toastr.error(error,undefined, { timeOut: 5000 });
+
         }
       );
     }
@@ -83,11 +86,13 @@ export class DeliveryServicesComponent {
     this.deliveryService.editDeliveryService(deliveryService, this.editServiceId).subscribe(
       (response: any) => {
         if (response.isSuccess) {
-          this.toastr.success('Delivery Service successfully updated');
+          this.toastr.success('Delivery Service successfully updated',undefined, { timeOut: 5000 }
+
+          );
           this.openEditServicePopup = false;
           this.fetchDeliveryServices();
         } else {
-          this.toastr.error("Error editing delivery service:");
+          this.toastr.error("Error editing delivery service",undefined, { timeOut: 5000 });
         }
       },
       error => {
@@ -100,7 +105,7 @@ export class DeliveryServicesComponent {
     this.deliveryService.addDeliveryService(newDeliveryService).subscribe(
       (response: any) => {
         if (response.isSuccess) {
-          this.toastr.success("Delivery service created");
+          this.toastr.success("Delivery service created",undefined, { timeOut: 5000 });
           this.openAddServicePopup = false;
           this.serviceToAdd.deliveryDays = 0;
           this.serviceToAdd.imageUrl = '';
@@ -109,11 +114,11 @@ export class DeliveryServicesComponent {
 
           this.fetchDeliveryServices();
         } else {
-          this.toastr.error("Error creating delivery service:");
+          this.toastr.error("Error creating delivery service",undefined, { timeOut: 5000 });
         }
       },
       error => {
-        this.toastr.error("Error creating delivery service:",error);
+        this.toastr.error("Error creating delivery service:",error, { timeOut: 5000 });
       }
     );
   }
@@ -138,11 +143,6 @@ export class DeliveryServicesComponent {
 
 
 
-  searchFunction(event: any) {
 
-    this.isLoading = true;
-    const searchValue = event.target.value;
-    // this.mergeResults(searchValue);
-  }
 
 }

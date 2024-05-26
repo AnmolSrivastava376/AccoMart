@@ -10,6 +10,9 @@ import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
+import {ToastrService } from 'ngx-toastr';
+import { error } from 'highcharts';
+
 
 @Component({
   selector: 'app-edit-product-popup',
@@ -23,7 +26,7 @@ import { Category } from '../../interfaces/category';
 export class EditProductComponent implements OnInit {
 
   @Output() close = new EventEmitter<void>();
-  constructor(private route: ActivatedRoute , private router:Router, private productService:productService,private categoryService:CategoryService,    private http:HttpClient
+  constructor(private route: ActivatedRoute , private router:Router, private productService:productService,private categoryService:CategoryService,    private http:HttpClient , private toastr:ToastrService
   ) { }
   productImageUrl: string; 
   uploading: boolean = false;
@@ -39,7 +42,7 @@ export class EditProductComponent implements OnInit {
 
   async uploadFile(): Promise<void> {
     if (!this.file) {
-      console.error('Please select a file.');
+      this.toastr.error("Please select a file",undefined, { timeOut: 5000 })
       return;
     }
 
@@ -86,11 +89,11 @@ export class EditProductComponent implements OnInit {
           this.uploadComplete = true;
           this.uploading = false;
           this.cldResponse = response;
-          console.info('File upload complete.');
+          this.toastr.success("File uploaded",undefined, { timeOut: 2000 })
           this.product.productImageUrl = this.cldResponse.url;
         }
       } catch (error) {
-        console.error('Error uploading chunk:', error);
+        this.toastr.error("Error uploading",undefined, { timeOut: 2000 })
         this.uploading = false;
       }
     };
@@ -130,6 +133,9 @@ export class EditProductComponent implements OnInit {
         .subscribe(
           response => {
             this.product = response;
+          },error=>{
+            this.toastr.error("Error",undefined, { timeOut: 2000 })
+
           }
         );
     });
@@ -139,7 +145,7 @@ export class EditProductComponent implements OnInit {
     this.categoryService.fetchCategories().subscribe(response=>{
      this.categories = response;
     },err=>{
-     console.log(err);
+      this.toastr.error("Error",undefined, { timeOut: 2000 })
     })
    }
 
@@ -152,12 +158,12 @@ export class EditProductComponent implements OnInit {
     this.productService.editProductById(this.product.productId, this.product)
       .subscribe(
         (response: any) => {
-          console.log('Product updated successfully:', response);
+          this.toastr.success("Product edited",undefined, { timeOut: 2000 })
           this.router.navigate(['/admin/products']);
 
         },
         (error: any) => {
-          console.error('Error updating product:', error);
+          this.toastr.error("Error updating product",undefined, { timeOut: 2000 })
         }
       );
   }
