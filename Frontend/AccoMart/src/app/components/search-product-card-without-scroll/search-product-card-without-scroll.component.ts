@@ -3,10 +3,7 @@ import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { cartItem } from '../../interfaces/cartItem';
-
 import { CartService } from '../../services/cart.services';
-import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-search-product-card-without-scroll',
@@ -19,7 +16,7 @@ export class SearchProductCardWithoutScrollComponent {
   @Input() products?: Product[];
   cart?: cartItem[];
   i = 0;
-  constructor(private cartService: CartService, private router: Router) {
+  constructor(private cartService: CartService) {
     this.cart = this.cartService.fetchCart();
   }
 
@@ -52,7 +49,7 @@ export class SearchProductCardWithoutScrollComponent {
     this.cartService.removeFromCart(productId);
   }
   navigateToProduct(productId:number){
-    this.router.navigate(['/home/productdetail/',productId])
+    window.location.href = `/home/productdetail/${productId}`
   }
 
 

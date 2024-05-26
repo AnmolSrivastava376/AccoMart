@@ -23,12 +23,11 @@ import { HttpClientModule } from '@angular/common/http';
 export class ProductCardComponent {
   @Input() products?: Product[];
   @Input() categoryName?: string;
+  @Input() filteredProducts?: Product[];
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  constructor(private router: Router) {}
-
   handleClick(productId: number) {
-    this.router.navigate(['home/productdetail', productId]);
+    window.location.href=`home/productdetail/${productId}`;
   }
 
   handleEmitter() {

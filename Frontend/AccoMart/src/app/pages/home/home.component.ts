@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { invoiceService } from '../../services/invoiceService';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { FormsModule } from '@angular/forms';
 import { HomeNavbarComponent } from '../../components/home-navbar/home-navbar.component';
@@ -33,7 +33,7 @@ import { SearchProductCardComponent } from '../../components/search-product-card
     CommonModule,
     HttpClientModule,
     LoaderComponent,
-    FormsModule
+    FormsModule,
   ],
   providers: [
     CategoryService,
@@ -43,72 +43,61 @@ import { SearchProductCardComponent } from '../../components/search-product-card
     invoiceService,
   ],
 })
-export class HomeComponent implements OnInit,OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
-  products: Product[] = [
-    {
-      productId: 0,
-      productName: '',
-      productDesc: '',
-      productPrice: 0,
-      productImageUrl: '',
-      categoryId: 0,
-      stock:0
-    },
-  ];
-  page=1;
-  minprice: number=0;
-  maxprice: number=Number.MAX_SAFE_INTEGER;
+  products: Product[] = [];
+  page = 1;
+  minprice: number = 0;
+  maxprice: number = Number.MAX_SAFE_INTEGER;
   filteredProducts: Product[] = [];
-  searchActive: boolean =false;
-
-
+  searchActive: boolean = false;
   activeCategory: number = -1 || null;
   activeCategoryIndex: number = 0;
   cartItemLength = 0;
-  isLoading : boolean =false;
+  isLoading: boolean = false;
+  previousProduct: Product[];
   private cartSubscription: Subscription;
 
   constructor(
     private categoryService: CategoryService,
     private productService: productService,
-    private router: Router,
-    private cartService: CartService,
-    private invoiceService: invoiceService,
+    private cartService: CartService
   ) {}
   decodedToken: any;
+
   ngOnInit(): void {
-    this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items => {
+    this.cartSubscription = this.cartService
+      .getCartItems$()
+      .subscribe((items) => {
         this.cartItemLength = items.length;
-      }
-    );
-    this.categoryService.fetchCategories()
-      .subscribe({
-        next: (response) => {
-          this.categories = response;
-          this.activeCategory = this.categories.length > 0 ? this.categories[0].categoryId : 0;
-          this.fetchProductsByCategory();
-        },
-        error: (error) => {
-          console.error('Error fetching categories:', error);
-        }
       });
+    this.categoryService.fetchCategories().subscribe({
+      next: (response) => {
+        this.categories = response;
+        this.activeCategory =
+          this.categories.length > 0 ? this.categories[0].categoryId : 0;
+        this.fetchProductsByCategory();
+      },
+      error: (error) => {
+        console.error('Error fetching categories:', error);
+      },
+    });
   }
 
   fetchProductsByCategory(): void {
     if (this.activeCategory !== null) {
       this.isLoading = true;
-      this.productService.fetchProductByPageNo(this.activeCategory, this.page)
+      this.productService
+        .fetchProductByPageNo(this.activeCategory, this.page)
         .subscribe({
           next: (response) => {
             this.products = response;
-            this.isLoading=false;
+            this.isLoading = false;
           },
           error: (error) => {
             console.error('Error fetching products:', error);
-            this.isLoading=false;
-          }
+            this.isLoading = false;
+          },
         });
     }
   }
@@ -127,31 +116,22 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
   gotoCart() {
     window.location.href = '/home/cart';
-
   }
-  handleNextPageLoad(){
-    this.page++;
-    console.log(this.page, " : page")
-    this.productService.fetchProductByPageNo(this.activeCategory, this.page).subscribe(
-      response=>{
-        response.forEach(item=> this.products=[...this.products, item])
-      }
-    )
-  }
-
-
-  sortPriceAscending() {
-    this.filteredProducts.sort((a, b) => a.productPrice - b.productPrice);
-  }
-
-  sortPriceDescending() {
-    this.filteredProducts.sort((a, b) => b.productPrice - a.productPrice);
-  }
-
-  filterByPrice() {
-    const minPrice = this.minprice || 0;
-    const maxPrice = this.maxprice || Number.MAX_SAFE_INTEGER;
-    this.products?.filter(product => product.productPrice >= minPrice && product.productPrice <= maxPrice) ?? [];
+  handleNextPageLoad() {
+    if (this.previousProduct?.length>0 || this.page===1) {
+      this.page++;
+      console.log('Fetching page no '+ this.page);
+      this.previousProduct = []
+      this.productService
+        .fetchProductByPageNo(this.activeCategory, this.page)
+        .subscribe((response) => {
+          response.forEach((item) => {
+            this.products = [...this.products, item];
+            this.filteredProducts = [...this.filteredProducts, item];
+            this.previousProduct = [...this.previousProduct, item];
+          });
+      });
+    }
   }
   onFilteredProducts(filtered: Product[]) {
     this.filteredProducts = filtered;
@@ -159,6 +139,6 @@ export class HomeComponent implements OnInit,OnDestroy {
 
   onSearchCompleted(products: Product[]): void {
     this.products = products;
-    this.searchActive=true;
+    this.searchActive = true;
   }
 }
