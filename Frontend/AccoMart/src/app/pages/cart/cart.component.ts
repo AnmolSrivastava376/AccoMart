@@ -20,6 +20,7 @@ import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CartOrder } from '../../interfaces/placeOrder';
 import { ToastrService } from 'ngx-toastr';
+// import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-cart',
