@@ -69,8 +69,8 @@ export class YourOrdersComponent implements OnInit {
   addAddresses(){
     this.orders.forEach(order=>{
       this.addressService.getAddressByAddressId(order.addressId).subscribe(
-        response=>{
-          order.address = response.street + ", " + response.city+ ", " + response.state + " - " + response.zipCode
+        (response:any)=>{
+          order.address = response.response.street + ", " + response.response.city+ ", " + response.response.state + " - " + response.response.zipCode
         }
       )
     })
@@ -80,8 +80,8 @@ export class YourOrdersComponent implements OnInit {
     this.orders.forEach(order=>{
       let deliveryDays=0;
       this.deliveryService.getDeliveryDate(order.deliveryServiceID).subscribe(
-        response=>{
-          deliveryDays = response;
+        (response:any)=>{
+          deliveryDays = response.response;
           const orderDate = new Date(order.orderDate);
           order.expectedDate = new Date(orderDate.getTime() + (deliveryDays * 24 * 60 * 60 * 1000));
           if (currentDate > order.expectedDate) {
