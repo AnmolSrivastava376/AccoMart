@@ -25,6 +25,7 @@ export class AdminCategoriesComponent implements OnInit {
   isEditPopupOpen: boolean = false;
   isAddPopupOpen: boolean = false;
   categoryToAdd: string = '';
+  isLoading:boolean =true;
   
 
   constructor(private router: Router, private categoryService: CategoryService) { }
@@ -36,7 +37,7 @@ export class AdminCategoriesComponent implements OnInit {
   fetchCategories() {
     this.categoryService.fetchCategories().subscribe((response: any) => {
       this.categories = response;
-      
+      this.isLoading = false;
     }, error => {
       console.error('Error fetching categories:', error);
     });
@@ -93,4 +94,39 @@ export class AdminCategoriesComponent implements OnInit {
   closeEditPopup() {
     this.isEditPopupOpen = false;
   }
+
+
+  
+  mergeResults(searchValue: string) {
+    const searchNumber = parseInt(searchValue);
+  
+    if (!isNaN(searchNumber)) 
+    { 
+      this.categoryService.fetchCategorybyId(searchNumber).subscribe(response => {
+        this.categories=[];
+        if(response.categoryId)
+          {
+            this.categories.push(response);
+          }
+        this.isLoading = false;
+      });
+    } else {
+        this.categoryService.fetchCategorybyName(searchValue).subscribe(response=>{
+          this.categories=[];
+          if(response.categoryId)
+            {
+              this.categories.push(response);
+            }
+        })
+        this.isLoading =false;
+       
+    }
+  }
+  searchFunction(event: any) {
+
+    this.isLoading = true;
+    const searchValue = event.target.value;
+    this.mergeResults(searchValue);
+  }
+  
 }

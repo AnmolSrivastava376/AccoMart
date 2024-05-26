@@ -68,6 +68,14 @@ namespace API.Controllers.Admins
             return Ok(category);
         }
 
+        [HttpGet("Category/name/{name}")]
+        public async Task<ActionResult<Category>> GetCategoryByName(string name)
+        {
+            var category = await _productService.GetCategoryByNameAsync(name);
+            return Ok(category);
+        }
+
+
         [Authorize(Roles = "Admin")]
         [HttpPost("Category/Create")]
          public async Task<ActionResult<Category>> CreateCategory([FromBody] CategoryName category_name)

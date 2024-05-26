@@ -5,7 +5,7 @@ import { deliveryService } from '../../services/delivery.service';
 import { DeliveryService } from '../../interfaces/deliveryService';
 import { CommonModule } from '@angular/common';
 import { createDeliveryService } from '../../interfaces/createDeliveryService';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms'; 
 import {HttpClientModule } from '@angular/common/http';
 import {ToastrService } from 'ngx-toastr';
 
@@ -26,6 +26,7 @@ export class DeliveryServicesComponent {
   openAddServicePopup:boolean = false;
   openEditServicePopup:boolean = false;
   editServiceId:number;
+  isLoading:boolean = true;
 
   serviceToAdd: createDeliveryService = {
     imageUrl: '',
@@ -51,6 +52,7 @@ export class DeliveryServicesComponent {
       (response: any) => {
         if (response.isSuccess) {
           this.deliveryServicesList = response.response as DeliveryService[];
+          this.isLoading = false;
         }
         else {
           console.error('Error fetching delivery services:', response.message);
@@ -133,4 +135,14 @@ export class DeliveryServicesComponent {
   closeEditPopup() {
     this.openEditServicePopup = false;
   }
+
+
+
+  searchFunction(event: any) {
+
+    this.isLoading = true;
+    const searchValue = event.target.value;
+    // this.mergeResults(searchValue);
+  }
+
 }

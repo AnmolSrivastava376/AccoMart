@@ -252,6 +252,31 @@ namespace Data.Repository.Implementation
             }
         }
 
+
+        public async Task<Category> GetCategoryByName(int id)
+        {
+            string categoryJson = await _database.StringGetAsync($"Category:{id}");
+
+            if (categoryJson != null)
+            {
+                return JsonConvert.DeserializeObject<Category>(categoryJson);
+            }
+            else
+            {
+                // Fetch category from SQL database
+                Category category = await FetchCategoryFromSQL(id);
+
+                // Store category in Redis
+                await _database.StringSetAsync($"Category:{id}", JsonConvert.SerializeObject(category));
+
+                return category;
+            }
+        }
+
+
+
+
+
         private async Task<Category> FetchCategoryFromSQL(int id)
         {
             Category category = new Category();

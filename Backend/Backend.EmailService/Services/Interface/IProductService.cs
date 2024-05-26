@@ -11,6 +11,7 @@ namespace Service.Services.Interface
         Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize);
         Task<List<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
+        Task<Category> GetCategoryByNameAsync(string name);
         Task<Category> CreateCategoryAsync(string categoryName);
         Task<Product> CreateProductAsync(ProductDto productDto);
         Task<Category> UpdateCategoryAsync(int Id, string NewCategoryName);
@@ -18,10 +19,7 @@ namespace Service.Services.Interface
         Task DeleteCategoryAsync(int CategoryId);
         Task DeleteProductAsync(int ProductId);
         Task<List<Product>> GetProductBySearchNameAsync(string prefix);
-
         Task<List<Product>> GetProductsByCategoryNameAsync(string prefix);
-
-
 
     }
 }

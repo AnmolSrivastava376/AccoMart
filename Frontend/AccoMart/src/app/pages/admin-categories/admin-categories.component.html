@@ -16,11 +16,26 @@
 
     <div class=" overflow-auto mt-2 ">
       <h2 class="text-2xl font-bold mb-4 mt-8">All Categories</h2>
-      <div class="mb-8 text-center">
+      <div class="my-3">
+       
+        <div class="relative w-[90%] mx-12 my-3">
+          <input type="text" placeholder="Search for Category Name/Id" class="w-full pl-10 pr-4 border border-gray-400 rounded-md py-2 px-4  mb-2 mt-4" (keyup.enter)="searchFunction($event)">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none mt-1">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
+              <g transform=""><g fill="#000000" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="translate(0.96,13.248) scale(5.12,5.12)"><path d="M21,3c-9.39844,0 -17,7.60156 -17,17c0,9.39844 7.60156,17 17,17c3.35547,0 6.46094,-0.98437 9.09375,-2.65625l12.28125,12.28125l4.25,-4.25l-12.125,-12.09375c2.17969,-2.85937 3.5,-6.40234 3.5,-10.28125c0,-9.39844 -7.60156,-17 -17,-17zM21,7c7.19922,0 13,5.80078 13,13c0,7.19922 -5.80078,13 -13,13c-7.19922,0 -13,-5.80078 -13,-13c0,-7.19922 5.80078,-13 13,-13z"></path></g></g></g>
+              </svg>
+          </div>
+      </div>
+
+
       <button (click)="openAddPopup()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"> Add New Category</button>
+
     </div>
 
-    <div *ngIf="categories.length<1" class="flex justify-center items-center h-full"> 
+    
+
+
+    <div *ngIf="isLoading" class="flex justify-center items-center h-full"> 
       <svg aria-hidden="true" class="w-[40px] h-[40px] mt-12 text-gray-200 animate-spin dark:text-gray-600 fill-[#3B82F6]" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
         d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -30,6 +45,9 @@
         fill="currentFill" />
       </svg>
   </div>
+
+  <div *ngIf=" (!categories  || categories.length==0)&& !isLoading">No Category found</div>
+
 
 
     <div class="mt-4">

@@ -59,6 +59,14 @@ namespace Service.Services.Implementation
             return await _productRepository.GetCategoryById(id);
         }
 
+        async Task<Category> IProductService.GetCategoryByNameAsync(string name)
+        {
+            return await _productRepository.GetCategoryByName( name);
+        }
+
+
+
+
         async Task<Product> IProductService.GetProductByIdAsync(int id)
         {
             return await _productRepository.GetProductById(id);

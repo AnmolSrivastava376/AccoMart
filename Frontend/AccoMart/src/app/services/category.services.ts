@@ -13,6 +13,14 @@ export class CategoryService {
     return this.http.get<Category[]>('http://localhost:5239/AdminDashboard/GetAllCategories');
   }
 
+  fetchCategorybyName(categoryName:string):Observable<Category>{
+    return this.http.get<Category>(`http://localhost:5239/AdminDashboard/Category/name/${categoryName}`)
+  }
+  fetchCategorybyId(categoryId:number):Observable<Category>
+  {
+    return this.http.get<Category>(`http://localhost:5239/AdminDashboard/Category/${categoryId}`)
+  }
+
   addCategory(categoryName: string): Observable<any> {
     return this.http.post(`http://localhost:5239/AdminDashboard/Category/Create`, { name: categoryName });
 }
