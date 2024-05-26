@@ -62,15 +62,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   filteredProducts: Product[] = [];
   searchActive: boolean =false;
 
-  downloadFile(data: Blob): void {
-    const blob = new Blob([data], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'invoice.pdf';
-    link.click();
-    window.URL.revokeObjectURL(url);
-  }
+
   activeCategory: number = -1 || null;
   activeCategoryIndex: number = 0;
   cartItemLength = 0;
@@ -135,7 +127,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   }
   gotoCart() {
     window.location.href = '/home/cart';
-    
+
   }
   handleNextPageLoad(){
     this.page++;
@@ -146,16 +138,7 @@ export class HomeComponent implements OnInit,OnDestroy {
       }
     )
   }
-  // getInvoice(): void {
-  //   this.invoiceService.getInvoice(orderId).subscribe(
-  //     (response: Blob) => {
-  //       this.downloadFile(response);
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching invoice:', error);
-  //     }
-  //   );
-  // }
+
 
   sortPriceAscending() {
     this.filteredProducts.sort((a, b) => a.productPrice - b.productPrice);
@@ -173,7 +156,7 @@ export class HomeComponent implements OnInit,OnDestroy {
   onFilteredProducts(filtered: Product[]) {
     this.filteredProducts = filtered;
   }
-  
+
   onSearchCompleted(products: Product[]): void {
     this.products = products;
     this.searchActive=true;
