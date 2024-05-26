@@ -26,6 +26,7 @@ export class CategoryNavbarComponent implements OnChanges{
   isActiveDescendingFilter: boolean = false;
   isFirstLoad: boolean = true;
   shouldAnimate:boolean = false;
+  isPriceFiltered: boolean=false;
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['products']){
@@ -34,6 +35,9 @@ export class CategoryNavbarComponent implements OnChanges{
       } else if (this.isActiveDescendingFilter) {
         this.sortPriceDscending();
       }
+    }
+    if (changes['products'] || changes['minprice'] || changes['maxprice']) {
+      this.filterByPrice();
     }
   }
 
@@ -51,20 +55,36 @@ export class CategoryNavbarComponent implements OnChanges{
     }
   }
   sortPriceAscending(){
+    this.isPriceFiltered=false;
     this.isActiveAscendingFilter = !this.isActiveAscendingFilter;
     this.isActiveDescendingFilter = false;
     this.products?.sort((a, b) => a.productPrice - b.productPrice);
   }
 
   sortPriceDscending(){
+    this.isPriceFiltered=false;
     this.isActiveAscendingFilter = false;
     this.isActiveDescendingFilter = !this.isActiveDescendingFilter;
     this.products?.sort((a, b)=> b.productPrice - a.productPrice);
   }
+  // filterByPrice() {
+  //   const filtered = this.products?.filter(product => 
+  //     (product.productPrice >= (this.minprice || 0)) && (product.productPrice <= (this.maxprice || Infinity))
+  //   ) ?? [];
+  //   this.filteredProducts.emit(filtered);
+  // }
+
   filterByPrice() {
-    const filtered = this.products?.filter(product => 
-      (product.productPrice >= (this.minprice || 0)) && (product.productPrice <= (this.maxprice || Infinity))
-    ) ?? [];
-    this.filteredProducts.emit(filtered);
+    this.isActiveAscendingFilter=false;
+    this.isActiveDescendingFilter=false;
+    this.isPriceFiltered=!this.isPriceFiltered;
+    const minPrice = this.minprice || 0;
+    console.log(this.minprice);
+    const maxPrice = this.maxprice || Number.MAX_SAFE_INTEGER;
+    console.log(this.maxprice);
+    this.products?.filter(product => product.productPrice >= minPrice && product.productPrice <= maxPrice) ?? [];
+    // console.log(this.minprice);
+    // console.log(this.maxprice);
+    console.log('price filtered applied');
   }
 }
