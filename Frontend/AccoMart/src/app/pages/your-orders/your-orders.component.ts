@@ -13,11 +13,12 @@ import { Item } from '../../interfaces/item';
 import { cartItem } from '../../interfaces/cartItem';
 import { productService } from '../../services/product.services';
 import { invoiceService } from '../../services/invoiceService';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-your-orders',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, OrderCardComponent, HttpClientModule],
+  imports: [CommonModule, NavbarComponent, OrderCardComponent, HttpClientModule,LoaderComponent],
   templateUrl: './your-orders.component.html',
   styleUrl: './your-orders.component.css',
   providers: [orderService, deliveryService, addressService, productService]

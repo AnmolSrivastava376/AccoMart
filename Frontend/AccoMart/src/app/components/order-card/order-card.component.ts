@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../loader/loader.component';
 import { addressService } from '../../services/address.service';
 import { invoiceService } from '../../services/invoiceService';
+// import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-order-card',

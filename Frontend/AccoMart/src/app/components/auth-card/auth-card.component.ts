@@ -96,12 +96,15 @@ onLogin() {
         this.spinLoader = false;
         this.loginErrorMessage = result.message;
         console.error(result.message);
+        alert('Unsuccessfull login');
       }
     },
     (error) => {
       this.spinLoader = false;
       this.loginErrorMessage = error.error.message;
       console.error(error);
+      alert('Unsuccessfull login');
+
     }
   );
 }
