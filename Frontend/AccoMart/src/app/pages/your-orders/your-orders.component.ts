@@ -27,6 +27,7 @@ export class YourOrdersComponent implements OnInit {
   orders:Order[] = []
   currentOrders: Order[]=[];
   historyOrders: Order[]=[];
+  isloading = true;
   userId: string
   decoded: any
   constructor(private orderService: orderService, private deliveryService: deliveryService, private addressService: addressService, private productService: productService) {
@@ -79,8 +80,8 @@ export class YourOrdersComponent implements OnInit {
     const currentDate = new Date();
     this.orders.forEach(order=>{
       let deliveryDays=0;
-      this.deliveryService.getDeliveryDate(order.deliveryServiceID).subscribe(
-        (response:any)=>{
+      this.deliveryService.getDeliveryDate(order.deliveryServiceID).subscribe({
+        next: (response:any)=>{
           deliveryDays = response.response;
           const orderDate = new Date(order.orderDate);
           order.expectedDate = new Date(orderDate.getTime() + (deliveryDays * 24 * 60 * 60 * 1000));
@@ -94,9 +95,11 @@ export class YourOrdersComponent implements OnInit {
           } else {
             this.historyOrders.push(order);
           }
-        }
-      )
+        },
+        complete: ()=> this.isloading = false
+      })
     });
+    this.isloading = false
   }
 }
 

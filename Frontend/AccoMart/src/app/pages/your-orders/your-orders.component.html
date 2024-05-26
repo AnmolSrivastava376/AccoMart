@@ -3,13 +3,13 @@
         <app-navbar></app-navbar>
         <div class="w-full h-fit px-[20px] py-[10px]">
             <div class="font-bold text-[24px] pb-[10px]">Current Orders</div>
-            <app-loader *ngIf="orders.length===0"></app-loader>   
+            <app-loader *ngIf="isloading"></app-loader>   
             <app-order-card [orders]="currentOrders"></app-order-card>
-            <div class="font-bold italic text-gray-600" *ngIf="currentOrders.length===0">No Active Orders</div>
+            <div class="font-bold italic text-gray-600" *ngIf="currentOrders.length===0 && !isloading">No Active Orders</div>
             <div class="font-bold text-[24px] py-[10px]">Order History</div>
-            <!-- <app-loader *ngIf="orders.length === 0"></app-loader> -->
+            <app-loader *ngIf="isloading"></app-loader>
             <app-order-card [orders]="historyOrders"></app-order-card>
-            <div class="font-bold italic text-gray-600" *ngIf="historyOrders.length===0">No Previous Orders</div>
+            <div class="font-bold italic text-gray-600" *ngIf="historyOrders.length===0 && !isloading">No Previous Orders</div>
         </div>
     </div>
 </div>
