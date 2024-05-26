@@ -37,6 +37,7 @@ export class AuthCardComponent {
   errorMessage: any;
   loginErrorMessage : any
   successMessage: any;
+  registerSpinLoader: boolean;
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
@@ -51,6 +52,7 @@ export class AuthCardComponent {
 
 
   onRegister() {
+    this.registerSpinLoader = true;
     if (this.registerForm.valid) {
       const username: string = String(this.registerForm.value.username);
       const email: string = String(this.registerForm.value.email);

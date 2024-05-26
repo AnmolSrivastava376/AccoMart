@@ -13,8 +13,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 
 
-
-
 namespace API.Controllers.Authentication
 {
 
@@ -40,29 +38,22 @@ namespace API.Controllers.Authentication
 
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(SignUp registerUser)
         {
 
             var tokenResponse = await _userManagement.CreateUserWithTokenAsync(registerUser);
             if (tokenResponse.IsSuccess)
             {
-
-
-
-                await _userManagement.AssignRoleToUserAsync(registerUser.Roles, tokenResponse.Response.User);
-                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { tokenResponse.Response.Token, email = registerUser.Email }, Request.Scheme);
+               await _userManagement.AssignRoleToUserAsync(registerUser.Roles, tokenResponse.Response.User);
+               /* var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { tokenResponse.Response.Token, email = registerUser.Email }, Request.Scheme);
                 var message = new Message(new string[] { registerUser.Email! }, "Confirmation email link", confirmationLink);
-                _emailService.SendEmail(message);
-                // Assuming you have a method to retrieve claims from the ClaimsPrincipal
-
-
-                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Email verfication mail sent" });
+                _emailService.SendEmail(message);*/
+                return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "You have been registered" });
             }
             return StatusCode(StatusCodes.Status500InternalServerError, new Response { Message = tokenResponse.Message, IsSuccess = false });
 
         }
-
 
 
         [HttpGet("Test Send email")]
@@ -72,6 +63,7 @@ namespace API.Controllers.Authentication
             _emailService.SendEmail(message);
             return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Email sent Successfully" });
         }
+
 
         [HttpGet("ConfirmedEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
@@ -89,6 +81,7 @@ namespace API.Controllers.Authentication
 
         }
 
+
         [HttpPost]
         [Route("Login")]
 
@@ -105,19 +98,14 @@ namespace API.Controllers.Authentication
             }
 
             return StatusCode(StatusCodes.Status404NotFound, new Response { Status = $"Failure", Message = jwt.Message });
-
-
-
         }
+
 
         [HttpPost]
         [Route("LoginForgotPassword")]
 
         public async Task<IActionResult> LoginForgotPassword(Login login)
         {
-
-
-            //checking user
             var loginOtpResponse = await _userManagement.GetOtpByLoginAsync(login);
             if (loginOtpResponse.Response! != null)
             {
@@ -140,7 +128,6 @@ namespace API.Controllers.Authentication
 
                 }
             }
-
             return Unauthorized();
         }
 
@@ -149,17 +136,15 @@ namespace API.Controllers.Authentication
         [Route("Login-2FA")]
         public async Task<IActionResult> LoginWithOTP(string code, string email)
         {
-
             var jwt = await _userManagement.LoginUserWithJWTokenAsync(code, email);
-            // var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
             if (jwt.IsSuccess)
             {
                 return Ok(jwt);
 
             }
-
             return StatusCode(StatusCodes.Status404NotFound, new Response { Status = $"Invalid OTP" });
         }
+
 
         [HttpPost]
         [Route("Refresh-Token")]
@@ -173,6 +158,7 @@ namespace API.Controllers.Authentication
             return StatusCode(StatusCodes.Status404NotFound,
                 new Response { Status = "Success", Message = $"Invalid code" });
         }
+
 
         [HttpPost("forgot-password")]
         [AllowAnonymous]
@@ -199,6 +185,7 @@ namespace API.Controllers.Authentication
             return Ok(new {model});
         }
 
+
         [HttpPost]
         [AllowAnonymous]
         [Route("reset-password")]
@@ -207,7 +194,6 @@ namespace API.Controllers.Authentication
             var user = await _userManager.FindByEmailAsync(resetPassword.Email);
             if(user!= null)
             {
-
                 var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
                 if(!resetPassResult.Succeeded)
                 {
