@@ -80,7 +80,6 @@ export class CartComponent {
   
   ngOnInit(): void {
     this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
-    console.log(this.cartItemLength)
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
@@ -110,7 +109,6 @@ export class CartComponent {
       if (response.isSuccess) {
         this.address = response.response;
         this.activeAddress = this.address[0];
-        console.log('Address retrieved successfully:', this.address);
       } else {
         console.error('Failed to retrieve addresses:', response.message);
         this.toastr.error("Failed to retrieve addresses");
@@ -125,7 +123,6 @@ export class CartComponent {
       this.activeDeliveryService = this.delivery[0];
       this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
     }
-    console.log('Delivery services retrieved successfully:', this.delivery);
   } else {
     console.error('Failed to retrieve delivery services:', response.message);
     this.toastr.error("Failed to retrieve delivery services");

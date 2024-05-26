@@ -69,8 +69,8 @@ export class YourOrdersComponent implements OnInit {
   addAddresses(){
     this.orders.forEach(order=>{
       this.addressService.getAddressByAddressId(order.addressId).subscribe(
-        response=>{
-          order.address = response.street + ", " + response.city+ ", " + response.state + " - " + response.zipCode
+        (response:any)=>{
+          order.address = response.response.street + ", " + response.response.city+ ", " + response.response.state + " - " + response.response.zipCode
         }
       )
     })

@@ -43,9 +43,8 @@ export class ChangeAddressComponent implements OnInit {
       this.newAddress.zipCode = this.newAddress.zipCode.toString();
       this.addressService.addAddress(this.newAddress, this.userId).subscribe(
         (address) => {
-          console.log('Address saved:', address);
-          this.address.push(address); 
-          this.addressAdded.emit(address);
+          this.address.push(this.newAddress); 
+          this.addressAdded.emit(this.newAddress);
           this.showAddressform = false;
           alert('Successfully Added');
           
@@ -67,7 +66,6 @@ export class ChangeAddressComponent implements OnInit {
   onSubmit() {
     this.addressService.addAddress(this.newAddress,this.userId).subscribe(
       (address) => {
-        console.log('Address saved:', address);
         this.router.navigate(['/home/cart']); 
       }
     );
@@ -76,7 +74,6 @@ export class ChangeAddressComponent implements OnInit {
   saveChanges(){
     if(this.selectAddress){
       this.addressAdded.emit(this.selectAddress);
-      console.log('Selected Address: ' ,this.selectAddress);
       this.closeWindow.emit(true);
      
     }
