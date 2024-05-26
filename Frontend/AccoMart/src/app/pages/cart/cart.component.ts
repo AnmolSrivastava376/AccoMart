@@ -20,12 +20,13 @@ import { productService } from '../../services/product.services';
 import { Product } from '../../interfaces/product';
 import { CartOrder } from '../../interfaces/placeOrder';
 import { ToastrService } from 'ngx-toastr';
-// import { LoaderComponent } from '../../components/loader/loader.component';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
   imports: [
+    LoaderComponent,
     NavbarComponent,
     CartProductCardComponent,
     CommonModule,
@@ -49,6 +50,7 @@ export class CartComponent {
   isVisible = false;
   selectedDeliveryId: number;
   cartItemLength = 0;
+  spinLoader:boolean= false;
   private cartSubscription: Subscription;
   constructor(
     private addressService: addressService,
@@ -152,6 +154,7 @@ export class CartComponent {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
   placeOrder() {
+    this.spinLoader = true;
     this.orderService.placeOrderByCart(this.cartOrder).subscribe(
       response=>{
         window.location.href = response.stripeUrl
