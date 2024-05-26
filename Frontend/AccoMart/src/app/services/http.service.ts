@@ -14,7 +14,7 @@ export class HttpService {
 
 
   register(username: string, email: string, password: string) {
-    return this.http.post<any>('http://localhost:5239/AuthenticationController', {
+    return this.http.post<any>('http://localhost:5239/AuthenticationController/Register', {
       userName: username,
       email: email,
       password: password,
@@ -84,7 +84,13 @@ export class HttpService {
     return this.http.post<any>(`http://localhost:5239/AuthenticationController/forgot-password?email=${email}`, {});
   }
 
-  resetPassword(resetPasswords : resetPassword): Observable<resetPassword> {
-    return this.http.post<resetPassword>('http://localhost:5239/AuthenticationController/reset-password', resetPasswords);
+  resetPassword(password : string, confirmPassword : string, token : string, email : string): Observable<resetPassword> {
+    return this.http.post<any>('http://localhost:5239/AuthenticationController/reset-password', {
+      password : password,
+      confirmPassword : confirmPassword,
+       token : token,
+        email : email
+    });
   }
+
 }
