@@ -7,10 +7,7 @@
     .side{
         font-size: 12px;
     }
-}
-
-@media screen and (max-width: 650px){
-    .radius-adj{
-        border-radius: 0;
+    .h700{
+        display: none;
     }
 }

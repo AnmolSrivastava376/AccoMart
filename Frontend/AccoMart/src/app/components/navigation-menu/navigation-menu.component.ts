@@ -11,7 +11,7 @@ import { jwtDecode } from 'jwt-decode';
   styleUrl: './navigation-menu.component.css'
 })
 export class NavigationMenuComponent implements AfterViewInit, OnInit{
-  isLoggedIn: boolean = true;
+  isLoggedIn: boolean = false;
   username: string = '';
   @ViewChild('hamMenu', { static: true }) hamMenu!: ElementRef;
   @ViewChild('screenMenu', { static: true }) screenMenu!: ElementRef;
