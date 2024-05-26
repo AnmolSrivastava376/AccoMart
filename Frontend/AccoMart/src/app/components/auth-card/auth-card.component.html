@@ -111,7 +111,10 @@
                   (click)="onRegister()"
                   class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
                 >
-                  Register
+                <span *ngIf="!registerSpinLoader">Register</span>
+                          <div *ngIf="registerSpinLoader" class="flex justify-center">
+                              <app-loader></app-loader>
+                          </div>
                 </button>
               </div>
             </form>

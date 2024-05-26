@@ -316,12 +316,12 @@ namespace Service.Services
             if (user != null && await _userManager.CheckPasswordAsync(user, password))
             {
                // var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
-                var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
+                /*var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
 
                 if (signInResult.Succeeded)
-                {
+                {*/
                     return await GetJwtTokenAsync(user);
-                }
+               // }
             }
 
             return new ApiResponse<LoginResponse>()

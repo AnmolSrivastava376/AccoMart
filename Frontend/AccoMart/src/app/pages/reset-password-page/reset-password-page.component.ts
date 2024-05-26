@@ -24,19 +24,25 @@ export class ResetPasswordPageComponent {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.resetPasswords.token = params['token'] || '';
-      this.resetPasswords.email = params['email'] || '';
+      const token = params['token'] || '';
+      const email = params['email'] || '';
+      const token2 = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
+      this.resetPasswords.token = token2;
+
+      this.resetPasswords.email = decodeURIComponent(email);
     });
   }
+
+
 
   resetPassword(password: string, confirmPassword: string) {
     this.spinLoader = true
     this.resetPasswords.password = password;
     this.resetPasswords.confirmPassword = confirmPassword;
 
-    console.log(this.resetPasswords.token, this.resetPasswords.email, this.resetPasswords.password,
-      this.resetPasswords.confirmPassword);
-    this.httpService.resetPassword(this.resetPasswords)
+    console.log(this.resetPasswords.password,
+      this.resetPasswords.confirmPassword,this.resetPasswords.token, this.resetPasswords.email);
+    this.httpService.resetPassword(this.resetPasswords.password, this.resetPasswords.confirmPassword, this.resetPasswords.token, this.resetPasswords.email)
       .subscribe(
         response => {
           this.resetResponse = 'Password reset successfully.';
