@@ -4,10 +4,12 @@ import { HttpService } from '../../services/http.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { LoaderComponent } from '../../components/loader/loader.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reset-password-page',
-  imports : [FormsModule,HttpClientModule],
+  imports : [FormsModule,HttpClientModule,LoaderComponent,CommonModule],
   standalone : true,
   providers : [HttpService],
   templateUrl: './reset-password-page.component.html',
@@ -15,6 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class ResetPasswordPageComponent {
   resetPasswords: resetPassword = { password: '', confirmPassword: '', email: '', token: '' };
+  resetResponse: string;
+  spinLoader: boolean;
 
   constructor(private httpService: HttpService, private route: ActivatedRoute, private router: Router) { }
 
@@ -26,6 +30,7 @@ export class ResetPasswordPageComponent {
   }
 
   resetPassword(password: string, confirmPassword: string) {
+    this.spinLoader = true
     this.resetPasswords.password = password;
     this.resetPasswords.confirmPassword = confirmPassword;
 
@@ -34,7 +39,7 @@ export class ResetPasswordPageComponent {
     this.httpService.resetPassword(this.resetPasswords)
       .subscribe(
         response => {
-          console.log('Password reset successfully.');
+          this.resetResponse = 'Password reset successfully.';
           this.router.navigate(['/home/auth']);
         },
         error => {
