@@ -1,22 +1,24 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { CommonModule } from '@angular/common';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
 import { Product } from '../../interfaces/product';
+import { NavigationMenuComponent } from '../navigation-menu/navigation-menu.component';
 
 @Component({
   selector: 'app-home-navbar',
   standalone: true,
-  imports: [CommonModule,SearchbarComponent],
+  imports: [CommonModule,SearchbarComponent, NavigationMenuComponent],
   templateUrl: './home-navbar.component.html',
   styleUrl: './home-navbar.component.css'
 })
 export class HomeNavbarComponent implements OnInit {
-  isLoggedIn: boolean = false;
+  isLoggedIn: boolean = true;
   username: string = '';
   prefix: string = '';
   @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<Product[]>();
+  @ViewChild('screenMenu') screenMenu!: NavigationMenuComponent;
   constructor(private router: Router) {}
 
   decoded: any;
@@ -46,5 +48,8 @@ export class HomeNavbarComponent implements OnInit {
   
   onSearchCompleted(products: Product[]): void {
     this.searchCompleted.emit(products);
+  }
+  toggleMenu() {
+    this.screenMenu.toggleMenu(); 
   }
 }

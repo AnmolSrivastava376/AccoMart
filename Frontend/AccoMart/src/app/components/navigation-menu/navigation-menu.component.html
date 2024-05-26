@@ -1,0 +1,37 @@
+<div #screenMenu
+    class="screen-menu bg-[#245963] text-white text-[20px] h-[100vh] w-[250px] fixed top-[100px] right-[-450px] flex flex-col justify-normal items-center text-center mt-[60px]">
+    <ul class="flex flex-col p-[20px] items-start w-full gap-[10px]">
+        <div class="side flex gap-[10px] text-[20px] font-[600]">
+            <div *ngIf="username" class="hide text-white">Welcome, {{username}}</div>
+            <div *ngIf="!username" class="hide text-white">Login to continue</div>
+        </div>
+
+        <a href="home/yourorders" *ngIf="isLoggedIn">
+            <li class="flex items-center space-x-2 li-animate-hover">
+                <i class="fas fa-box"></i>
+                <span>Your Orders</span>
+            </li>
+        </a>
+        <a href="home/cart" *ngIf="isLoggedIn">
+            <li class="flex items-center space-x-2 li-animate-hover">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Your Cart</span>
+            </li>
+        </a>
+        <li (click)="logout()" *ngIf="isLoggedIn" class="flex items-center space-x-2 li-animate-hover">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </li>
+        <a *ngIf="!isLoggedIn" href="home/auth">
+            <li class="flex items-center space-x-2 li-animate-hover">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Sign-In</span>
+            </li>
+        </a>
+    </ul>
+</div>
+<div #hamMenu class="ham-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
