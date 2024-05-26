@@ -121,7 +121,7 @@ namespace Data.Repository.Implementation
                     ZipCode = Convert.ToString(addressReader["ZipCode"]),
                     PhoneNumber = Convert.ToString(addressReader["PhoneNumber"]),
                     City = Convert.ToString(addressReader["City"]),
-                    State = Convert.ToString(addressReader["State"]),
+                    State = Convert.ToString(addressReader["States"]),
                     Street = Convert.ToString(addressReader["Street"])
                 };
             }
@@ -272,7 +272,7 @@ namespace Data.Repository.Implementation
                         addressModel.ZipCode = Convert.ToString(addressReader["ZipCode"]);
                         addressModel.PhoneNumber = Convert.ToString(addressReader["PhoneNumber"]);
                         addressModel.City = Convert.ToString(addressReader["City"]);
-                        addressModel.State = Convert.ToString(addressReader["State"]);
+                        addressModel.State = Convert.ToString(addressReader["States"]);
                         addressModel.Street = Convert.ToString(addressReader["Street"]);
                     }
                     invoiceDto.Address = addressModel;
