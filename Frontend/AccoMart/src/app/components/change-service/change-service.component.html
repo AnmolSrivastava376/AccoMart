@@ -5,7 +5,7 @@
                 <input type="radio" name="deliveryOption" [value]="service" (change)="onChangeDelivery(i)" [checked]="i === activeIndex" class="w-fit"/>
                 <div class="flex justify-between w-full">
                     <div class="font-bold">{{service.serviceName}} - {{service.deliveryDays}} days</div>
-                    <div class="font-bold text-[gray]">${{service.price}}</div>
+                    <div class="font-bold text-[gray]">₹ {{service.price}}</div>
                 </div>
             </label>
         </div>
