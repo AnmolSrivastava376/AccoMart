@@ -1,13 +1,10 @@
 <div class="w-full h-[60px] py-[10px] bg-white flex justify-between px-[20px] items-center">
-    <div class="font-[900] text-[28px] text-[#245963] h700"><a href="home">AccoMart</a></div>
+    <div class="font-[900] text-[28px] text-[#245963] h700 mr-4"><a href="home">AccoMart</a></div>
     <div class="flex-grow">
         <app-searchbar (searchCompleted)="onSearchCompleted($event)"></app-searchbar>
     </div>
 
-    <div class="side flex gap-[10px] text-[20px] font-[600]">
-        <div *ngIf="username" class="flex  gap-2 cursor-pointer">
-            <app-navigation-menu></app-navigation-menu>
-        </div>
-        <div *ngIf="!username" class="cursor-pointer"><app-navigation-menu></app-navigation-menu></div>
+    <div class="side text-[20px] font-[600] ml-3">
+       <app-navigation-menu></app-navigation-menu>
     </div>
 </div>

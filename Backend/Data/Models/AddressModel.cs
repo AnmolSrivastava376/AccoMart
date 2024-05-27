@@ -5,6 +5,9 @@ namespace Data.Models
 {
     public class AddressModel 
     {
+        [Required]
+        public int AddressId { get; set; }   
+
         [Required(ErrorMessage = "Street is required")]
         public string Street { get; set; }
 

@@ -1,4 +1,5 @@
 using Data.Models;
+using Data.Models.CartModels;
 using Data.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -79,13 +80,13 @@ namespace API.Controllers.Order
         public async Task<StripeDto> PlaceOrderByCart(CartOrderDto cartOrderDto)
         {
             int newOrderId = 0;
+           
             try
             {
+                decimal productAmount = 0.00M;
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    await connection.OpenAsync();
-
-                    decimal productAmount = 0.00M;
+                    await connection.OpenAsync();               
                     string getProductAmountQuery = @"
                         SELECT CAST(SUM(p.ProductPrice * ci.Quantity) AS DECIMAL(18,2)) AS TotalAmount
                         FROM CartItem ci
@@ -135,9 +136,7 @@ namespace API.Controllers.Order
                     
                 }
 
-
-
-                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId,newOrderId);
+                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId,newOrderId,cartOrderDto.deliveryId,productAmount);
             }
             catch (Exception ex)
             {
@@ -147,7 +146,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeDto> CheckoutByCart(string userId, int cartId,int orderId)
+        public async Task<StripeDto> CheckoutByCart(string userId, int cartId,int orderId,int deliveryId,decimal productAmount)
         {
             var options = new SessionCreateOptions
             {
@@ -155,7 +154,7 @@ namespace API.Controllers.Order
                 CancelUrl = _domain + "home/cart",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                CustomerEmail = "sdfgh@gmail.com"
+                CustomerEmail = "sdfgh@gmail.com",              
             };
 
             using (var connection = new SqlConnection(_connectionString))
@@ -181,25 +180,22 @@ namespace API.Controllers.Order
 
                         await cartItemReader.CloseAsync();
 
-                        foreach(Tuple<int,int> CartItem in CartItems)
+                        foreach (Tuple<int, int> CartItem in CartItems)
                         {
                             string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
 
-                            using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery,connection))
+                            using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery, connection))
                             {
                                 insertHistoryCommand.Parameters.AddWithValue("@OrderId", orderId);
                                 insertHistoryCommand.Parameters.AddWithValue("@ProductId", CartItem.Item1);
                                 insertHistoryCommand.Parameters.AddWithValue("@Quantity", CartItem.Item2);
-                                await insertHistoryCommand.ExecuteNonQueryAsync(); 
+                                await insertHistoryCommand.ExecuteNonQueryAsync();
 
                             }
 
                         }
 
                         _cartService.DeleteCartAsync(cartId);
-
-                        
-
 
 
                         foreach (Tuple<int, int> CartItem in CartItems)
@@ -228,14 +224,90 @@ namespace API.Controllers.Order
                                                     Name = name
                                                 }
                                             },
-                                            Quantity = CartItem.Item2
+                                            Quantity = CartItem.Item2,
                                         };
-
                                         options.LineItems.Add(sessionListItem);
+
+
+
                                     }
                                 }
                             }
                         }
+
+                        decimal deliveryPrice = 0.00M;
+                        string deliveryQuery = @"SELECT * FROM DeliveryService WHERE DServiceId = @DServiceId";
+
+                        using (var getDeliveryCommand = new SqlCommand(deliveryQuery, connection))
+                        {
+                            getDeliveryCommand.Parameters.AddWithValue("@DServiceId", deliveryId);
+
+                            using (SqlDataReader deliveryReader = await getDeliveryCommand.ExecuteReaderAsync())
+                            {
+                                while (await deliveryReader.ReadAsync())
+                                {
+                                     deliveryPrice = (decimal)deliveryReader["Price"];
+                                    string name = Convert.ToString(deliveryReader["ServiceName"]);
+                                    var sessionListItem1 = new SessionLineItemOptions
+                                    {
+                                        PriceData = new SessionLineItemPriceDataOptions
+                                        {
+                                            UnitAmount = (long)(deliveryPrice * 100),
+                                            Currency = "inr",
+                                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                                            {
+                                                Name = name
+                                            }
+                                        },
+                                        Quantity = (long)1
+
+                                    };
+                                    options.LineItems.Add(sessionListItem1);
+                                }
+                            }
+                        }
+
+                        decimal discount = (productAmount * 5)/100;
+
+                        var sessionListItem2 = new SessionLineItemOptions
+                        {
+                            PriceData = new SessionLineItemPriceDataOptions
+                            {
+                                UnitAmount = (long)(discount*100),
+                                Currency = "inr",
+                                ProductData = new SessionLineItemPriceDataProductDataOptions
+                                {
+                                    Name = "Discount"
+                                }
+                            },
+                            Quantity = (long)1
+
+                        };
+                        options.LineItems.Add(sessionListItem2);
+
+                        decimal totalAmount = deliveryPrice + productAmount - discount;
+
+
+                        var sessionListItem3 = new SessionLineItemOptions
+                        {
+                            PriceData = new SessionLineItemPriceDataOptions
+                            {
+                                UnitAmount = (long)(totalAmount * 18),
+                                Currency = "inr",
+                                ProductData = new SessionLineItemPriceDataProductDataOptions
+                                {
+                                    Name = "Tax"
+                                }
+                            },
+                            Quantity = (long)1
+
+                        };
+                        options.LineItems.Add(sessionListItem3);
+
+
+
+
+
                     }
                 }
             }
@@ -269,11 +341,15 @@ namespace API.Controllers.Order
                     await connection.OpenAsync();
 
                     decimal deliveryPrice;
-                    string deliveryPriceQuery = "SELECT Price FROM DeliveryService WHERE DServiceId = @DServiceId";
-                    using (SqlCommand deliveryPriceCommand = new SqlCommand(deliveryPriceQuery, connection))
+                    string getDeliveryPriceQuery = @"
+                        SELECT Price
+                        FROM DeliveryService
+                        WHERE DServiceId = @DServiceId;";
+
+                    using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
                     {
-                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", productOrderDto.DeliveryId);
-                        deliveryPrice = (decimal)await deliveryPriceCommand.ExecuteScalarAsync();
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", productOrderDto.DeliveryId);
+                        deliveryPrice = (decimal)await getDeliveryPriceCommand.ExecuteScalarAsync();
                     }
 
                     string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
@@ -295,14 +371,14 @@ namespace API.Controllers.Order
                             command.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
                             command.Parameters.AddWithValue("@DeliveryServiceID", productOrderDto.DeliveryId);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
-                            orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            //orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
                     }
                 }
 
                 //await _cartService.GenerateInvoiceAsync(orderId);
                 //await _cartService.DeleteCartAsync(cartId);
-                return await Checkout(productOrderDto.ProductId);
+                return await Checkout(productOrderDto.ProductId,productOrderDto.DeliveryId);
             }
             catch (Exception ex)
             {
@@ -341,7 +417,7 @@ namespace API.Controllers.Order
         }
         //[Authorize]
         [HttpPost("Checkout/Product")]
-        public async Task<StripeDto> Checkout(int productId)
+        public async Task<StripeDto> Checkout(int productId,int deliveryId)
         {
 
             var options = new SessionCreateOptions

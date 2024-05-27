@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Service.Models;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -113,6 +114,7 @@ namespace API.Controllers.Addresses
                             {
                                 AddressModel address = new AddressModel
                                 {
+                                    AddressId = Convert.ToInt32(reader["AddressId"]),
                                     Street = Convert.ToString(reader["Street"]),
                                     City = Convert.ToString(reader["City"]),
                                     PhoneNumber = Convert.ToString(reader["PhoneNumber"]),

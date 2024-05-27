@@ -2,6 +2,10 @@
 * {
   box-sizing: border-box;
 }
+.asp-sq{
+  background-size: cover;
+  background-position: center;
+}
 .parent {
   position: relative;
   overflow: hidden;
@@ -37,7 +41,8 @@ img {
 }
 
 .bg {
-  background: cornflowerblue;
+  background: gold;
+  font-weight: 900;
   border-radius: 50px;
   font-size: .9em;
 }
@@ -113,6 +118,16 @@ img {
   .outer {
     width: 90%;
   }
+  .col{
+    flex-direction: column-reverse;
+  }
+  .w-adj{
+    width: 100%;
+  }
+  .p-adj{
+    padding: 0;
+    height: 150vh;
+  }
 }
 
 @media(max-width: 520px) {
@@ -139,5 +154,16 @@ img {
     width: 100%; 
     margin-top: 20px;
     text-align: center;
+  }
+  .asp-sq{
+    flex: 30;
+  }
+  .h-adj{
+    justify-content: flex-start;
+    align-items: start;
+    padding-top: 20px;
+  }
+  .p-adj{
+    height: 120vh;
   }
 }

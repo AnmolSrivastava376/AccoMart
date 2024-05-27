@@ -1,30 +1,27 @@
-<div class="max-w-[100vw] h-[100vh] flex flex-col py-[10vh] parent items-center">
-    <div class="w-[80%] border border-t-0 border-x-0 border-b-[rgb(140,140,140)]">
-        <app-navbar></app-navbar>
+<div class="max-w-[100vw] h-[100vh] flex flex-col py-[10vh] parent items-center p-adj transition-all">
+  <div class="w-[80%] border border-t-0 border-x-0 border-b-[rgb(140,140,140)] w-adj">
+    <app-navbar></app-navbar>
+  </div>
+  <div class="w-[80%] h-full flex w-adj">
+    <div *ngIf="isLoading" class="flex justify-center items-center w-full h-full">
+      <app-loader></app-loader>
     </div>
-    <div class="w-[80%] h-full flex">
-      <div *ngIf="isLoading" class="flex justify-center items-center w-full h-full">
-        <app-loader></app-loader>
-    </div>
-        <div *ngIf="!isLoading" class="w-full h-full flex-[60] bg-white relative flex items-center">
-          <div class="content animated fadeInLeft absolute z-[3] left-[20px]">
-            <span class="bg animated fadeInDown inline-block text-white italic py-1 px-2 ">EXCLUSIVE</span>
-            <h1 class="text-black font-bold text-[32px]">{{product?.productName}}</h1>
-            <p class="leading-6 text-black mt-[10px]">{{product?.productDesc}}</p>
-            <p>$ {{product?.productPrice}}</p>
-            <div class="button">
-              <a href="/home/buy-product/{{productId}}">BUY NOW</a><a class="cart-btn" href="/home/cart"><i
-                  class="cart-icon ion-bag"></i><span class="pr-[8px]">ADD TO CART</span></a>
-            </div>
+    <div class="flex w-full h-full col">
+      <div *ngIf="!isLoading" class="w-full h-full flex-[50] bg-white relative flex items-center h-adj">
+        <div class="content animated fadeInLeft absolute z-[3] px-[20px]">
+          <span class="bg animated fadeInDown inline-block text-white italic py-1 px-2 ">EXCLUSIVE</span>
+          <h1 class="text-black font-bold text-[32px]">{{product?.productName}}</h1>
+          <p class="leading-6 text-black mt-[10px] max-h-[250px] overflow-y-scroll text-[14px]">{{product?.productDesc}}</p>
+          <p class="font-[900] py-1">$Price : {{product?.productPrice}}</p>
+          <div class="button">
+            <a class="cursor-pointer" (click)="handleBuyNowClick()">BUY NOW</a><a class="cart-btn cursor-pointer" (click)="handleClick()"><i
+                class="cart-icon ion-bag"></i><span class="pr-[8px]">{{displayText}}</span></a>
           </div>
         </div>
-        <div *ngIf="!isLoading" class="w-full h-full flex-[40] bg-gray-500 bg-100" style="background-image: url({{product?.productImageUrl}});" ></div>
+      </div>
+
+      <div *ngIf="!isLoading" class="w-full h-full flex-[50] bg-gray-500 bg-100 asp-sq"
+        style="background-image: url({{product?.productImageUrl}});"></div>
     </div>
-</div>
-
-
-<!-- <div class="wrapper flex justify-center items-center font-Montserrat w-full h-screen">
-  <div class="outer relative bg-white h-[500px] w-[900px] overflow-hidden flex items-center">
-
   </div>
-</div> -->
+</div>

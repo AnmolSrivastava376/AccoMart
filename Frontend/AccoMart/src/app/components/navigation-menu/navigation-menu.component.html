@@ -8,24 +8,41 @@
 
         <a href="home/yourorders" *ngIf="isLoggedIn">
             <li class="flex items-center space-x-2 li-animate-hover">
-                <i class="fas fa-box"></i>
+                <div class="w-[20px] h-[20px] flex items-center justify-center">
+                    <i class="fas fa-box"></i>
+                </div>
                 <span>Your Orders</span>
             </li>
         </a>
         <a href="home/cart" *ngIf="isLoggedIn">
             <li class="flex items-center space-x-2 li-animate-hover">
-                <i class="fas fa-shopping-cart"></i>
+                <div class="w-[20px] h-[20px] flex items-center justify-center">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
                 <span>Your Cart</span>
             </li>
         </a>
         <li (click)="logout()" *ngIf="isLoggedIn" class="flex items-center space-x-2 li-animate-hover">
-            <i class="fas fa-sign-out-alt"></i>
+            <div class="w-[20px] h-[20px] flex items-center justify-center">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
             <span>Logout</span>
         </li>
         <a *ngIf="!isLoggedIn" href="home/auth">
             <li class="flex items-center space-x-2 li-animate-hover">
-                <i class="fas fa-sign-in-alt"></i>
+                <div class="w-[20px] h-[20px] flex items-center justify-center">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
                 <span>Sign-In</span>
+            </li>
+        </a>
+
+        <a *ngIf="isAdmin" href="admin">
+            <li class="flex text-white hover:text-gray-300 space-x-2 text-left items-start">
+                <div class="w-[20px] h-[20px] flex items-center mt-1">
+                    <mat-icon>dashboard</mat-icon>
+                </div>
+                <span>Admin</span>
             </li>
         </a>
     </ul>

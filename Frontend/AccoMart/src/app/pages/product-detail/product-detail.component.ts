@@ -30,7 +30,6 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-
   fetchProductDetails(): void {
     this.productService.fetchProductById(this.productId)
       .subscribe(
