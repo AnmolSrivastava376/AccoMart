@@ -89,7 +89,7 @@ export class CartComponent {
       this.addressId = 1;
       this.userId = this.decoded.UserId;
     }
-
+    
     this.cartOrder.addressId = this.addressId
     this.cartOrder.userId = this.userId;
     this.cartOrder.cartId = this.cartId;
@@ -111,6 +111,7 @@ export class CartComponent {
       if (response.isSuccess) {
         this.address = response.response;
         this.activeAddress = this.address[0];
+        this.cartOrder.addressId = this.activeAddress.addressId
       } else {
         console.error('Failed to retrieve addresses:', response.message);
         this.toastr.error("Failed to retrieve addresses");
@@ -147,13 +148,13 @@ export class CartComponent {
   getDiscounts(): number {
     let discount = 0;
     discount = (5/100) * this.getCartTotal();
-    return +discount.toFixed(2); // Round discount to two decimal places
+    return +discount.toFixed(2);
   }
 
   getTaxes(): number {
     let totalAmount = 0;
     totalAmount =  (18/100) * this.getCartTotal() + this.getDeliveryCharges() + this.getDiscounts();
-    return +totalAmount.toFixed(2); // Round totalAmount to two decimal places
+    return +totalAmount.toFixed(2);
    }
 
   getGrandTotal(): number {
@@ -163,12 +164,14 @@ export class CartComponent {
   }
 
   placeOrder() {
-    this.spinLoader = true;
-    this.orderService.placeOrderByCart(this.cartOrder).subscribe(
-      response=>{
-        window.location.href = response.stripeUrl
-      }
-    );
+    if(!this.spinLoader){
+      this.spinLoader = true;
+      this.orderService.placeOrderByCart(this.cartOrder).subscribe(
+        response=>{
+          window.location.href = response.stripeUrl
+        }
+      );
+    }
   }
   updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
@@ -177,6 +180,7 @@ export class CartComponent {
   }
   updateActiveAddress(address:Address){
     this.activeAddress = address
+    this.cartOrder.addressId = address.addressId
   }
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;

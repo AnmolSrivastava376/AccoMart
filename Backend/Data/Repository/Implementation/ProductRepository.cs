@@ -94,11 +94,6 @@ namespace Data.Repository.Implementation
             return products;
         }
 
-
-
-
-
-
         public async Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
         {
 

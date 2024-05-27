@@ -10,9 +10,9 @@
         <div *ngFor="let item of cart">
           <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
         </div>
-        <div class="text-gray-500 justify-center items-center" *ngIf="cartItemLength===0">
-          No items added in cart
-          <img class="" src="../../../assets/Image/shopping-cart.gif" alt="" style="width: 350px; height: auto; margin-left: 400px;">
+        <div class="text-gray-500 justify-center items-center overflow-hidden flex flex-col" *ngIf="cartItemLength===0">
+          <div class="self-start">No items added in cart</div>
+          <img class="w-full h-full max-w-[350px] max-h-[350px]" src="../../../assets/Image/shopping-cart.gif" alt="">
 
         </div>
       </div>

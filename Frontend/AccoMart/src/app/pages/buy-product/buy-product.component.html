@@ -62,12 +62,12 @@
           <div class="">$ {{getDeliveryCharges()}}</div>
         </div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
-          <div class="">Taxes</div>
-          <div class="">$ {{getTaxes()}}</div>
-        </div>
-        <div class="flex justify-between items-center leading-[16px] text-adj">
           <div class="">Discount</div>
           <div class="">$ {{getDiscounts()}}</div>
+        </div>
+        <div class="flex justify-between items-center leading-[16px] text-adj">
+          <div class="">Taxes</div>
+          <div class="">$ {{getTaxes()}}</div>
         </div>
         <div class="w-full h-[1px] bg-white mt-[10px]"></div>
         <div class="flex justify-between items-center leading-[16px] font-semibold text-adj">
@@ -78,8 +78,8 @@
           class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer"
           (click)="placeOrderByProduct()">
           <div class="text-black font-semibold head-adj">
-            <app-loader *ngIf="spinLoader"></app-loader>
-            <span *ngIf="!spinLoader">Buy Now</span>
+            <app-loader *ngIf="isLoading"></app-loader>
+            <span *ngIf="!isLoading">Buy Now</span>
           </div>
 
         </div>

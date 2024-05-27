@@ -55,13 +55,13 @@ namespace API.Controllers.Order
                                 Orders order = new Orders
                                 {
                                     OrderId = Convert.ToInt32(reader["OrderId"]),
-                                    OrderDate = Convert.ToDateTime(reader["OrderDate"]),
-                                    OrderAmount = Convert.ToInt32(reader["OrderAmount"]),
-                                    UserId = Convert.ToString(reader["UserId"]),
-                                    AddressId = Convert.ToInt32(reader["AddressId"]),
-                                    CartId = Convert.ToInt32(reader["CartId"]),
+                                    OrderDate = reader["OrderDate"] != DBNull.Value ? Convert.ToDateTime(reader["OrderDate"]) : DateTime.MinValue,
+                                    OrderAmount = reader["OrderAmount"] != DBNull.Value ? Convert.ToInt32(reader["OrderAmount"]) : 0,
+                                    UserId = reader["UserId"] != DBNull.Value ? Convert.ToString(reader["UserId"]) : "",
+                                    AddressId = reader["AddressId"] != DBNull.Value ? Convert.ToInt32(reader["AddressId"]) : 0,
+                                    CartId = reader["CartId"] != DBNull.Value ? Convert.ToInt32(reader["CartId"]) : 0,
                                     DeliveryServiceID = Convert.ToInt32(reader["DeliveryServiceId"]),
-                                    isCancelled = Convert.ToBoolean(reader["IsCancelled"]),
+                                    isCancelled = reader["IsCancelled"] != DBNull.Value && Convert.ToBoolean(reader["IsCancelled"]),
                                 };
                                 orders.Add(order);
                             }
@@ -304,10 +304,6 @@ namespace API.Controllers.Order
                         };
                         options.LineItems.Add(sessionListItem3);
 
-
-
-
-
                     }
                 }
             }
@@ -329,14 +325,8 @@ namespace API.Controllers.Order
             try
             {
                 int orderId = 0;
-                /*var user = HttpContext.User as ClaimsPrincipal;
-                var userIdClaim = user.FindFirst("UserId");
-                string userId = userIdClaim?.Value ?? "0";
-
-                var cartIdClaim = user.FindFirst("CartId");
-                int cartId = cartIdClaim != null ? int.Parse(cartIdClaim.Value) : 0;*/
-
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                decimal productPrice = 0.00M;
+                using (var connection = new SqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
 
@@ -357,7 +347,7 @@ namespace API.Controllers.Order
                     using (SqlCommand fetchPriceCommand = new SqlCommand(fetchPriceQuery, connection))
                     {
                         fetchPriceCommand.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
-                        decimal productPrice = (decimal)await fetchPriceCommand.ExecuteScalarAsync();
+                        productPrice = (decimal)await fetchPriceCommand.ExecuteScalarAsync();
                         decimal orderAmount = productPrice + deliveryPrice;
 
                         string sqlQuery = @"INSERT INTO Orders (AddressId, UserId, ProductId, DeliveryServiceID, OrderAmount)
@@ -371,20 +361,25 @@ namespace API.Controllers.Order
                             command.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
                             command.Parameters.AddWithValue("@DeliveryServiceID", productOrderDto.DeliveryId);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
-                            //orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
+
                     }
                 }
 
-                //await _cartService.GenerateInvoiceAsync(orderId);
-                //await _cartService.DeleteCartAsync(cartId);
-                return await Checkout(productOrderDto.ProductId,productOrderDto.DeliveryId);
+
+
+
+                return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId,productPrice,orderId, productOrderDto.quantity);
+
+         
             }
             catch (Exception ex)
             {
                 return null;
             }
         }
+
         [HttpGet("GetCartItemsByOrderId/{orderId}")]
         public async Task<IActionResult> FetchHistory(int orderId)
         {
@@ -408,6 +403,7 @@ namespace API.Controllers.Order
                         orderedItems.Add(item);
                     }
                 }
+
                     return Ok(orderedItems);
             }
             catch
@@ -415,9 +411,10 @@ namespace API.Controllers.Order
                 return null;
             }
         }
-        //[Authorize]
+
+
         [HttpPost("Checkout/Product")]
-        public async Task<StripeDto> Checkout(int productId,int deliveryId)
+        public async Task<StripeDto> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
         {
 
             var options = new SessionCreateOptions
@@ -433,13 +430,13 @@ namespace API.Controllers.Order
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-               
-                    string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
 
-                        using (var getProductCommand = new SqlCommand(getProductQuery, connection))
-                        {
-                            getProductCommand.Parameters.AddWithValue("@ProductId", productId);
-                             await getProductCommand.ExecuteNonQueryAsync();
+                string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
+
+                using (var getProductCommand = new SqlCommand(getProductQuery, connection))
+                {
+                    getProductCommand.Parameters.AddWithValue("@ProductId", productId);
+                    await getProductCommand.ExecuteNonQueryAsync();
 
 
                     using (SqlDataReader cartItemReader = await getProductCommand.ExecuteReaderAsync())
@@ -461,7 +458,7 @@ namespace API.Controllers.Order
                                         Name = name
                                     }
                                 },
-                                Quantity = (long)1
+                                Quantity = (long)quantity
                             };
 
                             options.LineItems.Add(sessionListItem);
@@ -469,19 +466,106 @@ namespace API.Controllers.Order
 
 
                     }
-                            
-                      
-                    
+
+                    decimal deliveryPrice = 0.00M;
+                    string deliveryQuery = @"SELECT * FROM DeliveryService WHERE DServiceId = @DServiceId";
+
+                    using (var getDeliveryCommand = new SqlCommand(deliveryQuery, connection))
+                    {
+                        getDeliveryCommand.Parameters.AddWithValue("@DServiceId", deliveryId);
+
+                        using (SqlDataReader deliveryReader = await getDeliveryCommand.ExecuteReaderAsync())
+                        {
+                            while (await deliveryReader.ReadAsync())
+                            {
+                                deliveryPrice = (decimal)deliveryReader["Price"];
+                                string name = Convert.ToString(deliveryReader["ServiceName"]);
+                                var sessionListItem1 = new SessionLineItemOptions
+                                {
+                                    PriceData = new SessionLineItemPriceDataOptions
+                                    {
+                                        UnitAmount = (long)(deliveryPrice * 100),
+                                        Currency = "inr",
+                                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                                        {
+                                            Name = name
+                                        }
+                                    },
+                                    Quantity = (long)1
+
+                                };
+                                options.LineItems.Add(sessionListItem1);
+                            }
+                        }
+                    }
+
+                    decimal discount = (totalProductPrice * 5) / 100;
+
+                    var sessionListItem2 = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(discount * 100),
+                            Currency = "inr",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = "Discount"
+                            }
+                        },
+                        Quantity = (long)1
+
+                    };
+                    options.LineItems.Add(sessionListItem2);
+
+                    decimal totalAmount = deliveryPrice + totalProductPrice - discount;
+
+
+                    var sessionListItem3 = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(totalAmount * 18),
+                            Currency = "inr",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = "Tax"
+                            }
+                        },
+                        Quantity = (long)1
+
+                    };
+                    options.LineItems.Add(sessionListItem3);
+
                 }
+
             }
 
+           
             var service = new SessionService();
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
             StripeDto url = new StripeDto();
             url.StripeUrl = session.Url;
+
+            if(url!= null)
+            {
+                string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
+
+                var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+
+                using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery, connection))
+                {
+                    insertHistoryCommand.Parameters.AddWithValue("@OrderId", orderId);
+                    insertHistoryCommand.Parameters.AddWithValue("@ProductId", productId);
+                    insertHistoryCommand.Parameters.AddWithValue("@Quantity", quantity);
+                    await insertHistoryCommand.ExecuteNonQueryAsync();
+
+                };
+            }
             return url;
+
         }
 
 
