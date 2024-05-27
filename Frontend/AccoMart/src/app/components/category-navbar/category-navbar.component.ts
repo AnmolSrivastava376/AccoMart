@@ -65,7 +65,7 @@ export class CategoryNavbarComponent implements OnChanges {
   sortPriceAscending() {
     this.products = this.computeFilteredProducts();
     this.isPriceFiltered = false;
-    this.isActiveAscendingFilter = !this.isActiveAscendingFilter;
+    this.isActiveAscendingFilter = true;
     this.isActiveDescendingFilter = false;
     this.filteredProducts.emit(this.products?.sort((a, b) => a.productPrice - b.productPrice));
   }
@@ -74,7 +74,7 @@ export class CategoryNavbarComponent implements OnChanges {
     this.products = this.computeFilteredProducts();
     this.isPriceFiltered = false;
     this.isActiveAscendingFilter = false;
-    this.isActiveDescendingFilter = !this.isActiveDescendingFilter;
+    this.isActiveDescendingFilter = true;
     this.filteredProducts.emit(this.products?.sort((a, b) => b.productPrice - a.productPrice));
   }
   onMinPriceChange(event: any) {
