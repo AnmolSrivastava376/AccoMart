@@ -19,7 +19,8 @@ export class ChangeAddressComponent implements OnInit {
     city: '',
     state: '',
     zipCode: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    addressId: 0
   };
 
   @Input() address: Address[];
@@ -47,7 +48,7 @@ export class ChangeAddressComponent implements OnInit {
           this.addressAdded.emit(this.newAddress);
           this.showAddressform = false;
           alert('Successfully Added');
-          
+          this.refreshAddresss()
         }
       );
     } else {
@@ -63,19 +64,10 @@ export class ChangeAddressComponent implements OnInit {
            address.phoneNumber.trim() !== '';
   }
 
-  onSubmit() {
-    this.addressService.addAddress(this.newAddress,this.userId).subscribe(
-      (address) => {
-        this.router.navigate(['/home/cart']); 
-      }
-    );
-  }
-
   saveChanges(){
     if(this.selectAddress){
       this.addressAdded.emit(this.selectAddress);
       this.closeWindow.emit(true);
-     
     }
     else{
       alert('Please select an address.');
@@ -88,5 +80,10 @@ export class ChangeAddressComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/home/cart'])
+  }
+  refreshAddresss(){
+    this.addressService.getAddressByUserId(this.userId).subscribe(
+      (response:any)=> this.address = response.response
+    )
   }
 }
