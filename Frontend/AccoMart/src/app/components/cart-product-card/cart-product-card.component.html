@@ -1,5 +1,5 @@
 <div class="w-full h-[200px] flex boxh">
-    <div class="flex bg-fit bg-white flex-[30] h-full bg-no-repeat w-[200px] min-h-[200px] min-w-[200px] img-adj bg-center rounded-[10px] overflow-hidden bg-cover" [style.backgroundImage]="'url(' + (product && product.productImageUrl) + ')'">
+    <div class="flex bg-fit bg-white flex-[30] h-full bg-no-repeat w-[200px] min-h-[200px] min-w-[200px] img-adj bg-center rounded-[10px] overflow-hidden bg-cover border shadow-md" [style.backgroundImage]="'url(' + (product && product.productImageUrl) + ')'">
       <div class="w-full flex items-center justify-center">
         <app-loader *ngIf="!product"></app-loader>
       </div>
