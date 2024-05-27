@@ -11,7 +11,6 @@ import { ProductDetailComponent  } from './pages/product-detail/product-detail.c
 import { HttpClientModule } from '@angular/common/http';
 import { AdminProductsComponent } from './pages/admin-products/admin-products.component';
 import { AdminCategoriesComponent } from './pages/admin-categories/admin-categories.component';
-import { InvoicePageComponent } from './pages/invoice-page/invoice-page.component';
 import { ForgetpasswordPageComponent } from './pages/forget-password/forgetpassword-page.component';
 import { EditProductComponent } from './pages/edit-product/edit-product.component';
 import { AddProductComponent } from './pages/add-product/add-product.component';
@@ -35,7 +34,6 @@ export const routes: Routes = [
     { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
     { path: 'home/reset-password', component: ResetPasswordPageComponent},
     { path: 'home/yourorders', component: YourOrdersComponent , canActivate: [FrontendAuthGuard]},
-    { path: 'home/cart/orders/invoice', component: InvoicePageComponent},
     { path: 'home/auth-otp', component: AuthOtpComponent},
     { path: 'admin', component: AdminDashboardComponent,canActivate: [AuthGuard]},
     { path: 'admin/products',component:AdminProductsComponent,canActivate: [AuthGuard]},
