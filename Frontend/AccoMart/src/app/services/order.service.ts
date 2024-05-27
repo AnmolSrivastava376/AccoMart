@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { CartOrder, ProductOrder } from "../interfaces/placeOrder";
+import { CartOrder} from "../interfaces/placeOrder";
 import { Order } from "../interfaces/order";
 import { cartItem } from "../interfaces/cartItem";
+import { ProductOrder } from "../interfaces/productOrder";
 
 @Injectable({
     providedIn:'root'

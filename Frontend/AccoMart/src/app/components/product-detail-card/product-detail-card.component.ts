@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../loader/loader.component';
 import { CartService } from '../../services/cart.services';
+import { productService } from '../../services/product.services';
+import { BuyNowService } from '../../services/buy-now.service';
 
 @Component({
   selector: 'app-product-detail-card',
@@ -19,7 +21,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit{
   productId: number;
   isLoading: boolean=false;
   displayText:string = "ADD TO CART"
-  constructor(private route: ActivatedRoute, private cartService: CartService) {}
+  constructor(private route: ActivatedRoute, private cartService: CartService, private productService: productService, private buyNowService: BuyNowService) {}
   
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -42,6 +44,14 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit{
     }
     this.cartService.addToCart(this.productId);
     this.displayText = "VIEW IN CART"
+  }
+  handleBuyNowClick(){
+    this.productService.fetchProductById(this.productId).subscribe(
+      (response: Product)=>{
+        this.buyNowService.item = {"productId": response.productId, "quantity":1}
+        window.location.href = `/home/buy-product/${this.productId}`
+      }
+    )
   }
 }
 
