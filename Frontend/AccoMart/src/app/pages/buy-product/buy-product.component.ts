@@ -170,14 +170,14 @@ export class BuyProductComponent {
   }
   placeOrderByProduct() {
     console.log(this.productOrder)
-    // this.orderService.placeOrderByProduct(this.productOrder).subscribe(
-    //   (response) => {
-    //     window.location.href = response.stripeUrl;
-    //   },
-    //   (error) => {
-    //     console.error('Error placing order:', error);
-    //   }
-    // );
+    this.orderService.placeOrderByProduct(this.productOrder).subscribe(
+      (response) => {
+        window.location.href = response.stripeUrl;
+      },
+      (error) => {
+        console.error('Error placing order:', error);
+      }
+    );
   }
   updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
