@@ -12,4 +12,9 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class GridDisplayCardComponent{
   @Input() products?: Product[]
+
+  navigateToProductDetail(index:number){
+    const productId = this.products? this.products[index].productId : 0;
+    window.location.href=`home/productdetail/${productId}`
+  }
 }

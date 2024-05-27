@@ -1,50 +1,47 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterContentInit, Component, Input, OnInit } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../loader/loader.component';
-
+import { CartService } from '../../services/cart.services';
 
 @Component({
   selector: 'app-product-detail-card',
   standalone: true,
   imports: [CommonModule, NavbarComponent, HttpClientModule, LoaderComponent],
-
   templateUrl: './product-detail-card.component.html',
   styleUrl: './product-detail-card.component.css',
 })
-export class ProductDetailCardComponent implements OnInit {
+export class ProductDetailCardComponent implements OnInit, AfterContentInit{
   @Input() product?: Product;
   productId: number;
   isLoading: boolean=false;
-  
-
-  constructor(private route: ActivatedRoute  ) {}
-  
+  displayText:string = "ADD TO CART"
+  constructor(private route: ActivatedRoute, private cartService: CartService) {}
   
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.productId = +params['productId'];
-      // this.fetchProductDetails(this.productId);
-      
     });
   }
 
-  // fetchProductDetails(productId:number): void{
-  //   this.isLoading = true;
-  //   this.productService.getProduct(productId).subscribe(
-  //   (product: Product | undefined) => {
-  //     this.product = product;
-  //     this.isLoading = false;
-  //   },
-  //   (error: any) => {
-  //     console.error('Error fetching product details:', error);
-  //     this.isLoading = false;
-  //   }
-  // );
-  // }
-   
+  ngAfterContentInit(): void {
+    const items = JSON.parse(localStorage.getItem('cartItems')||'');
+    items.forEach((item:Product) => {
+      if(item.productId===this.productId){
+        this.displayText = "VIEW IN CART"
+      }
+    });
+  }
+
+  handleClick(){
+    if(this.displayText === "VIEW IN CART"){
+      window.location.href = 'home/cart'
+    }
+    this.cartService.addToCart(this.productId);
+    this.displayText = "VIEW IN CART"
+  }
 }
 

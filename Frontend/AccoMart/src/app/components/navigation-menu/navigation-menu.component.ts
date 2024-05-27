@@ -3,11 +3,12 @@ import { Route, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import { AuthService } from '../../services/Auth.service';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-navigation-menu',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon],
   templateUrl: './navigation-menu.component.html',
   styleUrl: './navigation-menu.component.css'
 })
