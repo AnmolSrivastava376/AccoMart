@@ -78,8 +78,8 @@
           class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer"
           (click)="placeOrderByProduct()">
           <div class="text-black font-semibold head-adj">
-            <app-loader *ngIf="spinLoader"></app-loader>
-            <span *ngIf="!spinLoader">Buy Now</span>
+            <app-loader *ngIf="isLoading"></app-loader>
+            <span *ngIf="!isLoading">Buy Now</span>
           </div>
 
         </div>

@@ -45,6 +45,7 @@ import { ProductOrder } from '../../interfaces/productOrder';
     productService,
     orderService,
     CartService,
+    LoaderComponent
   ],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css',
@@ -75,7 +76,7 @@ export class BuyProductComponent {
   products: Product[] = [];
   decoded: { CartId: number; AddressId: number; UserId: string };
   selectedProductId: number;
-  productPrice: number = 0
+  productPrice: number = 0;
   productOrder: ProductOrder = {
     userId: '',
     productId: 0,
@@ -87,6 +88,7 @@ export class BuyProductComponent {
   addressId: number;
   userId: string;
   newCartItem: cartItem | null;
+  isLoading = false;
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -110,9 +112,9 @@ export class BuyProductComponent {
     this.productOrder.productId = this.selectedProductId;
     this.productOrder.quantity = 1;
 
-    this.productService.fetchProductById(this.productOrder.productId).subscribe(
-      response=> this.productPrice = response.productPrice
-    )
+    this.productService
+      .fetchProductById(this.productOrder.productId)
+      .subscribe((response) => (this.productPrice = response.productPrice));
 
     // Fetching address
     this.addressService
@@ -121,7 +123,7 @@ export class BuyProductComponent {
         if (response.isSuccess) {
           this.address = response.response;
           this.activeAddress = this.address[0];
-          this.productOrder.addressId = this.activeAddress.addressId
+          this.productOrder.addressId = this.activeAddress.addressId;
         } else {
           console.error('Failed to retrieve addresses:', response.message);
           this.toastr.error('Failed to retrieve addresses');
@@ -148,7 +150,7 @@ export class BuyProductComponent {
 
   getCartTotal(): number {
     let total = 0;
-    total = this.productPrice * this.productOrder.quantity
+    total = this.productPrice * this.productOrder.quantity;
     return total;
   }
   getDeliveryCharges(): number {
@@ -156,30 +158,39 @@ export class BuyProductComponent {
   }
   getDiscounts(): number {
     let discount = 0;
-    discount = (5/100) * this.getCartTotal();
+    discount = (5 / 100) * this.getCartTotal();
     return +discount.toFixed(2);
   }
   getTaxes(): number {
     let totalAmount = 0;
-    totalAmount =  (18/100) * this.getCartTotal() + this.getDeliveryCharges() + this.getDiscounts();
+    totalAmount =
+      (18 / 100) * this.getCartTotal() +
+      this.getDeliveryCharges() +
+      this.getDiscounts();
     return +totalAmount.toFixed(2);
-   }
+  }
   getGrandTotal(): number {
     let grandTotal = 0;
-    grandTotal = this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
+    grandTotal =
+      this.getCartTotal() +
+      this.getDeliveryCharges() +
+      this.getTaxes() -
+      this.getDiscounts();
     return +grandTotal.toFixed(2);
   }
 
   placeOrderByProduct() {
-    console.log(this.productOrder)
-    this.orderService.placeOrderByProduct(this.productOrder).subscribe(
-      (response) => {
-        window.location.href = response.stripeUrl;
-      },
-      (error) => {
-        console.error('Error placing order:', error);
-      }
-    );
+    if (!this.isLoading) {
+      this.isLoading = true
+      this.orderService.placeOrderByProduct(this.productOrder).subscribe(
+        (response) => {
+          window.location.href = response.stripeUrl;
+        },
+        (error) => {
+          console.error('Error placing order:', error);
+        }
+      );
+    }
   }
   updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
@@ -188,7 +199,7 @@ export class BuyProductComponent {
   }
   updateActiveAddress(address: Address) {
     this.activeAddress = address;
-    this.productOrder.addressId = this.activeAddress.addressId
+    this.productOrder.addressId = this.activeAddress.addressId;
   }
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;

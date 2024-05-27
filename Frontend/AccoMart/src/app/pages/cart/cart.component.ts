@@ -164,13 +164,14 @@ export class CartComponent {
   }
 
   placeOrder() {
-    this.spinLoader = true;
-    console.log(this.cartOrder)
-    this.orderService.placeOrderByCart(this.cartOrder).subscribe(
-      response=>{
-        window.location.href = response.stripeUrl
-      }
-    );
+    if(!this.spinLoader){
+      this.spinLoader = true;
+      this.orderService.placeOrderByCart(this.cartOrder).subscribe(
+        response=>{
+          window.location.href = response.stripeUrl
+        }
+      );
+    }
   }
   updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
