@@ -269,11 +269,15 @@ namespace API.Controllers.Order
                     await connection.OpenAsync();
 
                     decimal deliveryPrice;
-                    string deliveryPriceQuery = "SELECT Price FROM DeliveryService WHERE DServiceId = @DServiceId";
-                    using (SqlCommand deliveryPriceCommand = new SqlCommand(deliveryPriceQuery, connection))
+                    string getDeliveryPriceQuery = @"
+                        SELECT Price
+                        FROM DeliveryService
+                        WHERE DServiceId = @DServiceId;";
+
+                    using (var getDeliveryPriceCommand = new SqlCommand(getDeliveryPriceQuery, connection))
                     {
-                        deliveryPriceCommand.Parameters.AddWithValue("@DServiceId", productOrderDto.DeliveryId);
-                        deliveryPrice = (decimal)await deliveryPriceCommand.ExecuteScalarAsync();
+                        getDeliveryPriceCommand.Parameters.AddWithValue("@DServiceId", productOrderDto.DeliveryId);
+                        deliveryPrice = (decimal)await getDeliveryPriceCommand.ExecuteScalarAsync();
                     }
 
                     string fetchPriceQuery = "SELECT ProductPrice FROM Product WHERE ProductId = @ProductId";
@@ -295,7 +299,7 @@ namespace API.Controllers.Order
                             command.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
                             command.Parameters.AddWithValue("@DeliveryServiceID", productOrderDto.DeliveryId);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
-                            orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            //orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
                     }
                 }

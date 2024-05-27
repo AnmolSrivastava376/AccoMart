@@ -1,27 +1,30 @@
-<!-- <div class="max-w-[100vw] min-h-[100vh] flex flex-col px-[5vh] py-[5vh] parent p-parent relative"
+<div class="max-w-[100vw] min-h-[100vh] flex flex-col relative"
   [ngClass]="{'overflow-hidden max-h-[100vh]': isVisible}">
   <app-navbar></app-navbar>
-  <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] bg-gray-300 col p-adj min-h-[80vh]">
+  <div class="w-full h-full flex gap-[20px] px-[40px] pt-[30px] parent col p-adj min-h-[100vh]">
     <div class="w-full h-full flex-[75] flex flex-col">
       <div class="font-bold text-[28px] leading-[32px]">Shopping Cart</div>
-      <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} item<span *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
+      <div class="text-[16px]"><span class="font-semibold">{{cartItemLength}} item<span
+            *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
       <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
         <div *ngFor="let item of cart">
           <app-cart-product-card [productId]="item.productId"></app-cart-product-card>
         </div>
-        <div class="text-gray-500">
-          {{cart.length===0?"No items in cart":""}}
+        <div class="text-gray-500 justify-center items-center" *ngIf="cartItemLength===0">
+          No items added in cart
+          <img class="" src="../../../assets/Image/shopping-cart.gif" alt="" style="width: 350px; height: auto; margin-left: 400px;">
+
         </div>
       </div>
     </div>
-    <div class="w-full h-full flex-[25] sticky top-[35px] flex flex-col gap-[20px] mb-[30px] minw" *ngIf="!(cartItemLength===0)">
+    <div class="w-full h-full flex-[25] sticky top-[35px] flex flex-col gap-[20px] mb-[30px] minw"
+      *ngIf="!(cartItemLength===0)">
       <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Address</div>
         <div class="w-full h-[1px] bg-black"></div>
-        <div
-          *ngIf="address && (address.street || address.city || address.state || address.zipCode || address.phoneNumber)"
-          class="text-adj">
-          {{ address.street }} {{ address.city }} {{ address.state }} {{ address.zipCode }} {{ address.phoneNumber }}
+        <div *ngIf="address" class="text-adj">
+          {{ activeAddress.street }} {{ activeAddress.city }} {{ activeAddress.state }} {{ activeAddress.zipCode }} {{
+          activeAddress.phoneNumber }}
         </div>
         <div
           class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-black self-center flex justify-center items-center cursor-pointer"
@@ -29,22 +32,25 @@
           <div class="text-white font-semibold head-adj">Change Address</div>
         </div>
       </div>
-      <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]" *ngIf="!(cartItemLength===0)">
+      <div class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]"
+        *ngIf="!(cartItemLength===0)">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery Service</div>
         <div class="w-full h-[1px] bg-black"></div>
         <div *ngIf="delivery && delivery.length > 0" class="flex flex-col">
-          <div class="font-bold">{{activeDeliveryService.serviceName}} - ({{activeDeliveryService.deliveryDays}} days) - (${{activeDeliveryService.price}})</div>
+          <div class="font-bold">{{activeDeliveryService.serviceName}} - ({{activeDeliveryService.deliveryDays}} days) -
+            (${{activeDeliveryService.price}})</div>
           <div
-          class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-black self-center flex justify-center items-center cursor-pointer"
-          (click)="toggleVisibility(2)">
-          <div class="text-white font-semibold head-adj">Change Service</div>
-        </div>
+            class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-black self-center flex justify-center items-center cursor-pointer"
+            (click)="toggleVisibility(2)">
+            <div class="text-white font-semibold head-adj">Change Service</div>
+          </div>
         </div>
         <div *ngIf="!delivery || delivery.length === 0">
           Loading delivery services...
         </div>
       </div>
-      <div class="parent w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]" *ngIf="!(cartItemLength===0)">
+      <div class="checkout w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]"
+        *ngIf="!(cartItemLength===0)">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Cart Summary</div>
         <div class="w-full h-[1px] bg-white mb-[10px]"></div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
@@ -68,11 +74,15 @@
           <div class="">Grand Total</div>
           <div class="">$ {{getGrandTotal()}}</div>
         </div>
-        <div class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer"
-     (click)="placeOrder()">
-  <div class="text-black font-semibold head-adj">Buy Now</div>
-</div>
+        <div
+          class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer"
+          (click)="placeOrderByProduct()">
+          <div class="text-black font-semibold head-adj">
+            <app-loader *ngIf="spinLoader"></app-loader>
+            <span *ngIf="!spinLoader">Buy Now</span>
+          </div>
 
+        </div>
       </div>
     </div>
   </div>
@@ -84,16 +94,19 @@
     class="floating-window relative w-[90%] py-[5px] h-fit min-h-[100px] z-10 bg-white rounded-[10px] max-w-[800px] flex flex-col">
     <div class="w-full mb-[10px] h-[30px] flex items-center justify-between px-[10px] cursor-pointer"
       (click)="toggleVisibility(0)">
-      <div class="font-bold text-[20px] relative und head-adj">{{clickedIndex===1?'Change Address': clickedIndex === 2? 'Change Service': 'Choose Payment Method'}}</div>
+      <div class="font-bold text-[20px] relative und head-adj">{{clickedIndex===1?'Change Address': clickedIndex === 2?
+        'Change Service': 'Choose Payment Method'}}</div>
       <span class="font-bold">X</span>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===1">
-      <app-change-address></app-change-address>
+      <app-change-address [address]="address" [userId]="userId" (addressAdded)="updateActiveAddress($event)" (closeWindow)="toggleVisibility(0)"></app-change-address>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===2">
-      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex" (activeDeliveryIndex)="updateActiveDeliveryIndex($event)" (closeWindow)="toggleVisibility(0)"></app-change-service>
+      <app-change-service [delivery]="delivery" [index]="activeDeliveryIndex"
+        (activeDeliveryIndex)="updateActiveDeliveryIndex($event)"
+        (closeWindow)="toggleVisibility(0)"></app-change-service>
     </div>
     <div class="w-full h-full" *ngIf="clickedIndex===3">
       <app-payment-method></app-payment-method>
     </div>
-</div> -->
+  </div>

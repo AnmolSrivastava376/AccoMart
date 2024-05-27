@@ -36,7 +36,7 @@
                 <div class="">Min Price</div>
             </div>
 
-            <input  type="number" [(ngModel)]="minprice"  [ngStyle]="{ color: minprice === 0 ? 'transparent' : 'initial' }"  [ngModelOptions]="{standalone: true}"  (ngModelChange)="filterByPrice()"
+            <input type="number" [ngClass]="{'bg-gray-200': isPriceFiltered}" (input)="onMinPriceChange($event)"
                 class="p-1 border w-[100px] border-gray-300 rounded h-[32px]" />
         </div>
         <div class="w-full flex items-center gap-2 font-semibold cursor-pointer overflow-hidden justify-between justify-adjust py-[5px] rounded-[5px] px-[5px]">
@@ -44,7 +44,8 @@
                 <mat-icon>attach_money</mat-icon>
                 <div class="">Max Price</div>
             </div>
-            <input type="number" [(ngModel)]="maxprice"  [ngStyle]="{ color: minprice === 0 ? 'transparent' : 'initial' }"  [ngModelOptions]="{standalone: true}"  (ngModelChange)="filterByPrice()" class="p-1 border w-[100px] border-gray-300 rounded h-[32px]" />
+            <input type="number" [ngClass]="{'bg-gray-200': isPriceFiltered}" (input)="onMaxPriceChange($event)"
+            class="p-1 border w-[100px] border-gray-300 rounded h-[32px]" />
         </div>
         <div class="pb-4"></div>
     </div>

@@ -32,7 +32,7 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'home/productdetail/:productId', component: ProductDetailComponent},
     { path: 'home/cart', component: CartComponent, canActivate: [FrontendAuthGuard] },
-    { path: 'home/buy-product/:productId', component: BuyProductComponent},
+    { path: 'home/buy-product/:productId', component: BuyProductComponent,canActivate: [FrontendAuthGuard]},
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
     { path: 'home/reset-password', component: ResetPasswordPageComponent},

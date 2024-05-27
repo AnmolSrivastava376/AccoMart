@@ -20,11 +20,22 @@ import { FormsModule } from '@angular/forms';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
 import { ProductOrder } from '../../interfaces/placeOrder';
+import { ToastrService } from 'ngx-toastr';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-buy-product',
   standalone: true,
-  imports: [NavbarComponent, CartProductCardComponent, CommonModule, HttpClientModule,FormsModule,PaymentMethodComponent, ChangeAddressComponent, ChangeServiceComponent],
+  imports:
+  [LoaderComponent,
+    NavbarComponent,
+    CartProductCardComponent,
+    CommonModule,
+    FormsModule,
+    PaymentMethodComponent,
+    ChangeAddressComponent,
+    ChangeServiceComponent,
+    HttpClientModule],
   providers : [addressService, deliveryService,productService,orderService,CartService],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css'
@@ -32,26 +43,31 @@ import { ProductOrder } from '../../interfaces/placeOrder';
 export class BuyProductComponent {
   isVisible = false;
   selectedDeliveryId: number;
+  spinLoader:boolean= false;
   cartItemLength=0;
   private cartSubscription: Subscription;
   constructor(private router: Router, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
-    private orderService : orderService, private cartService: CartService,private route : ActivatedRoute) {}
+    private orderService : orderService, private cartService: CartService,private route : ActivatedRoute, private toastr : ToastrService) {}
 
-  cart: cartItem[] = [];
-  clickedIndex=0;
-  address: Address;
-  delivery: DeliveryService[] = [];
-  activeDeliveryIndex=0;
-  activeDeliveryService: DeliveryService;
-  products: Product[] = [];
-  decoded: { CartId: number,AddressId : number, UserId: string};
-  selectedProductId: number;
-  productOrder : ProductOrder = {
+    cart: cartItem[] = [];
+    clickedIndex = 0;
+    address: Address[];
+    activeAddress: Address;
+    delivery: DeliveryService[] = [];
+    activeDeliveryIndex = 0;
+    activeDeliveryService: DeliveryService;
+    products: Product[] = [];
+    decoded: { CartId: number,AddressId : number, UserId: string};
+    selectedProductId: number;
+    productOrder : ProductOrder = {
     userId : "",
     addressId: 0,
     deliveryId : 0,
     productId : 0
     }
+    cartId: number;
+    addressId: number;
+    userId: string;
 
 
   ngOnInit(): void {
@@ -59,90 +75,100 @@ export class BuyProductComponent {
       this.selectedProductId = +params['productId'];
     });
     this.cartService.addToCart(this.selectedProductId);
-    this.cartItemLength = this.cartService.fetchQuantityInCart();
-    this.cart = this.cartService.fetchCart();
-    this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items => {
-        this.cart = items;
-        this.cartItemLength = items.length;
-        const productRequests = items.map(item =>
-          this.productService.fetchProductById(item.productId)
-       );
-      });
+    this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
+      this.cartId = this.decoded.CartId;
+      this.addressId = 1;
+      this.userId = this.decoded.UserId;
     }
-    const addressId = this.decoded.AddressId;
-    const userId = this.decoded.UserId;
-    this.productOrder.addressId = this.decoded.AddressId;
-    this.productOrder.userId = this.decoded.UserId;
-    this.productOrder.deliveryId = 6;
-    this.productOrder.productId = this.selectedProductId;
 
+    this.productOrder.addressId = this.addressId
+    this.productOrder.userId = this.userId;
+    this.productOrder.productId = this.selectedProductId;
+    this.cartSubscription = this.cartService.getCartItems$().subscribe((item) => {
+        this.cart = item;
+        this.cartItemLength = item.length;
+        item.forEach((cartItem) => {
+          this.productService
+            .fetchProductById(cartItem.productId)
+            .subscribe((product) => {
+              this.products.push(product);
+            });
+        });
+      });
     // Fetching address
-    this.addressService.getAddressByUserId(userId)
-  .subscribe(
-    (response) => {
-      this.address = response[0];
-    }
-  );
+    this.addressService.getAddressByUserId(this.userId).subscribe((response: any) => {
+      if (response.isSuccess) {
+        this.address = response.response;
+        this.activeAddress = this.address[0];
+      } else {
+        console.error('Failed to retrieve addresses:', response.message);
+        this.toastr.error("Failed to retrieve addresses");
+      }
+    });
 
 
     // Fetching delivery
-    this.deliveryService.getDeliveryServices()
-    .subscribe(
-      (response: DeliveryService[]) => {
-        this.delivery = response;
-        if (this.delivery) {
-          this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
-        }
-      },
-      (error: any) => {
-        console.error('Error fetching delivery services:', error);
+    this.deliveryService.getDeliveryServices().subscribe((response: any) => {
+      if (response.isSuccess) {
+      this.delivery = response.response;
+      if (this.delivery && this.delivery.length > 0) {
+        this.activeDeliveryService = this.delivery[0];
+        this.productOrder.deliveryId = this.activeDeliveryService.dServiceId;
       }
-    );
+    } else {
+      console.error('Failed to retrieve delivery services:', response.message);
+      this.toastr.error("Failed to retrieve delivery services");
+    }
+  });
+
   }
+
 
   getCartTotal(): number {
     let total = 0;
-    this.cart.forEach((item, index) => {
-      total += this.products[index].productPrice * item.quantity;
-    });
+    if (this.cartItemLength > 0) {
+      this.cart.forEach((item, index) => {
+        total += this.products[index]?.productPrice * item.quantity;
+      });
+    }
     return total;
   }
   getDeliveryCharges(): number {
     return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
   }
   getDiscounts(): number {
-    return 5.00;
+    return 5.0;
   }
-  getTaxes(): number{
+  getTaxes(): number {
     return 10;
   }
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
-  placeOrder() {
+  placeOrderByProduct() {
     this.orderService.placeOrderByProduct(this.productOrder)
     .subscribe(
       (response) => {
-        window.location.href = response.url;
+        window.location.href = response.stripeUrl;
       },
       (error) => {
         console.error('Error placing order:', error);
       }
     );
   }
-  updateActiveDeliveryService(service: DeliveryService) {
-    this.activeDeliveryService = service;
-  }
-  updateActiveDeliveryIndex(index:number){
+  updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
-    this.activeDeliveryService = this.delivery[this.activeDeliveryIndex]
+    this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
+    this.productOrder.deliveryId = this.activeDeliveryService.dServiceId;
+  }
+  updateActiveAddress(address:Address){
+    this.activeAddress = address
   }
   toggleVisibility(clickedIndex: number) {
-    this.clickedIndex = clickedIndex
+    this.clickedIndex = clickedIndex;
     this.isVisible = !this.isVisible;
   }
 }
