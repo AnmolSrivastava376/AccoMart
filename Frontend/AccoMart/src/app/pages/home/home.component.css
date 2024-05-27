@@ -20,6 +20,7 @@
 @media (max-width: 650px){
     .col{
         flex-direction: column;
+        margin-top: 0;
     }
     .parent{
         padding: 0;
