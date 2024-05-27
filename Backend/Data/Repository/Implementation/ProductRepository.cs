@@ -1,6 +1,8 @@
 using Data.Models;
 using Data.Models.DTO;
+using Data.Models.Statistic_Models;
 using Data.Repository.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
@@ -91,6 +93,11 @@ namespace Data.Repository.Implementation
             }
             return products;
         }
+
+
+
+
+
 
         public async Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
         {

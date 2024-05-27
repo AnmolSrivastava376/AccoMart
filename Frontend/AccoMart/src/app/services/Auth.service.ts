@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 export class AuthService {
   constructor() { }
 
-  isLoggedIn() {
+  isAdminLoggedIn() {
     const token = localStorage.getItem('token');
     if (token) {
       const decodedToken: any = jwtDecode(token);
