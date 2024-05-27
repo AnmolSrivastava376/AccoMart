@@ -22,6 +22,8 @@ import { productService } from '../../services/product.services';
 import { ProductOrder } from '../../interfaces/placeOrder';
 import { ToastrService } from 'ngx-toastr';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { BuyNowService } from '../../services/buy-now.service';
+import { BuyNowProductCardComponent } from '../../components/buy-now-product-card/buy-now-product-card.component';
 
 @Component({
   selector: 'app-buy-product',
@@ -35,7 +37,9 @@ import { LoaderComponent } from '../../components/loader/loader.component';
     PaymentMethodComponent,
     ChangeAddressComponent,
     ChangeServiceComponent,
-    HttpClientModule],
+    BuyNowProductCardComponent,
+    HttpClientModule
+  ],
   providers : [addressService, deliveryService,productService,orderService,CartService],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css'
@@ -45,9 +49,8 @@ export class BuyProductComponent {
   selectedDeliveryId: number;
   spinLoader:boolean= false;
   cartItemLength=0;
-  private cartSubscription: Subscription;
   constructor(private router: Router, private addressService: addressService,private deliveryService : deliveryService, private productService: productService,
-    private orderService : orderService, private cartService: CartService,private route : ActivatedRoute, private toastr : ToastrService) {}
+    private orderService : orderService, private buyNowService: BuyNowService,private route : ActivatedRoute, private toastr : ToastrService) {}
 
     cart: cartItem[] = [];
     clickedIndex = 0;
@@ -74,8 +77,11 @@ export class BuyProductComponent {
     this.route.params.subscribe(params => {
       this.selectedProductId = +params['productId'];
     });
-    this.cartService.addToCart(this.selectedProductId);
-    this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
+    let newCartItem: cartItem | null = this.buyNowService.getProductFromLocalStorage();
+    if(newCartItem){
+      this.cart = [...this.cart,newCartItem]
+      this.cartItemLength = 1
+    }
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
@@ -87,17 +93,7 @@ export class BuyProductComponent {
     this.productOrder.addressId = this.addressId
     this.productOrder.userId = this.userId;
     this.productOrder.productId = this.selectedProductId;
-    this.cartSubscription = this.cartService.getCartItems$().subscribe((item) => {
-        this.cart = item;
-        this.cartItemLength = item.length;
-        item.forEach((cartItem) => {
-          this.productService
-            .fetchProductById(cartItem.productId)
-            .subscribe((product) => {
-              this.products.push(product);
-            });
-        });
-      });
+    
     // Fetching address
     this.addressService.getAddressByUserId(this.userId).subscribe((response: any) => {
       if (response.isSuccess) {
@@ -122,10 +118,9 @@ export class BuyProductComponent {
       console.error('Failed to retrieve delivery services:', response.message);
       this.toastr.error("Failed to retrieve delivery services");
     }
+    console.log(this.productOrder)
   });
-
   }
-
 
   getCartTotal(): number {
     let total = 0;

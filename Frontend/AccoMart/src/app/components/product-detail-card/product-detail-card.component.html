@@ -14,7 +14,7 @@
           <p class="leading-6 text-black mt-[10px] max-h-[250px] overflow-y-scroll text-[14px]">{{product?.productDesc}}</p>
           <p class="font-[900] py-1">$Price : {{product?.productPrice}}</p>
           <div class="button">
-            <a href="/home/buy-product/{{productId}}">BUY NOW</a><a class="cart-btn cursor-pointer" (click)="handleClick()"><i
+            <a class="cursor-pointer" (click)="handleBuyNowClick()">BUY NOW</a><a class="cart-btn cursor-pointer" (click)="handleClick()"><i
                 class="cart-icon ion-bag"></i><span class="pr-[8px]">{{displayText}}</span></a>
           </div>
         </div>
