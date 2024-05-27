@@ -16,10 +16,10 @@ export class orderService {
         return this.http.post<{stripeUrl: string}>(`http://localhost:5239/OrderController/PlaceOrderByCart`, cartOrder);
     }
 
-    placeOrderByProduct(productOrder : ProductOrder): Observable<{url: string}> {
-        return this.http.post<{url: string}>(`http://localhost:5239/OrderController/PlaceOrderByProduct`, {
+    placeOrderByProduct(productOrder : ProductOrder): Observable<{stripeUrl: string}> {
+        return this.http.post<{stripeUrl: string}>(`http://localhost:5239/OrderController/PlaceOrderByProduct`,
           productOrder
-        });
+        );
     }
     fetchAllOrders(userId: string): Observable<Order[]>{
       return this.http.get<Order[]>(`http://localhost:5239/OrderController/FetchAllOrders/${userId}`);

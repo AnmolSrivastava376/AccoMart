@@ -86,6 +86,7 @@ export class BuyProductComponent {
 
     this.productOrder.addressId = this.addressId
     this.productOrder.userId = this.userId;
+    this.productOrder.productId = this.selectedProductId;
     this.cartSubscription = this.cartService.getCartItems$().subscribe((item) => {
         this.cart = item;
         this.cartItemLength = item.length;
@@ -147,11 +148,11 @@ export class BuyProductComponent {
   getGrandTotal(): number {
     return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
   }
-  placeOrder() {
+  placeOrderByProduct() {
     this.orderService.placeOrderByProduct(this.productOrder)
     .subscribe(
       (response) => {
-        window.location.href = response.url;
+        window.location.href = response.stripeUrl;
       },
       (error) => {
         console.error('Error placing order:', error);
