@@ -55,13 +55,13 @@ namespace API.Controllers.Order
                                 Orders order = new Orders
                                 {
                                     OrderId = Convert.ToInt32(reader["OrderId"]),
-                                    OrderDate = Convert.ToDateTime(reader["OrderDate"]),
-                                    OrderAmount = Convert.ToInt32(reader["OrderAmount"]),
-                                    UserId = Convert.ToString(reader["UserId"]),
-                                    AddressId = Convert.ToInt32(reader["AddressId"]),
-                                    CartId = Convert.ToInt32(reader["CartId"]),
+                                    OrderDate = reader["OrderDate"] != DBNull.Value ? Convert.ToDateTime(reader["OrderDate"]) : DateTime.MinValue,
+                                    OrderAmount = reader["OrderAmount"] != DBNull.Value ? Convert.ToInt32(reader["OrderAmount"]) : 0,
+                                    UserId = reader["UserId"] != DBNull.Value ? Convert.ToString(reader["UserId"]) : "",
+                                    AddressId = reader["AddressId"] != DBNull.Value ? Convert.ToInt32(reader["AddressId"]) : 0,
+                                    CartId = reader["CartId"] != DBNull.Value ? Convert.ToInt32(reader["CartId"]) : 0,
                                     DeliveryServiceID = Convert.ToInt32(reader["DeliveryServiceId"]),
-                                    isCancelled = Convert.ToBoolean(reader["IsCancelled"]),
+                                    isCancelled = reader["IsCancelled"] != DBNull.Value && Convert.ToBoolean(reader["IsCancelled"]),
                                 };
                                 orders.Add(order);
                             }
