@@ -13,7 +13,7 @@
                                 {{product?.productDesc?.slice(0,40)}}<span
                                     *ngIf="product?.productDesc && product.productDesc.length > 50">...</span>
                             </div>
-                            <div class="font-semibold text-[14px]">${{product.productPrice}}</div>
+                            <div class="font-semibold text-[14px]">₹{{product.productPrice}}</div>
                         </div>
                     </div>
                     <div class="w-full h-fit flex gap-[4px]">
