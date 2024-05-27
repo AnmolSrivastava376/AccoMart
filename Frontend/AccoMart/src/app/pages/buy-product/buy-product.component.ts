@@ -75,28 +75,28 @@ export class BuyProductComponent {
       this.selectedProductId = +params['productId'];
     });
     this.cartService.addToCart(this.selectedProductId);
-    this.cartItemLength = this.cartService.fetchQuantityInCart();
-    this.cart = this.cartService.fetchCart();
-    this.cartSubscription = this.cartService.getCartItems$().subscribe(
-      items => {
-        this.cart = items;
-        this.cartItemLength = items.length;
-        const productRequests = items.map(item =>
-          this.productService.fetchProductById(item.productId)
-       );
+    this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.decoded = jwtDecode(token);
+      this.cartId = this.decoded.CartId;
+      this.addressId = 1;
+      this.userId = this.decoded.UserId;
+    }
+
+    this.productOrder.addressId = this.addressId
+    this.productOrder.userId = this.userId;
+    this.cartSubscription = this.cartService.getCartItems$().subscribe((item) => {
+        this.cart = item;
+        this.cartItemLength = item.length;
+        item.forEach((cartItem) => {
+          this.productService
+            .fetchProductById(cartItem.productId)
+            .subscribe((product) => {
+              this.products.push(product);
+            });
+        });
       });
-      this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
-      const token = localStorage.getItem('token');
-      if (token) {
-        this.decoded = jwtDecode(token);
-        this.cartId = this.decoded.CartId;
-        this.addressId = 1;
-        this.userId = this.decoded.UserId;
-      }
-
-      this.productOrder.addressId = this.addressId
-      this.productOrder.userId = this.userId;
-
     // Fetching address
     this.addressService.getAddressByUserId(this.userId).subscribe((response: any) => {
       if (response.isSuccess) {
