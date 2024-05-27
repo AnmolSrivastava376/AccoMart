@@ -1,18 +1,21 @@
-
-.box::-webkit-scrollbar{
+.box::-webkit-scrollbar {
   display: none;
 }
-@media (max-width: 1100px){
-  .col{
-      flex-direction: column;
+
+@media (max-width: 1100px) {
+  .col {
+    flex-direction: column;
   }
-  .box{
-      width: 100vw;
+
+  .box {
+    width: 100vw;
   }
-  .sidebar{
-      width: 100vw;
+
+  .sidebar {
+    width: 100vw;
   }
-  .unfix{
-      position: relative;
+
+  .unfix {
+    position: relative;
   }
 }

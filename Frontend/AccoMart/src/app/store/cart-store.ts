@@ -8,19 +8,20 @@ import axios from 'axios';
   providedIn: 'root',
 })
 export class CartStore {
-  
   constructor() {
     const token = localStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
       this.cartId = this.decoded.CartId;
-      axios.get(
-        `http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${this.cartId}`
-      ).then(response=>{
-          this._cartItems=response.data;
+      axios
+        .get(
+          `http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${this.cartId}`
+        )
+        .then((response) => {
+          this._cartItems = response.data;
           this._cartItemsSubject.next(this._cartItems);
-          localStorage.setItem("cartItems",JSON.stringify(this._cartItems));
-      })
+          localStorage.setItem('cartItems', JSON.stringify(this._cartItems));
+        });
     }
   }
 

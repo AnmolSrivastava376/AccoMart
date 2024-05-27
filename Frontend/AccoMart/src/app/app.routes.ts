@@ -1,10 +1,9 @@
-import { RouterModule, Routes, RouterLink } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { AuthComponent } from './pages/auth/auth.component';
-import { PaymentComponent } from './pages/payment/payment.component';
 import { YourOrdersComponent } from './pages/your-orders/your-orders.component';
 import { NgModule } from '@angular/core';
 import { ChartModule } from 'angular-highcharts';
@@ -22,10 +21,9 @@ import { DeliveryServicesComponent } from './pages/delivery-services/delivery-se
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-import { SearchbarComponent } from './components/searchbar/searchbar.component';
 import { AuthOtpComponent } from './pages/auth-otp/auth-otp.component';
 import { FrontendAuthGuard } from './frontend-auth.guard';
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
@@ -36,11 +34,10 @@ export const routes: Routes = [
     { path: 'home/auth', component: AuthComponent },
     { path: 'home/forgotpassword', component:ForgetpasswordPageComponent},
     { path: 'home/reset-password', component: ResetPasswordPageComponent},
-    { path: 'home/cart/payment', component: PaymentComponent },
     { path: 'home/yourorders', component: YourOrdersComponent , canActivate: [FrontendAuthGuard]},
     { path: 'home/cart/orders/invoice', component: InvoicePageComponent},
     { path: 'home/auth-otp', component: AuthOtpComponent},
-    { path: 'admin', component: AdminDashboardComponent},
+    { path: 'admin', component: AdminDashboardComponent,canActivate: [AuthGuard]},
     { path: 'admin/products',component:AdminProductsComponent,canActivate: [AuthGuard]},
     { path: 'admin/categories',component:AdminCategoriesComponent,canActivate: [AuthGuard]},
     { path: 'admin/product/edit/:productId',component:EditProductComponent,canActivate: [AuthGuard]},
@@ -48,7 +45,6 @@ export const routes: Routes = [
     { path: 'admin/delivery',component:DeliveryServicesComponent,canActivate: [AuthGuard]},
     { path: 'unauthorized',component:UnauthorizedComponent},
     { path: '**', component: NotfoundComponent }
-
 ];
 
 @NgModule({
