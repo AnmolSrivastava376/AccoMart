@@ -267,13 +267,13 @@ namespace API.Controllers.Order
                             }
                         }
 
-                        decimal discount = productAmount * 5;
+                        decimal discount = (productAmount * 5)/100;
 
                         var sessionListItem2 = new SessionLineItemOptions
                         {
                             PriceData = new SessionLineItemPriceDataOptions
                             {
-                                UnitAmount = (long)(discount),
+                                UnitAmount = (long)(discount*100),
                                 Currency = "inr",
                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                 {
