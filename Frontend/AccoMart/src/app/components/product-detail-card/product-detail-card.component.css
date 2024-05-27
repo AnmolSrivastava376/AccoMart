@@ -41,7 +41,8 @@ img {
 }
 
 .bg {
-  background: cornflowerblue;
+  background: gold;
+  font-weight: 900;
   border-radius: 50px;
   font-size: .9em;
 }
