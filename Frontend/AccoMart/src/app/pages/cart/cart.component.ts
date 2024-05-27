@@ -147,13 +147,13 @@ export class CartComponent {
   getDiscounts(): number {
     let discount = 0;
     discount = (5/100) * this.getCartTotal();
-    return +discount.toFixed(2); // Round discount to two decimal places
+    return +discount.toFixed(2);
   }
 
   getTaxes(): number {
     let totalAmount = 0;
     totalAmount =  (18/100) * this.getCartTotal() + this.getDeliveryCharges() + this.getDiscounts();
-    return +totalAmount.toFixed(2); // Round totalAmount to two decimal places
+    return +totalAmount.toFixed(2);
    }
 
   getGrandTotal(): number {

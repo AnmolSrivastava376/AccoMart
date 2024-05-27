@@ -154,19 +154,21 @@ export class BuyProductComponent {
     return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
   }
   getDiscounts(): number {
-    return 5.0;
+    let discount = 0;
+    discount = (5/100) * this.getCartTotal();
+    return +discount.toFixed(2);
   }
   getTaxes(): number {
-    return 10;
-  }
+    let totalAmount = 0;
+    totalAmount =  (18/100) * this.getCartTotal() + this.getDeliveryCharges() + this.getDiscounts();
+    return +totalAmount.toFixed(2);
+   }
   getGrandTotal(): number {
-    return (
-      this.getCartTotal() +
-      this.getDeliveryCharges() +
-      this.getTaxes() -
-      this.getDiscounts()
-    );
+    let grandTotal = 0;
+    grandTotal = this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
+    return +grandTotal.toFixed(2);
   }
+
   placeOrderByProduct() {
     this.orderService.placeOrderByProduct(this.productOrder).subscribe(
       (response) => {
