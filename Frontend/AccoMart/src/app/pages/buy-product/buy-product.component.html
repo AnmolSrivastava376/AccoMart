@@ -8,7 +8,7 @@
             *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
       <div class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
         <div *ngFor="let item of cart">
-          <app-buy-now-product-card [productId]="item.productId" [productItem]="item"></app-buy-now-product-card>
+          <app-buy-now-product-card [productId]="item.productId" [productItem]="item" (outputCartItem)="handleQuantityChange($event)"></app-buy-now-product-card>
         </div>
         <div class="text-gray-500 justify-center items-center" *ngIf="cartItemLength===0">
           No items added in cart

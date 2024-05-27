@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { productService } from '../../services/product.services';
 import { LoaderComponent } from '../loader/loader.component';
@@ -17,6 +17,7 @@ export class BuyNowProductCardComponent implements OnInit{
   @Input() productId: number
   product:Product | null
   @Input() productItem: cartItem;
+  @Output() outputCartItem: EventEmitter<cartItem> = new EventEmitter<cartItem>();
   constructor(private productService: productService, private buyNowService: BuyNowService){}
 
   ngOnInit(): void {
@@ -29,11 +30,13 @@ export class BuyNowProductCardComponent implements OnInit{
   incrementProductCount(){
     this.productItem.quantity++;
     this.buyNowService.item = this.productItem
+    this.outputCartItem.emit(this.productItem)
   }
   decrementProductCount(){
     if(this.productItem.quantity>1){
       this.productItem.quantity--;
       this.buyNowService.item = this.productItem
+      this.outputCartItem.emit(this.productItem)
     }
     else{
       this.buyNowService.removeItem()
