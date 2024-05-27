@@ -326,7 +326,7 @@ namespace API.Controllers.Order
             {
                 int orderId = 0;
                 decimal productPrice = 0.00M;
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (var connection = new SqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
 
@@ -361,10 +361,18 @@ namespace API.Controllers.Order
                             command.Parameters.AddWithValue("@ProductId", productOrderDto.ProductId);
                             command.Parameters.AddWithValue("@DeliveryServiceID", productOrderDto.DeliveryId);
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
+                            orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
+
                     }
                 }
-                return await Checkout(productOrderDto.ProductId,productOrderDto.DeliveryId,productPrice);
+
+
+
+
+                return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId,productPrice,orderId, productOrderDto.quantity);
+
+         
             }
             catch (Exception ex)
             {
@@ -395,6 +403,7 @@ namespace API.Controllers.Order
                         orderedItems.Add(item);
                     }
                 }
+
                     return Ok(orderedItems);
             }
             catch
@@ -405,7 +414,7 @@ namespace API.Controllers.Order
 
 
         [HttpPost("Checkout/Product")]
-        public async Task<StripeDto> Checkout(int productId,int deliveryId,decimal totalProductPrice)
+        public async Task<StripeDto> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
         {
 
             var options = new SessionCreateOptions
@@ -449,7 +458,7 @@ namespace API.Controllers.Order
                                         Name = name
                                     }
                                 },
-                                Quantity = (long)1
+                                Quantity = (long)quantity
                             };
 
                             options.LineItems.Add(sessionListItem);
@@ -538,6 +547,23 @@ namespace API.Controllers.Order
             Response.Headers.Add("Location", session.Url);
             StripeDto url = new StripeDto();
             url.StripeUrl = session.Url;
+
+            if(url!= null)
+            {
+                string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
+
+                var connection = new SqlConnection(_connectionString);
+                await connection.OpenAsync();
+
+                using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery, connection))
+                {
+                    insertHistoryCommand.Parameters.AddWithValue("@OrderId", orderId);
+                    insertHistoryCommand.Parameters.AddWithValue("@ProductId", productId);
+                    insertHistoryCommand.Parameters.AddWithValue("@Quantity", quantity);
+                    await insertHistoryCommand.ExecuteNonQueryAsync();
+
+                };
+            }
             return url;
 
         }
