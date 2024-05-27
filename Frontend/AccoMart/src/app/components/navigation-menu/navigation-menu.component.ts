@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } fr
 import { Route, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
+import { AuthService } from '../../services/Auth.service';
 
 @Component({
   selector: 'app-navigation-menu',
@@ -16,7 +17,8 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit{
   @ViewChild('hamMenu', { static: true }) hamMenu!: ElementRef;
   @ViewChild('screenMenu', { static: true }) screenMenu!: ElementRef;
   decoded: any;
-  constructor(private renderer: Renderer2, private router: Router) {}
+  isAdmin = false;
+  constructor(private renderer: Renderer2, private router: Router, private authService:AuthService) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -26,6 +28,11 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit{
     }
     const userName = this.decoded?.UserName ? this.decoded.UserName : '';
     this.username = userName;
+
+    if(this.authService.isAdminLoggedIn())
+      {
+        this.isAdmin = true;
+      }
   }
   
   ngAfterViewInit() {
@@ -52,6 +59,5 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit{
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
-    // this.router.navigate(['/home/auth'])
   }
 }

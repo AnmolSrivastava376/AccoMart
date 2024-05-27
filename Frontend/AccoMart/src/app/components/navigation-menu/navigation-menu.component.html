@@ -28,6 +28,12 @@
                 <span>Sign-In</span>
             </li>
         </a>
+
+        <a *ngIf="isAdmin" href="admin">
+            <li class="flex items-center space-x-2 li-animate-hover mt-3 text-black hover:text-red-800">
+                <span>Admin Dashboard</span>
+            </li>
+        </a>
     </ul>
 </div>
 <div #hamMenu class="ham-menu">
