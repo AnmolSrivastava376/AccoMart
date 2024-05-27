@@ -89,7 +89,7 @@ export class CartComponent {
       this.addressId = 1;
       this.userId = this.decoded.UserId;
     }
-
+    
     this.cartOrder.addressId = this.addressId
     this.cartOrder.userId = this.userId;
     this.cartOrder.cartId = this.cartId;
@@ -111,6 +111,7 @@ export class CartComponent {
       if (response.isSuccess) {
         this.address = response.response;
         this.activeAddress = this.address[0];
+        this.cartOrder.addressId = this.activeAddress.addressId
       } else {
         console.error('Failed to retrieve addresses:', response.message);
         this.toastr.error("Failed to retrieve addresses");
@@ -164,6 +165,7 @@ export class CartComponent {
 
   placeOrder() {
     this.spinLoader = true;
+    console.log(this.cartOrder)
     this.orderService.placeOrderByCart(this.cartOrder).subscribe(
       response=>{
         window.location.href = response.stripeUrl
@@ -177,6 +179,7 @@ export class CartComponent {
   }
   updateActiveAddress(address:Address){
     this.activeAddress = address
+    this.cartOrder.addressId = address.addressId
   }
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;

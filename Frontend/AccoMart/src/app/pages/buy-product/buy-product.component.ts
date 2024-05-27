@@ -121,6 +121,7 @@ export class BuyProductComponent {
         if (response.isSuccess) {
           this.address = response.response;
           this.activeAddress = this.address[0];
+          this.productOrder.addressId = this.activeAddress.addressId
         } else {
           console.error('Failed to retrieve addresses:', response.message);
           this.toastr.error('Failed to retrieve addresses');
@@ -168,6 +169,7 @@ export class BuyProductComponent {
     );
   }
   placeOrderByProduct() {
+    console.log(this.productOrder)
     this.orderService.placeOrderByProduct(this.productOrder).subscribe(
       (response) => {
         window.location.href = response.stripeUrl;
@@ -184,6 +186,7 @@ export class BuyProductComponent {
   }
   updateActiveAddress(address: Address) {
     this.activeAddress = address;
+    this.productOrder.addressId = this.activeAddress.addressId
   }
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;

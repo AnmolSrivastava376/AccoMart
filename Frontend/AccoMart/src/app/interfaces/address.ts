@@ -4,4 +4,5 @@ export interface Address{
   state : string
   zipCode : string
   phoneNumber : string
+  addressId: number
 }
