@@ -1,12 +1,9 @@
-@media screen and (max-width :750px){
-    .side{
-        font-size: 12px;
-    }
-}
-
 @media screen and (max-width: 650px){
     .radius-adj{
         border-radius: 0;
+    }
+    .hide{
+        display: none;
     }
 }
 
