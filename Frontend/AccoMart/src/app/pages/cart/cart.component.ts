@@ -79,7 +79,7 @@ export class CartComponent {
   cartId: number;
   addressId: number;
   userId: string;
-  
+
   ngOnInit(): void {
     this.cartItemLength = JSON.parse(localStorage.getItem('cartItems')||"").length;
     const token = localStorage.getItem('token');
@@ -145,14 +145,23 @@ export class CartComponent {
     return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
   }
   getDiscounts(): number {
-    return 5.0;
+    let discount = 0;
+    discount = (5/100) * this.getCartTotal();
+    return +discount.toFixed(2); // Round discount to two decimal places
   }
+
   getTaxes(): number {
-    return 10;
-  }
+    let totalAmount = 0;
+    totalAmount =  (18/100) * this.getCartTotal() + this.getDeliveryCharges() + this.getDiscounts();
+    return +totalAmount.toFixed(2); // Round totalAmount to two decimal places
+   }
+
   getGrandTotal(): number {
-    return this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
+    let grandTotal = 0;
+    grandTotal = this.getCartTotal() + this.getDeliveryCharges() + this.getTaxes() - this.getDiscounts();
+    return +grandTotal.toFixed(2);
   }
+
   placeOrder() {
     this.spinLoader = true;
     this.orderService.placeOrderByCart(this.cartOrder).subscribe(
