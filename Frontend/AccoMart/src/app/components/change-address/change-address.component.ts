@@ -42,6 +42,7 @@ export class ChangeAddressComponent implements OnInit {
   addAddress() {
     if (this.isAddressValid(this.newAddress)) {
       this.newAddress.zipCode = this.newAddress.zipCode.toString();
+      if(this.isZipCodeValid(this.newAddress.zipCode) && this.isPhoneNumberValid(this.newAddress.phoneNumber)){
       this.addressService.addAddress(this.newAddress, this.userId).subscribe(
         (address) => {
           this.address.push(this.newAddress); 
@@ -51,11 +52,25 @@ export class ChangeAddressComponent implements OnInit {
           this.refreshAddresss()
         }
       );
+    
     } else {
-      alert('Please fill out all address fields.');
+      alert('Please enter a valid 6-digit ZIP code and 10-digit phone number.');
     }
   }
-  
+  else{
+    alert('Please fill out all address fields.');
+  }
+  }
+
+  isZipCodeValid(zipCode: string): boolean {
+    const zipCodePattern = /^\d{6}$/;
+    return zipCodePattern.test(zipCode);
+  }
+
+  isPhoneNumberValid(phoneNumber: string): boolean {
+    const phoneNumberPattern = /^\d{10}$/;
+    return phoneNumberPattern.test(phoneNumber);
+  }
   isAddressValid(address: Address): boolean {
     return address.street.trim() !== '' &&
            address.city.trim() !== '' &&
