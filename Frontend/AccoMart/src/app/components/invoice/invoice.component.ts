@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -6,9 +6,10 @@ import { HttpClientModule } from '@angular/common/http';
   selector: 'app-invoice',
   standalone: true,
   imports: [NavbarComponent,HttpClientModule],
+  providers:[],
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.css'
 })
 export class InvoiceComponent {
-
+    
 }
