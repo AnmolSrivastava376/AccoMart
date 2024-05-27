@@ -25,7 +25,6 @@ export class BuyNowService {
 
     getProductFromLocalStorage(): cartItem | null {
         const productString = localStorage.getItem('productItem');
-        console.log(productString)
         if (productString) {
             const product: cartItem = JSON.parse(productString);
             return product;

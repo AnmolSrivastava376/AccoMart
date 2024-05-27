@@ -45,7 +45,7 @@ import { ProductOrder } from '../../interfaces/productOrder';
     productService,
     orderService,
     CartService,
-    LoaderComponent
+    LoaderComponent,
   ],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css',
@@ -56,14 +56,13 @@ export class BuyProductComponent {
   spinLoader: boolean = false;
   cartItemLength = 0;
   constructor(
-    private router: Router,
     private addressService: addressService,
     private deliveryService: deliveryService,
     private productService: productService,
-    private orderService: orderService,
     private buyNowService: BuyNowService,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private orderService: orderService
   ) {}
 
   cart: cartItem[] = [];
@@ -103,7 +102,7 @@ export class BuyProductComponent {
     if (token) {
       this.decoded = jwtDecode(token);
       this.cartId = this.decoded.CartId;
-      this.addressId = 1;
+      this.addressId = 0;
       this.userId = this.decoded.UserId;
     }
 
@@ -120,7 +119,7 @@ export class BuyProductComponent {
     this.addressService
       .getAddressByUserId(this.userId)
       .subscribe((response: any) => {
-        if (response.isSuccess) {
+        if (response.response.length>0) {
           this.address = response.response;
           this.activeAddress = this.address[0];
           this.productOrder.addressId = this.activeAddress.addressId;
@@ -180,16 +179,20 @@ export class BuyProductComponent {
   }
 
   placeOrderByProduct() {
-    if (!this.isLoading) {
-      this.isLoading = true
-      this.orderService.placeOrderByProduct(this.productOrder).subscribe(
-        (response) => {
-          window.location.href = response.stripeUrl;
-        },
-        (error) => {
-          console.error('Error placing order:', error);
-        }
-      );
+    if (this.productOrder.addressId === 0) {
+      alert('You need to provide an address');
+    } else {
+      if (!this.isLoading) {
+        this.isLoading = true;
+        this.orderService.placeOrderByProduct(this.productOrder).subscribe(
+          (response) => {
+            window.location.href = response.stripeUrl;
+          },
+          (error) => {
+            console.error('Error placing order:', error);
+          }
+        );
+      }
     }
   }
   updateActiveDeliveryIndex(index: number) {

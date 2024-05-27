@@ -86,7 +86,7 @@ export class CartComponent {
     if (token) {
       this.decoded = jwtDecode(token);
       this.cartId = this.decoded.CartId;
-      this.addressId = 1;
+      this.addressId = 0;
       this.userId = this.decoded.UserId;
     }
     
@@ -108,7 +108,7 @@ export class CartComponent {
     // Fetching address
 
     this.addressService.getAddressByUserId(this.userId).subscribe((response: any) => {
-      if (response.isSuccess) {
+      if (response.response.length>0) {
         this.address = response.response;
         this.activeAddress = this.address[0];
         this.cartOrder.addressId = this.activeAddress.addressId
@@ -164,13 +164,17 @@ export class CartComponent {
   }
 
   placeOrder() {
-    if(!this.spinLoader){
-      this.spinLoader = true;
-      this.orderService.placeOrderByCart(this.cartOrder).subscribe(
-        response=>{
-          window.location.href = response.stripeUrl
-        }
-      );
+    if(this.cartOrder.addressId === 0){
+      alert("You need to provide an address")
+    }else{
+      if(!this.spinLoader){
+        this.spinLoader = true;
+        this.orderService.placeOrderByCart(this.cartOrder).subscribe(
+          response=>{
+            window.location.href = response.stripeUrl
+          }
+        );
+      }
     }
   }
   updateActiveDeliveryIndex(index: number) {

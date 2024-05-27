@@ -1,17 +1,17 @@
 <div class="px-[20px] w-full h-fit flex gap-[10px] box">
     <div class="w-full h-full flex flex-1 flex-col gap-[10px] row">
-        <div class="w-full hover:scale-[1.02] transition-all aspect-[0.9] shadow-md m200 bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(0)" style="background-image: url('{{products && products.length>=1 ?products[0].productImageUrl:null}}');"></div>
-        <div class="w-full hover:scale-[1.02] transition-all aspect-[1.2] shadow-md m200 bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(1)"style="background-image: url('{{products && products.length>=2 ?products[1].productImageUrl:null}}');"></div>
+        <div class="w-full border hover:scale-[1.02] transition-all aspect-[0.9] shadow-md m200 bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(0)" style="background-image: url('{{products && products.length>=1 ?products[0].productImageUrl:null}}');"></div>
+        <div class="w-full border hover:scale-[1.02] transition-all aspect-[1.2] shadow-md m200 bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(1)"style="background-image: url('{{products && products.length>=2 ?products[1].productImageUrl:null}}');"></div>
     </div>
     <div class="w-full flex-[2] flex flex-col gap-[10px] row">
         <div class="w-full h-full flex gap-[10px]">
-            <div class="w-full hover:scale-[1.02] transition-all h-full m200 bg-center shadow-md bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(2)" style="background-image: url('{{products && products.length>=3 ?products[2].productImageUrl:null}}');"></div>
-            <div class="w-full hover:scale-[1.02] transition-all h-full m200 bg-center shadow-md bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(3)"style="background-image: url('{{products && products.length>=4 ?products[3].productImageUrl:null}}');"></div>
+            <div class="w-full border hover:scale-[1.02] transition-all h-full m200 bg-center shadow-md bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(2)" style="background-image: url('{{products && products.length>=3 ?products[2].productImageUrl:null}}');"></div>
+            <div class="w-full border hover:scale-[1.02] transition-all h-full m200 bg-center shadow-md bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(3)"style="background-image: url('{{products && products.length>=4 ?products[3].productImageUrl:null}}');"></div>
         </div>
-        <div class="w-full h-full hover:scale-[1.02] transition-all hide bg-center shadow-xl bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(4)" style="background-image: url('{{products && products.length>=5 ?products[4].productImageUrl:null}}');"></div>
+        <div class="w-full border h-full hover:scale-[1.02] transition-all hide bg-center shadow-xl bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(4)" style="background-image: url('{{products && products.length>=5 ?products[4].productImageUrl:null}}');"></div>
     </div>
     <div class="w-full flex flex-1 flex-col gap-[10px] hide1000">
-        <div class="w-full hover:scale-[1.02] transition-all aspect-[1.2] shadow-md bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(5)" style="background-image: url('{{products && products.length>=6 ?products[5].productImageUrl:null}}');"></div>
-        <div class="w-full hover:scale-[1.02] transition-all aspect-[0.9]  shadow-md bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(6)" style="background-image: url('{{products && products.length>=7 ?products[6].productImageUrl:null}}');"></div>
+        <div class="w-full border hover:scale-[1.02] transition-all aspect-[1.2] shadow-md bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(5)" style="background-image: url('{{products && products.length>=6 ?products[5].productImageUrl:null}}');"></div>
+        <div class="w-full border hover:scale-[1.02] transition-all aspect-[0.9]  shadow-md bg-center bg-cover bg-no-repeat rounded-[10px] cursor-pointer" (click)="navigateToProductDetail(6)" style="background-image: url('{{products && products.length>=7 ?products[6].productImageUrl:null}}');"></div>
     </div>
 </div>
