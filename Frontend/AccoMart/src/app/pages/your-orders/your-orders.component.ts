@@ -99,7 +99,6 @@ export class YourOrdersComponent implements OnInit {
         complete: ()=> this.isloading = false
       })
     });
-    this.isloading = false
   }
 }
 
