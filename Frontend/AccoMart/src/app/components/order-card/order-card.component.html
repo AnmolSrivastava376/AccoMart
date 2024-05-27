@@ -3,7 +3,7 @@
   <div class="" *ngFor="let order of orders">
       <div class="h-fit w-full border flex flex-col bg-white rounded-[10px] px-[20px] pt-[10px] pb-[20px] gap-[10px]">
           <div class="flex justify-between font-bold col450">
-            
+
               <div class="flex items-center gap-[10px] col">
                   <div class="">ID : #{{order.orderId}}</div>
                   <div *ngIf="!order.isDelivered && !order.isCancelled" class="bg-lime-400 s-start rounded-[20px] h-fit px-[6px] text-[12px] mb-[2px]">Active</div>
@@ -28,7 +28,7 @@
               </div>
           </div>
           <div class="font-bold text-adj">Delivering To : <span class="font-medium text-[14px] text-gray-500">{{order.address}}</span></div>
-          <button type="button"
+          <button type="button" *ngIf = "!order.isCancelled"
               class="w-full bg-[#21474d] text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
               (click)="downloadInvoice(order.orderId)"
               >Download Invoice
