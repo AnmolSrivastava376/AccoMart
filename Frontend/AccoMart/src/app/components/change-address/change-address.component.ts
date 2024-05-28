@@ -10,7 +10,8 @@ import { addressService } from '../../services/address.service';
   standalone: true,
   imports:[FormsModule,CommonModule],
   templateUrl: './change-address.component.html',
-  styleUrls: ['./change-address.component.css']
+  styleUrls: ['./change-address.component.css'],
+  providers: [Router, addressService]
 })
 export class ChangeAddressComponent implements OnInit {
 

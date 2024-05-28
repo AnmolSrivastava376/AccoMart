@@ -18,7 +18,7 @@ import { error } from 'highcharts';
   selector: 'app-edit-product-popup',
   templateUrl: './edit-product.component.html',
   imports:[CommonModule,FormsModule,NavbarComponent,SidebarComponent,HttpClientModule],
-  providers:[productService,CategoryService],
+  providers:[productService,CategoryService,ActivatedRoute],
   standalone:true,
   styleUrls: ['./edit-product.component.css']
 })

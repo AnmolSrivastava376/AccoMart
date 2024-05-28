@@ -42,6 +42,7 @@ import { LoaderComponent } from '../../components/loader/loader.component';
     productService,
     orderService,
     CartService,
+    ToastrService
   ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
