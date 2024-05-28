@@ -64,6 +64,8 @@ builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IUserManagement, UserManagement>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
