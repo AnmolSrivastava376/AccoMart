@@ -1,6 +1,6 @@
 # AccoMart
 
-## Installation (Frontend)
+## Installation (Frontend) 🧾
 
 ### Step 1: Clone the Repository
 
@@ -18,4 +18,14 @@ npm install --force
 ### Step 3: Start Frontend 
 ```bash
 ng serve
+```
+
+# Admin Credentials 🔑
+Email
+```bash
+kk1238405@gmail.com
+```
+Password
+```bash
+Abc@123456
 ```
