@@ -112,7 +112,8 @@ namespace Service.Services
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = register.UserName,
                 CartId = cartId,
-                TwoFactorEnabled = true,
+                TwoFactorEnabled = false,
+                EmailConfirmed = true
             };
 
 
@@ -157,8 +158,7 @@ namespace Service.Services
             {
                 /*await _signInManager.SignOutAsync();
                 await _signInManager.PasswordSignInAsync(user, login.Password, false, true);*/
-                if (user.TwoFactorEnabled)
-                {
+              
                     var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
                     return new ApiResponse<LoginOtpResponse>
                     {
@@ -173,24 +173,9 @@ namespace Service.Services
                         Message = "OTP sent to email "
                     };
 
-                }
-                else
-                {
-                    return new ApiResponse<LoginOtpResponse>
-                    {
-                        Response = new LoginOtpResponse()
-                        {
-                            User = user,
-                            Token = string.Empty,
-                            IsTwoFactorEnable = user.TwoFactorEnabled
-                        },
-                        IsSuccess = false,
-                        StatusCode = 500,
-                        Message = "2FA is not enabled"
-                    };
-
-
-                }
+                
+             
+                
 
             }
             else
@@ -315,13 +300,13 @@ namespace Service.Services
 
             if (user != null)
             {
-               // var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
-                /*var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
+               var signInResult = await _signInManager.PasswordSignInAsync(user, password, true, false);
+               // var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
 
                 if (signInResult.Succeeded)
-                {*/
+                {
                     return await GetJwtTokenAsync(user);
-               // }
+                }
             }
 
             return new ApiResponse<LoginResponse>()
