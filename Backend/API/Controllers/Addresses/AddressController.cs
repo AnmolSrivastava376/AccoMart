@@ -1,8 +1,6 @@
 ﻿using Data.Models;
 using Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Service.Models;
 
 

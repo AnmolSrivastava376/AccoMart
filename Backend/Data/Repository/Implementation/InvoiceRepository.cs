@@ -1,7 +1,4 @@
-﻿
-
-
-using Data.Models.DTO;
+﻿using Data.Models.DTO;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;

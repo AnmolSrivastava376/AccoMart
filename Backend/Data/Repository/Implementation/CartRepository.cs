@@ -1,21 +1,8 @@
 ﻿using Data.Models.CartModels;
-
 using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
-using Newtonsoft.Json;
-using Data.Models;
-
-using Data.Models.DTO;
-
-using Microsoft.AspNetCore.Mvc;
-
-using Azure;
-using System.Xml.Linq;
-
-
-
 
 namespace Data.Repository.Implementation
 
