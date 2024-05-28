@@ -1,7 +1,4 @@
-﻿﻿using Data.Models;
-using Data.Models.CartModels;
-using Data.Models.DTO;
-using Service.Services.Implementation;
+﻿using Data.Models.CartModels;
 using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -31,24 +28,11 @@ namespace API.Controllers.ShoppingCart
         [HttpGet("Get/CartItems")]
         public async Task<IEnumerable<CartItem>> GetCartItems(int cartId)
         {
-            /*var user = HttpContext.User as ClaimsPrincipal;
-            var cartIdClaim = user.FindFirst("CartId");
-            int cartId = 0;
-            if (cartIdClaim != null)
-            {
-
-                cartId = int.Parse(cartIdClaim.Value);
-            }*/
-
+       
             return await _cartService.GetCartItemsAsync(cartId);      
         }
 
-        /*[HttpGet("Get/CartItemPrice")]
-
-        public async Task<IEnumerable<CartItem>> GetCartItems(int cartId)
-        {
-
-        }*/
+     
 
 
         [HttpPut("Update/CartItem")]

@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service.Models;
-using Service.Services;
 using System.Text;
 using StackExchange.Redis;
 using Service.Services.Interface;
@@ -20,6 +19,7 @@ using Data.Repository.Interface;
 using InvoiceService = Service.Services.Implementation.InvoiceService;
 using Data.Models.Authentication.User;
 using Data.Repository.Implementation.Cart;
+using Service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -65,6 +65,11 @@ builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IUserManagement, UserManagement>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IChartRepository, ChartRepository>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+
+
 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

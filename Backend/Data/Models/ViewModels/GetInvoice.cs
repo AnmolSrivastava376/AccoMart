@@ -1,13 +1,6 @@
 ﻿using Data.Models.Address;
-using Data.Models.CartModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-
-namespace Data.Models.DTO
+namespace Data.Models.ViewModels
 {
     public class GetInvoice
     {
@@ -20,10 +13,6 @@ namespace Data.Models.DTO
         public DateTime OrderDate {  get; set; } 
         public DateTime OrderTime { get; set;}
         public decimal OrderAmount {  get; set; } 
-
-
-
-
 
     }
 }

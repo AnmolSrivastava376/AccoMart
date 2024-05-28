@@ -1,6 +1,6 @@
-﻿namespace Data.Models.DTO
+﻿namespace Data.Models.ViewModels
 {
-    public class Product
+    public class ViewProduct
     {
         public string ProductName { get; set; }
         public string ProductDesc { get; set; }

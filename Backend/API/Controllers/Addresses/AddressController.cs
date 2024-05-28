@@ -1,12 +1,12 @@
+
 ﻿using Data.Models.Address;
+
+﻿using Data.Models;
+using Data.Repository.Interfaces;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Service.Models;
-using Stripe;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace API.Controllers.Addresses
 {
@@ -15,9 +15,11 @@ namespace API.Controllers.Addresses
     public class AddressController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IAddressRepository _addressRepository;
 
-        public AddressController(IConfiguration configuration)
+        public AddressController(IConfiguration configuration, IAddressRepository addressRepository)
         {
+            _addressRepository = addressRepository;
             _configuration = configuration;
         }
 
@@ -31,30 +33,14 @@ namespace API.Controllers.Addresses
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-                {
-                    await connection.OpenAsync();
-                    using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, PhoneNumber, States, ZipCode, UserId) VALUES (@Street, @City, @PhoneNumber, @State, @ZipCode, @UserId)", connection))
-                    {
-                        command.Parameters.AddWithValue("@Street", address.Street);
-                        command.Parameters.AddWithValue("@City", address.City);
-                        command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
-                        command.Parameters.AddWithValue("@State", address.State);
-                        command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
-                        command.Parameters.AddWithValue("@UserId", userId);
-
-                        await command.ExecuteNonQueryAsync();
-                    }
-                }
-
-                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address added successfully.", StatusCode = 200 });
+                var result = await _addressRepository.AddAddressAsync(address, userId);
+                return Ok(new ApiResponse<int> { IsSuccess = true, Response = result, Message = "Address added successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, new ApiResponse<string> { IsSuccess = false, Message = $"Internal server error: {ex.Message}", StatusCode = 500 });
-
             }
+
         }
 
         [HttpGet("GetAddress/addressId={addressId}")]
@@ -62,32 +48,14 @@ namespace API.Controllers.Addresses
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                var address = await _addressRepository.GetAddressByIdAsync(addressId);
+                if (address != null)
                 {
-                    await connection.OpenAsync();
-                    using (var command = new SqlCommand("SELECT * FROM Addresses WHERE AddressId = @AddressId", connection))
-                    {
-                        command.Parameters.AddWithValue("@AddressId", addressId);
-                        using (var reader = await command.ExecuteReaderAsync())
-                        {
-                            if (await reader.ReadAsync())
-                            {
-                                AddressModel address = new AddressModel
-                                {
-                                    Street = Convert.ToString(reader["Street"]),
-                                    City = Convert.ToString(reader["City"]),
-                                    PhoneNumber = Convert.ToString(reader["PhoneNumber"]),
-                                    State = Convert.ToString(reader["States"]),
-                                    ZipCode = Convert.ToString(reader["ZipCode"]),
-                                };
-                                return Ok(new ApiResponse<AddressModel> { IsSuccess = true, Response = address, StatusCode = 200 });
-                            }
-                            else
-                            {
-                                return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
-                            }
-                        }
-                    }
+                    return Ok(new ApiResponse<AddressModel> { IsSuccess = true, Response = address, StatusCode = 200 });
+                }
+                else
+                {
+                    return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
                 }
             }
             catch (Exception ex)
@@ -96,43 +64,20 @@ namespace API.Controllers.Addresses
             }
         }
 
+
         [HttpGet("GetAddress/{userId}")]
         public async Task<IActionResult> GetAddressByUserId(string userId)
         {
             try
             {
-                List<AddressModel> addresses = new List<AddressModel>();
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                var addresses = await _addressRepository.GetAddressesByUserIdAsync(userId);
+                if (addresses != null && addresses.Count > 0)
                 {
-                    await connection.OpenAsync();
-                    using (var command = new SqlCommand("SELECT * FROM Addresses WHERE UserId = @userId", connection))
-                    {
-                        command.Parameters.AddWithValue("@userId", userId);
-                        using (var reader = await command.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                AddressModel address = new AddressModel
-                                {
-                                    AddressId = Convert.ToInt32(reader["AddressId"]),
-                                    Street = Convert.ToString(reader["Street"]),
-                                    City = Convert.ToString(reader["City"]),
-                                    PhoneNumber = Convert.ToString(reader["PhoneNumber"]),
-                                    State = Convert.ToString(reader["States"]),
-                                    ZipCode = Convert.ToString(reader["ZipCode"]),
-                                };
-                                addresses.Add(address);
-                            }
-                            if (addresses.Count > 0)
-                            {
-                                return Ok(new ApiResponse<List<AddressModel>> { IsSuccess = true, Response = addresses, StatusCode = 200 });
-                            }
-                            else
-                            {
-                                return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Addresses not found.", StatusCode = 404 });
-                            }
-                        }
-                    }
+                    return Ok(new ApiResponse<List<AddressModel>> { IsSuccess = true, Response = addresses, StatusCode = 200 });
+                }
+                else
+                {
+                    return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Addresses not found.", StatusCode = 404 });
                 }
             }
             catch (Exception e)
@@ -148,27 +93,18 @@ namespace API.Controllers.Addresses
             {
                 return BadRequest(new ApiResponse<string> { IsSuccess = false, Message = "Invalid input data.", StatusCode = 400 });
             }
+
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                bool updated = await _addressRepository.UpdateAddressAsync(id, address);
+                if (updated)
                 {
-                    await connection.OpenAsync();
-                    using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, PhoneNumber = @PhoneNumber,States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection))
-                    {
-                        command.Parameters.AddWithValue("@Street", address.Street);
-                        command.Parameters.AddWithValue("@City", address.City);
-                        command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
-                        command.Parameters.AddWithValue("@State", address.State);
-                        command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
-                        command.Parameters.AddWithValue("@AddressId", id);
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        if (rowsAffected == 0)
-                        {
-                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
-                        }
-                    }
+                    return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address updated successfully.", StatusCode = 200 });
                 }
-                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address updated successfully.", StatusCode = 200 });
+                else
+                {
+                    return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
+                }
             }
             catch (Exception ex)
             {
@@ -181,20 +117,15 @@ namespace API.Controllers.Addresses
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                bool deleted = await _addressRepository.DeleteAddressAsync(id);
+                if (deleted)
                 {
-                    await connection.OpenAsync();
-                    using (var command = new SqlCommand("DELETE FROM Addresses WHERE AddressId = @AddressId", connection))
-                    {
-                        command.Parameters.AddWithValue("@AddressId", id);
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        if (rowsAffected == 0)
-                        {
-                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
-                        }
-                    }
+                    return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address deleted successfully.", StatusCode = 200 });
                 }
-                return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Address deleted successfully.", StatusCode = 200 });
+                else
+                {
+                    return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Address not found.", StatusCode = 404 });
+                }
             }
             catch (Exception ex)
             {
@@ -203,3 +134,4 @@ namespace API.Controllers.Addresses
         }
     }
 }
+

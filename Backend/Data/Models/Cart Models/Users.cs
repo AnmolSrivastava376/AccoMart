@@ -1,4 +1,4 @@
-﻿namespace Data.Models
+﻿namespace Data.Models.CartModels
 {
     public class Users
     {

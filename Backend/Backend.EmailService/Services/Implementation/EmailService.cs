@@ -9,16 +9,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using MailKit.Security;
+using Service.Services.Interface;
 
-namespace Service.Services
+namespace Service.Services.Implementation
 {
-    
+
     public class EmailService : IEmailService
     {
         private readonly EmailConfiguration _emailConfig;
         public EmailService(EmailConfiguration emailConfig)
         {
-            _emailConfig = emailConfig; 
+            _emailConfig = emailConfig;
         }
         public void SendEmail(Message message)
         {
@@ -26,7 +27,7 @@ namespace Service.Services
             Send(emailMessage);
         }
 
-         public MimeMessage CreateEmailMessage(Message message) 
+        public MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
@@ -36,11 +37,11 @@ namespace Service.Services
             {
                 Text = message.Content
             };
-            return emailMessage;    
+            return emailMessage;
         }
 
 
-         public void Send(MimeMessage mailMessage)
+        public void Send(MimeMessage mailMessage)
         {
             using var client = new SmtpClient();
 
@@ -49,7 +50,7 @@ namespace Service.Services
                 client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, true);
 
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
-                client.Authenticate(_emailConfig.UserName, _emailConfig.Password);  
+                client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
                 client.Send(mailMessage);
             }
             catch (Exception ex)
@@ -64,6 +65,6 @@ namespace Service.Services
 
         }
 
-        
+
     }
 }

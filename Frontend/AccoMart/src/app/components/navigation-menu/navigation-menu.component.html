@@ -24,11 +24,11 @@
             </li>
         </a>
         <li (click)="logout()" *ngIf="isLoggedIn"
-            class="flex items-center space-x-2 li-animate-hover">
+            class="flex items-center space-x-2 li-animate-hover cursor-pointer">
             <div class="w-[20px] h-[20px] flex items-center justify-center">
                 <i class="fas fa-sign-out-alt"></i>
             </div>
-            <span>Logout</span>
+            <span >Logout</span>
         </li>
         <a *ngIf="!isLoggedIn" href="home/auth">
             <li class="flex items-center space-x-2 li-animate-hover">

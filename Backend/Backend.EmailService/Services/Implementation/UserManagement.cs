@@ -1,24 +1,18 @@
 
 using Microsoft.AspNetCore.Identity;
 using Service.Models;
-using Service.Models.Authentication.Register;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Win32;
-using Service.Models.Authentication.User;
-using Service.Models.Authentication.Login;
-using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
-using Azure.Core;
 using System.Text;
 using Service.Services.Interface;
-using Service.Services.Implementation;
 using Microsoft.Data.SqlClient;
 using Stripe;
-using Data.Models.Authentication.User;
 using Data.Models.Address;
+using Data.Models.Authentication.Register;
+using Data.Models.Authentication.User;
 
 
 namespace Service.Services
@@ -113,7 +107,8 @@ namespace Service.Services
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = register.UserName,
                 CartId = cartId,
-                TwoFactorEnabled = true,
+                TwoFactorEnabled = false,
+                EmailConfirmed = true
             };
 
 
@@ -158,40 +153,24 @@ namespace Service.Services
             {
                 /*await _signInManager.SignOutAsync();
                 await _signInManager.PasswordSignInAsync(user, login.Password, false, true);*/
-                if (user.TwoFactorEnabled)
+
+                var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+                return new ApiResponse<LoginOtpResponse>
                 {
-                    var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-                    return new ApiResponse<LoginOtpResponse>
+                    Response = new LoginOtpResponse()
                     {
-                        Response = new LoginOtpResponse()
-                        {
-                            User = user,
-                            Token = token,
-                            IsTwoFactorEnable = user.TwoFactorEnabled
-                        },
-                        IsSuccess = true,
-                        StatusCode = 200,
-                        Message = "OTP sent to email "
-                    };
-
-                }
-                else
-                {
-                    return new ApiResponse<LoginOtpResponse>
-                    {
-                        Response = new LoginOtpResponse()
-                        {
-                            User = user,
-                            Token = string.Empty,
-                            IsTwoFactorEnable = user.TwoFactorEnabled
-                        },
-                        IsSuccess = false,
-                        StatusCode = 500,
-                        Message = "2FA is not enabled"
-                    };
+                        User = user,
+                        Token = token,
+                        IsTwoFactorEnable = user.TwoFactorEnabled
+                    },
+                    IsSuccess = true,
+                    StatusCode = 200,
+                    Message = "OTP sent to email "
+                };
 
 
-                }
+
+
 
             }
             else
@@ -303,7 +282,7 @@ namespace Service.Services
         public async Task<ApiResponse<LoginResponse>> LoginUserWithJWTokenAsync(string password, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if(user == null )
+            if (user == null)
             {
                 return new ApiResponse<LoginResponse>()
                 {
@@ -316,13 +295,13 @@ namespace Service.Services
 
             if (user != null)
             {
-               // var signInResult = await _signInManager.PasswordSignInAsync(user, password, false, false);
-                /*var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
+                var signInResult = await _signInManager.PasswordSignInAsync(user, password, true, false);
+                // var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
 
                 if (signInResult.Succeeded)
-                {*/
+                {
                     return await GetJwtTokenAsync(user);
-               // }
+                }
             }
 
             return new ApiResponse<LoginResponse>()
@@ -338,7 +317,7 @@ namespace Service.Services
         {
 
             var user = await _userManager.FindByEmailAsync(email);
-           var signIn = await _userManager.VerifyTwoFactorTokenAsync(user,"Email", code);
+            var signIn = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", code);
             //var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, true, false);
             if (user == null)
             {
@@ -351,12 +330,12 @@ namespace Service.Services
                 };
             }
             if (signIn)
-          {
-              if (user != null)
-              {
-                  return await GetJwtTokenAsync(user);
-              }
-          }
+            {
+                if (user != null)
+                {
+                    return await GetJwtTokenAsync(user);
+                }
+            }
             return new ApiResponse<LoginResponse>()
             {
 
@@ -368,7 +347,7 @@ namespace Service.Services
                 StatusCode = 400,
                 Message = $"Invalid Otp"
             };
-            
+
 
         }
 

@@ -1,6 +1,9 @@
-using Data.Models;
-using Data.Models.DTO;
-using Data.Models.Statistic_Models;
+
+using Data.Models.Product_Category;
+using Data.Models.Product_Category.Category;
+using Data.Models.Product_Category.Product;
+using Data.Models.ViewModels;
+using Data.Models.ViewModels.UpdateProduct;
 using Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,8 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System.Diagnostics;
-using System.Linq;
+
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -27,7 +29,6 @@ namespace Data.Repository.Implementation
             _configuration = configuration;
             _database = redis.GetDatabase();
         }
-
         public async Task<List<Category>> GetAllCategories()
         {
             List<Category> categories;
@@ -64,9 +65,9 @@ namespace Data.Repository.Implementation
             return categories;
         }
 
-        public async Task<List<Models.Product>> GetAllProductsAsync()
+        public async Task<List<Product>> GetAllProducts()
         {
-            List<Models.Product> products = new List<Models.Product>();
+            List<Product> products = new List<Product>();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 string sqlQuery = $"SELECT * FROM Product";
@@ -74,9 +75,9 @@ namespace Data.Repository.Implementation
                 await connection.OpenAsync();
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync()) 
+                    while (await reader.ReadAsync())
                     {
-                        Models.Product product = new Models.Product
+                        Product product = new Product
                         {
                             ProductId = Convert.ToInt32(reader["ProductId"]),
                             ProductName = Convert.ToString(reader["ProductName"]),
@@ -93,23 +94,56 @@ namespace Data.Repository.Implementation
             }
             return products;
         }
+        public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize)
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                int offset = (pageNo - 1) * pageSize;
+                string sqlQuery = $"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product) AS Temp WHERE RowNum >= @Offset AND RowNum < @Limit";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@Offset", offset);
+                command.Parameters.AddWithValue("@Limit", offset + pageSize);
 
-        public async Task<List<Models.Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Product product = new Product
+                        {
+                            ProductId = Convert.ToInt32(reader["ProductId"]),
+                            ProductName = Convert.ToString(reader["ProductName"]),
+                            ProductDesc = Convert.ToString(reader["ProductDesc"]),
+                            ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]),
+                            ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
+                            CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                            Stock = Convert.ToInt32(reader["Stock"])
+                        };
+                        products.Add(product);
+                    }
+                    reader.Close();
+                }
+            }
+            return products;
+        }
+        public async Task<List<Product>> GetProductsByPageNo(int id, int pageNo, int pageSize)
         {
 
-            List<Models.Product> products = new List<Models.Product>();
+            List<Product> products = new List<Product>();
             string cacheKey = $"ProductsPage{id}_{pageNo}_{pageSize}";
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
             {
-                products = JsonConvert.DeserializeObject<List<Models.Product>>(cachedProducts);
-  
+                products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+
             }
 
             else
             {
-                
+
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     int offset = (pageNo - 1) * pageSize;
@@ -126,7 +160,7 @@ namespace Data.Repository.Implementation
                     {
                         while (await reader.ReadAsync())
                         {
-                            Models.Product product = new Models.Product
+                            Product product = new Product
                             {
                                 ProductId = Convert.ToInt32(reader["ProductId"]),
                                 ProductName = Convert.ToString(reader["ProductName"]),
@@ -146,16 +180,16 @@ namespace Data.Repository.Implementation
             return products;
         }
 
-        public async Task<List<Models.Product>> GetAllProductsByCategoryAsync(int id, string orderBy)
+        public async Task<List<Product>> GetAllProductsByCategory(int id, string orderBy)
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
-            List<Models.Product> products = new List<Models.Product>();
+            List<Product> products = new List<Product>();
             string cacheKey = $"ProductByCategory_{id}";
             string cachedProducts = null;
 
             if ((!string.IsNullOrWhiteSpace(cachedProducts) && cachedProducts.Trim() != "[]"))
             {
-                products = JsonConvert.DeserializeObject<List<Models.Product>>(cachedProducts);
+                products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
             }
             else
             {
@@ -170,7 +204,7 @@ namespace Data.Repository.Implementation
                     {
                         while (await reader.ReadAsync())
                         {
-                            Models.Product product = new Models.Product
+                            Product product = new Product
                             {
                                 ProductId = Convert.ToInt32(reader["ProductId"]),
                                 ProductName = Convert.ToString(reader["ProductName"]),
@@ -258,19 +292,19 @@ namespace Data.Repository.Implementation
             return category;
         }
 
-        public async Task<Models.Product> GetProductById(int id)
+        public async Task<Product> GetProductById(int id)
         {
-           
+
             string cacheKey = $"Product_{id}";
             string cachedProduct = await _database.StringGetAsync(cacheKey);
 
             if (cachedProduct != null)
             {
-                return JsonConvert.DeserializeObject<Models.Product>(cachedProduct);
+                return JsonConvert.DeserializeObject<Product>(cachedProduct);
             }
             else
             {
-                Models.Product product = new Models.Product();
+                Product product = new Product();
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
@@ -279,7 +313,7 @@ namespace Data.Repository.Implementation
                     string sqlQuery = $"SELECT * FROM Product WHERE ProductId = {id}";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
-                   
+
 
                     while (await reader.ReadAsync())
                     {
@@ -300,7 +334,7 @@ namespace Data.Repository.Implementation
         }
 
 
-        
+
         public async Task<Category> CreateCategory(string categoryName)
         {
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -335,9 +369,9 @@ namespace Data.Repository.Implementation
             }
         }
 
-        public async Task<Models.Product> CreateProduct(Models.DTO.Product productDto)
+        public async Task<Product> CreateProduct(ViewProduct productDto)
         {
-            Models.Product product = new Models.Product();
+            Product product = new Product();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
@@ -393,9 +427,9 @@ namespace Data.Repository.Implementation
             return category;
         }
 
-        public async Task<Models.Product> UpdateProduct(int productId, UpdateProduct productDto)
+        public async Task<Product> UpdateProduct(int productId, UpdateProduct productDto)
         {
-            Models.Product product = new Models.Product();
+            Product product = new Product();
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -572,10 +606,10 @@ namespace Data.Repository.Implementation
             await _database.KeyDeleteAsync(cacheKey);
         }
 
-        public async Task<List<Models.Product>> GetProductBySearchName(string prefix = "")
+        public async Task<List<Product>> GetProductBySearchName(string prefix = "")
         {
             prefix = string.IsNullOrEmpty(prefix) ? "" : prefix.ToLower();
-            List<Models.Product> products = new List<Models.Product>();
+            List<Product> products = new List<Product>();
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -586,16 +620,16 @@ namespace Data.Repository.Implementation
 
                 while (await reader.ReadAsync())
                 {
-                    Models.Product product = new Models.Product(); 
+                    Product product = new Product();
                     product.ProductId = Convert.ToInt32(reader["ProductId"]);
                     product.ProductName = Convert.ToString(reader["ProductName"]);
                     product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
                     product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
                     product.ProductPrice = Convert.ToDecimal(reader["ProductPrice"]);
                     product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
-                    product.Stock = Convert.ToInt32(reader["Stock"]); 
+                    product.Stock = Convert.ToInt32(reader["Stock"]);
 
-                    products.Add(product); 
+                    products.Add(product);
                 }
                 reader.Close();
             }
@@ -603,10 +637,10 @@ namespace Data.Repository.Implementation
             return products;
         }
 
-        public async Task<List<Models.Product>> GetProductsByCategoryName(string name = "")
+        public async Task<List<Product>> GetProductsByCategoryName(string name = "")
         {
             name = string.IsNullOrEmpty(name) ? "" : name.ToLower();
-            List<Models.Product> products = new List<Models.Product>();
+            List<Product> products = new List<Product>();
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -626,7 +660,7 @@ namespace Data.Repository.Implementation
 
                 while (await reader.ReadAsync())
                 {
-                    Models.Product product = new Models.Product();
+                    Product product = new Product();
                     product.ProductId = Convert.ToInt32(reader["ProductId"]);
                     product.ProductName = Convert.ToString(reader["ProductName"]);
                     product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
@@ -644,6 +678,3 @@ namespace Data.Repository.Implementation
         }
     }
 }
-
-
-

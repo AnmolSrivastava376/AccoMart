@@ -1,227 +1,170 @@
 <div class="parent w-[100vw] flex items-center justify-center h-[100vh]">
   <div
-    class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px] overflow-hidden child"
-  >
+    class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px] overflow-hidden child">
     <div class="landing-img w-full h-full flex-[1] min-w-[400px]"></div>
     <div
-      class="w-full h-full flex-col flex-[1] min-w-[300px] flex items-center justify-center py-[40px] px-[0px] gap-[20px] p-adj"
-    >
+      class="w-full h-full flex-col flex-[1] min-w-[300px] flex items-center justify-center py-[40px] px-[0px] gap-[20px] p-adj">
       <div class="flex justify-center w-full h-full">
-        <div
-          class="w-full h-full px-[20px] slide-down flex flex-col justify-center"
-        >
+        <div class="w-full h-full px-[20px] slide-down flex flex-col justify-center">
           <div class="px-[20px] pt-[20px] pb-[30px]">
-            <div
-              class="text-[#36737c] text-[32px] text-center font-bold"
-              *ngIf="!isLogin"
-            >
+            <div class="text-[#36737c] text-[32px] text-center font-bold" *ngIf="!isLogin">
               Register
             </div>
-            <div
-              class="text-[#36737c] text-[32px] text-center font-bold"
-              *ngIf="isLogin"
-            >
+            <div class="text-[#36737c] text-[32px] text-center font-bold" *ngIf="isLogin">
               Login
             </div>
             <!-- Register box -->
             <form [formGroup]="registerForm" class="" *ngIf="!isLogin">
               <!-- Username Field -->
               <div>
-                <label for="username" class="block text-sm font-semibold mb-1"
-                  >Username<span class="text-red-500">*</span></label>
-                <input
-                  type="text"
-                  id="username"
-                  formControlName="username"
-                  placeholder="Enter your username"
-                  class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400"
-                />
+                <label for="username" class="block text-sm font-semibold mb-1">Username<span
+                    class="text-red-500">*</span></label>
+                <input type="text" id="username" formControlName="username" placeholder="Enter your username"
+                  class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400" />
                 <div *ngIf="registerForm.get('username')?.errors">
-                  <div *ngIf="registerForm.get('username')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-2">
+                  <div *ngIf="registerForm.get('username')?.errors?.['required']"
+                    class="text-red-600 text-sm text-left mt-2">
                     UserName is required.
-                 </div>
                   </div>
+                </div>
               </div>
               <!-- Email Field -->
               <div>
-                <label for="email" class="block text-sm font-semibold mb-1"
-                  >Email<span class="text-red-500">*</span></label
-                >
-                <input
-                  type="email"
-                  id="email"
-                  formControlName="email"
-                  placeholder="Enter your email"
-                  class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
-                />
+                <label for="email" class="block text-sm font-semibold mb-1">Email<span
+                    class="text-red-500">*</span></label>
+                <input type="email" id="email" formControlName="email" placeholder="Enter your email"
+                  class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
                 <div *ngIf="registerForm.get('email')?.errors">
-                <div *ngIf="registerForm.get('email')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-1 mb-1">
-                  Email is required.
-               </div>
+                  <div *ngIf="registerForm.get('email')?.errors?.['required']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
+                    Email is required.
+                  </div>
 
-               <div *ngIf="registerForm.get('email')?.errors?.['email']"  class="text-red-600 text-sm text-left mt-1 mb-1">
-                Email is invalid.
-             </div>
-             </div>
+                  <div *ngIf="registerForm.get('email')?.errors?.['email']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
+                    Email is invalid.
+                  </div>
+                </div>
               </div>
               <!-- Password Field -->
-              <div>
-                <label for="password" class="block text-sm font-semibold mb-1"
-                  >Password<span class="text-red-500">*</span></label
-                >
-                <input
-                  type="password"
-                  id="password"
-                  formControlName="password"
-                  placeholder="Enter your password"
-                  class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
-                />
+              <div class="relative">
+                <label for="password" class="block text-sm font-semibold mb-1">Password<span
+                    class="text-red-500">*</span></label>
+                <input type={{inputType}} id="password" formControlName="password" placeholder="Enter your password"
+                  class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
+                <div class="absolute w-fit h-fit cursor-pointer top-[30px] right-[15px]" (click)="toogleInputType()">
+                  <i class="fa-eye"
+                    [ngClass]="{'fa-solid': inputType==='password', 'fa-regular': inputType==='text'}"></i>
+                </div>
                 <div *ngIf="registerForm.get('password')?.errors">
 
-                  <div *ngIf="registerForm.get('password')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-1 mb-1">
+                  <div *ngIf="registerForm.get('password')?.errors?.['required']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
                     Password is required.
-                 </div>
-                 <div *ngIf="registerForm.get('password')?.errors?.['minlength']" class="text-red-600 text-sm text-left mt-1 mb-1">
+                  </div>
+                  <div *ngIf="registerForm.get('password')?.errors?.['minlength']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
                     Password must be at least 6 characters long.
-                 </div>
-                 <div *ngIf="registerForm.get('password')?.errors?.['pattern']" class="text-red-600 text-sm text-left mt-1 mb-1">
-                    Password must contain at least one uppercase letter, one lowercase letter, and one special character.
-                 </div>
+                  </div>
+                  <div *ngIf="registerForm.get('password')?.errors?.['pattern']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
+                    Password must contain at least one uppercase letter, one lowercase letter, and one special
+                    character.
+                  </div>
                 </div>
               </div>
               <!-- Error Message -->
-              <div
-                *ngIf="errorMessage"
-                class="text-red-600 text-sm text-center mt-2"
-              >
+              <div *ngIf="errorMessage" class="text-red-600 text-sm text-center mt-2">
                 {{ errorMessage }}
               </div>
 
               <!--User created Message-->
-              <div
-              *ngIf="successMessage"
-              class="text-green-600 text-sm text-center mt-2"
-            >
-              {{ successMessage }}
-            </div>
+              <div *ngIf="successMessage" class="text-green-600 text-sm text-center mt-2">
+                {{ successMessage }}
+              </div>
               <!-- Register Button -->
               <div class="flex justify-center">
-                <button
-                  type="button"
-                  (click)="onRegister()"
-                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
-                >
-                <span *ngIf="!registerSpinLoader">Register</span>
-                          <div *ngIf="registerSpinLoader" class="flex justify-center">
-                              <app-loader></app-loader>
-                          </div>
+                <button type="button" (click)="onRegister()"
+                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring">
+                  <span *ngIf="!registerSpinLoader">Register</span>
+                  <div *ngIf="registerSpinLoader" class="flex justify-center">
+                    <app-loader></app-loader>
+                  </div>
                 </button>
               </div>
             </form>
 
             <!-- Login box -->
-            <form
-              [formGroup]="loginForm"
-              class="gap-[10px] flex flex-col"
-              *ngIf="isLogin"
-            >
+            <form [formGroup]="loginForm" class="gap-[10px] flex flex-col" *ngIf="isLogin">
               <div class="">
-                <label for="email" class="block text-sm font-semibold mb-1"
-                  >Email<span class="text-red-500">*</span></label
-                >
-                <input
-                  type="email"
-                  id="email"
-                  formControlName="email"
-                  placeholder="Enter your email"
-                  class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
-                />
+                <label for="email" class="block text-sm font-semibold mb-1">Email<span
+                    class="text-red-500">*</span></label>
+                <input type="email" id="email" formControlName="email" placeholder="Enter your email"
+                  class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
                 <div *ngIf="loginForm.get('email')?.errors">
-                  <div *ngIf="loginForm.get('email')?.errors?.['required']" class="text-red-600 text-sm text-left mt-1 mb-1">
+                  <div *ngIf="loginForm.get('email')?.errors?.['required']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
                     Email is required.
                   </div>
-                  <div *ngIf="loginForm.get('email')?.errors?.['email']" class="text-red-600 text-sm text-left mt-1 mb-1">
+                  <div *ngIf="loginForm.get('email')?.errors?.['email']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
                     Email is invalid.
                   </div>
                 </div>
               </div>
-              <div class="">
-                <label for="password" class="block text-sm font-semibold mb-1"
-                  >Password<span class="text-red-500">*</span></label
-                >
-                <input
-                  type="password"
-                  id="password"
-                  formControlName="password"
-                  placeholder="Enter your password"
-                  class="w-full border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400"
-                />
+              <div class="relative">
+                <label for="password" class="block text-sm font-semibold mb-1">Password<span
+                    class="text-red-500">*</span></label>
+                <input type={{inputType}} id="password" formControlName="password" placeholder="Enter your password"
+                  class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
+                <div class="absolute w-fit h-fit cursor-pointer top-[30px] right-[15px]" (click)="toogleInputType()">
+                  <i class="fa-eye"
+                    [ngClass]="{'fa-solid': inputType==='password', 'fa-regular': inputType==='text'}"></i>
+                </div>
                 <div *ngIf="loginForm.get('password')?.errors">
-
-                  <div *ngIf="loginForm.get('password')?.errors?.['required']"  class="text-red-600 text-sm text-left mt-1 mb-1">
+                  <div *ngIf="loginForm.get('password')?.errors?.['required']"
+                    class="text-red-600 text-sm text-left mt-1 mb-1">
                     Password is required.
-                 </div>
+                  </div>
                 </div>
               </div>
-              <div
-                *ngIf="successMessage"
-                class="text-green-600 text-sm text-center mt-2"
-              >
+              <div *ngIf="successMessage" class="text-green-600 text-sm text-center mt-2">
                 {{successMessage }}
               </div>
-              <div
-                *ngIf="loginErrorMessage"
-                class="text-red-600 text-sm text-center mt-2"
-              >
-                {{ loginErrorMessage }}
+              <div *ngIf="loginErrorMessage" class="text-red-600 text-sm text-center mt-2">
+                Failed to Login, please check Email and Password
               </div>
 
               <div class="">
-                <a
-                  href="home/forgotpassword"
-                  class="text-[#6cc0bc] text-[14px] hover:underline"
-                  >Forgot your password?</a
-                >
+                <a href="home/forgotpassword" class="text-[#6cc0bc] text-[14px] hover:underline">Forgot your
+                  password?</a>
                 <span class="mx-1"></span>
-                <a
-                  href="home/auth-otp"
-                  class="text-[#6cc0bc] text-[14px] underline"
-                  >Login with Otp</a>
+                <a href="home/auth-otp" class="text-[#6cc0bc] text-[14px] underline">Login with Otp</a>
               </div>
               <div class="flex justify-center h-fit">
-                <button
-                  type="button"
-                  (click)="onLogin()"
-                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring flex justify-center items-center"
-                >
+                <button type="button" (click)="onLogin()"
+                  class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring flex justify-center items-center">
                   <app-loader *ngIf="spinLoader"></app-loader>
                   <span *ngIf="!spinLoader">{{
                     isLogin ? "Login" : "Register"
-                  }}</span>
+                    }}</span>
                 </button>
               </div>
             </form>
             <div class="my-2">
               <span class="text-[#6cc0bc] text-[14px]">{{
                 isLogin ? "Not Signed Up?" : "Already a User?"
-              }}</span>
+                }}</span>
 
             </div>
             <div class="flex justify-center mt-1">
-              <button
-                type="button"
-                (click)="onSwitch()"
-                class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
-              >
+              <button type="button" (click)="onSwitch()"
+                class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring">
                 {{ isLogin ? "Register" : "Login" }}
               </button>
             </div>
             <div class="back-btn mt-[10px]">
-              <a
-                href="home"
-                class="text-blue-50 bg-green-500 rounded font-semibold px-4 py-2"
-                >&laquo; back</a
-              >
+              <a href="home" class="text-blue-50 bg-green-500 rounded font-semibold px-4 py-2">&laquo; back</a>
             </div>
           </div>
         </div>

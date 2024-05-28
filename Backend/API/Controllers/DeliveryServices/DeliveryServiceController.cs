@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Data.Models.DTO;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using Data.Repository.Interfaces;
 using Service.Models;
+
 using Data.Models.Delivery;
+
+using Data.Models;
+using Data.Models.ViewModels;
+
 
 namespace API.Controllers.DeliveryServices
 {
@@ -14,11 +15,11 @@ namespace API.Controllers.DeliveryServices
     [Route("DeliveryServiceController")]
     public class DeliveryServiceController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly IDeliveryRepository _deliveryRepository;
 
-        public DeliveryServiceController(IConfiguration configuration)
+        public DeliveryServiceController(IDeliveryRepository deliveryRepository)
         {
-            _configuration = configuration;
+            _deliveryRepository = deliveryRepository;
         }
 
         [HttpPost("AddDeliveryService")]
@@ -26,24 +27,7 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-                {
-                    await connection.OpenAsync();
-
-                    string sqlQuery = @"INSERT INTO DeliveryService (ImageUrl, ServiceName, Price, DeliveryDays) 
-                                        VALUES (@ImageUrl, @ServiceName, @Price, @DeliveryDays)";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@ImageUrl", deliveryService.ImageUrl);
-                        command.Parameters.AddWithValue("@ServiceName", deliveryService.ServiceName);
-                        command.Parameters.AddWithValue("@Price", deliveryService.Price);
-                        command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
-
-                        await command.ExecuteNonQueryAsync();
-                    }
-                }
-
+                await _deliveryRepository.AddDeliveryService(deliveryService);
                 return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Delivery service added successfully.", StatusCode = 200 });
             }
             catch (Exception ex)
@@ -57,26 +41,12 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-                {
-                    await connection.OpenAsync();
-
-                    string sqlQuery = @"DELETE FROM DeliveryService WHERE DServiceId = @DServiceId";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@DServiceId", id);
-
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                        if (rowsAffected == 0)
-                        {
-                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Delivery service not found.", StatusCode = 404 });
-                        }
-                    }
-                }
-
+                await _deliveryRepository.DeleteDeliveryService(id);
                 return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Delivery service deleted successfully.", StatusCode = 200 });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Delivery service not found.", StatusCode = 404 });
             }
             catch (Exception ex)
             {
@@ -89,32 +59,12 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-                {
-                    await connection.OpenAsync();
-
-                    string sqlQuery = @"UPDATE DeliveryService 
-                                        SET ImageUrl = @ImageUrl, ServiceName = @ServiceName, Price = @Price, DeliveryDays = @DeliveryDays 
-                                        WHERE DServiceId = @Id";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@Id", id);
-                        command.Parameters.AddWithValue("@ImageUrl", deliveryService.ImageUrl);
-                        command.Parameters.AddWithValue("@ServiceName", deliveryService.ServiceName);
-                        command.Parameters.AddWithValue("@Price", deliveryService.Price);
-                        command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
-
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                        if (rowsAffected == 0)
-                        {
-                            return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Delivery service not found.", StatusCode = 404 });
-                        }
-                    }
-                }
-
+                await _deliveryRepository.UpdateDeliveryService(id, deliveryService);
                 return Ok(new ApiResponse<string> { IsSuccess = true, Message = "Delivery service updated successfully.", StatusCode = 200 });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new ApiResponse<string> { IsSuccess = false, Message = "Delivery service not found.", StatusCode = 404 });
             }
             catch (Exception ex)
             {
@@ -127,35 +77,7 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                List<DeliveryService> deliveryServices = new List<DeliveryService>();
-
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-                {
-                    await connection.OpenAsync();
-
-                    string sqlQuery = "SELECT DServiceId, ImageUrl, ServiceName, Price, DeliveryDays FROM DeliveryService";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                DeliveryService deliveryService = new DeliveryService
-                                {
-                                    DServiceId = Convert.ToInt32(reader["DServiceId"]),
-                                    ImageUrl = reader["ImageUrl"].ToString(),
-                                    ServiceName = reader["ServiceName"].ToString(),
-                                    Price = (float)Convert.ToDecimal(reader["Price"]),
-                                    DeliveryDays = Convert.ToInt32(reader["DeliveryDays"])
-                                };
-
-                                deliveryServices.Add(deliveryService);
-                            }
-                        }
-                    }
-                }
-
+                var deliveryServices = await _deliveryRepository.GetAllDeliveryServices();
                 return Ok(new ApiResponse<List<DeliveryService>> { IsSuccess = true, Message = "Delivery services retrieved successfully.", StatusCode = 200, Response = deliveryServices });
             }
             catch (Exception ex)
@@ -169,28 +91,7 @@ namespace API.Controllers.DeliveryServices
         {
             try
             {
-                int days = 0;
-
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-                {
-                    await connection.OpenAsync();
-
-                    string sqlQuery = "SELECT DeliveryDays FROM DeliveryService WHERE DServiceId = @DServiceId";
-
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@DServiceId", deliveryId);
-
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                days = Convert.ToInt32(reader["DeliveryDays"]);
-                            }
-                        }
-                    }
-                }
-
+                var days = await _deliveryRepository.GetDeliveryDays(deliveryId);
                 return Ok(new ApiResponse<int> { IsSuccess = true, Message = "Delivery days retrieved successfully.", StatusCode = 200, Response = days });
             }
             catch (Exception ex)

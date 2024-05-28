@@ -1,18 +1,9 @@
-﻿using Data.Models.Authentication.User;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Service.Models.Authentication.User
+﻿namespace Data.Models.Authentication.User
 {
     public class CreateUserResponse
     {
         public string Token { get; set; } = null!;
         public ApplicationUser User { get; set; } = null!;
-
 
     }
 }

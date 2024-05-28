@@ -1,9 +1,4 @@
 ﻿
-
-
-using Data.Models.DTO;
-using Data.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Data.Repository.Interface;
@@ -11,8 +6,9 @@ using PdfSharpCore;
 using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using Azure;
-using Data.Models.Statistic_Models;
 using Data.Models.Address;
+using Data.Models.ViewModels;
+using Data.Models.OrderModels;
 
 
 namespace Data.Repository.Implementation
