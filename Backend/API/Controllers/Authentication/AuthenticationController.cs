@@ -110,8 +110,7 @@ namespace API.Controllers.Authentication
             if (loginOtpResponse.Response! != null)
             {
                 var user = loginOtpResponse.Response.User;
-                if (user.TwoFactorEnabled)
-                {
+                
                     var token = loginOtpResponse.Response.Token;
 
                     var message = new Message(new string[] { user.Email! }, "OTP Confrimation", token);
@@ -119,14 +118,8 @@ namespace API.Controllers.Authentication
 
                     return StatusCode(StatusCodes.Status200OK,
                      new Response { IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
-                }
-                /*if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
-                {
-                    var serviceResponse = await _userManagement.GetJwtTokenAsync(user);
-
-                    return Ok(serviceResponse);
-
-                }*/
+                
+               
             }
             return Unauthorized();
         }
