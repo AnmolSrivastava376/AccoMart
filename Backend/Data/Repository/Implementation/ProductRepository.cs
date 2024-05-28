@@ -27,7 +27,6 @@ namespace Data.Repository.Implementation
             _configuration = configuration;
             _database = redis.GetDatabase();
         }
-
         public async Task<List<Category>> GetAllCategories()
         {
             List<Category> categories;
@@ -93,7 +92,40 @@ namespace Data.Repository.Implementation
             }
             return products;
         }
+        public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize)
+        {
+            List<Product> products = new List<Product>();
+            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                int offset=(pageNo-1)*pageSize;
+                string sqlQuery = $"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product) AS Temp WHERE RowNum >= @Offset AND RowNum < @Limit";
+                SqlCommand command = new SqlCommand( sqlQuery, connection);
+                command.Parameters.AddWithValue("@Offset", offset);
+                command.Parameters.AddWithValue("@Limit", offset + pageSize);
 
+                await connection.OpenAsync();
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Product product = new Product
+                        {
+                            ProductId = Convert.ToInt32(reader["ProductId"]),
+                            ProductName = Convert.ToString(reader["ProductName"]),
+                            ProductDesc = Convert.ToString(reader["ProductDesc"]),
+                            ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]),
+                            ProductPrice = Convert.ToInt32(reader["ProductPrice"]),
+                            CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                            Stock = Convert.ToInt32(reader["Stock"])
+                        };
+                        products.Add(product);
+                    }
+                    reader.Close();
+                }
+            }
+            return products;
+        }
         public async Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
         {
 
@@ -102,8 +134,8 @@ namespace Data.Repository.Implementation
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
-            {
-                products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+                {
+                    products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
   
             }
 

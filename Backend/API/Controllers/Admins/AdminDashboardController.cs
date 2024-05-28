@@ -33,7 +33,12 @@ namespace API.Controllers.Admins
             return await _productService.GetAllProductsAsync();
         }
 
-
+        [HttpGet("GetAllProductsPagewise")]
+        public async Task<List<Product>> GetAllProductsPagewise(int pageNo)
+        {
+            int pageSize = 20;
+            return await _productService.GetAllProductsPagewise(pageNo,pageSize);
+        }
         [HttpGet("Products/SearchBy={prefix}")]
         public async Task<List<Product>> GetProductBySearchName(string prefix = "")
         {

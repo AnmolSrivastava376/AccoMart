@@ -22,8 +22,10 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.CreateProduct(productDto);
         }
-
-
+        async Task<List<Product>> IProductService.GetAllProductsPagewise(int pageNo, int pageSize)
+        {
+            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize);
+        }
 
         async Task IProductService.DeleteCategoryAsync(int CategoryId)
         {
