@@ -67,6 +67,7 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit {
     localStorage.removeItem('cartItems');
     localStorage.removeItem('accesstoken');
     localStorage.removeItem('refreshtoken');
+    localStorage.clear();
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');

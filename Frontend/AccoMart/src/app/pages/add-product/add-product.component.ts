@@ -15,7 +15,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-add-product-popup',
   templateUrl: './add-product.component.html',
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent],
-  providers: [productService, CategoryService],
+  providers: [productService, CategoryService, ToastrService],
   standalone: true,
   styleUrls: ['./add-product.component.css'],
 })

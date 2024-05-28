@@ -11,6 +11,7 @@ using PdfSharpCore;
 using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using Azure;
+using Data.Models.Statistic_Models;
 
 
 namespace Data.Repository.Implementation
@@ -47,26 +48,27 @@ namespace Data.Repository.Implementation
                 command.Parameters.AddWithValue("@OrderId", orderId);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                while (await reader.ReadAsync())
-                {
-                    int? ProductId = reader["ProductId"] as int?;
-                    int? CartId = reader["CartId"] as int?;
+                /* while (await reader.ReadAsync())
+                 {
+                     int? ProductId = reader["ProductId"] as int?;
+                     int? CartId = reader["CartId"] as int?;
 
-                    if (ProductId.HasValue)
-                    {
-                        int actualProductId = ProductId.Value;
-                        await reader.CloseAsync();
-                        return await GetInvoiceByProduct(orderId, actualProductId);
-                    }
-                    else
-                    {
-                        await reader.CloseAsync();
-                        return await GetInvoiceByCart(orderId);
-                    }
-                }
-                await reader.CloseAsync();
+                     if (ProductId.HasValue)
+                     {
+                         int actualProductId = ProductId.Value;
+                         await reader.CloseAsync();
+                         return await GetInvoiceByProduct(orderId, actualProductId);
+                     }
+                     else
+                     {
+                         await reader.CloseAsync();
+                         return await GetInvoiceByCart(orderId);
+                     }
+                 }
+                 await reader.CloseAsync();
+             }*/
+                return await GetInvoiceByCart(orderId);
             }
-            return null;
         }
 
         private async Task<byte[]> GetInvoiceByCart(int orderId)
@@ -179,28 +181,38 @@ namespace Data.Repository.Implementation
 
             var document = new PdfDocument();
             string htmlcontent = "<div style='width:100%; text-align:center'>";
-            htmlcontent += $"<img style='width:120px;height:120px' src='{_configuration["Logo:Image"]}' /><br/>";
 
+            // Logo
+            htmlcontent += $"<img style='width:80px;height:80%' src='{_configuration["Logo:Image"]}' />";
             htmlcontent += "<h2>Welcome to AccoMart</h2>";
 
-            htmlcontent += "<h2> Order No:" + orderId + " & Invoice Date:" + invoiceDto.OrderDate + "</h2>";
-            htmlcontent += "<h3> Customer : " + invoiceDto.UserName + "</h3>";
-            htmlcontent += "<p>" + invoiceDto.Address.Street + "," + invoiceDto.Address.City + "," + invoiceDto.Address.State + "," + invoiceDto.Address.ZipCode + "," + "</p>";
-            htmlcontent += "<h3> Contact :" + invoiceDto.PhoneNumber + "</h3>";
-            htmlcontent += "<h3> Email : " + invoiceDto.UserEmail + "</h3>";
+            // Order No and Invoice Date
+            htmlcontent += $"<h3 style='text-align:left'>Order No: {orderId}</h3>";
+            htmlcontent += $"<h3 style='text-align:left'>Invoice Date: {invoiceDto.OrderDate}</h3>";
+
+            // Customer Details
+            htmlcontent += "<h3 style='text-align:left'>Customer Details</h3>";
+            htmlcontent += $"<p style='text-align:left; margin-bottom:5px'>Customer: {invoiceDto.UserName}</p>";
+            htmlcontent += $"<p style='text-align:left; margin-bottom:5px'>Address: {invoiceDto.Address.Street}, {invoiceDto.Address.City}, {invoiceDto.Address.State}, {invoiceDto.Address.ZipCode}</p>";
+            htmlcontent += $"<p style='text-align:left; margin-bottom:5px'>Contact: {invoiceDto.PhoneNumber}</p>";
+            htmlcontent += $"<p style='text-align:left; margin-bottom:5px'>Email: {invoiceDto.UserEmail}</p>";
+
             htmlcontent += "<div>";
 
-            htmlcontent += "<table style ='width:100%; border: 1px solid #000'>";
+            // Table Header
+            htmlcontent += "<table style ='width:100%; border-collapse: collapse; border: 1px solid #000'>";
             htmlcontent += "<thead style='font-weight:bold'>";
             htmlcontent += "<tr>";
-            htmlcontent += "<td style='border:1px solid #000'> Product Name </td>";
-            htmlcontent += "<td style='border:1px solid #000'> Qty </td>";
-            htmlcontent += "<td style='border:1px solid #000'> Price </td >";
-            htmlcontent += "<td style='border:1px solid #000'> Total </td>";
+            htmlcontent += "<td style='border:1px solid #000'>Product Name</td>";
+            htmlcontent += "<td style='border:1px solid #000'>Qty</td>";
+            htmlcontent += "<td style='border:1px solid #000'>Price</td>";
+            htmlcontent += "<td style='border:1px solid #000'>Total</td>";
             htmlcontent += "</tr>";
-            htmlcontent += "</thead >";
+            htmlcontent += "</thead>";
 
             htmlcontent += "<tbody>";
+
+            // Product Entries
             decimal productAmount = 0.00M;
 
             if (invoiceDto != null && invoiceDto.products != null && invoiceDto.products.Count > 0)
@@ -208,24 +220,24 @@ namespace Data.Repository.Implementation
                 foreach (InvoiceProductDto product in invoiceDto.products)
                 {
                     htmlcontent += "<tr>";
-                    htmlcontent += "<td>" + product.ProductName + "</td>";
-                    htmlcontent += "<td>" + product.Quantity + "</td>";
-                    htmlcontent += "<td>" + product.ProductPrice.ToString("0.00") + "</td>";
-                    htmlcontent += "<td>" + (product.ProductPrice * product.Quantity).ToString("0.00") + "</td>";
+                    htmlcontent += $"<td style='border:1px solid #000'>{product.ProductName}</td>";
+                    htmlcontent += $"<td style='border:1px solid #000'>{product.Quantity}</td>";
+                    htmlcontent += $"<td style='border:1px solid #000'>{product.ProductPrice.ToString("0.00")}</td>";
+                    htmlcontent += $"<td style='border:1px solid #000'>{(product.ProductPrice * product.Quantity).ToString("0.00")}</td>";
                     htmlcontent += "</tr>";
+
                     productAmount += product.ProductPrice * product.Quantity;
                 }
             }
-
 
             htmlcontent += "</tbody>";
 
             htmlcontent += "</table>";
             htmlcontent += "</div>";
 
-            htmlcontent += "<div style='text-align:right'>";
-            htmlcontent += "<h1> Summary Info </h1>";
-            htmlcontent += "<table style='border:1px solid #000;float:right' >";
+            htmlcontent += "<div style='text-align:left'>";
+            htmlcontent += "<h1>Order Summary</h1>";
+            htmlcontent += "<table style='border-collapse: collapse; border: 1px solid #000'>";
             htmlcontent += "<tr>";
             htmlcontent += "<td style='border:1px solid #000'> Total </td>";
             htmlcontent += "<td style='border:1px solid #000'> Discount </td>";
@@ -233,28 +245,23 @@ namespace Data.Repository.Implementation
             htmlcontent += "<td style='border:1px solid #000'> Amount To Be Paid </td>";
             htmlcontent += "</tr>";
 
-
             decimal discount = Math.Round(0.05m * productAmount, 2);
             decimal tax = Math.Round(0.18m * (productAmount + discount), 2);
             decimal totalAmount = Math.Round(productAmount - discount + tax, 2);
 
+            htmlcontent += "<tr>";
+            htmlcontent += $"<td style='border:1px solid #000'>{productAmount.ToString("0.00")}</td>";
+            htmlcontent += $"<td style='border:1px solid #000'>{discount.ToString("0.00")}</td>";
+            htmlcontent += $"<td style='border:1px solid #000'>{tax.ToString("0.00")}</td>";
+            htmlcontent += $"<td style='border:1px solid #000'>{totalAmount.ToString("0.00")}</td>";
+            htmlcontent += "</tr>";
 
-            if (invoiceDto != null)
-            {
-                htmlcontent += "<tr>";
-                htmlcontent += "<td style='border: 1px solid #000'> " + productAmount + " </td>";
-                htmlcontent += "<td style='border: 1px solid #000'>" + discount + "</td>";
-                htmlcontent += "<td style='border: 1px solid #000'> " + tax + "</td>";
-                htmlcontent += "<td style='border: 1px solid #000'> " + totalAmount + "</td>";
-                htmlcontent += "</tr>";
-            }
             htmlcontent += "</table>";
             htmlcontent += "</div>";
 
             htmlcontent += "</div>";
 
             PdfGenerator.AddPdfPages(document, htmlcontent, PageSize.A4);
-
 
             byte[] response = null;
             using (MemoryStream ms = new MemoryStream())
@@ -263,9 +270,10 @@ namespace Data.Repository.Implementation
                 response = ms.ToArray();
             }
             return response;
+
         }
 
-        private async Task<byte[]> GetInvoiceByProduct(int orderId, int productId)
+       /* private async Task<byte[]> GetInvoiceByProduct(int orderId)
         {
             GetInvoiceDto invoiceDto = new GetInvoiceDto();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -288,6 +296,16 @@ namespace Data.Repository.Implementation
                     invoiceDto.OrderTime = orderDateTime;
                     invoiceDto.OrderAmount = (decimal)Convert.ToInt32(orderReader["OrderAmount"]);
                     userId = Convert.ToString(orderReader["UserId"]);
+
+                }
+                await orderReader.CloseAsync();
+
+
+                SqlDataReader historyOrderReader = await command.ExecuteReaderAsync();
+                while (await historyOrderReader.ReadAsync())
+                {
+                    productId = Convert.ToInt32(historyOrderReader["OrderDate"]);
+                    quanti
 
                 }
                 await orderReader.CloseAsync();
@@ -419,7 +437,7 @@ namespace Data.Repository.Implementation
                 response = ms.ToArray();
             }
             return response;
-        }
+        }*/
 
 
 

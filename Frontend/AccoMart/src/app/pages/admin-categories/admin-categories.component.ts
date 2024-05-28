@@ -20,7 +20,7 @@ import { ToastrService } from 'ngx-toastr';
     NavbarComponent,
     SidebarComponent,
   ],
-  providers: [CategoryService, TokenHttpInterceptor],
+  providers: [CategoryService, TokenHttpInterceptor, ToastrService],
   templateUrl: './admin-categories.component.html',
   styleUrl: './admin-categories.component.css',
 })
@@ -32,7 +32,6 @@ export class AdminCategoriesComponent implements OnInit {
   categoryToAdd: string = '';
   isLoading: boolean = true;
   constructor(
-    private router: Router,
     private categoryService: CategoryService,
     private toastr: ToastrService
   ) {}

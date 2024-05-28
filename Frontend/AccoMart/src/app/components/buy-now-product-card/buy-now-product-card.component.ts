@@ -12,6 +12,8 @@ import { cartItem } from '../../interfaces/cartItem';
   imports: [CommonModule, LoaderComponent],
   templateUrl: './buy-now-product-card.component.html',
   styleUrl: './buy-now-product-card.component.css',
+  providers: [productService,BuyNowService]
+
 })
 
 export class BuyNowProductCardComponent implements OnInit {
