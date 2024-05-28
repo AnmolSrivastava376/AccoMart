@@ -1,4 +1,10 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { CommonModule } from '@angular/common';
@@ -9,19 +15,18 @@ import { NavigationMenuComponent } from '../navigation-menu/navigation-menu.comp
 @Component({
   selector: 'app-home-navbar',
   standalone: true,
-  imports: [CommonModule,SearchbarComponent, NavigationMenuComponent],
+  imports: [CommonModule, SearchbarComponent, NavigationMenuComponent],
   templateUrl: './home-navbar.component.html',
-  styleUrl: './home-navbar.component.css'
+  styleUrl: './home-navbar.component.css',
 })
 export class HomeNavbarComponent implements OnInit {
   isLoggedIn: boolean = true;
   username: string = '';
   prefix: string = '';
+  decoded: any;
   @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<Product[]>();
   @ViewChild('screenMenu') screenMenu!: NavigationMenuComponent;
   constructor(private router: Router) {}
-
-  decoded: any;
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -32,24 +37,27 @@ export class HomeNavbarComponent implements OnInit {
     const userName = this.decoded?.UserName ? this.decoded.UserName : '';
     this.username = userName;
   }
+
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('cartItems')
-    localStorage.removeItem('accesstoken')
-    localStorage.removeItem('refreshtoken')
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('accesstoken');
+    localStorage.removeItem('refreshtoken');
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
-    this.router.navigate(['/home/auth'])
+    this.router.navigate(['/home/auth']);
   }
-  navigateToAuth(){
-    this.router.navigate(['/home/auth'])
+
+  navigateToAuth() {
+    this.router.navigate(['/home/auth']);
   }
-  
+
   onSearchCompleted(products: Product[]): void {
     this.searchCompleted.emit(products);
   }
+
   toggleMenu() {
-    this.screenMenu.toggleMenu(); 
+    this.screenMenu.toggleMenu();
   }
 }

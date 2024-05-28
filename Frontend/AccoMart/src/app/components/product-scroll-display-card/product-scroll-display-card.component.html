@@ -1,37 +1,54 @@
 <div class="relative flex items-center justify-center mb-[20px]">
     <div class="w-full h-fit overflow-hidden px-[20px] relative">
-        <div class="w-full h-fit items-center relative flex gap-[10px] overflow-hidden">
-            <div class="" *ngFor="let product of products">
-                <div class='min-w-[240px] transition-all shadow-lg duration-500 min-h-[380px] h-fit border border-gray-300 bg-gray-100 bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between'
+        <div
+            class="w-full h-fit items-center relative flex gap-[10px] overflow-hidden">
+            <div class *ngFor="let product of products">
+                <div
+                    class='min-w-[240px] transition-all shadow-lg duration-500 min-h-[380px] h-fit border border-gray-300 bg-gray-100 bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between'
                     [style.transform]="'translateX(' + (i * -250) + 'px)'">
                     <div class="flex flex-col gap-[10px]">
-                        <div class="w-[220px] aspect-[1.1] bg-cover bg-center rounded-[4px] cursor-pointer"
-                            style="background-image: url('{{product?.productImageUrl}}');" (click)="navigateToProduct(product.productId)"></div>
-                        <div class="w-full flex flex-col cursor-pointer" (click)="navigateToProduct(product.productId)">
-                            <div class="font-bold text-[18px]">{{product?.productName?.slice(0,40)}}</div>
+                        <div
+                            class="w-[220px] aspect-[1.1] bg-cover bg-center rounded-[4px] cursor-pointer"
+                            style="background-image: url('{{product?.productImageUrl}}');"
+                            (click)="navigateToProduct(product.productId)"></div>
+                        <div class="w-full flex flex-col cursor-pointer"
+                            (click)="navigateToProduct(product.productId)">
+                            <div
+                                class="font-bold text-[18px]">{{product?.productName?.slice(0,40)}}</div>
                             <div class="font-medium text-gray-600 text-[14px]">
                                 {{product?.productDesc?.slice(0,40)}}<span
                                     *ngIf="product?.productDesc && product.productDesc.length > 50">...</span>
                             </div>
-                            <div class="font-semibold text-[14px]">₹{{product.productPrice}}</div>
+                            <div
+                                class="font-semibold text-[14px]">₹{{product.productPrice}}</div>
                         </div>
                     </div>
                     <div class="w-full h-fit flex gap-[4px]">
-                        <div class="w-full h-[40px] py-[4px] px-[8px] rounded-[4px] cursor-pointer flex parent items-center justify-center"
+                        <div
+                            class="w-full h-[40px] py-[4px] px-[8px] rounded-[4px] cursor-pointer flex parent items-center justify-center"
                             (click)="addToCart(product.productId)">
-                            <div class="font-bold text-white" *ngIf="!isPresentInCart(product.productId)">ADD TO CART
+                            <div class="font-bold text-white"
+                                *ngIf="!isPresentInCart(product.productId)">ADD
+                                TO CART
                             </div>
-                            <div class="w-full h-full flex items-center font-bold text-white"
+                            <div
+                                class="w-full h-full flex items-center font-bold text-white"
                                 *ngIf="isPresentInCart(product.productId)">
-                                <div class="w-full h-full flex-[1] text-[32px] flex items-center justify-center"
+                                <div
+                                    class="w-full h-full flex-[1] text-[32px] flex items-center justify-center"
                                     (click)="incrementCountByProductId(product.productId)">+</div>
-                                <div class="w-full h-full flex-[2] flex text-[20px] items-center justify-center">
+                                <div
+                                    class="w-full h-full flex-[2] flex text-[20px] items-center justify-center">
                                     {{findQuantityByProductId(product.productId)}}</div>
-                                <div class="w-full h-full flex-[1] flex text-[32px] items-center justify-center"
+                                <div
+                                    class="w-full h-full flex-[1] flex text-[32px] items-center justify-center"
                                     (click)="decrementCountByProductId(product.productId)">-</div>
                             </div>
                         </div>
-                        <div class="w-[20px] h-[40px] py-[4px] px-[16px] rounded-[4px] bg-red-600 text-white font-bold flex items-center justify-center cursor-pointer" *ngIf="isPresentInCart(product.productId)" (click)="removeElementByProductId(product.productId)">
+                        <div
+                            class="w-[20px] h-[40px] py-[4px] px-[16px] rounded-[4px] bg-red-600 text-white font-bold flex items-center justify-center cursor-pointer"
+                            *ngIf="isPresentInCart(product.productId)"
+                            (click)="removeElementByProductId(product.productId)">
                             <i class="fa-solid fa-trash"></i>
                         </div>
                     </div>
@@ -39,15 +56,20 @@
             </div>
         </div>
     </div>
-    <div class="absolute w-full h-[0px] flex justify-between pr-[30px] pl-[40px] items-center" *ngIf="products?products.length>0:false">
-        <div class="h-[30px] w-[30px] rounded-[50%] bg-gray-100 shadow-2xl flex items-center justify-center relative cursor-pointer z-[90]"
+    <div
+        class="absolute w-full h-[0px] flex justify-between pr-[30px] pl-[40px] items-center"
+        *ngIf="products?products.length>0:false">
+        <div
+            class="h-[30px] w-[30px] rounded-[50%] bg-gray-100 shadow-2xl flex items-center justify-center relative cursor-pointer z-[90]"
             (click)="handlePreviousButtonClick()">
             <mat-icon>keyboard_arrow_left</mat-icon>
         </div>
-        <div class="h-[30px] w-[30px] rounded-[50%] bg-gray-100 shadow-2xl flex items-center justify-center relative cursor-pointer z-[90]"
+        <div
+            class="h-[30px] w-[30px] rounded-[50%] bg-gray-100 shadow-2xl flex items-center justify-center relative cursor-pointer z-[90]"
             (click)="handleNextButtonClick()">
             <mat-icon>keyboard_arrow_right</mat-icon>
         </div>
     </div>
 </div>
-<div class="w-full px-[20px] pb-[30px]" *ngIf="!(products?products.length>0:false)">No products to display</div>
+<div class="w-full px-[20px] pb-[30px]"
+    *ngIf="!(products?products.length>0:false)">No products to display</div>

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PaymentMethodComponent } from './payment-method.component';
 
 describe('PaymentMethodComponent', () => {
@@ -8,10 +7,8 @@ describe('PaymentMethodComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PaymentMethodComponent]
-    })
-    .compileComponents();
-    
+      imports: [PaymentMethodComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(PaymentMethodComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

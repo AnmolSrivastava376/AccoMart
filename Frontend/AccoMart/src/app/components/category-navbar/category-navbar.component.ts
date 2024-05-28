@@ -53,6 +53,7 @@ export class CategoryNavbarComponent implements OnChanges {
     this.categorySelected.emit(categoryId);
     this.categoryIndex.emit(index);
   }
+
   toogleCategoryButtonClick() {
     this.isCategoryNavbarActive = !this.isCategoryNavbarActive;
     if (this.isFirstLoad) {
@@ -62,12 +63,15 @@ export class CategoryNavbarComponent implements OnChanges {
       this.shouldAnimate = true;
     }
   }
+
   sortPriceAscending() {
     this.products = this.computeFilteredProducts();
     this.isPriceFiltered = false;
     this.isActiveAscendingFilter = !this.isActiveAscendingFilter;
     this.isActiveDescendingFilter = false;
-    this.filteredProducts.emit(this.products?.sort((a, b) => a.productPrice - b.productPrice));
+    this.filteredProducts.emit(
+      this.products?.sort((a, b) => a.productPrice - b.productPrice)
+    );
   }
 
   sortPriceDscending() {
@@ -75,20 +79,26 @@ export class CategoryNavbarComponent implements OnChanges {
     this.isPriceFiltered = false;
     this.isActiveAscendingFilter = false;
     this.isActiveDescendingFilter = !this.isActiveDescendingFilter;
-    this.filteredProducts.emit(this.products?.sort((a, b) => b.productPrice - a.productPrice));
+    this.filteredProducts.emit(
+      this.products?.sort((a, b) => b.productPrice - a.productPrice)
+    );
   }
+
   onMinPriceChange(event: any) {
     this.minprice = parseInt((event.target as HTMLInputElement).value, 10);
     this.filterByPrice();
   }
+  
   onMaxPriceChange(event: any) {
     this.maxprice = parseInt((event.target as HTMLInputElement).value, 10);
     this.filterByPrice();
   }
+
   filterByPrice() {
-    this.filteredProducts.emit(this.computeFilteredProducts())
+    this.filteredProducts.emit(this.computeFilteredProducts());
   }
-  computeFilteredProducts(): Product[]{
+  
+  computeFilteredProducts(): Product[] {
     this.isPriceFiltered = !this.isPriceFiltered;
     const minPrice = this.minprice || 0;
     const maxPrice = this.maxprice || Number.MAX_SAFE_INTEGER;

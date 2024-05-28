@@ -87,6 +87,7 @@ export class HttpService {
       }
     );
   }
+
   forgotPassword(email: string): Observable<any> {
     return this.http.post<any>(
       `http://localhost:5239/AuthenticationController/forgot-password?email=${email}`,

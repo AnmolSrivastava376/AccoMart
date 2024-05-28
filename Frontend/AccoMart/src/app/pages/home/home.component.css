@@ -13,25 +13,28 @@
     background-position: center;
     background-size: cover;
     filter: blur(5px);
-    z-index: -1;    
+    z-index: -1;
 }
 
-
-@media (max-width: 650px){
-    .col{
+@media (max-width: 650px) {
+    .col {
         flex-direction: column;
         margin-top: 0;
     }
-    .parent{
+
+    .parent {
         padding: 0;
     }
-    .r-adj{
+
+    .r-adj {
         border-radius: 0px;
     }
-    .pad{
+
+    .pad {
         padding: 30px 20px;
     }
-    .notsticky{
+
+    .notsticky {
         position: relative;
     }
 }

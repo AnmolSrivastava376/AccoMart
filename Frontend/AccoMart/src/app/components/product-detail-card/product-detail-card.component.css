@@ -1,11 +1,12 @@
-
 * {
   box-sizing: border-box;
 }
-.asp-sq{
+
+.asp-sq {
   background-size: cover;
   background-position: center;
 }
+
 .parent {
   position: relative;
   overflow: hidden;
@@ -22,14 +23,15 @@
   background-position: center;
   background-size: cover;
   filter: blur(5px);
-  z-index: -1;    
+  z-index: -1;
 }
-.scrl::-webkit-scrollbar{
+
+.scrl::-webkit-scrollbar {
   display: none;
 }
 
 .wrapper {
-  background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+  background-image: linear-gradient(to bottom right, #3b8585, #6698ac, #0de4c5);
 }
 
 img {
@@ -63,11 +65,11 @@ img {
   padding: 10px 15px;
   border: 1px solid #aaa;
   font-weight: bold;
-  
-  
+
+
 }
 
-.button a:after{
+.button a:after {
   content: "";
   position: absolute;
   top: 0;
@@ -85,7 +87,7 @@ img {
   width: 150%;
   left: -10px;
   transform-origin: left;
-  
+
 }
 
 .button a:hover {
@@ -105,7 +107,7 @@ img {
 
 .cart-icon {
   padding-right: 8px;
-  
+
 }
 
 .footer {
@@ -118,13 +120,16 @@ img {
   .outer {
     width: 90%;
   }
-  .col{
+
+  .col {
     flex-direction: column-reverse;
   }
-  .w-adj{
+
+  .w-adj {
     width: 100%;
   }
-  .p-adj{
+
+  .p-adj {
     padding: 0;
     height: 150vh;
   }
@@ -134,7 +139,7 @@ img {
   .outer {
     flex-direction: row;
     justify-content: space-between;
-    align-items: center; 
+    align-items: center;
     gap: 50 px;
   }
 
@@ -146,24 +151,27 @@ img {
 
   .content {
     height: 50%;
-    width: 100%; 
-    margin-top: 0; 
+    width: 100%;
+    margin-top: 0;
   }
 
   .button {
-    width: 100%; 
+    width: 100%;
     margin-top: 20px;
     text-align: center;
   }
-  .asp-sq{
+
+  .asp-sq {
     flex: 30;
   }
-  .h-adj{
+
+  .h-adj {
     justify-content: flex-start;
     align-items: start;
     padding-top: 20px;
   }
-  .p-adj{
+
+  .p-adj {
     height: 120vh;
   }
 }

@@ -1,4 +1,3 @@
-// edit-product-popup.component.ts
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CreateProduct } from '../../interfaces/createProduct';
 import { CommonModule } from '@angular/common';
@@ -16,11 +15,25 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-add-product-popup',
   templateUrl: './add-product.component.html',
   imports: [CommonModule, FormsModule, NavbarComponent, SidebarComponent],
-  providers: [productService, CategoryService],
+  providers: [productService, CategoryService, ToastrService],
   standalone: true,
   styleUrls: ['./add-product.component.css'],
 })
 export class AddProductComponent implements OnInit {
+  file: File | null = null;
+  uploading = false;
+  uploadComplete = false;
+  cldResponse: any;
+  productImageUrl: string;
+  categories: Category[];
+  product: CreateProduct = {
+    productName: '',
+    productDesc: '',
+    productPrice: 0,
+    productImageUrl: '',
+    categoryId: -1,
+    stock: 0,
+  };
   @Output() close = new EventEmitter<void>();
   constructor(
     private productService: productService,
@@ -29,11 +42,6 @@ export class AddProductComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService
   ) {}
-
-  file: File | null = null;
-  uploading = false;
-  uploadComplete = false;
-  cldResponse: any;
 
   handleFileChange(event: any): void {
     this.file = event.target.files[0];
@@ -44,27 +52,22 @@ export class AddProductComponent implements OnInit {
       this.toastr.error('Please select a file', undefined, { timeOut: 2000 });
       return;
     }
-
     const uniqueUploadId = this.generateUniqueUploadId();
     const chunkSize = 5 * 1024 * 1024;
     const totalChunks = Math.ceil(this.file.size / chunkSize);
     let currentChunk = 0;
-
     this.uploading = true;
-
     const uploadChunk = async (start: number, end: number): Promise<void> => {
       const formData = new FormData();
       formData.append('file', this.file!.slice(start, end));
       formData.append('cloud_name', 'diiyfgi9r');
       formData.append('upload_preset', 'pqfmff0z');
       const contentRange = `bytes ${start}-${end - 1}/${this.file!.size}`;
-
       console.log(
         `Uploading chunk for uniqueUploadId: ${uniqueUploadId}; start: ${start}, end: ${
           end - 1
         }`
       );
-
       try {
         const response = await this.http
           .post(
@@ -78,9 +81,7 @@ export class AddProductComponent implements OnInit {
             }
           )
           .toPromise();
-
         currentChunk++;
-
         if (currentChunk < totalChunks) {
           const nextStart = currentChunk * chunkSize;
           const nextEnd = Math.min(nextStart + chunkSize, this.file!.size);
@@ -97,7 +98,6 @@ export class AddProductComponent implements OnInit {
         this.uploading = false;
       }
     };
-
     const start = 0;
     const end = Math.min(chunkSize, this.file.size);
     uploadChunk(start, end);
@@ -106,18 +106,6 @@ export class AddProductComponent implements OnInit {
   generateUniqueUploadId(): string {
     return `uqid-${Date.now()}`;
   }
-
-  productImageUrl: string;
-  categories: Category[];
-
-  product: CreateProduct = {
-    productName: '',
-    productDesc: '',
-    productPrice: 0,
-    productImageUrl: '',
-    categoryId: -1,
-    stock: 0,
-  };
 
   ngOnInit(): void {
     this.fetchCategories();

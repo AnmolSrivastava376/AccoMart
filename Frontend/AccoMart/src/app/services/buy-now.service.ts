@@ -6,7 +6,6 @@ import { cartItem } from '../interfaces/cartItem';
 })
 export class BuyNowService {
   private _product: cartItem;
-
   constructor() {}
 
   get item(): cartItem {

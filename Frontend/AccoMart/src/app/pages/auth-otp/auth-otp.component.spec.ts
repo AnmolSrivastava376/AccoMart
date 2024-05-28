@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AuthOtpComponent } from './auth-otp.component';
 
 describe('AuthOtpComponent', () => {
@@ -8,10 +7,8 @@ describe('AuthOtpComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AuthOtpComponent]
-    })
-    .compileComponents();
-    
+      imports: [AuthOtpComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(AuthOtpComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

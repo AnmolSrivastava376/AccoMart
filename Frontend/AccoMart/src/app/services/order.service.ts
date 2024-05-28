@@ -27,11 +27,13 @@ export class orderService {
       productOrder
     );
   }
+
   fetchAllOrders(userId: string): Observable<Order[]> {
     return this.http.get<Order[]>(
       `http://localhost:5239/OrderController/FetchAllOrders/${userId}`
     );
   }
+
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
       `http://localhost:5239/OrderController/GetCartItemsByOrderId/${orderId}`

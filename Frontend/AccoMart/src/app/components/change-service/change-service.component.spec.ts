@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ChangeServiceComponent } from './change-service.component';
 
 describe('ChangeServiceComponent', () => {
@@ -8,10 +7,8 @@ describe('ChangeServiceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangeServiceComponent]
-    })
-    .compileComponents();
-    
+      imports: [ChangeServiceComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(ChangeServiceComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

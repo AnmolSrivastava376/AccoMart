@@ -10,6 +10,7 @@ import { ChartProductItem } from '../interfaces/chartProductItem';
 })
 export class ChartService {
   constructor(private http: HttpClient) {}
+  
   fetchDailyOrderQuantity(): Observable<ChartOrderItem[]> {
     return this.http.get<ChartOrderItem[]>(
       'http://localhost:5239/ChartController/FetchDailyOrderQuantity'

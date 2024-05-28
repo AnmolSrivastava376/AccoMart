@@ -9,21 +9,29 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reset-password-page',
-  imports : [FormsModule,HttpClientModule,LoaderComponent,CommonModule],
-  standalone : true,
-  providers : [HttpService],
+  imports: [FormsModule, HttpClientModule, LoaderComponent, CommonModule],
+  standalone: true,
+  providers: [HttpService],
   templateUrl: './reset-password-page.component.html',
-  styleUrls: ['./reset-password-page.component.css']
+  styleUrls: ['./reset-password-page.component.css'],
 })
 export class ResetPasswordPageComponent {
-  resetPasswords: resetPassword = { password: '', confirmPassword: '', email: '', token: '' };
+  resetPasswords: resetPassword = {
+    password: '',
+    confirmPassword: '',
+    email: '',
+    token: '',
+  };
   resetResponse: string;
   spinLoader: boolean;
-
-  constructor(private httpService: HttpService, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private httpService: HttpService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       const token = params['token'] || '';
       const email = params['email'] || '';
       const token2 = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
@@ -33,22 +41,29 @@ export class ResetPasswordPageComponent {
     });
   }
 
-
-
   resetPassword(password: string, confirmPassword: string) {
-    this.spinLoader = true
+    this.spinLoader = true;
     this.resetPasswords.password = password;
     this.resetPasswords.confirmPassword = confirmPassword;
-
-    console.log(this.resetPasswords.password,
-      this.resetPasswords.confirmPassword,this.resetPasswords.token, this.resetPasswords.email);
-    this.httpService.resetPassword(this.resetPasswords.password, this.resetPasswords.confirmPassword, this.resetPasswords.token, this.resetPasswords.email)
+    console.log(
+      this.resetPasswords.password,
+      this.resetPasswords.confirmPassword,
+      this.resetPasswords.token,
+      this.resetPasswords.email
+    );
+    this.httpService
+      .resetPassword(
+        this.resetPasswords.password,
+        this.resetPasswords.confirmPassword,
+        this.resetPasswords.token,
+        this.resetPasswords.email
+      )
       .subscribe(
-        response => {
+        (response) => {
           this.resetResponse = 'Password reset successfully.';
           this.router.navigate(['/home/auth']);
         },
-        error => {
+        (error) => {
           console.error('Error resetting password:', error);
         }
       );
