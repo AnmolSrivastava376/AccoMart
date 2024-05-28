@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data.Models.Address
@@ -21,7 +20,5 @@ namespace Data.Models.Address
         public string ZipCode { get; set; }
 
         public string PhoneNumber { get; set; }
-
-
     }
 }

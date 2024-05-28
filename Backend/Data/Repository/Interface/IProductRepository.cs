@@ -1,9 +1,7 @@
-﻿
-using Data.Models.Product_Category.Category;
+﻿using Data.Models.Product_Category.Category;
 using Data.Models.Product_Category.Product;
 using Data.Models.ViewModels;
 using Data.Models.ViewModels.UpdateProduct;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Data.Repository.Interfaces
 {

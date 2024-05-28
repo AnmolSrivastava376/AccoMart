@@ -1,10 +1,4 @@
 ﻿using Service.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Data.Models.Authentication.User;
 using Data.Models.Authentication.Register;
 namespace Service.Services.Interface

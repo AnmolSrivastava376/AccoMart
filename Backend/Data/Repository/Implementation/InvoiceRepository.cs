@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Data.Repository.Interface;
 using PdfSharpCore;

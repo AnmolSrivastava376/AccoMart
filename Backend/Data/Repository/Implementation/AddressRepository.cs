@@ -1,5 +1,4 @@
-﻿using Data.Models;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
 using Data.Models.Address;

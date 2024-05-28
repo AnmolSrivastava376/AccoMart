@@ -1,20 +1,10 @@
-
 using Data.Models.OrderModels;
 using Data.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 using Service.Services.Interface;
-using Stripe;
 using Stripe.Checkout;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+
 
 namespace API.Controllers.Order
 {
