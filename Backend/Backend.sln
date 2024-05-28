@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Backend.EmailSer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{B35B35FC-C241-4DFD-86B6-BA624B76FA07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "AccoMart\Testing.csproj", "{0615D5A6-1FA5-4B57-8F5F-41773AC399D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B35B35FC-C241-4DFD-86B6-BA624B76FA07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B35B35FC-C241-4DFD-86B6-BA624B76FA07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B35B35FC-C241-4DFD-86B6-BA624B76FA07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0615D5A6-1FA5-4B57-8F5F-41773AC399D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0615D5A6-1FA5-4B57-8F5F-41773AC399D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0615D5A6-1FA5-4B57-8F5F-41773AC399D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0615D5A6-1FA5-4B57-8F5F-41773AC399D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

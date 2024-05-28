@@ -8,12 +8,18 @@ namespace Data.Repository.Implementation
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        private SqlConnection @object;
 
         public AddressRepository(IConfiguration configuration)
         {
             _configuration = configuration;
             _connectionString = configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
 
+        }
+
+        public AddressRepository(SqlConnection @object)
+        {
+            this.@object = @object;
         }
 
         public async Task<int> AddAddressAsync(AddressModel address, string userId)
