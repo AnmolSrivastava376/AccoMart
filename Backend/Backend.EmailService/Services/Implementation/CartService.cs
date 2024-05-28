@@ -45,6 +45,7 @@ namespace Service.Services.Implementation
             return cartId;
         }
 
+
         async Task ICartService.AddUser(Users user)
         {
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -60,5 +61,10 @@ namespace Service.Services.Implementation
 
             }
         }       
+
+        async Task ICartService.DeleteCartAsync(int cartId)
+        {
+            await _cartRepository.DeleteCart(cartId);
+        }
     }
 }

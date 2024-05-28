@@ -6,6 +6,7 @@ namespace Service.Services.Interface
         Task<IEnumerable<CartItem>> AddToCartAsync(int cartId, IEnumerable<CartItem> cart);
         Task<IEnumerable<CartItem>> GetCartItemsAsync(int cartId);
         Task<int> AddToCartAsync();
-        Task AddUser(Users user);
+        Task AddUser(Users user);    
+        Task DeleteCartAsync(int cartId);
     }
 }
