@@ -6,11 +6,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Service.Models;
-using Service.Services;
 using System.Text;
 using StackExchange.Redis;
 using Service.Services.Interface;
@@ -19,6 +17,9 @@ using Stripe;
 using ProductService = Service.Services.Implementation.ProductService;
 using Data.Repository.Interface;
 using InvoiceService = Service.Services.Implementation.InvoiceService;
+using Data.Models.Authentication.User;
+using Data.Repository.Implementation.Cart;
+using Service.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

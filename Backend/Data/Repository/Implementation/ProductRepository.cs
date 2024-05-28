@@ -1,6 +1,9 @@
-using Data.Models;
-using Data.Models.DTO;
-using Data.Models.Statistic_Models;
+
+using Data.Models.Product_Category;
+using Data.Models.Product_Category.Category;
+using Data.Models.Product_Category.Product;
+using Data.Models.ViewModels;
+using Data.Models.ViewModels.UpdateProduct;
 using Data.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -9,8 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System.Diagnostics;
-using System.Linq;
+
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -63,7 +65,7 @@ namespace Data.Repository.Implementation
             return categories;
         }
 
-        public async Task<List<Product>> GetAllProductsAsync()
+        public async Task<List<Product>> GetAllProducts()
         {
             List<Product> products = new List<Product>();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -73,7 +75,7 @@ namespace Data.Repository.Implementation
                 await connection.OpenAsync();
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync()) 
+                    while (await reader.ReadAsync())
                     {
                         Product product = new Product
                         {
@@ -97,9 +99,9 @@ namespace Data.Repository.Implementation
             List<Product> products = new List<Product>();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
-                int offset=(pageNo-1)*pageSize;
+                int offset = (pageNo - 1) * pageSize;
                 string sqlQuery = $"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product) AS Temp WHERE RowNum >= @Offset AND RowNum < @Limit";
-                SqlCommand command = new SqlCommand( sqlQuery, connection);
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Offset", offset);
                 command.Parameters.AddWithValue("@Limit", offset + pageSize);
 
@@ -126,7 +128,7 @@ namespace Data.Repository.Implementation
             }
             return products;
         }
-        public async Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
+        public async Task<List<Product>> GetProductsByPageNo(int id, int pageNo, int pageSize)
         {
 
             List<Product> products = new List<Product>();
@@ -134,14 +136,14 @@ namespace Data.Repository.Implementation
             string cachedProducts = await _database.StringGetAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedProducts))
-                {
-                    products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
-  
+            {
+                products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
+
             }
 
             else
             {
-                
+
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     int offset = (pageNo - 1) * pageSize;
@@ -178,7 +180,7 @@ namespace Data.Repository.Implementation
             return products;
         }
 
-        public async Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy)
+        public async Task<List<Product>> GetAllProductsByCategory(int id, string orderBy)
         {
             string order = string.IsNullOrEmpty(orderBy) ? "price_asc" : "price_dsc";
             List<Product> products = new List<Product>();
@@ -292,7 +294,7 @@ namespace Data.Repository.Implementation
 
         public async Task<Product> GetProductById(int id)
         {
-           
+
             string cacheKey = $"Product_{id}";
             string cachedProduct = await _database.StringGetAsync(cacheKey);
 
@@ -311,7 +313,7 @@ namespace Data.Repository.Implementation
                     string sqlQuery = $"SELECT * FROM Product WHERE ProductId = {id}";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
-                   
+
 
                     while (await reader.ReadAsync())
                     {
@@ -332,7 +334,7 @@ namespace Data.Repository.Implementation
         }
 
 
-        
+
         public async Task<Category> CreateCategory(string categoryName)
         {
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -367,7 +369,7 @@ namespace Data.Repository.Implementation
             }
         }
 
-        public async Task<Product> CreateProduct(ProductDto productDto)
+        public async Task<Product> CreateProduct(ViewProduct productDto)
         {
             Product product = new Product();
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -425,7 +427,7 @@ namespace Data.Repository.Implementation
             return category;
         }
 
-        public async Task<Product> UpdateProduct(int productId, UpdateProductDto productDto)
+        public async Task<Product> UpdateProduct(int productId, UpdateProduct productDto)
         {
             Product product = new Product();
 
@@ -618,16 +620,16 @@ namespace Data.Repository.Implementation
 
                 while (await reader.ReadAsync())
                 {
-                    Product product = new Product(); 
+                    Product product = new Product();
                     product.ProductId = Convert.ToInt32(reader["ProductId"]);
                     product.ProductName = Convert.ToString(reader["ProductName"]);
                     product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
                     product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
                     product.ProductPrice = Convert.ToDecimal(reader["ProductPrice"]);
                     product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
-                    product.Stock = Convert.ToInt32(reader["Stock"]); 
+                    product.Stock = Convert.ToInt32(reader["Stock"]);
 
-                    products.Add(product); 
+                    products.Add(product);
                 }
                 reader.Close();
             }
@@ -676,6 +678,3 @@ namespace Data.Repository.Implementation
         }
     }
 }
-
-
-

@@ -1,6 +1,4 @@
-﻿using Data.Models.DTO;
-using Data.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Data.Repository.Interface;
@@ -8,7 +6,9 @@ using PdfSharpCore;
 using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using Azure;
-using Data.Models.Statistic_Models;
+using Data.Models.Address;
+using Data.Models.ViewModels;
+using Data.Models.OrderModels;
 
 
 namespace Data.Repository.Implementation
@@ -37,7 +37,7 @@ namespace Data.Repository.Implementation
 
         async Task<byte[]> IInvoiceRepository.GetInvoice(int orderId)
         {
-            GetInvoiceDto invoiceDto = new GetInvoiceDto();
+            GetInvoice invoiceDto = new GetInvoice();
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -129,14 +129,14 @@ namespace Data.Repository.Implementation
 
                     while (await productReader.ReadAsync())
                     {
-                        InvoiceProductDto product1 = new InvoiceProductDto
+                        InvoiceProduct product1 = new InvoiceProduct
                         {
                             ProductName = Convert.ToString(productReader["ProductName"]),
                             ProductDesc = Convert.ToString(productReader["ProductDesc"]),
                             ProductPrice = (decimal)Convert.ToInt32(productReader["ProductPrice"]),
                             Quantity = product.Quantity,
                         };
-                        invoiceDto.products ??= new List<InvoiceProductDto>();
+                        invoiceDto.products ??= new List<InvoiceProduct>();
                         invoiceDto.products.Add(product1);
                     }
                     await productReader.CloseAsync();
@@ -181,7 +181,7 @@ namespace Data.Repository.Implementation
 
             if (invoiceDto != null && invoiceDto.products != null && invoiceDto.products.Count > 0)
             {
-                foreach (InvoiceProductDto product in invoiceDto.products)
+                foreach (InvoiceProduct product in invoiceDto.products)
                 {
                     htmlcontent += "<tr>";
                     htmlcontent += $"<td style='border:1px solid #000'>{product.ProductName}</td>";

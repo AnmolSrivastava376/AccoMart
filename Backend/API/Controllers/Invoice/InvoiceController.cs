@@ -1,12 +1,5 @@
-﻿using Data.Models.DTO;
-using Data.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service.Services.Interface;
-using PdfSharpCore.Pdf;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
-using PdfSharpCore;
-
 
 namespace API.Controllers.Invoice
 {

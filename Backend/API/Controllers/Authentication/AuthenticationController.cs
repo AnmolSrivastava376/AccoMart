@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Models;
-using Service.Models.Authentication.Login;
-using Service.Models.Authentication.Register;
-using Service.Models.Authentication.User;
 using Service.Services;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using Data.Models.Authentication.Login;
+using Data.Models.Authentication.Register;
+using Data.Models.Authentication.User;
+using Data.Models.ResetPassword;
 
 
 namespace API.Controllers.Authentication
@@ -24,10 +25,10 @@ namespace API.Controllers.Authentication
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        private readonly Service.Services.IEmailService _emailService;
+        private readonly IEmailService _emailService;
         private readonly IUserManagement _userManagement;
         private readonly ICartService _cartService;
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, Service.Services.IEmailService emailService, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, IUserManagement userManagement, ICartService cartService)
+        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, IUserManagement userManagement, ICartService cartService)
         {
             _userManager = userManager;
 
@@ -45,7 +46,7 @@ namespace API.Controllers.Authentication
             var tokenResponse = await _userManagement.CreateUserWithTokenAsync(registerUser);
             if (tokenResponse.IsSuccess)
             {
-               await _userManagement.AssignRoleToUserAsync(registerUser.Roles, tokenResponse.Response.User);
+                await _userManagement.AssignRoleToUserAsync(registerUser.Roles, tokenResponse.Response.User);
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "You have been registered" });
             }
             return StatusCode(StatusCodes.Status500InternalServerError, new Response { Message = tokenResponse.Message, IsSuccess = false });
@@ -106,16 +107,16 @@ namespace API.Controllers.Authentication
             if (loginOtpResponse.Response! != null)
             {
                 var user = loginOtpResponse.Response.User;
-                
-                    var token = loginOtpResponse.Response.Token;
 
-                    var message = new Message(new string[] { user.Email! }, "OTP Confrimation", token);
-                    _emailService.SendEmail(message);
+                var token = loginOtpResponse.Response.Token;
 
-                    return StatusCode(StatusCodes.Status200OK,
-                     new Response { IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
-                
-               
+                var message = new Message(new string[] { user.Email! }, "OTP Confrimation", token);
+                _emailService.SendEmail(message);
+
+                return StatusCode(StatusCodes.Status200OK,
+                 new Response { IsSuccess = loginOtpResponse.IsSuccess, Status = "Success", Message = $"We have sent an OTP to your Email {user.Email}" });
+
+
             }
             return Unauthorized();
         }
@@ -170,8 +171,8 @@ namespace API.Controllers.Authentication
         [HttpGet("reset-password")]
         public async Task<IActionResult> ResetPassword(string token, string email)
         {
-            var model = new ResetPassword {Token = token, Email = email};
-            return Ok(new {model});
+            var model = new ResetPassword { Token = token, Email = email };
+            return Ok(new { model });
         }
 
 
@@ -181,23 +182,23 @@ namespace API.Controllers.Authentication
         public async Task<IActionResult> ResetPassword(ResetPassword resetPassword)
         {
             var user = await _userManager.FindByEmailAsync(resetPassword.Email);
-            if(user!= null)
+            if (user != null)
             {
                 var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPassword.Token, resetPassword.Password);
-                if(!resetPassResult.Succeeded)
+                if (!resetPassResult.Succeeded)
                 {
-                    foreach(var error in resetPassResult.Errors)
+                    foreach (var error in resetPassResult.Errors)
                     {
                         ModelState.AddModelError(error.Code, error.Description);
                     }
                     return Ok(ModelState);
                 }
-          
+
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = $"Password has been reset" });
             }
             return StatusCode(StatusCodes.Status400BadRequest, StatusCode(StatusCodes.Status200OK, new Response { Status = "Couldn't find link to email" }));
         }
-                                                               
+
 
     }
 }

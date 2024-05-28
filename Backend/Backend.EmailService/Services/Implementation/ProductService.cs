@@ -1,7 +1,8 @@
-﻿using Data.Models.DTO;
-using Data.Models;
+﻿using Data.Models.Product_Category.Category;
+using Data.Models.Product_Category.Product;
+using Data.Models.ViewModels;
+using Data.Models.ViewModels.UpdateProduct;
 using Data.Repository.Interfaces;
-using Data.Repository;
 using Service.Services.Interface;
 
 namespace Service.Services.Implementation
@@ -18,14 +19,11 @@ namespace Service.Services.Implementation
             return await _productRepository.CreateCategory(categoryName);
         }
 
-        async Task<Product> IProductService.CreateProductAsync(ProductDto productDto)
+        async Task<Product> IProductService.CreateProductAsync(ViewProduct productDto)
         {
             return await _productRepository.CreateProduct(productDto);
         }
-        async Task<List<Product>> IProductService.GetAllProductsPagewise(int pageNo, int pageSize)
-        {
-            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize);
-        }
+       
 
         async Task IProductService.DeleteCategoryAsync(int CategoryId)
         {
@@ -44,18 +42,22 @@ namespace Service.Services.Implementation
 
         async Task<List<Product>> IProductService.GetAllProductsByCategoryAsync(int id, string orderBy)
         {
-            return await _productRepository.GetAllProductsByCategoryAsync(id, orderBy);
+            return await _productRepository.GetAllProductsByCategory(id, orderBy);
         }
 
         async Task<List<Product>> IProductService.GetAllProductsAsync()
         {
-            return await _productRepository.GetAllProductsAsync();
+            return await _productRepository.GetAllProducts();
         }
-        async Task<List<Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
+        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize)
         {
-            return await _productRepository.GetProductsByPageNoAsync(id, pageNo, pageSize);
+            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize);
         }
 
+        async Task<List<Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
+        {
+            return await _productRepository.GetProductsByPageNo(id, pageNo, pageSize);
+        }
         async Task<Category> IProductService.GetCategoryByIdAsync(int id)
         {
             return await _productRepository.GetCategoryById(id);
@@ -74,11 +76,6 @@ namespace Service.Services.Implementation
             return await _productRepository.GetProductById(id);
         }
 
-        /*async Task<Product> IProductService.GetProductByPriceOrderAsync(string OrderBy)
-        {
-            return await _productRepository.GetProductByPriceOrder(OrderBy);
-
-        }*/
 
         async Task<List<Product>> IProductService.GetProductBySearchNameAsync(string prefix)
         {
@@ -98,7 +95,7 @@ namespace Service.Services.Implementation
             return await _productRepository.UpdateCategory(Id, NewCategoryName);
         }
 
-        async Task<Product> IProductService.UpdateProductAsync(int productId, UpdateProductDto productDto)
+        async Task<Product> IProductService.UpdateProductAsync(int productId, UpdateProduct productDto)
         {
             return await _productRepository.UpdateProduct(productId, productDto);
         }

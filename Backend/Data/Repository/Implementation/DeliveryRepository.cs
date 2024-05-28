@@ -1,5 +1,5 @@
-﻿using Data.Models;
-using Data.Models.DTO;
+﻿using Data.Models.Delivery;
+using Data.Models.ViewModels;
 using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +15,7 @@ namespace Data.Repository.Implementation
             _configuration = configuration;
         }
 
-        public async Task AddDeliveryService(CreateDeliveryServiceDto deliveryService)
+        public async Task AddDeliveryService(CreateDeliveryService deliveryService)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace Data.Repository.Implementation
             }
         }
 
-        public async Task UpdateDeliveryService(int id, CreateDeliveryServiceDto deliveryService)
+        public async Task UpdateDeliveryService(int id, CreateDeliveryService deliveryService)
         {
             try
             {

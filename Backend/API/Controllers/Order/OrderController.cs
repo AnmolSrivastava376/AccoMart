@@ -1,8 +1,6 @@
-using Data.Models;
-using Data.Models.CartModels;
-using Data.Models.DTO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
+
+using Data.Models.OrderModels;
+using Data.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -77,7 +75,7 @@ namespace API.Controllers.Order
         }
 
         [HttpPost("PlaceOrderByCart")]
-        public async Task<StripeDto> PlaceOrderByCart(CartOrderDto cartOrderDto)
+        public async Task<StripeModel> PlaceOrderByCart(CartOrder cartOrderDto)
         {
             int newOrderId = 0;
            
@@ -146,7 +144,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeDto> CheckoutByCart(string userId, int cartId,int orderId,int deliveryId,decimal productAmount)
+        public async Task<StripeModel> CheckoutByCart(string userId, int cartId,int orderId,int deliveryId,decimal productAmount)
         {
             var options = new SessionCreateOptions
             {
@@ -312,14 +310,14 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            StripeDto url = new StripeDto();
+            StripeModel url = new StripeModel();
             url.StripeUrl = session.Url;
             return url;
         }
 
         //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<StripeDto> PlaceOrder(ProductOrderDto productOrderDto)
+        public async Task<StripeModel> PlaceOrder(ProductOrder productOrderDto)
         {
           
             try
@@ -414,7 +412,7 @@ namespace API.Controllers.Order
 
 
         [HttpPost("Checkout/Product")]
-        public async Task<StripeDto> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
+        public async Task<StripeModel> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
         {
 
             var options = new SessionCreateOptions
@@ -545,7 +543,7 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            StripeDto url = new StripeDto();
+            StripeModel url = new StripeModel();
             url.StripeUrl = session.Url;
 
             if(url!= null)

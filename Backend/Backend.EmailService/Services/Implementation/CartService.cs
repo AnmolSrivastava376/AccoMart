@@ -2,12 +2,8 @@
 using Data.Repository.Interfaces;
 using Service.Services.Interface;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using Data.Repository.Implementation;
-using Data.Models;
-using System.Collections;
+
 
 namespace Service.Services.Implementation
 {
@@ -74,9 +70,7 @@ namespace Service.Services.Implementation
                 await insertCartCommand.ExecuteNonQueryAsync();
 
             }
-        }
-
-        
+        }       
 
         async Task ICartService.DeleteCartAsync(int cartId)
         {

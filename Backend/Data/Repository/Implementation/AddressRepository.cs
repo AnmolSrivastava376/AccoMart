@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
+using Data.Models.Address;
 namespace Data.Repository.Implementation
 {
     public class AddressRepository : IAddressRepository

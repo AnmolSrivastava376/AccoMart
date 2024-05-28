@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Data.Models.DTO;
+using Microsoft.Data.SqlClient;
 using Data.Repository.Interfaces;
 using Service.Models;
+
+using Data.Models.Delivery;
+
 using Data.Models;
+using Data.Models.ViewModels;
+
 
 namespace API.Controllers.DeliveryServices
 {
@@ -18,7 +23,7 @@ namespace API.Controllers.DeliveryServices
         }
 
         [HttpPost("AddDeliveryService")]
-        public async Task<IActionResult> AddDeliveryService(CreateDeliveryServiceDto deliveryService)
+        public async Task<IActionResult> AddDeliveryService(CreateDeliveryService deliveryService)
         {
             try
             {
@@ -50,7 +55,7 @@ namespace API.Controllers.DeliveryServices
         }
 
         [HttpPut("UpdateDeliveryService/{id}")]
-        public async Task<IActionResult> UpdateDeliveryService(int id, CreateDeliveryServiceDto deliveryService)
+        public async Task<IActionResult> UpdateDeliveryService(int id, CreateDeliveryService deliveryService)
         {
             try
             {

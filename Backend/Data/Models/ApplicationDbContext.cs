@@ -1,4 +1,5 @@
 
+using Data.Models.Authentication.User;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

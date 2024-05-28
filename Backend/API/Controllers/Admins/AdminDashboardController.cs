@@ -1,8 +1,11 @@
-﻿using Data.Models;
-using Service.Services.Interface;
+﻿using Service.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Data.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Data.Models.Product_Category.Product;
+using Data.Models.Product_Category.Category;
+using Data.Models.ViewModels;
+using Data.Models.Product_Category;
+using Data.Models.ViewModels.UpdateProduct;
 
 namespace API.Controllers.Admins
 {
@@ -37,7 +40,7 @@ namespace API.Controllers.Admins
         public async Task<List<Product>> GetAllProductsPagewise(int pageNo)
         {
             int pageSize = 20;
-            return await _productService.GetAllProductsPagewise(pageNo,pageSize);
+            return await _productService.GetAllProductsPagewiseAsync(pageNo,pageSize);
         }
         [HttpGet("Products/SearchBy={prefix}")]
         public async Task<List<Product>> GetProductBySearchName(string prefix = "")
@@ -93,9 +96,9 @@ namespace API.Controllers.Admins
 
         [Authorize(Roles = "Admin")]
         [HttpPost("Product/Create")]
-        public async Task<ActionResult<Product>> CreateProduct(ProductDto productDto)
+        public async Task<ActionResult<Product>> CreateProduct(ViewProduct productDto)
         {
-            var product =   await _productService.CreateProductAsync(productDto);
+            var product = await _productService.CreateProductAsync(productDto);
             return Ok(product); 
         }
 
@@ -111,7 +114,7 @@ namespace API.Controllers.Admins
 
         [HttpPut("Update/Product/{productId}")]
 
-        async public Task<ActionResult<Product>> UpdateProduct (int productId, UpdateProductDto productDto)
+        async public Task<ActionResult<Product>> UpdateProduct (int productId, UpdateProduct productDto)
         {
            var product = await _productService.UpdateProductAsync(productId, productDto);
             return Ok(product);
