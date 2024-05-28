@@ -41,17 +41,17 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   fetchCategories() {
-    this.categoryService.fetchCategories().subscribe(
-      (response: any) => {
+    this.categoryService.fetchCategories().subscribe({
+      next: (response: any) => {
         this.categories = response;
         this.isLoading = false;
       },
-      (error) => {
+      error: () => {
         this.toastr.error('Error  Fetching products', undefined, {
           timeOut: 5000,
         });
-      }
-    );
+      },
+    });
   }
 
   openEditPopup(category: Category) {
@@ -73,23 +73,23 @@ export class AdminCategoriesComponent implements OnInit {
         this.selectedCategory.categoryId,
         this.selectedCategory.categoryName
       )
-      .subscribe(
-        (response) => {
+      .subscribe({
+        next: () => {
           this.isEditPopupOpen = false;
           this.fetchCategories();
           this.toastr.success('Category edited', undefined, { timeOut: 5000 });
         },
-        (err) => {
+        error: () => {
           this.toastr.error('Error editing category', undefined, {
             timeOut: 5000,
           });
-        }
-      );
+        },
+      });
   }
 
   saveCategory(categoryName: string) {
-    this.categoryService.addCategory(categoryName).subscribe(
-      (response) => {
+    this.categoryService.addCategory(categoryName).subscribe({
+      next: () => {
         this.isAddPopupOpen = false;
         this.categoryToAdd = '';
         this.fetchCategories();
@@ -97,17 +97,17 @@ export class AdminCategoriesComponent implements OnInit {
           timeOut: 5000,
         });
       },
-      (err) => {
+      error: () => {
         this.toastr.error('Error creating category', undefined, {
           timeOut: 5000,
         });
-      }
-    );
+      },
+    });
   }
 
   deleteCategory(Id: number) {
     if (confirm('Are you sure you want to delete this category?')) {
-      this.categoryService.deleteCategory(Id).subscribe((response) => {
+      this.categoryService.deleteCategory(Id).subscribe(() => {
         this.fetchCategories();
         this.toastr.success('Category deleted successfully', undefined, {
           timeOut: 5000,

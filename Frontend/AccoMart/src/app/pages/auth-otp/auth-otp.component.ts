@@ -44,8 +44,8 @@ export class AuthOtpComponent {
   sendOtp(): void {
     this.spinLoader = true;
     const email: string = String(this.otpForm.value.email);
-    this.httpService.loginByEmail(email).subscribe(
-      (result: any) => {
+    this.httpService.loginByEmail(email).subscribe({
+      next: (result: any) => {
         if (result.isSuccess) {
           console.log('OTP Sent');
           this.spinLoader = false;
@@ -54,18 +54,18 @@ export class AuthOtpComponent {
           console.log('OTP is invalid');
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error while sending OTP:', error);
-      }
-    );
+      },
+    });
   }
 
   login() {
     this.sentOtp = false;
     const email: string = String(this.otpForm.value.email);
     const otp: string = String(this.otpForm.value.otp);
-    this.httpService.login2FA(otp, email).subscribe(
-      (result: any) => {
+    this.httpService.login2FA(otp, email).subscribe({
+      next: (result: any) => {
         if (result.isSuccess) {
           this.tokenService.setToken(result.response.accessToken.token);
           this.tokenService.setAccessToken(result.response.accessToken.token);
@@ -85,12 +85,12 @@ export class AuthOtpComponent {
           alert('Unsuccessfull login');
         }
       },
-      (error) => {
+      error: (error) => {
         this.spinLoader = false;
         this.loginErrorMessage = error.error.message;
         console.error(error);
         alert('Unsuccessfull login');
       }
-    );
+    });
   }
 }

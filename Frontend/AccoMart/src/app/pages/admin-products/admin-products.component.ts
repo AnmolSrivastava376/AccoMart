@@ -54,26 +54,30 @@ export class AdminProductsComponent implements OnInit {
   }
 
   fetchCategories() {
-    this.categoryService.fetchCategories().subscribe(
-      (response) => {
+    this.categoryService.fetchCategories().subscribe({
+      next: (response) => {
         this.categories = response;
         this.fetchProductsByPageNo();
       },
-      (err) => {
+      error: () => {
         this.isLoading = false;
         this.toastr.error('Error fetching products', undefined, {
           timeOut: 5000,
         });
-      }
-    );
+      },
+    });
   }
 
   fetchProductsByPageNo() {
     this.isLoading = true;
     this.productService.fetchAllProductsPagewise(this.pageNo).subscribe({
       next: (response) => {
-        if(response === null || response === undefined || response.length === 0 ){
-          this.disable = true
+        if (
+          response === null ||
+          response === undefined ||
+          response.length === 0
+        ) {
+          this.disable = true;
         }
         response.forEach((product) => {
           this.products.push(product);
@@ -102,19 +106,19 @@ export class AdminProductsComponent implements OnInit {
   }
 
   deleteProduct(productId: number) {
-    this.productService.deleteProductById(productId).subscribe(
-      () => {
+    this.productService.deleteProductById(productId).subscribe({
+      next: () => {
         this.toastr.success('Product Deleted', undefined, { timeOut: 5000 });
         this.products = this.products.filter(
           (product) => product.productId !== productId
         );
       },
-      (error) => {
+      error: () => {
         this.toastr.error('Error deleting products', undefined, {
           timeOut: 5000,
         });
-      }
-    );
+      },
+    });
   }
 
   openDeletePopup(product: Product) {
@@ -142,18 +146,18 @@ export class AdminProductsComponent implements OnInit {
       forkJoin([
         this.productService.fetchProductByName(searchValue),
         this.productService.fetchProductByCategoryName(searchValue),
-      ]).subscribe(
-        ([productsByName, productsByCategory]) => {
+      ]).subscribe({
+        next: ([productsByName, productsByCategory]) => {
           this.products = [];
           this.products = [...productsByName, ...productsByCategory];
           this.isLoading = false;
         },
-        (error) => {
+        error: () => {
           this.toastr.error('Error searching products', undefined, {
             timeOut: 5000,
           });
-        }
-      );
+        },
+      });
     }
   }
 

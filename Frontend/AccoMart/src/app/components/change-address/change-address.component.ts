@@ -54,7 +54,7 @@ export class ChangeAddressComponent implements OnInit {
       ) {
         this.addressService
           .addAddress(this.newAddress, this.userId)
-          .subscribe((resp) => {
+          .subscribe(() => {
             if (this.address === undefined) this.address = [this.newAddress];
             else this.address.push(this.newAddress);
             this.addressAdded.emit(this.newAddress);
