@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [MatIcon, HttpClientModule, CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
-  providers: [Router,ActivatedRoute]
+  providers: []
 })
 export class SidebarComponent implements OnInit {
   currentRoute: string = '';
