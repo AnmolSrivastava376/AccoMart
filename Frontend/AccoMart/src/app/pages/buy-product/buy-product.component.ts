@@ -46,6 +46,7 @@ import { ProductOrder } from '../../interfaces/productOrder';
     orderService,
     CartService,
     LoaderComponent,
+    ToastrService
   ],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css',
