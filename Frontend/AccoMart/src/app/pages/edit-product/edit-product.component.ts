@@ -2,7 +2,6 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { ActivatedRoute, Router } from '@angular/router';
 import { productService } from '../../services/product.services';
 import { NavbarComponent } from '../../components/navbar/navbar.component';
@@ -11,12 +10,10 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CategoryService } from '../../services/category.services';
 import { Category } from '../../interfaces/category';
 import { ToastrService } from 'ngx-toastr';
-import { error } from 'highcharts';
 
 @Component({
   selector: 'app-edit-product-popup',
   templateUrl: './edit-product.component.html',
-
   imports: [
     CommonModule,
     FormsModule,
@@ -27,11 +24,6 @@ import { error } from 'highcharts';
   providers: [productService, CategoryService],
   standalone: true,
   styleUrls: ['./edit-product.component.css'],
-  imports:[CommonModule,FormsModule,NavbarComponent,SidebarComponent,HttpClientModule],
-  providers:[productService,CategoryService,ActivatedRoute],
-  standalone:true,
-  styleUrls: ['./edit-product.component.css']
-
 })
 export class EditProductComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
