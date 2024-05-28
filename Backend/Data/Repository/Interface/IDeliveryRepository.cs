@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Data.Models;
-using Data.Models.Delivery;
+﻿using Data.Models.Delivery;
 using Data.Models.ViewModels;
 
 namespace Data.Repository.Interfaces

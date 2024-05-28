@@ -1,6 +1,4 @@
 ﻿using Data.Models.CartModels;
-using Data.Models;
-
 namespace Service.Services.Interface
 {
     public interface ICartService

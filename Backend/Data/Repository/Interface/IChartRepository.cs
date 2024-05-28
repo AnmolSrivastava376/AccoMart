@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Data.Models.Statistic_Models;
+﻿using Data.Models.Statistic_Models;
 
 namespace Data.Repository.Interfaces
 {

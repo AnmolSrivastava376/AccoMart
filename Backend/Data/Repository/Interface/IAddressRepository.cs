@@ -1,10 +1,7 @@
-﻿using Data.Models;
-using Data.Models.Address;
-
+﻿using Data.Models.Address;
 
 namespace Data.Repository.Interfaces
 {
-
     public interface IAddressRepository
     {
         Task<int> AddAddressAsync(AddressModel address, string userId);

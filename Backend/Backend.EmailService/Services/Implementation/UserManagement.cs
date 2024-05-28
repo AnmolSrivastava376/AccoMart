@@ -9,7 +9,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Service.Services.Interface;
 using Microsoft.Data.SqlClient;
-using Stripe;
 using Data.Models.Address;
 using Data.Models.Authentication.Register;
 using Data.Models.Authentication.User;

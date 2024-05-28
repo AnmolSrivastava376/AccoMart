@@ -2,10 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Data.Repository.Interfaces;
 using Service.Models;
-
 using Data.Models.Delivery;
-
-using Data.Models;
 using Data.Models.ViewModels;
 
 
