@@ -11,6 +11,6 @@ Installation ( Frontend )
 			   npm install 
 				or 
 			   npm install --force 
-		step-3 : start the Application 
+		step-3 : START THE APPLICATION
 			  ng serve 
 	
