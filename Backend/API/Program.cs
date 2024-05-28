@@ -65,6 +65,9 @@ builder.Services.AddScoped<IUserManagement, UserManagement>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IChartRepository, ChartRepository>();
+builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+
 
 
 

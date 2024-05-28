@@ -90,7 +90,6 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       this.tokenService.setExpiryRefresh(
         response.data.response.refreshToken.expiryTokenDate
       );
-      console.log('done');
     } catch (error) {
       console.error('Error refreshing token:', error);
     }

@@ -46,9 +46,6 @@ namespace API.Controllers.Authentication
             if (tokenResponse.IsSuccess)
             {
                await _userManagement.AssignRoleToUserAsync(registerUser.Roles, tokenResponse.Response.User);
-               /* var confirmationLink = Url.Action(nameof(ConfirmEmail), "Authentication", new { tokenResponse.Response.Token, email = registerUser.Email }, Request.Scheme);
-                var message = new Message(new string[] { registerUser.Email! }, "Confirmation email link", confirmationLink);
-                _emailService.SendEmail(message);*/
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "You have been registered" });
             }
             return StatusCode(StatusCodes.Status500InternalServerError, new Response { Message = tokenResponse.Message, IsSuccess = false });
@@ -90,7 +87,6 @@ namespace API.Controllers.Authentication
             string password = login.Password;
             string email = login.Email;
             var jwt = await _userManagement.LoginUserWithJWTokenAsync(password, email);
-            // var signIn = await _signInManager.TwoFactorSignInAsync("Email", code, false, false);
             if (jwt.IsSuccess)
             {
                 return Ok(jwt);
