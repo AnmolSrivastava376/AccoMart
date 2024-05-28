@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./reset-password-page.component.css'],
 })
 export class ResetPasswordPageComponent {
+  inputType = 'password';
   resetPasswords: resetPassword = {
     password: '',
     confirmPassword: '',
@@ -23,6 +24,7 @@ export class ResetPasswordPageComponent {
     token: '',
   };
   resetResponse: string;
+  resetError: string;
   spinLoader: boolean;
   constructor(
     private httpService: HttpService,
@@ -40,32 +42,43 @@ export class ResetPasswordPageComponent {
       this.resetPasswords.email = decodeURIComponent(email);
     });
   }
-
+  toogleInputType() {
+    if (this.inputType === 'password') {
+      this.inputType = 'text';
+    } else {
+      this.inputType = 'password';
+    }
+  }
   resetPassword(password: string, confirmPassword: string) {
-    this.spinLoader = true;
-    this.resetPasswords.password = password;
-    this.resetPasswords.confirmPassword = confirmPassword;
-    console.log(
-      this.resetPasswords.password,
-      this.resetPasswords.confirmPassword,
-      this.resetPasswords.token,
-      this.resetPasswords.email
-    );
-    this.httpService
-      .resetPassword(
+    if (this.resetPasswords.confirmPassword !== this.resetPasswords.password) {
+      this.resetError = 'Passwords do not match';
+    } else {
+      this.spinLoader = true;
+      this.resetPasswords.password = password;
+      this.resetPasswords.confirmPassword = confirmPassword;
+      console.log(
         this.resetPasswords.password,
         this.resetPasswords.confirmPassword,
         this.resetPasswords.token,
         this.resetPasswords.email
-      )
-      .subscribe(
-        (response) => {
-          this.resetResponse = 'Password reset successfully.';
-          this.router.navigate(['/home/auth']);
-        },
-        (error) => {
-          console.error('Error resetting password:', error);
-        }
       );
+      this.httpService
+        .resetPassword(
+          this.resetPasswords.password,
+          this.resetPasswords.confirmPassword,
+          this.resetPasswords.token,
+          this.resetPasswords.email
+        )
+        .subscribe(
+          () => {
+            this.resetResponse = 'Password reset successfully.';
+            this.router.navigate(['/home/auth']);
+          },
+          () => {
+            this.resetError = 'Error resetting passwords';
+            this.spinLoader = false;
+          }
+        );
+    }
   }
 }
