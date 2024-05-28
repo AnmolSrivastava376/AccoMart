@@ -30,8 +30,4 @@
 
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Static\" />
-  </ItemGroup>
-
 </Project>

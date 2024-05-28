@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
+import { Login2FAComponent } from '../../components/login-2-fa/login-2-fa.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
