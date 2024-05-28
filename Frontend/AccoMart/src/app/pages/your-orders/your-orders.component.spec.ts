@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { YourOrdersComponent } from './your-orders.component';
 
 describe('YourOrdersComponent', () => {
@@ -8,10 +7,8 @@ describe('YourOrdersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [YourOrdersComponent]
-    })
-    .compileComponents();
-    
+      imports: [YourOrdersComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(YourOrdersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

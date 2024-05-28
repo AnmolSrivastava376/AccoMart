@@ -1,20 +1,24 @@
 <div class="w-full h-full bg-gray-800 text-white px-[10px] py-[20px]">
-    <button (click)="showProducts()" [ngClass]="{'text-green-600': currentRoute === 'products'}"
+    <button (click)="showProducts()"
+        [ngClass]="{'text-green-600': currentRoute === 'products'}"
         class="w-full rounded-md text-left text-md-center mb-2 focus:outline-none focus:bg-gray-700 flex items-center">
         <mat-icon class="mr-2">inbox</mat-icon>
         Manage Products
     </button>
-    <button (click)="showCategories()" [ngClass]="{'text-green-600': currentRoute === 'categories'}"
+    <button (click)="showCategories()"
+        [ngClass]="{'text-green-600': currentRoute === 'categories'}"
         class="w-full rounded-md text-left text-md-center mb-2 focus:outline-none focus:bg-gray-700 flex items-center">
         <mat-icon class="mr-2">view_list</mat-icon>
         Manage Categories
     </button>
-    <button (click)="showDeliveryServices()" [ngClass]="{'text-green-600': currentRoute === 'delivery'}"
+    <button (click)="showDeliveryServices()"
+        [ngClass]="{'text-green-600': currentRoute === 'delivery'}"
         class="w-full rounded-md text-left text-md-center mb-2 focus:outline-none  focus:bg-gray-700  flex items-center">
         <mat-icon class="mr-2">local_shipping</mat-icon>
         Delivery Services
     </button>
-    <button (click)="showDashboard()" [ngClass]="{'text-green-600': currentRoute == 'admin'}"
+    <button (click)="showDashboard()"
+        [ngClass]="{'text-green-600': currentRoute == 'admin'}"
         class="w-full rounded-md text-left text-md-center mb-2 focus:outline-none focus:bg-gray-700 flex items-center">
         <mat-icon class="mr-2">dashboard</mat-icon>
         Dashboard

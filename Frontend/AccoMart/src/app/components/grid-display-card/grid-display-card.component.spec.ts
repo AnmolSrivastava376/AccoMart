@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { GridDisplayCardComponent } from './grid-display-card.component';
 
 describe('GridDisplayCardComponent', () => {
@@ -8,10 +7,8 @@ describe('GridDisplayCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GridDisplayCardComponent]
-    })
-    .compileComponents();
-    
+      imports: [GridDisplayCardComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(GridDisplayCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

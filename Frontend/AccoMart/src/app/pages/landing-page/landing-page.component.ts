@@ -1,4 +1,4 @@
-import {  HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { Router } from '@angular/router';
@@ -7,17 +7,12 @@ import { productService } from '../../services/product.services';
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [
-    HttpClientModule
-  ],
+  imports: [HttpClientModule],
   providers: [productService],
   templateUrl: './landing-page.component.html',
-  styleUrl: './landing-page.component.css'
+  styleUrl: './landing-page.component.css',
 })
 export class LandingPageComponent {
-  constructor(private httpService:productService){}
-
+  constructor(private httpService: productService) {}
   router = inject(Router);
-
- 
 }

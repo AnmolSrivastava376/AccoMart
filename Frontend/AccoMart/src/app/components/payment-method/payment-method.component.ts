@@ -6,8 +6,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [HttpClientModule],
   templateUrl: './payment-method.component.html',
-  styleUrl: './payment-method.component.css'
+  styleUrl: './payment-method.component.css',
 })
-export class PaymentMethodComponent {
-
-}
+export class PaymentMethodComponent {}

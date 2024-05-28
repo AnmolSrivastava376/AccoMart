@@ -1,4 +1,4 @@
-export interface cartItem{
-  productId: number
-  quantity : number
+export interface cartItem {
+  productId: number;
+  quantity: number;
 }

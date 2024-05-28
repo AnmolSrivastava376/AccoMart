@@ -9,6 +9,7 @@ import { DeliveryService } from '../interfaces/deliveryService';
 })
 export class deliveryService {
   constructor(private http: HttpClient) {}
+
   getDeliveryServices(): Observable<DeliveryService[]> {
     return this.http.get<DeliveryService[]>(
       'http://localhost:5239/DeliveryServiceController/GetAllDeliveryServices'
@@ -36,6 +37,7 @@ export class deliveryService {
       `http://localhost:5239/DeliveryServiceController/DeleteDeliveryService/${id}`
     );
   }
+
   getDeliveryDate(deliveryServiceId: number): Observable<number> {
     return this.http.get<number>(
       `http://localhost:5239/DeliveryServiceController/GetDeliveryDays/${deliveryServiceId}`

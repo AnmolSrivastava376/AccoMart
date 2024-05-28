@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CategoryNavbarComponent } from './category-navbar.component';
 
 describe('CategoryNavbarComponent', () => {
@@ -8,10 +7,8 @@ describe('CategoryNavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CategoryNavbarComponent]
-    })
-    .compileComponents();
-    
+      imports: [CategoryNavbarComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(CategoryNavbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

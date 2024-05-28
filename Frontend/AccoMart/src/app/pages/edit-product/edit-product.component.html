@@ -4,70 +4,87 @@
     </div>
     <div class="w-full h-fit flex col">
         <div class="w-[20%] h-fit relative sidebar overflow-hidden">
-           <div class="bg-white fixed unfix">
-            <app-sidebar></app-sidebar>
-           </div>
+            <div class="bg-white fixed unfix">
+                <app-sidebar></app-sidebar>
+            </div>
         </div>
-        <div class="w-[80%] bg-white box flex flex-col p-[20px] gap-[20px] h-adj justify-center items-center">
-            <div class="editform p-8 bg-gray-50 border shadow-md rounded-md w-full lg:w-2/3 xl:w-1/2">
-                <h2 class="text-3xl font-bold mb-8 text-gray-800">Edit Product</h2>
+        <div
+            class="w-[80%] bg-white box flex flex-col p-[20px] gap-[20px] h-adj justify-center items-center">
+            <div
+                class="editform p-8 bg-gray-50 border shadow-md rounded-md w-full lg:w-2/3 xl:w-1/2">
+                <h2 class="text-3xl font-bold mb-8 text-gray-800">Edit
+                    Product</h2>
                 <form (submit)="submitForm()">
                     <div class="mb-6">
-                        <label for="productName" class="block text-gray-700 mb-2">Product Name</label>
-                        <input type="text" id="productName" name="productName" [(ngModel)]="product.productName"
+                        <label for="productName"
+                            class="block text-gray-700 mb-2">Product
+                            Name</label>
+                        <input type="text" id="productName" name="productName"
+                            [(ngModel)]="product.productName"
                             placeholder="Enter product name" required
                             class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
                     </div>
                     <div class="mb-6">
-                        <label for="productDesc" class="block text-gray-700 mb-2">Product Description</label>
-                        <textarea id="productDesc" name="productDesc" [(ngModel)]="product.productDesc"
+                        <label for="productDesc"
+                            class="block text-gray-700 mb-2">Product
+                            Description</label>
+                        <textarea id="productDesc" name="productDesc"
+                            [(ngModel)]="product.productDesc"
                             placeholder="Enter product description" required
                             class="block w-full border border-gray-300 rounded-md py-4 px-4 focus:outline-none focus:ring focus:ring-blue-500"></textarea>
                     </div>
                     <div class="mb-6">
-                        <label for="productPrice" class="block text-gray-700 mb-2">Product Price</label>
-                        <input type="number" id="productPrice" name="productPrice" [(ngModel)]= "product.productPrice"
+                        <label for="productPrice"
+                            class="block text-gray-700 mb-2">Product
+                            Price</label>
+                        <input type="number" id="productPrice"
+                            name="productPrice"
+                            [(ngModel)]="product.productPrice"
                             placeholder="Enter product price" required
                             class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
                     </div>
                     <div class="mb-6">
-                        <label for="categoryId" class="block text-gray-700 mb-2">Category</label>
-                        <select id="categoryId" name="categoryId" [(ngModel)]="product.categoryId"
-                                class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
-                            <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName }}</option>
+                        <label for="categoryId"
+                            class="block text-gray-700 mb-2">Category</label>
+                        <select id="categoryId" name="categoryId"
+                            [(ngModel)]="product.categoryId"
+                            class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
+                            <option *ngFor="let category of categories"
+                                [value]="category.categoryId">{{
+                                category.categoryName }}</option>
                         </select>
                     </div>
-    
-    
                     <input type="file" (change)="handleFileChange($event)" />
-    
-                        <button (click)="uploadFile()" [disabled]="uploading" 
+                    <button (click)="uploadFile()" [disabled]="uploading"
                         class="bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded mb-4  ">
                         {{ uploading ? 'Uploading...' : 'Upload' }}
                     </button>
-                    
                     <div class="mb-6">
                         <div *ngIf="product.productImageUrl">
-                            <img src="{{product.productImageUrl}}" alt="Product Image" class="h-42 w-48">
+                            <img src="{{product.productImageUrl}}"
+                                alt="Product Image" class="h-42 w-48">
                         </div>
                     </div>
-    
                     <div>
-    
                         <div class="mb-6">
-                            <label for="productImageUrl" class="block text-gray-700 mb-2">Product Image URL</label>
-                            <input type="text" id="productImageUrl" name="productImageUrl" [(ngModel)]="product.productImageUrl"
-                            placeholder="Enter product image URL" required
-                            class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
+                            <label for="productImageUrl"
+                                class="block text-gray-700 mb-2">Product Image
+                                URL</label>
+                            <input type="text" id="productImageUrl"
+                                name="productImageUrl"
+                                [(ngModel)]="product.productImageUrl"
+                                placeholder="Enter product image URL" required
+                                class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
                         </div>
-    
                         <div class="mb-6">
-                            <label for="productStock" class="block text-gray-700 mb-2">Stock Available</label>
-                            <input type="text" id="productStock" name="productStock" [(ngModel)]="product.stock"
-                            placeholder="Enter available stock" required
-                            class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
+                            <label for="productStock"
+                                class="block text-gray-700 mb-2">Stock
+                                Available</label>
+                            <input type="text" id="productStock"
+                                name="productStock" [(ngModel)]="product.stock"
+                                placeholder="Enter available stock" required
+                                class="block w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-blue-500">
                         </div>
-                        
                     </div>
                     <div class="flex justify-end">
                         <button type="button" (click)="CancelEdit()"
@@ -78,9 +95,5 @@
                 </form>
             </div>
         </div>
-       
-        </div>
     </div>
-
-
-
+</div>

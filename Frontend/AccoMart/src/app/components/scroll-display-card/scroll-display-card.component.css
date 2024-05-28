@@ -1,8 +1,9 @@
-::-webkit-scrollbar{
+::-webkit-scrollbar {
     display: none;
 }
-@media (max-width: 650px){
-    .margin-switch{
+
+@media (max-width: 650px) {
+    .margin-switch {
         margin: 0px;
         padding: 20px;
     }

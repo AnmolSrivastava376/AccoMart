@@ -1,13 +1,13 @@
-@media screen and (max-width: 650px){
-    .radius-adj{
+@media screen and (max-width: 650px) {
+    .radius-adj {
         border-radius: 0;
     }
-    .hide{
+
+    .hide {
         display: none;
     }
 }
 
 .navbar {
-    border-bottom: 1px solid #c2baba; /* Add a thin solid border at the bottom */
+    border-bottom: 1px solid #c2baba;
 }
-

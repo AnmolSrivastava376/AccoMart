@@ -16,13 +16,18 @@ import { BuyNowService } from '../../services/buy-now.service';
   templateUrl: './product-detail-card.component.html',
   styleUrl: './product-detail-card.component.css',
 })
-export class ProductDetailCardComponent implements OnInit, AfterContentInit{
+export class ProductDetailCardComponent implements OnInit, AfterContentInit {
   @Input() product?: Product;
   productId: number;
-  isLoading: boolean=false;
-  displayText:string = "ADD TO CART"
-  constructor(private route: ActivatedRoute, private cartService: CartService, private productService: productService, private buyNowService: BuyNowService) {}
-  
+  isLoading: boolean = false;
+  displayText: string = 'ADD TO CART';
+  constructor(
+    private route: ActivatedRoute,
+    private cartService: CartService,
+    private productService: productService,
+    private buyNowService: BuyNowService
+  ) {}
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.productId = +params['productId'];
@@ -30,28 +35,31 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit{
   }
 
   ngAfterContentInit(): void {
-    const items = JSON.parse(localStorage.getItem('cartItems')||'');
-    items.forEach((item:Product) => {
-      if(item.productId===this.productId){
-        this.displayText = "VIEW IN CART"
+    const items = JSON.parse(localStorage.getItem('cartItems') || '');
+    items.forEach((item: Product) => {
+      if (item.productId === this.productId) {
+        this.displayText = 'VIEW IN CART';
       }
     });
   }
 
-  handleClick(){
-    if(this.displayText === "VIEW IN CART"){
-      window.location.href = 'home/cart'
+  handleClick() {
+    if (this.displayText === 'VIEW IN CART') {
+      window.location.href = 'home/cart';
     }
     this.cartService.addToCart(this.productId);
-    this.displayText = "VIEW IN CART"
+    this.displayText = 'VIEW IN CART';
   }
-  handleBuyNowClick(){
-    this.productService.fetchProductById(this.productId).subscribe(
-      (response: Product)=>{
-        this.buyNowService.item = {"productId": response.productId, "quantity":1}
-        window.location.href = `/home/buy-product/${this.productId}`
-      }
-    )
+
+  handleBuyNowClick() {
+    this.productService
+      .fetchProductById(this.productId)
+      .subscribe((response: Product) => {
+        this.buyNowService.item = {
+          productId: response.productId,
+          quantity: 1,
+        };
+        window.location.href = `/home/buy-product/${this.productId}`;
+      });
   }
 }
-

@@ -1,73 +1,66 @@
 <div class="parent w-[100vw] flex items-center justify-center h-[100vh]">
   <div
-    class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px] overflow-hidden child"
-  >
+    class="bg-white w-[80%] h-adj min-w-[80vw] h-[80%] flex items-center justify-center rounded-[20px] overflow-hidden child">
     <div class="landing-img w-full h-full flex-[1] min-w-[400px]"></div>
     <div
-      class="w-full h-full flex-col flex-[1] min-w-[300px] flex items-center justify-center py-[40px] px-[0px] gap-[20px] p-adj"
-    >
+      class="w-full h-full flex-col flex-[1] min-w-[300px] flex items-center justify-center py-[40px] px-[0px] gap-[20px] p-adj">
       <div class="flex justify-center w-full h-full">
         <div
-          class="w-full h-full px-[20px] slide-down flex flex-col justify-center"
-        >
+          class="w-full h-full px-[20px] slide-down flex flex-col justify-center">
           <div class="px-[20px] pt-[20px] pb-[30px]">
             <div class="text-[#36737c] text-[32px] text-center font-bold">
               Login
             </div>
-            <form [formGroup]="otpForm" class="">
+            <form [formGroup]="otpForm" class>
               <!-- Email Field -->
               <div class="mb-2">
-                <label for="email" class="block text-sm font-semibold mb-1"
-                  >Email<span class="text-red-500">*</span></label
-                >
+                <label for="email"
+                  class="block text-sm font-semibold mb-1">Email<span
+                    class="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="email"
                   formControlName="email"
                   placeholder="Enter your email"
-                  class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400"
-                />
+                  class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400" />
               </div>
               <!-- OTP Field -->
               <div class="mb-2">
-                <label for="username" class="block text-sm font-semibold mb-1"
-                  >OTP<span class="text-red-500">*</span></label
-                >
+                <label for="username"
+                  class="block text-sm font-semibold mb-1">OTP<span
+                    class="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="otp"
                   formControlName="otp"
                   placeholder="Enter the OTP received on mail"
                   class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400"
-                  [disabled]="sentOtp"
-                />
+                  [disabled]="sentOtp" />
               </div>
+              <div *ngIf="loginErrorMessage"
+                class="text-red-600 text-sm text-center mt-2">{{
+                loginErrorMessage }}</div>
 
-              <div *ngIf="loginErrorMessage" class="text-red-600 text-sm text-center mt-2">{{ loginErrorMessage }}</div>
-
-              <div *ngIf="successMessage" class="text-green-600 text-sm text-center mt-2">{{ successMessage }}</div>
+              <div *ngIf="successMessage"
+                class="text-green-600 text-sm text-center mt-2">{{
+                successMessage }}</div>
             </form>
             <div class="flex justify-center mt-2">
               <button
                 type="button"
                 class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
-                (click)="sentOtp ? sendOtp() : login()"
-              >
+                (click)="sentOtp ? sendOtp() : login()">
                 <app-loader *ngIf="spinLoader"></app-loader>
                 <span *ngIf="!spinLoader">
                   {{ sentOtp ? "Send OTP" : "Login" }}
                 </span>
               </button>
             </div>
-
-
-
             <div class="back-btn mt-[10px]">
               <a
                 href="home"
-                class="text-blue-50 bg-green-500 rounded font-semibold px-4 py-2"
-                >&laquo; back</a
-              >
+                class="text-blue-50 bg-green-500 rounded font-semibold px-4 py-2">&laquo;
+                back</a>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { invoiceService } from '../../services/invoiceService';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { FormsModule } from '@angular/forms';
 import { HomeNavbarComponent } from '../../components/home-navbar/home-navbar.component';
@@ -45,7 +45,17 @@ import { SearchProductCardComponent } from '../../components/search-product-card
 })
 export class HomeComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
-  products: Product[] = [];
+  products: Product[] = [
+    {
+      productId: 0,
+      productName: '',
+      productDesc: '',
+      productPrice: 0,
+      productImageUrl: '',
+      categoryId: 0,
+      stock: 0,
+    },
+  ];
   page = 1;
   minprice: number = 0;
   maxprice: number = Number.MAX_SAFE_INTEGER;
@@ -55,15 +65,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   activeCategoryIndex: number = 0;
   cartItemLength = 0;
   isLoading: boolean = false;
-  previousProduct: Product[];
+  decodedToken: any;
   private cartSubscription: Subscription;
-
   constructor(
     private categoryService: CategoryService,
     private productService: productService,
-    private cartService: CartService
+    private router: Router,
+    private cartService: CartService,
+    private invoiceService: invoiceService
   ) {}
-  decodedToken: any;
 
   ngOnInit(): void {
     this.cartSubscription = this.cartService
@@ -107,32 +117,47 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.cartSubscription.unsubscribe();
     }
   }
+
   onCategorySelected(categoryId: number): void {
     this.activeCategory = categoryId;
     this.fetchProductsByCategory();
   }
+
   onIndexSelected(index: number) {
     this.activeCategoryIndex = index;
   }
+
   gotoCart() {
     window.location.href = '/home/cart';
   }
+
   handleNextPageLoad() {
-    if (this.previousProduct?.length>0 || this.page===1) {
-      this.page++;
-      console.log('Fetching page no '+ this.page);
-      this.previousProduct = []
-      this.productService
-        .fetchProductByPageNo(this.activeCategory, this.page)
-        .subscribe((response) => {
-          response.forEach((item) => {
-            this.products = [...this.products, item];
-            this.filteredProducts = [...this.filteredProducts, item];
-            this.previousProduct = [...this.previousProduct, item];
-          });
+    this.page++;
+    console.log(this.page, ' : page');
+    this.productService
+      .fetchProductByPageNo(this.activeCategory, this.page)
+      .subscribe((response) => {
+        response.forEach((item) => (this.products = [...this.products, item]));
       });
-    }
   }
+
+  sortPriceAscending() {
+    this.filteredProducts.sort((a, b) => a.productPrice - b.productPrice);
+  }
+
+  sortPriceDescending() {
+    this.filteredProducts.sort((a, b) => b.productPrice - a.productPrice);
+  }
+
+  filterByPrice() {
+    const minPrice = this.minprice || 0;
+    const maxPrice = this.maxprice || Number.MAX_SAFE_INTEGER;
+    this.products?.filter(
+      (product) =>
+        product.productPrice >= minPrice && product.productPrice <= maxPrice
+    ) ?? [];
+  }
+
   onFilteredProducts(filtered: Product[]) {
     this.filteredProducts = filtered;
   }

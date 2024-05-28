@@ -1,8 +1,6 @@
-export interface resetPassword{
-  
-  password: string,
-  confirmPassword : string,
-  email: string,
-  token : string,
-
+export interface resetPassword {
+  password: string;
+  confirmPassword: string;
+  email: string;
+  token: string;
 }

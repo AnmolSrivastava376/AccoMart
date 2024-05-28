@@ -6,8 +6,6 @@ import { AuthCardComponent } from '../../components/auth-card/auth-card.componen
   standalone: true,
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
-  imports: [AuthCardComponent]
+  imports: [AuthCardComponent],
 })
-export class AuthComponent {
-
-}
+export class AuthComponent {}

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { NavigationMenuComponent } from './navigation-menu.component';
 
 describe('NavigationMenuComponent', () => {
@@ -8,10 +7,8 @@ describe('NavigationMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavigationMenuComponent]
-    })
-    .compileComponents();
-    
+      imports: [NavigationMenuComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(NavigationMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ChangeAddressComponent } from './change-address.component';
 
 describe('ChangeAddressComponent', () => {
@@ -8,10 +7,8 @@ describe('ChangeAddressComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChangeAddressComponent]
-    })
-    .compileComponents();
-    
+      imports: [ChangeAddressComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(ChangeAddressComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

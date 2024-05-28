@@ -17,9 +17,7 @@ import { searchService } from '../../services/search.service';
 export class SearchbarComponent {
   prefix: string = '';
   searchResult: Product[] = [];
-  @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<
-    Product[]
-  >();
+  @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<Product[]>();
   constructor(private searchservice: searchService) {}
 
   onSearch(event: Event) {

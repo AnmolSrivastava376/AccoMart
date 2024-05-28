@@ -1,93 +1,123 @@
-.parent{
+.parent {
     background-image: url('../../../assets/Image/landing-bg.jpg');
     background-position: center;
     background-size: cover;
     filter: blur(5px);
 }
 
-.landing-img{
+.landing-img {
     background-image: url('../../../assets/Image/landing-img.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
-@keyframes slidein{
-    from{top: 700px;}
-    to{top: 0px;}
+
+@keyframes slidein {
+    from {
+        top: 700px;
+    }
+
+    to {
+        top: 0px;
+    }
 }
-@keyframes slideout{
-    from{top: -700px;}
-    to{top: 0px;}
+
+@keyframes slideout {
+    from {
+        top: -700px;
+    }
+
+    to {
+        top: 0px;
+    }
 }
-.slidein{
+
+.slidein {
     animation: slidein 1400ms;
 }
-.slideout{
+
+.slideout {
     animation: slideout 1400ms;
 }
-.child{
+
+.child {
     background-color: white;
 }
-@media(max-width:540px){
-    .logo{
+
+@media(max-width:540px) {
+    .logo {
         font-size: 56px;
         line-height: 56px;
     }
-    .shopping{
+
+    .shopping {
         font-size: 32px;
         line-height: 32px;
     }
-    .text{
+
+    .text {
         font-size: 18px;
         line-height: 18px;
     }
-    .button{
+
+    .button {
         width: 124px;
         font-size: 16px;
     }
-    .pad-adj{
+
+    .pad-adj {
         padding: 20px;
     }
 }
-@media(max-width:420px){
-    .logo{
+
+@media(max-width:420px) {
+    .logo {
         font-size: 52px;
         line-height: 52px;
     }
-    .shopping{
+
+    .shopping {
         font-size: 32px;
         line-height: 32px;
     }
-    .text{
+
+    .text {
         font-size: 16px;
         line-height: 16px;
     }
-    .button{
+
+    .button {
         width: 100px;
         font-size: 16px;
     }
 }
 
-@media(max-width:355px){
-    .logo{
+@media(max-width:355px) {
+    .logo {
         font-size: 32px;
         line-height: 32px;
     }
-    .shopping{
+
+    .shopping {
         font-size: 24px;
         line-height: 24px;
     }
-    .text{
+
+    .text {
         font-size: 12px;
         line-height: 12px;
     }
-    .button{
+
+    .button {
         width: 80px;
         font-size: 8px;
     }
 }
-@media (max-width: 1000px){
-    .landing-img, .hide{
+
+@media (max-width: 1000px) {
+
+    .landing-img,
+    .hide {
         display: none;
     }
 }

@@ -1,5 +1,5 @@
-export interface ChartOrderItem{
-    count: number,
-    orderDate: Date,
-    totalSales: number
+export interface ChartOrderItem {
+  count: number;
+  orderDate: Date;
+  totalSales: number;
 }

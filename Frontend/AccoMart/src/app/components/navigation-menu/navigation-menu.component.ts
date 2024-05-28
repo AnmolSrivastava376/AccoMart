@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 import { Route, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
@@ -10,16 +17,20 @@ import { MatIcon } from '@angular/material/icon';
   standalone: true,
   imports: [CommonModule, MatIcon],
   templateUrl: './navigation-menu.component.html',
-  styleUrl: './navigation-menu.component.css'
+  styleUrl: './navigation-menu.component.css',
 })
-export class NavigationMenuComponent implements AfterViewInit, OnInit{
+export class NavigationMenuComponent implements AfterViewInit, OnInit {
   isLoggedIn: boolean = false;
   username: string = '';
-  @ViewChild('hamMenu', { static: true }) hamMenu!: ElementRef;
-  @ViewChild('screenMenu', { static: true }) screenMenu!: ElementRef;
   decoded: any;
   isAdmin = false;
-  constructor(private renderer: Renderer2, private router: Router, private authService:AuthService) {}
+  @ViewChild('hamMenu', { static: true }) hamMenu!: ElementRef;
+  @ViewChild('screenMenu', { static: true }) screenMenu!: ElementRef;
+  constructor(
+    private renderer: Renderer2,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -30,12 +41,11 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit{
     const userName = this.decoded?.UserName ? this.decoded.UserName : '';
     this.username = userName;
 
-    if(this.authService.isAdminLoggedIn())
-      {
-        this.isAdmin = true;
-      }
+    if (this.authService.isAdminLoggedIn()) {
+      this.isAdmin = true;
+    }
   }
-  
+
   ngAfterViewInit() {
     this.renderer.listen(this.hamMenu.nativeElement, 'click', () => {
       this.toggleMenu();
@@ -54,9 +64,9 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit{
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('cartItems')
-    localStorage.removeItem('accesstoken')
-    localStorage.removeItem('refreshtoken')
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('accesstoken');
+    localStorage.removeItem('refreshtoken');
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');

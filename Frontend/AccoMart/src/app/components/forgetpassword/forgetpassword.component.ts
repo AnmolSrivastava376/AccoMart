@@ -9,30 +9,27 @@ import { LoaderComponent } from '../loader/loader.component';
 @Component({
   selector: 'app-forgetpassword',
   standalone: true,
-  imports: [HttpClientModule,FormsModule,CommonModule,LoaderComponent],
-  providers : [HttpService],
+  imports: [HttpClientModule, FormsModule, CommonModule, LoaderComponent],
+  providers: [HttpService],
   templateUrl: './forgetpassword.component.html',
-  styleUrl: './forgetpassword.component.css'
+  styleUrl: './forgetpassword.component.css',
 })
 export class ForgetpasswordComponent {
   verificationResponse: any;
-  spinLoader:boolean= false;
-  constructor(private httpService: HttpService, private router : Router) { }
+  spinLoader: boolean = false;
+  constructor(private httpService: HttpService, private router: Router) {}
 
   forgotPassword(email: string) {
     this.spinLoader = true;
-    this.httpService.forgotPassword(email)
-      .subscribe(
-        (response) => {
-          this.spinLoader = false;
-          this.verificationResponse = response.status;
-          console.log('Password reset email sent successfully:', response);
-
-        },
-        (error) => {
-          // Handle error response
-          console.error('Error sending password reset email:', error);
-        }
-      );
+    this.httpService.forgotPassword(email).subscribe(
+      (response) => {
+        this.spinLoader = false;
+        this.verificationResponse = response.status;
+        console.log('Password reset email sent successfully:', response);
+      },
+      (error) => {
+        console.error('Error sending password reset email:', error);
+      }
+    );
   }
 }

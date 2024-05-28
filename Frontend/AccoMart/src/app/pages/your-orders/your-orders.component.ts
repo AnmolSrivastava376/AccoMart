@@ -18,73 +18,95 @@ import { LoaderComponent } from '../../components/loader/loader.component';
 @Component({
   selector: 'app-your-orders',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, OrderCardComponent, HttpClientModule,LoaderComponent],
+  imports: [
+    CommonModule,
+    NavbarComponent,
+    OrderCardComponent,
+    HttpClientModule,
+    LoaderComponent,
+  ],
   templateUrl: './your-orders.component.html',
   styleUrl: './your-orders.component.css',
-  providers: [orderService, deliveryService, addressService, productService]
+  providers: [orderService, deliveryService, addressService, productService],
 })
 export class YourOrdersComponent implements OnInit {
-  orders:Order[] = []
-  currentOrders: Order[]=[];
-  historyOrders: Order[]=[];
+  orders: Order[] = [];
+  currentOrders: Order[] = [];
+  historyOrders: Order[] = [];
   isloading = true;
-  userId: string
-  decoded: any
-  constructor(private orderService: orderService, private deliveryService: deliveryService, private addressService: addressService, private productService: productService) {
-  }
+  userId: string;
+  decoded: any;
+  constructor(
+    private orderService: orderService,
+    private deliveryService: deliveryService,
+    private addressService: addressService,
+    private productService: productService
+  ) {}
+
   ngOnInit(): void {
-    const token = localStorage.getItem('token')
-    if(token){
+    const token = localStorage.getItem('token');
+    if (token) {
       this.decoded = jwtDecode(token);
       this.userId = this.decoded.UserId;
-      this.orderService.fetchAllOrders(this.userId).subscribe(
-        response=>{
-          this.orders = response;
-          this.addProducts();
-          this.addAddresses();
-          this.sortOrders();
-        }
-      )
+      this.orderService.fetchAllOrders(this.userId).subscribe((response) => {
+        this.orders = response;
+        this.addProducts();
+        this.addAddresses();
+        this.sortOrders();
+      });
     }
   }
-  addProducts(){
-    this.orders.forEach(order=>{
-      this.orderService.fetchOrderByOrderId(order.orderId).subscribe(
-        response=>{
+
+  addProducts() {
+    this.orders.forEach((order) => {
+      this.orderService
+        .fetchOrderByOrderId(order.orderId)
+        .subscribe((response) => {
           order.itemArray = this.fetchProductsByCart(response);
-        }
-      )
-    })
+        });
+    });
   }
-  fetchProductsByCart(cartItem: cartItem[]):Item[]{
-    const products:Item[]=[];
-    cartItem.forEach(item=>{
-      this.productService.fetchProductById(item.productId).subscribe(
-        response=>{
-          products.push({"product": response, "quantity": item.quantity})
-        }
-      )
-    })
-    return products
+
+  fetchProductsByCart(cartItem: cartItem[]): Item[] {
+    const products: Item[] = [];
+    cartItem.forEach((item) => {
+      this.productService
+        .fetchProductById(item.productId)
+        .subscribe((response) => {
+          products.push({ product: response, quantity: item.quantity });
+        });
+    });
+    return products;
   }
-  addAddresses(){
-    this.orders.forEach(order=>{
-      this.addressService.getAddressByAddressId(order.addressId).subscribe(
-        (response:any)=>{
-          order.address = response.response.street + ", " + response.response.city+ ", " + response.response.state + " - " + response.response.zipCode
-        }
-      )
-    })
+
+  addAddresses() {
+    this.orders.forEach((order) => {
+      this.addressService
+        .getAddressByAddressId(order.addressId)
+        .subscribe((response: any) => {
+          order.address =
+            response.response.street +
+            ', ' +
+            response.response.city +
+            ', ' +
+            response.response.state +
+            ' - ' +
+            response.response.zipCode;
+        });
+    });
   }
-  sortOrders(){
+
+  sortOrders() {
     const currentDate = new Date();
-    this.orders.forEach(order=>{
-      let deliveryDays=0;
+    this.orders.forEach((order) => {
+      let deliveryDays = 0;
       this.deliveryService.getDeliveryDate(order.deliveryServiceID).subscribe({
-        next: (response:any)=>{
+        next: (response: any) => {
           deliveryDays = response.response;
           const orderDate = new Date(order.orderDate);
-          order.expectedDate = new Date(orderDate.getTime() + (deliveryDays * 24 * 60 * 60 * 1000));
+          order.expectedDate = new Date(
+            orderDate.getTime() + deliveryDays * 24 * 60 * 60 * 1000
+          );
           if (currentDate > order.expectedDate) {
             order.isDelivered = true;
           } else {
@@ -96,11 +118,8 @@ export class YourOrdersComponent implements OnInit {
             this.historyOrders.push(order);
           }
         },
-        complete: ()=> this.isloading = false
-      })
+        complete: () => (this.isloading = false),
+      });
     });
   }
 }
-
-
-

@@ -1,30 +1,47 @@
-@keyframes animate-in{
-    from {height: 0;}
-    to {height: 500px;}
+@keyframes animate-in {
+    from {
+        height: 0;
+    }
+
+    to {
+        height: 500px;
+    }
 }
-.animate{
+
+.animate {
     animation: animate-in 500ms;
 }
-@keyframes animate-out{
-    from {height: 500px;}
-    to {height: 0px;}
+
+@keyframes animate-out {
+    from {
+        height: 500px;
+    }
+
+    to {
+        height: 0px;
+    }
 }
-.deanimate{
+
+.deanimate {
     animation: animate-out 500ms;
 }
-.go-round{
+
+.go-round {
     transform: rotate(180deg);
 }
-.hide{
+
+.hide {
     display: none;
 }
-@media (max-width: 900px){
-    .hide{
+
+@media (max-width: 900px) {
+    .hide {
         display: block;
     }
 }
-@media (max-width: 650px){
-    .justify-adjust{
+
+@media (max-width: 650px) {
+    .justify-adjust {
         justify-content: flex-start;
     }
 }

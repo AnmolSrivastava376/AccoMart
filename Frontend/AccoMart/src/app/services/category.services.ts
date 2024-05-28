@@ -32,6 +32,7 @@ export class CategoryService {
       { name: categoryName }
     );
   }
+
   deleteCategory(categoryId: number): Observable<any> {
     return this.http.delete(
       `http://localhost:5239/AdminDashboard/Delete/Category/${categoryId}`
