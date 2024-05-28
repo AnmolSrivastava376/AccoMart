@@ -31,7 +31,7 @@
                                     (click)="decrementCountByProductId(product.productId)">-</div>
                             </div>
                         </div>
-                        <div class="w-[20px] h-[40px] py-[4px] px-[16px] rounded-[4px] bg-cyan-900 text-white font-bold flex items-center justify-center cursor-pointer" *ngIf="isPresentInCart(product.productId)" (click)="removeElementByProductId(product.productId)">
+                        <div class="w-[20px] h-[40px] py-[4px] px-[16px] rounded-[4px] bg-red-600 text-white font-bold flex items-center justify-center cursor-pointer" *ngIf="isPresentInCart(product.productId)" (click)="removeElementByProductId(product.productId)">
                             <i class="fa-solid fa-trash"></i>
                         </div>
                     </div>

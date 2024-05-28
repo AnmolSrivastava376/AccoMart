@@ -18,7 +18,7 @@ namespace Data.Models.DTO
         public List<InvoiceProductDto>? products { get; set; }    
         public DateTime OrderDate {  get; set; } 
         public DateTime OrderTime { get; set;}
-        public float OrderAmount {  get; set; } 
+        public decimal OrderAmount {  get; set; } 
 
 
 

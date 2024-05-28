@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpResponse,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -7,27 +14,25 @@ import { TokenService } from './token.service';
 import axios from 'axios';
 import { RefreshToken } from '../interfaces/RefreshToken';
 
-
 @Injectable()
 export class TokenHttpInterceptor implements HttpInterceptor {
-      constructor(private tokenService: TokenService, private router: Router) {}
+  constructor(private tokenService: TokenService, private router: Router) {}
 
-      ref:RefreshToken={
+  ref: RefreshToken = {
+    accessToken: {
+      token: '',
+      expiryTokenDate: '',
+    },
+    refreshToken: {
+      token: '',
+      expiryTokenDate: '',
+    },
+  };
 
-        "accessToken": {
-          "token": '',
-          "expiryTokenDate": ''
-        },
-        "refreshToken": {
-          "token": '',
-          "expiryTokenDate": ''
-      }
-    }
-
-    
-
-    
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     const token = this.tokenService.getToken();
     if (token) {
       let authReq: HttpRequest<any>;
@@ -38,16 +43,15 @@ export class TokenHttpInterceptor implements HttpInterceptor {
         // Clone the request with Authorization header
         authReq = req.clone({
           setHeaders: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
       }
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
             // Redirect to /home/auth when unauthorize
-              this.generateRefreshToken();
-     
+            this.generateRefreshToken();
           }
           return throwError(error);
         })
@@ -65,30 +69,38 @@ export class TokenHttpInterceptor implements HttpInterceptor {
         response: {
           accessToken: {
             token: string;
-            expiryTokenDate: string; 
+            expiryTokenDate: string;
           };
           refreshToken: {
             token: string;
-            expiryTokenDate: string; 
+            expiryTokenDate: string;
           };
         };
-      
-      }>('http://localhost:5239/AuthenticationController/Refresh-Token', refresh);
-  
+      }>(
+        'http://localhost:5239/AuthenticationController/Refresh-Token',
+        refresh
+      );
 
       this.tokenService.setToken(response.data.response.accessToken.token);
-      this.tokenService.setAccessToken(response.data.response.accessToken.token);
-      this.tokenService.setExpiryAccess(response.data.response.accessToken.expiryTokenDate);
-      this.tokenService.setRefreshToken(response.data.response.refreshToken.token);
-      this.tokenService.setExpiryRefresh(response.data.response.refreshToken.expiryTokenDate);
+      this.tokenService.setAccessToken(
+        response.data.response.accessToken.token
+      );
+      this.tokenService.setExpiryAccess(
+        response.data.response.accessToken.expiryTokenDate
+      );
+      this.tokenService.setRefreshToken(
+        response.data.response.refreshToken.token
+      );
+      this.tokenService.setExpiryRefresh(
+        response.data.response.refreshToken.expiryTokenDate
+      );
 
-      console.log("done");
+      console.log('done');
     } catch (error) {
       console.error('Error refreshing token:', error);
       // Handle error as needed
     }
   }
-
 
   generateRefreshToken(): void {
     const accessToken = this.tokenService.getAccessToken();
@@ -96,12 +108,11 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     const refresh_token = this.tokenService.getRefreshToken();
     const refresh_expiry = this.tokenService.getRefreshExpiry();
 
-    this.ref.accessToken.token= accessToken;
+    this.ref.accessToken.token = accessToken;
     this.ref.accessToken.expiryTokenDate = access_exp;
     this.ref.refreshToken.token = refresh_token;
     this.ref.refreshToken.expiryTokenDate = refresh_expiry;
 
     this.refreshToken(this.ref);
-
   }
 }

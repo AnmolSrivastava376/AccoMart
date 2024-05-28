@@ -1,12 +1,12 @@
 @keyframes animate-in{
     from {height: 0;}
-    to {height: 600px;}
+    to {height: 500px;}
 }
 .animate{
     animation: animate-in 500ms;
 }
 @keyframes animate-out{
-    from {height: 1000px;}
+    from {height: 500px;}
     to {height: 0px;}
 }
 .deanimate{

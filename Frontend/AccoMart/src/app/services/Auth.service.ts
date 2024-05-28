@@ -1,12 +1,11 @@
-import { Token } from '@angular/compiler';
 import { Injectable } from '@angular/core';
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  constructor() { }
+  constructor() {}
 
   isAdminLoggedIn() {
     const token = localStorage.getItem('token');
@@ -18,12 +17,12 @@ export class AuthService {
         return false;
       }
     }
-    return false; 
+    return false;
   }
 
-  userLoggedIn(){
-    const token =localStorage.getItem('token');
-    if(token){
+  userLoggedIn() {
+    const token = localStorage.getItem('token');
+    if (token) {
       return true;
     }
     return false;

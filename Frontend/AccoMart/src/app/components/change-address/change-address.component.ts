@@ -23,7 +23,7 @@ export class ChangeAddressComponent implements OnInit {
     addressId: 0
   };
 
-  @Input() address: Address[];
+  @Input() address: Address[] = [];
   @Input() userId: string;
   showAddressform: boolean=false;
   selectAddress: Address;
@@ -44,8 +44,11 @@ export class ChangeAddressComponent implements OnInit {
       this.newAddress.zipCode = this.newAddress.zipCode.toString();
       if(this.isZipCodeValid(this.newAddress.zipCode) && this.isPhoneNumberValid(this.newAddress.phoneNumber)){
       this.addressService.addAddress(this.newAddress, this.userId).subscribe(
-        (address) => {
-          this.address.push(this.newAddress); 
+        (resp) => {
+          if(this.address===undefined)
+            this.address = [this.newAddress]
+          else
+            this.address.push(this.newAddress); 
           this.addressAdded.emit(this.newAddress);
           this.showAddressform = false;
           alert('Successfully Added');
