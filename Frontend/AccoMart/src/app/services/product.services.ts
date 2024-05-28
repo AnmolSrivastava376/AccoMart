@@ -27,7 +27,9 @@ export class productService {
       `http://localhost:5239/AdminDashboard/Product/${productId}`
     );
   }
-
+  fetchAllProductsPagewise(pageNo: number): Observable<Product[]>{
+    return this.http.get<Product[]>(`http://localhost:5239/AdminDashboard/GetAllProductsPagewise?pageNo=${pageNo}`)
+  }
   fetchProductByPageNo(
     categoryId: number,
     pageNo: number

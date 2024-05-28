@@ -10,17 +10,27 @@ import { Category } from '../../interfaces/category';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [NavbarComponent, CommonModule, SidebarComponent, HttpClientModule],
+  imports: [
+    NavbarComponent,
+    CommonModule,
+    SidebarComponent,
+    HttpClientModule,
+    LoaderComponent,
+  ],
   providers: [productService, CategoryService],
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.css',
 })
 export class AdminProductsComponent implements OnInit {
-  products: Product[];
+  loadMore: boolean = true;
+  disable: boolean = false;
+  pageNo: number = 1;
+  products: Product[] = [];
   product: Product;
   categories: Category[];
   selectedProduct: Product;
@@ -47,7 +57,7 @@ export class AdminProductsComponent implements OnInit {
     this.categoryService.fetchCategories().subscribe(
       (response) => {
         this.categories = response;
-        this.fetchProducts();
+        this.fetchProductsByPageNo();
       },
       (err) => {
         this.isLoading = false;
@@ -58,19 +68,28 @@ export class AdminProductsComponent implements OnInit {
     );
   }
 
-  async fetchProducts() {
-    this.productService.fetchAllProducts().subscribe(
-      (response) => {
-        this.products = response;
+  fetchProductsByPageNo() {
+    this.isLoading = true;
+    this.productService.fetchAllProductsPagewise(this.pageNo).subscribe({
+      next: (response) => {
+        if(response === null || response === undefined || response.length === 0 ){
+          this.disable = true
+        }
+        response.forEach((product) => {
+          this.products.push(product);
+        });
         this.isLoading = false;
       },
-      (err) => {
+      complete: () => {
+        this.pageNo++;
+      },
+      error: () => {
         this.isLoading = false;
         this.toastr.error('Error fetching products', undefined, {
           timeOut: 5000,
         });
-      }
-    );
+      },
+    });
   }
 
   openAddProductPage() {
