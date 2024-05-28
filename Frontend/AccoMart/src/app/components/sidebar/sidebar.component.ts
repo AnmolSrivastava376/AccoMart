@@ -9,7 +9,8 @@ import { ActivatedRoute, Router } from '@angular/router';
   standalone: true,
   imports: [MatIcon,HttpClientModule,CommonModule],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrl: './sidebar.component.css',
+  providers: [Router,ActivatedRoute]
 })
 
 export class SidebarComponent implements OnInit  {
