@@ -1,5 +1,5 @@
-export interface ChartProductItem{
-    productId: number,
-    productName: string,
-    quantity: number
+export interface ChartProductItem {
+  productId: number;
+  productName: string;
+  quantity: number;
 }

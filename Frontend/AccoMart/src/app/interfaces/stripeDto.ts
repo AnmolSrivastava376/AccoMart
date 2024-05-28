@@ -1,3 +1,3 @@
-export interface stripeDto{
- url : string
+export interface stripeDto {
+  url: string;
 }

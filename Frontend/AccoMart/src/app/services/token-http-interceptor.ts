@@ -37,10 +37,8 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     if (token) {
       let authReq: HttpRequest<any>;
       if (req.url.includes('api.cloudinary.com')) {
-        // Clone the request without setting Authorization header
         authReq = req.clone();
       } else {
-        // Clone the request with Authorization header
         authReq = req.clone({
           setHeaders: {
             Authorization: `Bearer ${token}`,
@@ -50,7 +48,6 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       return next.handle(authReq).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
-            // Redirect to /home/auth when unauthorize
             this.generateRefreshToken();
           }
           return throwError(error);
@@ -80,7 +77,6 @@ export class TokenHttpInterceptor implements HttpInterceptor {
         'http://localhost:5239/AuthenticationController/Refresh-Token',
         refresh
       );
-
       this.tokenService.setToken(response.data.response.accessToken.token);
       this.tokenService.setAccessToken(
         response.data.response.accessToken.token
@@ -94,11 +90,9 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       this.tokenService.setExpiryRefresh(
         response.data.response.refreshToken.expiryTokenDate
       );
-
       console.log('done');
     } catch (error) {
       console.error('Error refreshing token:', error);
-      // Handle error as needed
     }
   }
 
@@ -107,12 +101,10 @@ export class TokenHttpInterceptor implements HttpInterceptor {
     const access_exp = this.tokenService.getAccessExpiry();
     const refresh_token = this.tokenService.getRefreshToken();
     const refresh_expiry = this.tokenService.getRefreshExpiry();
-
     this.ref.accessToken.token = accessToken;
     this.ref.accessToken.expiryTokenDate = access_exp;
     this.ref.refreshToken.token = refresh_token;
     this.ref.refreshToken.expiryTokenDate = refresh_expiry;
-
     this.refreshToken(this.ref);
   }
 }

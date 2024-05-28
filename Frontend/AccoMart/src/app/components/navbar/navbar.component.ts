@@ -14,10 +14,8 @@ import { jwtDecode } from 'jwt-decode';
 export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
   username: string = '';
-
-  constructor(private router: Router) {}
-
   decoded: any;
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -28,6 +26,7 @@ export class NavbarComponent implements OnInit {
     const userName = this.decoded?.UserName ? this.decoded.UserName : '';
     this.username = userName;
   }
+
   logout(): void {
     localStorage.clear()
     this.isLoggedIn = false;
@@ -35,6 +34,7 @@ export class NavbarComponent implements OnInit {
     console.log('Token removed successfully');
     this.router.navigate(['/home/auth'])
   }
+  
   navigateToAuth(){
     this.router.navigate(['/home/auth'])
   }

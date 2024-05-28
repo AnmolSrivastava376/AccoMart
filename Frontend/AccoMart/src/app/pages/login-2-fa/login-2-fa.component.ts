@@ -23,10 +23,7 @@ import { Router } from '@angular/router';
   templateUrl: './login-2-fa.component.html',
   styleUrl: './login-2-fa.component.css'
 })
-
-
 export class Login2FAComponent {
-
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   router = inject(Router);
@@ -44,10 +41,5 @@ export class Login2FAComponent {
         localStorage.setItem("token", result.response.accessToken.token);
         this.router.navigateByUrl('/');
     })
-
   }
-
-
-
-
 }

@@ -1,66 +1,79 @@
-.bg-gradient{
-    background-image: linear-gradient(to bottom right, #3b8585,#6698ac, #0de4c5);
+.bg-gradient {
+    background-image: linear-gradient(to bottom right, #3b8585, #6698ac, #0de4c5);
 }
 
-@media (max-width: 1100px){
-    .heading{
+@media (max-width: 1100px) {
+    .heading {
         font-size: 22px;
     }
-    .text-start{
+
+    .text-start {
         font-size: 14px;
     }
 }
-@media (max-width: 850px){
-    .h-adj{
+
+@media (max-width: 850px) {
+    .h-adj {
         height: 250px;
     }
-    .heading{
+
+    .heading {
         font-size: 24px;
     }
 }
 
-@media (max-width: 720px){
-    .hide{
+@media (max-width: 720px) {
+    .hide {
         display: none;
     }
-    .nopad{
+
+    .nopad {
         padding: 0;
     }
-    .box-left{
+
+    .box-left {
         align-items: flex-start;
     }
 }
-@media (max-width: 600px){
-    .heading{
+
+@media (max-width: 600px) {
+    .heading {
         font-size: 16px;
     }
-    .img-adj{
+
+    .img-adj {
         min-width: 120px;
         min-height: 120px;
         max-height: 120px;
     }
-    .boxh{
+
+    .boxh {
         height: 120px;
     }
-    .box{
+
+    .box {
         width: 100px;
         height: 32px;
     }
 }
-@media (max-width: 350px){
-    .img-adj{
+
+@media (max-width: 350px) {
+    .img-adj {
         min-width: 100px;
         min-height: 100px;
         max-height: 100px;
     }
-    .heading, .subheading{
+
+    .heading,
+    .subheading {
         font-size: 12px;
     }
 
-    .boxh{
+    .boxh {
         height: 100px;
     }
-    .box{
+
+    .box {
         width: 80px;
         height: 24px;
     }

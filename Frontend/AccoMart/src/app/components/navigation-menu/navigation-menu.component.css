@@ -1,11 +1,11 @@
-
 .screen-menu {
     transition: 0.3s ease;
     z-index: 1000;
     position: fixed;
     top: 0;
-    right: -450px; 
+    right: -450px;
 }
+
 .screen-menu.active {
     z-index: 1000;
     right: 0;
@@ -44,9 +44,11 @@
     top: 50%;
     transform: translate(-50%, -50%) rotate(45deg);
 }
-.ham-menu.active span:nth-child(2){
+
+.ham-menu.active span:nth-child(2) {
     display: none;
 }
+
 .ham-menu.active span:nth-child(3) {
     top: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SearchbarComponent } from './searchbar.component';
 
 describe('SearchbarComponent', () => {
@@ -8,10 +7,8 @@ describe('SearchbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchbarComponent]
-    })
-    .compileComponents();
-    
+      imports: [SearchbarComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(SearchbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

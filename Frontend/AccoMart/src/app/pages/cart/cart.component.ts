@@ -61,7 +61,6 @@ export class CartComponent {
     private cartService: CartService,
     private toastr : ToastrService
   ) {}
-
   cart: cartItem[] = [];
   clickedIndex = 0;
   address: Address[];
@@ -105,9 +104,6 @@ export class CartComponent {
             });
         });
       });
-
-    // Fetching address
-
     this.addressService.getAddressByUserId(this.userId).subscribe((response: any) => {
       if (response.response.length>0) {
         this.address = response.response;
@@ -143,9 +139,11 @@ export class CartComponent {
     }
     return total;
   }
+
   getDeliveryCharges(): number {
     return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
   }
+
   getDiscounts(): number {
     let discount = 0;
     discount = (5/100) * this.getCartTotal();
@@ -178,15 +176,18 @@ export class CartComponent {
       }
     }
   }
+
   updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
     this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
     this.cartOrder.deliveryId = this.activeDeliveryService.dServiceId;
   }
+  
   updateActiveAddress(address:Address){
     this.activeAddress = address
     this.cartOrder.addressId = address.addressId
   }
+  
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;
     this.isVisible = !this.isVisible;

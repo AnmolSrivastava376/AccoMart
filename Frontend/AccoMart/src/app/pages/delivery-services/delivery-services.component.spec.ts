@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DeliveryServicesComponent } from './delivery-services.component';
 
 describe('DeliveryServicesComponent', () => {
@@ -8,11 +7,8 @@ describe('DeliveryServicesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeliveryServicesComponent]
-    })
-    
-    .compileComponents();
-    
+      imports: [DeliveryServicesComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(DeliveryServicesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -21,4 +17,4 @@ describe('DeliveryServicesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-}); 
+});

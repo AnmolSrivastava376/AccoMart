@@ -56,16 +56,6 @@ export class BuyProductComponent {
   selectedDeliveryId: number;
   spinLoader: boolean = false;
   cartItemLength = 0;
-  constructor(
-    private addressService: addressService,
-    private deliveryService: deliveryService,
-    private productService: productService,
-    private buyNowService: BuyNowService,
-    private route: ActivatedRoute,
-    private toastr: ToastrService,
-    private orderService: orderService
-  ) {}
-
   cart: cartItem[] = [];
   clickedIndex = 0;
   address: Address[];
@@ -89,6 +79,15 @@ export class BuyProductComponent {
   userId: string;
   newCartItem: cartItem | null;
   isLoading = false;
+  constructor(
+    private addressService: addressService,
+    private deliveryService: deliveryService,
+    private productService: productService,
+    private buyNowService: BuyNowService,
+    private route: ActivatedRoute,
+    private toastr: ToastrService,
+    private orderService: orderService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -106,21 +105,17 @@ export class BuyProductComponent {
       this.addressId = 0;
       this.userId = this.decoded.UserId;
     }
-
     this.productOrder.addressId = this.addressId;
     this.productOrder.userId = this.userId;
     this.productOrder.productId = this.selectedProductId;
     this.productOrder.quantity = 1;
-
     this.productService
       .fetchProductById(this.productOrder.productId)
       .subscribe((response) => (this.productPrice = response.productPrice));
-
-    // Fetching address
     this.addressService
       .getAddressByUserId(this.userId)
       .subscribe((response: any) => {
-        if (response.response.length>0) {
+        if (response.response.length > 0) {
           this.address = response.response;
           this.activeAddress = this.address[0];
           this.productOrder.addressId = this.activeAddress.addressId;
@@ -129,8 +124,6 @@ export class BuyProductComponent {
           this.toastr.error('Failed to retrieve addresses');
         }
       });
-
-    // Fetching delivery
     this.deliveryService.getDeliveryServices().subscribe((response: any) => {
       if (response.isSuccess) {
         this.delivery = response.response;
@@ -153,14 +146,17 @@ export class BuyProductComponent {
     total = this.productPrice * this.productOrder.quantity;
     return total;
   }
+
   getDeliveryCharges(): number {
     return this.activeDeliveryService ? this.activeDeliveryService.price : 0;
   }
+
   getDiscounts(): number {
     let discount = 0;
     discount = (5 / 100) * this.getCartTotal();
     return +discount.toFixed(2);
   }
+
   getTaxes(): number {
     let totalAmount = 0;
     totalAmount =
@@ -169,6 +165,7 @@ export class BuyProductComponent {
       this.getDiscounts();
     return +totalAmount.toFixed(2);
   }
+
   getGrandTotal(): number {
     let grandTotal = 0;
     grandTotal =
@@ -196,19 +193,23 @@ export class BuyProductComponent {
       }
     }
   }
+
   updateActiveDeliveryIndex(index: number) {
     this.activeDeliveryIndex = index;
     this.activeDeliveryService = this.delivery[this.activeDeliveryIndex];
     this.productOrder.deliveryId = this.activeDeliveryService.dServiceId;
   }
+
   updateActiveAddress(address: Address) {
     this.activeAddress = address;
     this.productOrder.addressId = this.activeAddress.addressId;
   }
+
   toggleVisibility(clickedIndex: number) {
     this.clickedIndex = clickedIndex;
     this.isVisible = !this.isVisible;
   }
+
   handleQuantityChange(event: any) {
     this.productOrder.quantity = event.quantity;
   }

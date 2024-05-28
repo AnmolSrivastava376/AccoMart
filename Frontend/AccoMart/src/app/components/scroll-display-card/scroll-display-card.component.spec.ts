@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ScrollDisplayCardComponent } from './scroll-display-card.component';
 
 describe('ScrollDisplayCardComponent', () => {
@@ -8,10 +7,8 @@ describe('ScrollDisplayCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ScrollDisplayCardComponent]
-    })
-    .compileComponents();
-    
+      imports: [ScrollDisplayCardComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(ScrollDisplayCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

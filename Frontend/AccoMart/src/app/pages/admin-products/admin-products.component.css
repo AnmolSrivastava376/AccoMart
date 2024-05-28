@@ -1,26 +1,29 @@
 .navbar {
-    border-bottom: 1px solid #c2baba; 
-  }
-  ::-webkit-scrollbar{
-    display: none;
-  }
+    border-bottom: 1px solid #c2baba;
+}
 
-
-
-  .box::-webkit-scrollbar{
+::-webkit-scrollbar {
     display: none;
 }
-@media (max-width: 1100px){
-    .col{
+
+.box::-webkit-scrollbar {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+    .col {
         flex-direction: column;
     }
-    .box{
+
+    .box {
         width: 100vw;
     }
-    .sidebar{
+
+    .sidebar {
         width: 100vw;
     }
-    .unfix{
+
+    .unfix {
         position: relative;
     }
 }

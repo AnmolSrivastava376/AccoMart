@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CartProductCardComponent } from './cart-product-card.component';
 
 describe('CartProductCardComponent', () => {
@@ -8,10 +7,8 @@ describe('CartProductCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CartProductCardComponent]
-    })
-    .compileComponents();
-    
+      imports: [CartProductCardComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(CartProductCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

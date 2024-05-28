@@ -27,6 +27,7 @@ export class productService {
       `http://localhost:5239/AdminDashboard/Product/${productId}`
     );
   }
+
   fetchProductByPageNo(
     categoryId: number,
     pageNo: number

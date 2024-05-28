@@ -31,7 +31,6 @@ export class AdminCategoriesComponent implements OnInit {
   isAddPopupOpen: boolean = false;
   categoryToAdd: string = '';
   isLoading: boolean = true;
-
   constructor(
     private categoryService: CategoryService,
     private toastr: ToastrService
@@ -145,6 +144,7 @@ export class AdminCategoriesComponent implements OnInit {
       this.isLoading = false;
     }
   }
+
   searchFunction(event: any) {
     this.isLoading = true;
     const searchValue = event.target.value;

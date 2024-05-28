@@ -5,11 +5,18 @@ import { Router } from '@angular/router';
   selector: 'app-unauthorized',
   templateUrl: './unauthorized.component.html',
   styleUrls: ['./unauthorized.component.css'],
+})
+export class UnauthorizedComponent implements OnInit {
+  constructor(private router: Router) {}
+
+  ngOnInit(): void {}
+=======
   providers: [Router]
 })
 export class UnauthorizedComponent {
 
   constructor(private router: Router) { }
+
 
   redirectToLogin(): void {
     this.router.navigate(['/home/auth']);

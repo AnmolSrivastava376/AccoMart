@@ -1,66 +1,84 @@
 <div class="scrollable-content">
-<div class="block w-[97%] rounded-lg border-[2px] border-[#36737c] text-left text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-white mb-[20px] ml-[10px]">
-  
-  <div class="p-6"  *ngFor="let addr of address; let i= index">
-    <input id="default-radio-{{i}}" type="radio" [value]="addr" name="default-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" (change)="selectedAddress(addr)">
-
-    <label for="default-radio-{{i}}" class="ms-2 text-sm font-medium text-gray-900"> {{addr.street}}, {{addr.city}}, {{addr.state}}, {{addr.zipCode}}, {{addr.phoneNumber}}</label>
-
+  <div
+    class="block w-[97%] rounded-lg border-[2px] border-[#36737c] text-left text-surface shadow-secondary-1 dark:bg-surface-dark dark:text-white mb-[20px] ml-[10px]">
+    <div class="p-6" *ngFor="let addr of address; let i= index">
+      <input id="default-radio-{{i}}" type="radio" [value]="addr"
+        name="default-radio"
+        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+        (change)="selectedAddress(addr)">
+      <label for="default-radio-{{i}}"
+        class="ms-2 text-sm font-medium text-gray-900"> {{addr.street}},
+        {{addr.city}}, {{addr.state}}, {{addr.zipCode}},
+        {{addr.phoneNumber}}</label>
+    </div>
   </div>
-</div>
-<button type="button" (click)="toogleAddressForm()" class="relative inline-flex items-center justify-center p-0.5 ml-[30px] mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white focus:outline-none ">
-    <span class="relative px-5 py-2.5 transition-all ease-in duration-7 rounded-md group-hover:bg-opacity-0">
-    ADD NEW ADDRESS
+  <button type="button" (click)="toogleAddressForm()"
+    class="relative inline-flex items-center justify-center p-0.5 ml-[30px] mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white focus:outline-none ">
+    <span
+      class="relative px-5 py-2.5 transition-all ease-in duration-7 rounded-md group-hover:bg-opacity-0">
+      ADD NEW ADDRESS
     </span>
-    </button>
-
-    <div class="ffbox1 border-[2px] border-[#36737c] mr-[10px] ml-[10px] bg-" *ngIf="showAddressform">
-  <form #addressForm="ngForm" (ngSubmit)="addAddress()" (change)="selectedAddress(newAddress)">
-    <div class="flex">
-      <div class="flex-1 font-bold text-[#36737c]">
-        <label for="street">
-          <i class="fa fa-solid fa-user" style="margin: 2px;"></i> STREET:
-        </label>
-        <input type="text" id="street" name="street" [(ngModel)]="newAddress.street" required>
+  </button>
+  <div class="ffbox1 border-[2px] border-[#36737c] mr-[10px] ml-[10px] bg-"
+    *ngIf="showAddressform">
+    <form #addressForm="ngForm" (ngSubmit)="addAddress()"
+      (change)="selectedAddress(newAddress)">
+      <div class="flex">
+        <div class="flex-1 font-bold text-[#36737c]">
+          <label for="street">
+            <i class="fa fa-solid fa-user" style="margin: 2px;"></i> STREET:
+          </label>
+          <input type="text" id="street" name="street"
+            [(ngModel)]="newAddress.street" required>
+        </div>
+        <div class="flex-1 pl-[10px] font-bold text-[#36737c]">
+          <label for="city">
+            <i class="fa fa-solid fa-envelope" style="margin: 2px;"></i> CITY:
+          </label>
+          <input type="text" id="city" name="city" [(ngModel)]="newAddress.city"
+            required>
+        </div>
       </div>
-      <div class="flex-1 pl-[10px] font-bold text-[#36737c]">
-        <label for="city">
-          <i class="fa fa-solid fa-envelope" style="margin: 2px;"></i> CITY:
-        </label>
-        <input type="text" id="city" name="city" [(ngModel)]="newAddress.city" required>
+      <div class="flex">
+        <div class="flex-1 font-bold text-[#36737c]">
+          <label for="state">
+            <i class="fa fa-solid fa-user" style="margin: 2px;"></i> STATE:
+          </label>
+          <input type="text" id="state" name="state"
+            [(ngModel)]="newAddress.state" required>
+        </div>
+        <div class="flex-1 pl-[10px] font-bold text-[#36737c]">
+          <label for="zipCode">
+            <i class="fa fa-solid fa-envelope" style="margin: 2px;"></i>
+            ZIP-CODE:
+          </label>
+          <input type="number" id="zipCode" name="zipCode" minlength="6"
+            maxlength="6" pattern="\d{6}" [(ngModel)]="newAddress.zipCode"
+            required>
+        </div>
       </div>
-    </div>
-    <div class="flex">
-      <div class="flex-1 font-bold text-[#36737c]">
-        <label for="state">
-          <i class="fa fa-solid fa-user" style="margin: 2px;"></i> STATE:
-        </label>
-        <input type="text" id="state" name="state" [(ngModel)]="newAddress.state" required>
+      <div class="flex font-bold text-[#36737c]">
+        <div class="flex-1">
+          <label for="phoneNumber">
+            <i class="fa fa-solid fa-envelope" style="margin: 2px;"></i> PHONE
+            NUMBER:
+          </label>
+          <input type="tel" id="phoneNumber" name="phoneNumber" minlength="10"
+            maxlength="10" pattern="\d{10}" [(ngModel)]="newAddress.phoneNumber"
+            required>
+        </div>
+        <div class="flex-1 pl-[10px] pt-[30px]">
+          <button type="submit" class="use bg-[#21474d]">USE THIS
+            ADDRESS</button>
+        </div>
       </div>
-      <div class="flex-1 pl-[10px] font-bold text-[#36737c]">
-        <label for="zipCode">
-          <i class="fa fa-solid fa-envelope" style="margin: 2px;"></i> ZIP-CODE:
-        </label>
-        <input type="number" id="zipCode" name="zipCode" minlength="6" maxlength="6" pattern="\d{6}" [(ngModel)]="newAddress.zipCode" required>
-      </div>
-    </div>
-    <div class="flex font-bold text-[#36737c]">
-      <div class="flex-1">
-        <label for="phoneNumber">
-          <i class="fa fa-solid fa-envelope" style="margin: 2px;"></i> PHONE NUMBER:
-        </label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" minlength="10" maxlength="10" pattern="\d{10}" [(ngModel)]="newAddress.phoneNumber" required>
-      </div>
-      <div class="flex-1 pl-[10px] pt-[30px]">
-        <button type="submit" class="use bg-[#21474d]">USE THIS ADDRESS</button>
-      </div>
-    </div>
-  </form>
-</div>
-
-<button type="button" (click)="saveChanges()" class="relative inline-flex items-center justify-center p-0.5 ml-[30px] mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white focus:outline-none ">
-    <span class="relative px-5 py-2.5 transition-all ease-in duration-7 rounded-md group-hover:bg-opacity-0">
-    SAVE CHANGES
+    </form>
+  </div>
+  <button type="button" (click)="saveChanges()"
+    class="relative inline-flex items-center justify-center p-0.5 ml-[30px] mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white focus:outline-none ">
+    <span
+      class="relative px-5 py-2.5 transition-all ease-in duration-7 rounded-md group-hover:bg-opacity-0">
+      SAVE CHANGES
     </span>
-    </button>
+  </button>
 </div>

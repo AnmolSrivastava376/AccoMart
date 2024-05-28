@@ -1,12 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body::-webkit-scrollbar{
+body::-webkit-scrollbar {
     display: none;
 }
 
@@ -14,7 +12,8 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-display: swap;
 }
-.bg-100{
+
+.bg-100 {
     background-position: center;
     background-size: 100% 100%;
 }

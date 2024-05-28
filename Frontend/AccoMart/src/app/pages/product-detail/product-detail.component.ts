@@ -8,22 +8,21 @@ import { HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [ProductDetailCardComponent,HttpClientModule],
-  providers : [productService],
+  imports: [ProductDetailCardComponent, HttpClientModule],
+  providers: [productService],
   templateUrl: './product-detail.component.html',
-  styleUrls: ['./product-detail.component.css']
+  styleUrls: ['./product-detail.component.css'],
 })
 export class ProductDetailComponent implements OnInit {
   product?: Product;
   productId: number = 1;
-
   constructor(
     private route: ActivatedRoute,
     private productService: productService
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const productIdFromRoute = params['productId'];
       this.productId = +productIdFromRoute;
       this.fetchProductDetails();
@@ -31,14 +30,13 @@ export class ProductDetailComponent implements OnInit {
   }
 
   fetchProductDetails(): void {
-    this.productService.fetchProductById(this.productId)
-      .subscribe(
-        response => {
-          this.product = response;
-        },
-        error => {
-          console.error('Error fetching product:', error);
-        }
-      );
+    this.productService.fetchProductById(this.productId).subscribe(
+      (response) => {
+        this.product = response;
+      },
+      (error) => {
+        console.error('Error fetching product:', error);
+      }
+    );
   }
 }

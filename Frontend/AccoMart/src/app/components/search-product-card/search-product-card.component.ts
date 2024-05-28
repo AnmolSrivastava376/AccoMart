@@ -10,16 +10,23 @@ import { SearchProductCardWithoutScrollComponent } from '../search-product-card-
 @Component({
   selector: 'app-search-product-card',
   standalone: true,
-  imports: [CommonModule,GridDisplayCardComponent,ScrollDisplayCardComponent, ProductScrollDisplayCardComponent,HttpClientModule, SearchProductCardWithoutScrollComponent],
+  imports: [
+    CommonModule,
+    GridDisplayCardComponent,
+    ScrollDisplayCardComponent,
+    ProductScrollDisplayCardComponent,
+    HttpClientModule,
+    SearchProductCardWithoutScrollComponent,
+  ],
   templateUrl: './search-product-card.component.html',
-  styleUrl: './search-product-card.component.css'
+  styleUrl: './search-product-card.component.css',
 })
 export class SearchProductCardComponent {
-  @Input() products?: Product[]
-  @Input() categoryName?: string
+  @Input() products?: Product[];
+  @Input() categoryName?: string;
+  constructor() {}
 
-  constructor() { }
   handleClick(productId: number) {
-  window.location.href = `home/productdetail/${productId}`
-}
+    window.location.href = `home/productdetail/${productId}`;
+  }
 }
