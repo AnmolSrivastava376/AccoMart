@@ -1,7 +1,5 @@
-﻿using Data.Models.DTO;
-using Data.Models;
+﻿using Data.Models;
 using Data.Repository.Interfaces;
-using Data.Repository;
 using Service.Services.Interface;
 
 namespace Service.Services.Implementation
@@ -18,7 +16,7 @@ namespace Service.Services.Implementation
             return await _productRepository.CreateCategory(categoryName);
         }
 
-        async Task<Data.Models.Product> IProductService.CreateProductAsync(Data.Models.DTO.Product productDto)
+        async Task<Data.Models.Product> IProductService.CreateProductAsync(Product productDto)
         {
             return await _productRepository.CreateProduct(productDto);
         }
@@ -96,7 +94,7 @@ namespace Service.Services.Implementation
             return await _productRepository.UpdateCategory(Id, NewCategoryName);
         }
 
-        async Task<Data.Models.Product> IProductService.UpdateProductAsync(int productId, UpdateProduct productDto)
+        async Task<Product> IProductService.UpdateProductAsync(int productId, UpdateProduct productDto)
         {
             return await _productRepository.UpdateProduct(productId, productDto);
         }

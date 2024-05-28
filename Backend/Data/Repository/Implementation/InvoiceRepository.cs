@@ -12,6 +12,7 @@ using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using Azure;
 using Data.Models.Statistic_Models;
+using Data.Models.Address;
 
 
 namespace Data.Repository.Implementation

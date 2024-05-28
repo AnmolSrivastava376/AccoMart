@@ -1,5 +1,4 @@
-﻿
-namespace Data.Models
+﻿namespace Data.Models.Product_Category
 {
     public class Category
     {
