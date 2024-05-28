@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Models.Address;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;

@@ -1,30 +1,27 @@
 ﻿using Data.Models.CartModels;
-
 using Data.Repository.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 using Newtonsoft.Json;
 using Data.Models;
-
 using Data.Models.DTO;
-
 using Microsoft.AspNetCore.Mvc;
-
 using Azure;
 using System.Xml.Linq;
 
 
 
 
-namespace Data.Repository.Implementation
+namespace Data.Repository.Implementation.Cart
 
 {
     public class CartRepository : ICartRepository
     {
         private readonly IConfiguration _configuration;
-        private readonly StackExchange.Redis.IDatabase _database;
-        public CartRepository(IConfiguration configuration, IConnectionMultiplexer redis) {
+        private readonly IDatabase _database;
+        public CartRepository(IConfiguration configuration, IConnectionMultiplexer redis)
+        {
             _configuration = configuration;
             _database = redis.GetDatabase();
         }
@@ -77,7 +74,7 @@ namespace Data.Repository.Implementation
                     {
                         throw new InvalidOperationException("Cart is already empty.");
                     }
-                }               
+                }
             }
         }
 
@@ -108,7 +105,7 @@ namespace Data.Repository.Implementation
         async Task<IEnumerable<CartItem>> ICartRepository.GetCartItems(int cartId)
         {
             List<CartItem> cartItems = new List<CartItem>();
-    
+
 
 
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))

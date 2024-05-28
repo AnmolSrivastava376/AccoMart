@@ -11,6 +11,7 @@ using Service.Services;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
+using Data.Models.Authentication.User;
 
 
 namespace API.Controllers.Authentication

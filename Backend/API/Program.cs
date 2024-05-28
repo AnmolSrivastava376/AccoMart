@@ -19,6 +19,8 @@ using Stripe;
 using ProductService = Service.Services.Implementation.ProductService;
 using Data.Repository.Interface;
 using InvoiceService = Service.Services.Implementation.InvoiceService;
+using Data.Models.Authentication.User;
+using Data.Repository.Implementation.Cart;
 
 
 var builder = WebApplication.CreateBuilder(args);

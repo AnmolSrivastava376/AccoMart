@@ -1,16 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
-namespace Data.Models.DTO
+namespace Data.Models.Delivery
 {
-    public class CreateDeliveryServiceDto
+    public class DeliveryService
     {
-        [Required]
+        public int DServiceId { get; set; }
         public string ImageUrl { get; set; }
-        [Required]
         public string ServiceName { get; set; }
-        [Required]
         public float Price { get; set; }
-        [Required]
         public int DeliveryDays { get; set; }
     }
 }

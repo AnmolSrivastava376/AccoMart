@@ -1,4 +1,4 @@
-﻿namespace Data.Models
+﻿namespace Data.Models.Authentication.User
 {
     public class Admin
     {

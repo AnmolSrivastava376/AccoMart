@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.DTO
 {
-    public class ProductDto
+    public class Product
     {
         public string ProductName { get; set; }
         public string ProductDesc { get; set; }

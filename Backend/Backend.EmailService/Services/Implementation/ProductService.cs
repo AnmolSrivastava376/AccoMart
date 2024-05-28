@@ -18,7 +18,7 @@ namespace Service.Services.Implementation
             return await _productRepository.CreateCategory(categoryName);
         }
 
-        async Task<Product> IProductService.CreateProductAsync(ProductDto productDto)
+        async Task<Data.Models.Product> IProductService.CreateProductAsync(Data.Models.DTO.Product productDto)
         {
             return await _productRepository.CreateProduct(productDto);
         }
@@ -40,16 +40,16 @@ namespace Service.Services.Implementation
             return await _productRepository.GetAllCategories();
         }
 
-        async Task<List<Product>> IProductService.GetAllProductsByCategoryAsync(int id, string orderBy)
+        async Task<List<Data.Models.Product>> IProductService.GetAllProductsByCategoryAsync(int id, string orderBy)
         {
             return await _productRepository.GetAllProductsByCategoryAsync(id, orderBy);
         }
 
-        async Task<List<Product>> IProductService.GetAllProductsAsync()
+        async Task<List<Data.Models.Product>> IProductService.GetAllProductsAsync()
         {
             return await _productRepository.GetAllProductsAsync();
         }
-        async Task<List<Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
+        async Task<List<Data.Models.Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)
         {
             return await _productRepository.GetProductsByPageNoAsync(id, pageNo, pageSize);
         }
@@ -67,7 +67,7 @@ namespace Service.Services.Implementation
 
 
 
-        async Task<Product> IProductService.GetProductByIdAsync(int id)
+        async Task<Data.Models.Product> IProductService.GetProductByIdAsync(int id)
         {
             return await _productRepository.GetProductById(id);
         }
@@ -78,14 +78,14 @@ namespace Service.Services.Implementation
 
         }*/
 
-        async Task<List<Product>> IProductService.GetProductBySearchNameAsync(string prefix)
+        async Task<List<Data.Models.Product>> IProductService.GetProductBySearchNameAsync(string prefix)
         {
             return await _productRepository.GetProductBySearchName(prefix);
         }
 
 
         
-     async Task<List<Product>> IProductService.GetProductsByCategoryNameAsync(string name)
+     async Task<List<Data.Models.Product>> IProductService.GetProductsByCategoryNameAsync(string name)
         {
             return await _productRepository.GetProductsByCategoryName(name);
         }
@@ -96,7 +96,7 @@ namespace Service.Services.Implementation
             return await _productRepository.UpdateCategory(Id, NewCategoryName);
         }
 
-        async Task<Product> IProductService.UpdateProductAsync(int productId, UpdateProductDto productDto)
+        async Task<Data.Models.Product> IProductService.UpdateProductAsync(int productId, UpdateProduct productDto)
         {
             return await _productRepository.UpdateProduct(productId, productDto);
         }

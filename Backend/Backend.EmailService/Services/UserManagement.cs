@@ -7,7 +7,6 @@ using Microsoft.Win32;
 using Service.Models.Authentication.User;
 using Service.Models.Authentication.Login;
 using Microsoft.AspNetCore.Http;
-using Data.Models;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +17,8 @@ using Service.Services.Interface;
 using Service.Services.Implementation;
 using Microsoft.Data.SqlClient;
 using Stripe;
+using Data.Models.Authentication.User;
+using Data.Models.Address;
 
 
 namespace Service.Services

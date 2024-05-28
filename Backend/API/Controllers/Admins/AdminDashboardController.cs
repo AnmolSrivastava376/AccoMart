@@ -17,38 +17,38 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("Products/CategoryId={id}")]
-        public async Task<List<Product>> GetAllProducts(int id, string orderBy)
+        public async Task<List<Data.Models.Product>> GetAllProducts(int id, string orderBy)
         {
             return await _productService.GetAllProductsByCategoryAsync(id, orderBy);
         }
         [HttpGet("ProductsByPageNo")]
-        public async Task<List<Product>> GetProductsByPageNo(int id, int pageNo)
+        public async Task<List<Data.Models.Product>> GetProductsByPageNo(int id, int pageNo)
         {
             const int pageSize = 10;
             return await _productService.GetProductsByPageNoAsync(id, pageNo, pageSize);
         }
         [HttpGet("Products")]
-        public async Task<List<Product>> GetProducts()
+        public async Task<List<Data.Models.Product>> GetProducts()
         {
             return await _productService.GetAllProductsAsync();
         }
 
 
         [HttpGet("Products/SearchBy={prefix}")]
-        public async Task<List<Product>> GetProductBySearchName(string prefix = "")
+        public async Task<List<Data.Models.Product>> GetProductBySearchName(string prefix = "")
         {
             return await _productService.GetProductBySearchNameAsync(prefix);
         }
 
         [HttpGet("Products/CategoryName={name}")]
-        public async Task<List<Product>> GetProductsByCategoryName(string name = "")
+        public async Task<List<Data.Models.Product>> GetProductsByCategoryName(string name = "")
         {
          return await _productService.GetProductsByCategoryNameAsync(name);
         }
 
 
     [HttpGet("Product/{id}")]
-         public async Task<Product> GetProductById(int id)
+         public async Task<Data.Models.Product> GetProductById(int id)
         {
 
             return await _productService.GetProductByIdAsync(id);
@@ -88,7 +88,7 @@ namespace API.Controllers.Admins
 
         [Authorize(Roles = "Admin")]
         [HttpPost("Product/Create")]
-        public async Task<ActionResult<Product>> CreateProduct(ProductDto productDto)
+        public async Task<ActionResult<Data.Models.Product>> CreateProduct(Data.Models.DTO.Product productDto)
         {
             var product =   await _productService.CreateProductAsync(productDto);
             return Ok(product); 
@@ -106,7 +106,7 @@ namespace API.Controllers.Admins
 
         [HttpPut("Update/Product/{productId}")]
 
-        async public Task<ActionResult<Product>> UpdateProduct (int productId, UpdateProductDto productDto)
+        async public Task<ActionResult<Data.Models.Product>> UpdateProduct (int productId, UpdateProduct productDto)
         {
            var product = await _productService.UpdateProductAsync(productId, productDto);
             return Ok(product);

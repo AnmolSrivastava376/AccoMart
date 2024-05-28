@@ -8,7 +8,7 @@ using Service.Models.Authentication.Register;
 using Microsoft.AspNetCore.Identity;
 using Service.Models.Authentication.User;
 using Service.Models.Authentication.Login;
-using Data.Models;
+using Data.Models.Authentication.User;
 namespace Service.Services
 {
     public interface IUserManagement

@@ -77,7 +77,7 @@ namespace API.Controllers.Order
         }
 
         [HttpPost("PlaceOrderByCart")]
-        public async Task<StripeDto> PlaceOrderByCart(CartOrderDto cartOrderDto)
+        public async Task<Data.Models.DTO.Stripe> PlaceOrderByCart(CartOrder cartOrderDto)
         {
             int newOrderId = 0;
            
@@ -146,7 +146,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeDto> CheckoutByCart(string userId, int cartId,int orderId,int deliveryId,decimal productAmount)
+        public async Task<Data.Models.DTO.Stripe> CheckoutByCart(string userId, int cartId,int orderId,int deliveryId,decimal productAmount)
         {
             var options = new SessionCreateOptions
             {
@@ -312,14 +312,14 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            StripeDto url = new StripeDto();
+            Data.Models.DTO.Stripe url = new Data.Models.DTO.Stripe();
             url.StripeUrl = session.Url;
             return url;
         }
 
         //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<StripeDto> PlaceOrder(ProductOrderDto productOrderDto)
+        public async Task<Data.Models.DTO.Stripe> PlaceOrder(ProductOrder productOrderDto)
         {
           
             try
@@ -414,7 +414,7 @@ namespace API.Controllers.Order
 
 
         [HttpPost("Checkout/Product")]
-        public async Task<StripeDto> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
+        public async Task<Data.Models.DTO.Stripe> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
         {
 
             var options = new SessionCreateOptions
@@ -545,7 +545,7 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            StripeDto url = new StripeDto();
+            Data.Models.DTO.Stripe url = new Data.Models.DTO.Stripe();
             url.StripeUrl = session.Url;
 
             if(url!= null)

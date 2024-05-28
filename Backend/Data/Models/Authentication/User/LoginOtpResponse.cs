@@ -1,4 +1,4 @@
-﻿using Data.Models;
+﻿using Data.Models.Authentication.User;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace Service.Models.Authentication.User
 {
-    public class CreateUserResponse
+    public class LoginOtpResponse
     {
         public string Token { get; set; } = null!;
+        public bool IsTwoFactorEnable { get; set; }
         public ApplicationUser User { get; set; } = null!;
-
-
     }
 }

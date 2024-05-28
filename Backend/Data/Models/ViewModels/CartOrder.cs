@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.DTO
 {
-    public class CartOrderDto
+    public class CartOrder
     {
        public string userId {  get; set; }  
        public int cartId { get; set; }

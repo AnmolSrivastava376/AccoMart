@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Data.Models
+namespace Data.Models.Address
 {
-    public class AddressModel 
+    public class AddressModel
     {
         [Required]
-        public int AddressId { get; set; }   
+        public int AddressId { get; set; }
 
         [Required(ErrorMessage = "Street is required")]
         public string Street { get; set; }
@@ -22,6 +22,6 @@ namespace Data.Models
 
         public string PhoneNumber { get; set; }
 
-       
+
     }
 }

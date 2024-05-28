@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.Models.DTO
 {
-    public class StripeDto
+    public class Stripe
     {
         public string? StripeUrl { get; set; }
     }
