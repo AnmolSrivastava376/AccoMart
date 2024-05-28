@@ -29,10 +29,7 @@ export class NavbarComponent implements OnInit {
     this.username = userName;
   }
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('cartItems')
-    localStorage.removeItem('accesstoken')
-    localStorage.removeItem('refreshtoken')
+    localStorage.clear()
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
