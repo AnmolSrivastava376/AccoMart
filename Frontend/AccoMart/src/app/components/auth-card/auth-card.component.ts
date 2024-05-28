@@ -38,6 +38,7 @@ export class AuthCardComponent {
   loginErrorMessage : any
   successMessage: any;
   registerSpinLoader: boolean;
+  inputType = 'password'
   constructor(private router: Router, private tokenService : TokenService) {}
 
   loginForm = this.builder.group({
@@ -50,6 +51,13 @@ export class AuthCardComponent {
     password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)]],
   });
 
+  toogleInputType() {
+    if (this.inputType === 'password') {
+      this.inputType = 'text';
+    } else {
+      this.inputType = 'password';
+    }
+  }
 
   onRegister() {
     this.registerSpinLoader = true;
