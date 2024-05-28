@@ -4,9 +4,9 @@ Installation ( Frontend )
 	To get started with the project , follow these steps:
 		step-1 :  CLONE THE REPOSITORY
 			  git clone https://github.com/AnmolSrivastava376/AccoMart.git
-			  cd Accomart
+			  cd AccoMart
 			  cd Frontend 
-			   cd accomart
+			  cd AccoMart
 		step-2 : INSTALL DEPENDENCIES 
 			   npm install 
 				or 
