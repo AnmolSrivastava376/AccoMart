@@ -21,15 +21,15 @@ export class ForgetpasswordComponent {
 
   forgotPassword(email: string) {
     this.spinLoader = true;
-    this.httpService.forgotPassword(email).subscribe(
-      (response) => {
+    this.httpService.forgotPassword(email).subscribe({
+      next: (response) => {
         this.spinLoader = false;
         this.verificationResponse = response.status;
         console.log('Password reset email sent successfully:', response);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error sending password reset email:', error);
-      }
-    );
+      },
+    });
   }
 }

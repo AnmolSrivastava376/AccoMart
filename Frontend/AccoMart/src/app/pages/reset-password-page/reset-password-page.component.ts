@@ -69,16 +69,16 @@ export class ResetPasswordPageComponent {
           this.resetPasswords.token,
           this.resetPasswords.email
         )
-        .subscribe(
-          () => {
+        .subscribe({
+          next: () => {
             this.resetResponse = 'Password reset successfully.';
             this.router.navigate(['/home/auth']);
           },
-          () => {
+          error: () => {
             this.resetError = 'Error resetting passwords';
             this.spinLoader = false;
-          }
-        );
+          },
+        });
     }
   }
 }

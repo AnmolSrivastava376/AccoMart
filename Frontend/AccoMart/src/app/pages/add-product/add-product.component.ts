@@ -112,14 +112,14 @@ export class AddProductComponent implements OnInit {
   }
 
   fetchCategories() {
-    this.categoryService.fetchCategories().subscribe(
-      (response) => {
+    this.categoryService.fetchCategories().subscribe({
+      next: (response) => {
         this.categories = response;
       },
-      (err) => {
+      error: () => {
         this.toastr.error('Error', undefined, { timeOut: 5000 });
-      }
-    );
+      },
+    });
   }
 
   Cancel(): void {
@@ -127,18 +127,18 @@ export class AddProductComponent implements OnInit {
   }
 
   AddProduct() {
-    this.productService.addProduct(this.product).subscribe(
-      (response: any) => {
+    this.productService.addProduct(this.product).subscribe({
+      next: () => {
         this.toastr.success('Product added successfully', undefined, {
           timeOut: 5000,
         });
         this.router.navigate(['/admin/products']);
       },
-      (err) => {
+      error: () => {
         this.toastr.success('Error adding product', undefined, {
           timeOut: 5000,
         });
       }
-    );
+    });
   }
 }

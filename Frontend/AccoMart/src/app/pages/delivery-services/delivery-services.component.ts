@@ -51,8 +51,8 @@ export class DeliveryServicesComponent {
   }
 
   fetchDeliveryServices() {
-    this.deliveryService.getDeliveryServices().subscribe(
-      (response: any) => {
+    this.deliveryService.getDeliveryServices().subscribe({
+      next: (response: any) => {
         if (response.isSuccess) {
           this.deliveryServicesList = response.response as DeliveryService[];
           this.isLoading = false;
@@ -60,26 +60,26 @@ export class DeliveryServicesComponent {
           console.error('Error fetching delivery services:', response.message);
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching delivery services:', error);
-      }
-    );
+      },
+    });
   }
 
   deleteDeliveryService(id: number) {
     if (confirm('Are you sure you want to delete this Service?')) {
-      this.deliveryService.deleteDeliveryService(id).subscribe(
-        () => {
+      this.deliveryService.deleteDeliveryService(id).subscribe({
+        next: () => {
           this.fetchDeliveryServices();
           this.toastr.success('Delivery Service deleted', undefined, {
             timeOut: 5000,
           });
         },
-        (error) => {
+        error: (error) => {
           console.error('Error deleting delivery service:', error);
           this.toastr.error(error, undefined, { timeOut: 5000 });
-        }
-      );
+        },
+      });
     }
   }
 
@@ -87,8 +87,8 @@ export class DeliveryServicesComponent {
     console.log(deliveryService, this.editServiceId);
     this.deliveryService
       .editDeliveryService(deliveryService, this.editServiceId)
-      .subscribe(
-        (response: any) => {
+      .subscribe({
+        next: (response: any) => {
           if (response.isSuccess) {
             this.toastr.success(
               'Delivery Service successfully updated',
@@ -103,15 +103,15 @@ export class DeliveryServicesComponent {
             });
           }
         },
-        (error) => {
+        error: (error) => {
           console.error('Error editing delivery service:', error);
-        }
-      );
+        },
+      });
   }
 
   createDeliveryService(newDeliveryService: createDeliveryService) {
-    this.deliveryService.addDeliveryService(newDeliveryService).subscribe(
-      (response: any) => {
+    this.deliveryService.addDeliveryService(newDeliveryService).subscribe({
+      next: (response: any) => {
         if (response.isSuccess) {
           this.toastr.success('Delivery service created', undefined, {
             timeOut: 5000,
@@ -129,12 +129,12 @@ export class DeliveryServicesComponent {
           });
         }
       },
-      (error) => {
+      error: (error) => {
         this.toastr.error('Error creating delivery service:', error, {
           timeOut: 5000,
         });
       }
-    );
+    });
   }
 
   openAddPopup() {

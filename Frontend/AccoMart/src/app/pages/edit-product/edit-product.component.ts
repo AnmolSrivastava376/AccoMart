@@ -124,26 +124,26 @@ export class EditProductComponent implements OnInit {
   fetchProduct() {
     this.route.params.subscribe((params) => {
       const productId = +params['productId'];
-      this.productService.fetchProductById(productId).subscribe(
-        (response) => {
+      this.productService.fetchProductById(productId).subscribe({
+        next: (response) => {
           this.product = response;
         },
-        (error) => {
+        error: () => {
           this.toastr.error('Error', undefined, { timeOut: 2000 });
-        }
-      );
+        },
+      });
     });
   }
 
   fetchCategories() {
-    this.categoryService.fetchCategories().subscribe(
-      (response) => {
+    this.categoryService.fetchCategories().subscribe({
+      next: (response) => {
         this.categories = response;
       },
-      (err) => {
+      error: () => {
         this.toastr.error('Error', undefined, { timeOut: 2000 });
-      }
-    );
+      },
+    });
   }
 
   CancelEdit(): void {
@@ -153,16 +153,16 @@ export class EditProductComponent implements OnInit {
   submitForm(): void {
     this.productService
       .editProductById(this.product.productId, this.product)
-      .subscribe(
-        (response: any) => {
+      .subscribe({
+        next: () => {
           this.toastr.success('Product edited', undefined, { timeOut: 2000 });
           this.router.navigate(['/admin/products']);
         },
-        (error: any) => {
+        error: () => {
           this.toastr.error('Error updating product', undefined, {
             timeOut: 2000,
           });
-        }
-      );
+        },
+      });
   }
 }
