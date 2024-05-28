@@ -44,7 +44,7 @@ namespace API.Controllers.Order
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
-                    string getAllOrdersQuery = "SELECT * FROM Orders WHERE UserId = @UserId";
+                    string getAllOrdersQuery = "SELECT * FROM Orders WHERE UserId = @UserId ORDER BY OrderId DESC";
                     using (SqlCommand command = new SqlCommand(getAllOrdersQuery, connection))
                     {
                         command.Parameters.AddWithValue("@UserId", userId);
