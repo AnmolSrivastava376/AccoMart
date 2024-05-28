@@ -17,21 +17,23 @@ import { searchService } from '../../services/search.service';
 export class SearchbarComponent {
   prefix: string = '';
   searchResult: Product[] = [];
-  @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<Product[]>();
+  @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<
+    Product[]
+  >();
   constructor(private searchservice: searchService) {}
 
   onSearch(event: Event) {
     event.preventDefault();
     if (this.prefix.trim().length > 0) {
-      this.searchservice.searchProductByprefix(this.prefix.trim()).subscribe(
-        (products) => {
+      this.searchservice.searchProductByprefix(this.prefix.trim()).subscribe({
+        next: (products) => {
           this.searchResult = products;
           this.searchCompleted.emit(products);
         },
-        (error) => {
+        error: (error) => {
           console.error('Error fetching search result:', error);
-        }
-      );
+        },
+      });
     } else {
       alert('Please type something in the searchbox');
     }

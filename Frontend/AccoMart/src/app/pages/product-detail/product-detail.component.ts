@@ -30,13 +30,13 @@ export class ProductDetailComponent implements OnInit {
   }
 
   fetchProductDetails(): void {
-    this.productService.fetchProductById(this.productId).subscribe(
-      (response) => {
+    this.productService.fetchProductById(this.productId).subscribe({
+      next: (response) => {
         this.product = response;
       },
-      (error) => {
+      error: (error) => {
         console.error('Error fetching product:', error);
-      }
-    );
+      },
+    });
   }
 }

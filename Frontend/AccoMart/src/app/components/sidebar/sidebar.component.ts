@@ -18,7 +18,6 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.url.subscribe((urlSegments) => {
-      // Extract the last segment of the URL
       this.currentRoute = urlSegments[urlSegments.length - 1].path;
     });
   }

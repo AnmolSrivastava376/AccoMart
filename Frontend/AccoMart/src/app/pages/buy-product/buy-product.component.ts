@@ -46,7 +46,7 @@ import { ProductOrder } from '../../interfaces/productOrder';
     orderService,
     CartService,
     LoaderComponent,
-    ToastrService
+    ToastrService,
   ],
   templateUrl: './buy-product.component.html',
   styleUrl: './buy-product.component.css',
@@ -182,14 +182,14 @@ export class BuyProductComponent {
     } else {
       if (!this.isLoading) {
         this.isLoading = true;
-        this.orderService.placeOrderByProduct(this.productOrder).subscribe(
-          (response) => {
+        this.orderService.placeOrderByProduct(this.productOrder).subscribe({
+          next: (response) => {
             window.location.href = response.stripeUrl;
           },
-          (error) => {
+          error: (error) => {
             console.error('Error placing order:', error);
           }
-        );
+        });
       }
     }
   }
