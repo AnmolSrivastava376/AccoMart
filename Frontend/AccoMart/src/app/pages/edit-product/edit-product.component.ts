@@ -16,6 +16,7 @@ import { error } from 'highcharts';
 @Component({
   selector: 'app-edit-product-popup',
   templateUrl: './edit-product.component.html',
+
   imports: [
     CommonModule,
     FormsModule,
@@ -26,6 +27,11 @@ import { error } from 'highcharts';
   providers: [productService, CategoryService],
   standalone: true,
   styleUrls: ['./edit-product.component.css'],
+  imports:[CommonModule,FormsModule,NavbarComponent,SidebarComponent,HttpClientModule],
+  providers:[productService,CategoryService,ActivatedRoute],
+  standalone:true,
+  styleUrls: ['./edit-product.component.css']
+
 })
 export class EditProductComponent implements OnInit {
   @Output() close = new EventEmitter<void>();

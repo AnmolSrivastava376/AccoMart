@@ -18,6 +18,8 @@ import { addressService } from '../../services/address.service';
   imports: [FormsModule, CommonModule],
   templateUrl: './change-address.component.html',
   styleUrls: ['./change-address.component.css'],
+  providers: [Router, addressService]
+
 })
 export class ChangeAddressComponent implements OnInit {
   newAddress: Address = {
