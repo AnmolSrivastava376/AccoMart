@@ -28,7 +28,7 @@ import { ParseSourceFile } from '@angular/compiler';
   styleUrl: './auth-card.component.css',
 })
 export class AuthCardComponent {
-  inputType: string = 'password'
+  inputType: string = 'password';
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   isLogin: boolean = true;
@@ -64,8 +64,8 @@ export class AuthCardComponent {
       const username: string = String(this.registerForm.value.username);
       const email: string = String(this.registerForm.value.email);
       const password: string = String(this.registerForm.value.password);
-      this.httpService.register(username, email, password).subscribe(
-        (result) => {
+      this.httpService.register(username, email, password).subscribe({
+        next: (result) => {
           if (result.status === 'Success') {
             this.successMessage = result.message;
             this.isLogin = true;
@@ -74,11 +74,11 @@ export class AuthCardComponent {
             this.errorMessage = result.message;
           }
         },
-        (error) => {
+        error: (error) => {
           console.error(error.error.message);
           this.errorMessage = error.error.message;
-        }
-      );
+        },
+      });
     }
   }
 
@@ -86,8 +86,8 @@ export class AuthCardComponent {
     this.spinLoader = true;
     const email: string = String(this.loginForm.value.email);
     const password: string = String(this.loginForm.value.password);
-    this.httpService.login(email, password).subscribe(
-      (result: any) => {
+    this.httpService.login(email, password).subscribe({
+      next: (result: any) => {
         if (result.isSuccess) {
           this.tokenService.setToken(result.response.accessToken.token);
           this.tokenService.setAccessToken(result.response.accessToken.token);
@@ -108,24 +108,22 @@ export class AuthCardComponent {
           alert('Unsuccessfull login');
         }
       },
-      (error) => {
+      error: (error) => {
         this.spinLoader = false;
         this.loginErrorMessage = error.message;
         console.error(error);
         alert('Unsuccessfull login');
       }
-    );
+    });
   }
 
   onSwitch() {
     this.isLogin = !this.isLogin;
   }
 
-  toogleInputType(){
-    if(this.inputType === 'password'){
+  toogleInputType() {
+    if (this.inputType === 'password') {
       this.inputType = 'text';
-    }
-    else
-      this.inputType = 'password'
+    } else this.inputType = 'password';
   }
 }
