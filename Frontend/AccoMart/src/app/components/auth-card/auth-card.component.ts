@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { HttpService } from '../../services/http.service';
 import { TokenService } from '../../services/token.service';
 import { LoaderComponent } from '../loader/loader.component';
-import { ParseSourceFile } from '@angular/compiler';
 
 @Component({
   selector: 'app-auth-card',
@@ -28,7 +27,6 @@ import { ParseSourceFile } from '@angular/compiler';
   styleUrl: './auth-card.component.css',
 })
 export class AuthCardComponent {
-  inputType: string = 'password'
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   isLogin: boolean = true;
@@ -119,13 +117,5 @@ export class AuthCardComponent {
 
   onSwitch() {
     this.isLogin = !this.isLogin;
-  }
-
-  toogleInputType(){
-    if(this.inputType === 'password'){
-      this.inputType = 'text';
-    }
-    else
-      this.inputType = 'password'
   }
 }
