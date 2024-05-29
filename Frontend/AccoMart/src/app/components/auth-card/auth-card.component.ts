@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
+import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
 import { TokenService } from '../../services/token.service';
 import { LoaderComponent } from '../loader/loader.component';
@@ -19,6 +20,7 @@ import { LoaderComponent } from '../loader/loader.component';
     ReactiveFormsModule,
     MatButtonModule,
     CommonModule,
+    Login2FAComponent,
     HttpClientModule,
     LoaderComponent,
   ],
@@ -35,6 +37,7 @@ export class AuthCardComponent {
   loginErrorMessage: any;
   successMessage: any;
   registerSpinLoader: boolean;
+  inputType = 'password';
   constructor(private router: Router, private tokenService: TokenService) {}
 
   loginForm = this.builder.group({
@@ -56,14 +59,23 @@ export class AuthCardComponent {
     ],
   });
 
+  toogleInputType() {
+    if (this.inputType === 'password') {
+      this.inputType = 'text';
+    } else {
+      this.inputType = 'password';
+    }
+  }
+
   onRegister() {
     this.registerSpinLoader = true;
     if (this.registerForm.valid) {
       const username: string = String(this.registerForm.value.username);
       const email: string = String(this.registerForm.value.email);
       const password: string = String(this.registerForm.value.password);
-      this.httpService.register(username, email, password).subscribe(
-        (result) => {
+
+      this.httpService.register(username, email, password).subscribe({
+        next: (result) => {
           if (result.status === 'Success') {
             this.successMessage = result.message;
             this.isLogin = true;
@@ -72,11 +84,11 @@ export class AuthCardComponent {
             this.errorMessage = result.message;
           }
         },
-        (error) => {
+        error: (error) => {
           console.error(error.error.message);
           this.errorMessage = error.error.message;
-        }
-      );
+        },
+      });
     }
   }
 
@@ -84,8 +96,9 @@ export class AuthCardComponent {
     this.spinLoader = true;
     const email: string = String(this.loginForm.value.email);
     const password: string = String(this.loginForm.value.password);
-    this.httpService.login(email, password).subscribe(
-      (result: any) => {
+
+    this.httpService.login(email, password).subscribe({
+      next: (result: any) => {
         if (result.isSuccess) {
           this.tokenService.setToken(result.response.accessToken.token);
           this.tokenService.setAccessToken(result.response.accessToken.token);
@@ -106,15 +119,14 @@ export class AuthCardComponent {
           alert('Unsuccessfull login');
         }
       },
-      (error) => {
+      error: (error) => {
         this.spinLoader = false;
         this.loginErrorMessage = error.message;
         console.error(error);
         alert('Unsuccessfull login');
-      }
-    );
+      },
+    });
   }
-
   onSwitch() {
     this.isLogin = !this.isLogin;
   }
