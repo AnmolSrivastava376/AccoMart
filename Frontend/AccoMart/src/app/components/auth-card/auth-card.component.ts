@@ -77,18 +77,49 @@ export class AuthCardComponent {
       this.httpService.register(username, email, password).subscribe({
         next: (result) => {
           if (result.status === 'Success') {
+            alert('Registraion Successful');
+            this.registerSpinLoader=false;
             this.successMessage = result.message;
             this.isLogin = true;
           } else {
+            this.registerSpinLoader=false;
+            alert('Registration Failed')
             console.error('Registration failed:', result.message);
             this.errorMessage = result.message;
           }
         },
         error: (error) => {
+          this.registerSpinLoader=false;
+          alert('Registration Failed');
           console.error(error.error.message);
           this.errorMessage = error.error.message;
         },
       });
+    }
+    else {
+      this.registerSpinLoader = false;
+      if (this.registerForm.controls['email'].invalid) {
+        alert('Unsuccessful login');
+      }
+      if (this.registerForm.controls['email'].hasError('required')) {
+        alert('Email is required.');
+      } else if (this.registerForm.controls['email'].hasError('email')) {
+        alert('Email is invalid.');
+      }
+      if (this.registerForm.controls['username'].hasError('required')) {
+        alert('Username is required.');
+      }
+      if (this.registerForm.controls['password'].hasError('required')) {
+        alert('Password is required.');
+      }
+      if (this.registerForm.controls['password'].hasError('minlength')) {
+        alert('Password must be at least 6 characters long.');
+      }
+      if (this.registerForm.controls['password'].hasError('pattern')) {
+        alert(
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        );
+      }
     }
   }
 
