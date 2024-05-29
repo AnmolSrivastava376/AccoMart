@@ -208,8 +208,8 @@ namespace Data.Repository.Implementation
             htmlcontent += "<td style='border:1px solid #000'> Amount To Be Paid </td>";
             htmlcontent += "</tr>";
 
-            decimal discount = Math.Round(0.05m * productAmount, 2);
-            decimal tax = Math.Round(0.18m * (productAmount + discount), 2);
+            decimal discount = Math.Round(decimal.Parse(_configuration["Constants:Discount"]) * productAmount, 2);
+            decimal tax = Math.Round(decimal.Parse(_configuration["Constants:Discount"]) * (productAmount + discount), 2);
             decimal totalAmount = Math.Round(productAmount - discount + tax, 2);
 
             htmlcontent += "<tr>";

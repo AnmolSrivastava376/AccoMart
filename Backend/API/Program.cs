@@ -20,6 +20,7 @@ using InvoiceService = Service.Services.Implementation.InvoiceService;
 using Data.Models.Authentication.User;
 using Data.Repository.Implementation.Cart;
 using Service.Services;
+using Microsoft.AspNetCore.Hosting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -118,6 +119,11 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
 
 builder.Services.AddSession();
 builder.Services.AddMvc();
+
+builder.Configuration
+    .AddUserSecrets<Program>();
+
+
 
 var app = builder.Build();
 app.UseSwagger();

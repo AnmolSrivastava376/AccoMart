@@ -1,4 +1,4 @@
-# AccoMart
+# AccoMart (E-Commerce Web Application)
 
 ## Installation (Frontend) 🧾
 
