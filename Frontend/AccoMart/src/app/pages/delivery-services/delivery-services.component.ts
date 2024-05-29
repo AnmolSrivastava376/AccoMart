@@ -84,7 +84,18 @@ export class DeliveryServicesComponent {
   }
 
   editDeliveryService(deliveryService: createDeliveryService) {
-    console.log(deliveryService, this.editServiceId);
+
+    if (
+      !deliveryService.imageUrl ||
+      !deliveryService.serviceName ||
+      !deliveryService.price ||
+      !deliveryService.deliveryDays
+    ) {
+      this.toastr.error('Please fill all the fields', undefined, {
+        timeOut: 5000,
+      });
+      return;
+    }
     this.deliveryService
       .editDeliveryService(deliveryService, this.editServiceId)
       .subscribe({
@@ -110,6 +121,19 @@ export class DeliveryServicesComponent {
   }
 
   createDeliveryService(newDeliveryService: createDeliveryService) {
+    if (
+      !newDeliveryService.imageUrl ||
+      !newDeliveryService.serviceName ||
+      !newDeliveryService.price ||
+      !newDeliveryService.deliveryDays
+    ) {
+      this.toastr.error('Please fill all the fields', undefined, {
+        timeOut: 5000,
+      });
+      return;
+    }
+
+
     this.deliveryService.addDeliveryService(newDeliveryService).subscribe({
       next: (response: any) => {
         if (response.isSuccess) {

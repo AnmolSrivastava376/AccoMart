@@ -49,8 +49,10 @@
                 <p class="text-red-300 text-sm mb-2">Category: {{
                   getCategoryName(product.categoryId) }}</p>
                 <!-- Display categoryName -->
-                <img src="{{ product.productImageUrl }}" alt="{{ product.productName }}"
+                <div class="flex  justify-center ">
+                  <img src="{{ product.productImageUrl }}" alt="{{ product.productName }}"
                   class="w-48 h-48 object-cover mb-2">
+                </div>
                 <p class="text-gray-600">{{ product.productDesc | slice:0:30
                   }}{{ product.productDesc.length > 30 ? '...' : '' }}</p>
                 <p class="text-green-600">₹{{ product.productPrice }}</p>

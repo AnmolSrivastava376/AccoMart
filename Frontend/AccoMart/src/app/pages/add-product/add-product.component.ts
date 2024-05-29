@@ -127,6 +127,20 @@ export class AddProductComponent implements OnInit {
   }
 
   AddProduct() {
+    if (
+      !this.product.productName ||
+      !this.product.productDesc ||
+      !this.product.productPrice ||
+      !this.product.productImageUrl ||
+      !this.product.categoryId ||
+      !this.product.stock
+    ) {
+      this.toastr.error('Please fill all the fields', undefined, {
+        timeOut: 5000,
+      });
+      return; 
+    }
+
     this.productService.addProduct(this.product).subscribe({
       next: () => {
         this.toastr.success('Product added successfully', undefined, {

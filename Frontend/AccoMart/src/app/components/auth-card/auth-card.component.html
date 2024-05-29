@@ -52,10 +52,6 @@
                     class="text-red-500">*</span></label>
                 <input type={{inputType}} id="password" formControlName="password" placeholder="Enter your password"
                   class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
-                <div class="absolute w-fit h-fit cursor-pointer top-[30px] right-[15px]" (click)="toogleInputType()">
-                  <i class="fa-eye"
-                    [ngClass]="{'fa-solid': inputType==='password', 'fa-regular': inputType==='text'}"></i>
-                </div>
                 <div *ngIf="registerForm.get('password')?.errors">
 
                   <div *ngIf="registerForm.get('password')?.errors?.['required']"
@@ -117,10 +113,6 @@
                     class="text-red-500">*</span></label>
                 <input type={{inputType}} id="password" formControlName="password" placeholder="Enter your password"
                   class="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring focus:border-blue-400" />
-                <div class="absolute w-fit h-fit cursor-pointer top-[30px] right-[15px]" (click)="toogleInputType()">
-                  <i class="fa-eye"
-                    [ngClass]="{'fa-solid': inputType==='password', 'fa-regular': inputType==='text'}"></i>
-                </div>
                 <div *ngIf="loginForm.get('password')?.errors">
                   <div *ngIf="loginForm.get('password')?.errors?.['required']"
                     class="text-red-600 text-sm text-left mt-1 mb-1">
@@ -144,8 +136,8 @@
               <div class="flex justify-center h-fit">
                 <button type="button" (click)="onLogin()"
                   class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring flex justify-center items-center">
-                  <app-loader *ngIf="spinLoader"></app-loader>
-                  <span *ngIf="!spinLoader">{{
+                  <app-loader *ngIf="loginSpinLoader"></app-loader>
+                  <span *ngIf="!loginSpinLoader">{{
                     isLogin ? "Login" : "Register"
                     }}</span>
                 </button>
