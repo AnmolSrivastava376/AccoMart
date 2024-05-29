@@ -164,6 +164,14 @@ export class AdminProductsComponent implements OnInit {
   searchFunction(event: any) {
     this.isLoading = true;
     const searchValue = event.target.value;
-    this.mergeResults(searchValue);
+    if(searchValue=='')
+      {
+        this.pageNo=1;
+        this.fetchProductsByPageNo();
+
+      }else{
+        this.mergeResults(searchValue);
+
+      }
   }
 }

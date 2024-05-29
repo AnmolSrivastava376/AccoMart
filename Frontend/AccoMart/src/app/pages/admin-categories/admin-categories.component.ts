@@ -146,8 +146,15 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   searchFunction(event: any) {
+    
     this.isLoading = true;
     const searchValue = event.target.value;
-    this.mergeResults(searchValue);
+    if(searchValue=='')
+      {
+        this.fetchCategories();
+      }else{
+        this.mergeResults(searchValue);
+
+      }
   }
 }
