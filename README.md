@@ -19,12 +19,12 @@ npm install --force
 ```bash
 ng serve
 ```
-# Start Backend ⚙
+## Start Backend ⚙
 ```bash
 cd Accomart/Backend/API
 dotnet watch run
 ```
-# Admin Credentials 🔑
+## Admin Credentials 🔑
 Email
 ```bash
 kk1238405@gmail.com
