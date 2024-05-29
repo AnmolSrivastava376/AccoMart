@@ -135,7 +135,7 @@ export class AddProductComponent implements OnInit {
         this.router.navigate(['/admin/products']);
       },
       error: () => {
-        this.toastr.success('Error adding product', undefined, {
+        this.toastr.error('Error adding product', undefined, {
           timeOut: 5000,
         });
       }
