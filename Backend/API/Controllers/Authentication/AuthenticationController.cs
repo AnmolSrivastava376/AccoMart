@@ -191,7 +191,7 @@ namespace API.Controllers.Authentication
                     {
                         ModelState.AddModelError(error.Code, error.Description);
                     }
-                    return Ok(ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = $"Password has been reset" });
