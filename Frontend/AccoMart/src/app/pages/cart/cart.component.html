@@ -9,7 +9,7 @@
           item<span
             *ngIf="!(cartItemLength===1)">s</span></span> in your cart</div>
       <div
-        class="w-full h-fit flex flex-col pad bg-white rounded-[20px] my-[30px] px-[30px] py-[30px] gap-[30px]">
+        class="w-full h-fit flex flex-col pad bg-white rounded-[10px] my-[30px] px-[30px] py-[30px] gap-[30px]">
         <div *ngFor="let item of cart">
           <app-cart-product-card
             [productId]="item.productId"></app-cart-product-card>
@@ -27,7 +27,7 @@
       class="w-full h-full flex-[25] sticky top-[35px] flex flex-col gap-[20px] mb-[30px] minw"
       *ngIf="!(cartItemLength===0)">
       <div
-        class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]">
+        class="w-full h-fit bg-white rounded-[10px] flex flex-col px-[20px] py-[16px] gap-[10px]">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery
           Address</div>
         <div class="w-full h-[1px] bg-black"></div>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div
-        class="w-full h-fit bg-white rounded-[20px] flex flex-col px-[20px] py-[16px] gap-[10px]"
+        class="w-full h-fit bg-white rounded-[10px] flex flex-col px-[20px] py-[16px] gap-[10px]"
         *ngIf="!(cartItemLength===0)">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Delivery
           Service</div>
@@ -63,7 +63,7 @@
         </div>
       </div>
       <div
-        class="checkout w-full h-fit rounded-[20px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]"
+        class="checkout w-full h-fit rounded-[10px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]"
         *ngIf="!(cartItemLength===0)">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Cart
           Summary</div>
@@ -91,7 +91,7 @@
           <div class>₹ {{getGrandTotal()}}</div>
         </div>
         <div
-          class="w-[80%] my-[10px] h-[40px] rounded-[20px] bg-white self-center flex justify-center items-center cursor-pointer"
+          class="w-[80%] my-[10px] h-[40px] rounded-[10px] bg-white self-center flex justify-center items-center cursor-pointer"
           (click)="placeOrder()">
           <div class="text-black font-semibold head-adj">
             <app-loader *ngIf="spinLoader"></app-loader>

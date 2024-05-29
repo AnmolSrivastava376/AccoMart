@@ -1,7 +1,7 @@
 <div
     class="w-[100vw] h-fit min-h-[100vh] relative flex flex-col justify-start parent">
     <div class="w-full relative rounded-t-[10px] r-adj">
-        <div class="w-full h-[60px] shadow-2xl fixed z-[100]">
+        <div class="w-full h-[60px] shadow-md fixed z-[100]">
             <app-home-navbar
                 (searchCompleted)="onSearchCompleted($event)"></app-home-navbar>
         </div>
@@ -24,11 +24,7 @@
                 <app-product-card
                     [products]="products"
                     [filteredProducts]="filteredProducts"
-                    [categoryName]="
-            categories[activeCategoryIndex]
-              ? categories[activeCategoryIndex].categoryName
-              : ''
-          "
+                    [categoryName]="categories[activeCategoryIndex]? categories[activeCategoryIndex].categoryName: ''"
                     (fetchNextPage)="handleNextPageLoad()"></app-product-card>
             </div>
             <div

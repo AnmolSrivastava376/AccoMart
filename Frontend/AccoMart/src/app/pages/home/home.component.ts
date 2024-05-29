@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
 import { invoiceService } from '../../services/invoiceService';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { FormsModule } from '@angular/forms';
 import { HomeNavbarComponent } from '../../components/home-navbar/home-navbar.component';
