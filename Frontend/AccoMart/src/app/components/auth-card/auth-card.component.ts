@@ -11,6 +11,8 @@ import { HttpService } from '../../services/http.service';
 import { TokenService } from '../../services/token.service';
 import { LoaderComponent } from '../loader/loader.component';
 import {ToastrService } from 'ngx-toastr';
+import * as CryptoJS from 'crypto-js';
+
 
 @Component({
   selector: 'app-auth-card',
@@ -40,6 +42,8 @@ export class AuthCardComponent {
   successMessage: any;
   registerSpinLoader: boolean;
   inputType = 'password';
+  key:string ='test123';// this will be in .env 
+
   constructor(private router: Router, private tokenService: TokenService,private toastr:ToastrService) {}
 
   loginForm = this.builder.group({
@@ -61,6 +65,11 @@ export class AuthCardComponent {
     ],
   });
 
+  encryptPassword(password: string, key: string): string {
+    const encryptedPassword = CryptoJS.HmacSHA256(password, key).toString()+"PW@";
+    return encryptedPassword;
+  }
+
   toogleInputType() {
     if (this.inputType === 'password') {
       this.inputType = 'text';
@@ -79,7 +88,9 @@ export class AuthCardComponent {
       const email: string = String(this.registerForm.value.email);
       const password: string = String(this.registerForm.value.password);
 
-      this.httpService.register(username, email, password).subscribe({
+      const encryptedPassword = this.encryptPassword(password,this.key);
+
+      this.httpService.register(username, email, encryptedPassword).subscribe({
         next: (result) => {
           if (result.status === 'Success') {
             alert('Registraion Successful');
@@ -150,7 +161,8 @@ export class AuthCardComponent {
       }
       this.loginSpinLoader = true;
 
-    this.httpService.login(email, password).subscribe({
+    const encryptedPassword = this.encryptPassword(password,this.key);
+    this.httpService.login(email, encryptedPassword).subscribe({
       next: (result: any) => {
         if (result.isSuccess) {
           this.tokenService.setToken(result.response.accessToken.token);

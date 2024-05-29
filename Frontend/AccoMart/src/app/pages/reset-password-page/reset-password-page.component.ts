@@ -1,22 +1,24 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { resetPassword } from '../../interfaces/resetPassword';
 import { HttpService } from '../../services/http.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import * as CryptoJS from 'crypto-js';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reset-password-page',
-  imports: [FormsModule, HttpClientModule, LoaderComponent, CommonModule],
-  standalone: true,
+  standalone:true,
+  imports: [ HttpClientModule, LoaderComponent,CommonModule], 
   providers: [HttpService],
   templateUrl: './reset-password-page.component.html',
   styleUrls: ['./reset-password-page.component.css'],
 })
-export class ResetPasswordPageComponent {
+export class ResetPasswordPageComponent implements OnInit {
   inputType = 'password';
+  resetPasswordForm: FormGroup;
   resetPasswords: resetPassword = {
     password: '',
     confirmPassword: '',
@@ -26,7 +28,10 @@ export class ResetPasswordPageComponent {
   resetResponse: string;
   resetError: string;
   spinLoader: boolean;
+  key: string = 'test123'; // this will be in .env
+
   constructor(
+    private formBuilder: FormBuilder,
     private httpService: HttpService,
     private route: ActivatedRoute,
     private router: Router
@@ -38,47 +43,67 @@ export class ResetPasswordPageComponent {
       const email = params['email'] || '';
       const token2 = atob(token.replace(/_/g, '/').replace(/-/g, '+'));
       this.resetPasswords.token = token2;
-
       this.resetPasswords.email = decodeURIComponent(email);
     });
+
+    
   }
-  toogleInputType() {
-    if (this.inputType === 'password') {
-      this.inputType = 'text';
-    } else {
-      this.inputType = 'password';
-    }
+
+  encryptPassword(password: string, key: string): string {
+    //using this to create hash of the password 256 characters long
+    const encryptedPassword = CryptoJS.HmacSHA256(password, key).toString()+"PW@"; 
+    return encryptedPassword;
   }
-  resetPassword(password: string, confirmPassword: string) {
-    if (this.resetPasswords.confirmPassword !== this.resetPasswords.password) {
+
+  toggleInputType() {
+    this.inputType = this.inputType === 'password' ? 'text' : 'password';
+  }
+
+  resetPassword(passwordd:string,confirmPasswordd:string) {
+    if (passwordd !== confirmPasswordd) {
       this.resetError = 'Passwords do not match';
-    } else {
-      this.spinLoader = true;
-      this.resetPasswords.password = password;
-      this.resetPasswords.confirmPassword = confirmPassword;
-      console.log(
+      return;
+    }
+
+    if(passwordd.length<8)
+    {
+        this.resetError = 'Password must be 8 characters long';
+        return;
+    }
+
+    if (!/[!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./]/.test(passwordd)) {
+      this.resetError = 'Password must contain at least one special character';
+      return;
+    }
+
+    this.spinLoader = true;
+    const encryptedPassword = this.encryptPassword(passwordd, this.key).toString();
+    const encryptedPasswordConfirm = this.encryptPassword(confirmPasswordd, this.key).toString();
+    this.resetPasswords.password = encryptedPassword;
+    this.resetPasswords.confirmPassword = encryptedPasswordConfirm;
+
+    this.httpService
+      .resetPassword(
         this.resetPasswords.password,
         this.resetPasswords.confirmPassword,
         this.resetPasswords.token,
         this.resetPasswords.email
-      );
-      this.httpService
-        .resetPassword(
-          this.resetPasswords.password,
-          this.resetPasswords.confirmPassword,
-          this.resetPasswords.token,
-          this.resetPasswords.email
-        )
-        .subscribe({
-          next: () => {
-            this.resetResponse = 'Password reset successfully.';
-            this.router.navigate(['/home/auth']);
-          },
-          error: () => {
+      )
+      .subscribe(
+        (response) => {
+          this.resetResponse = 'success';
+          this.router.navigate(['/home/auth']);
+        },
+        (error) => {
+          if (error.error && error.error.errors) {
+            this.resetError = error.error.errors.message;
+          } else {
             this.resetError = 'Error resetting passwords';
-            this.spinLoader = false;
-          },
-        });
-    }
+          }
+
+          console.log(error.error);
+          this.spinLoader = false;
+        }
+      );
   }
 }

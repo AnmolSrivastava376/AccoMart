@@ -145,7 +145,6 @@ namespace Service.Services
         }
 
         public async Task<ApiResponse<LoginOtpResponse>> GetOtpByLoginAsync(string email)
-
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
@@ -166,11 +165,6 @@ namespace Service.Services
                     StatusCode = 200,
                     Message = "OTP sent to email "
                 };
-
-
-
-
-
             }
             else
             {
@@ -266,7 +260,7 @@ namespace Service.Services
                             }
                             else
                             {
-                                return "5";
+                                return null;
                             }
                         }
                     }
@@ -274,7 +268,7 @@ namespace Service.Services
             }
             catch (Exception ex)
             {
-                return "5";
+                return null;
             }
         }
 
@@ -295,8 +289,6 @@ namespace Service.Services
             if (user != null)
             {
                 var signInResult = await _signInManager.PasswordSignInAsync(user, password, true, false);
-                // var signInResult = await _signInManager.CheckPasswordSignInAsync(user,password,false);
-
                 if (signInResult.Succeeded)
                 {
                     return await GetJwtTokenAsync(user);
@@ -346,8 +338,6 @@ namespace Service.Services
                 StatusCode = 400,
                 Message = $"Invalid Otp"
             };
-
-
         }
 
         public async Task<ApiResponse<LoginResponse>> RenewAccessTokenAsync(LoginResponse tokens)
