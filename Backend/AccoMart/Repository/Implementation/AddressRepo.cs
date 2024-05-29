@@ -26,7 +26,7 @@ namespace Testing.Tests
                 State = "Example State",
                 ZipCode = "12345"
             };
-            string userId = "2343jhfdgfig45892310";
+            string userId = "user123";
 
             // Mock SqlConnection and SqlCommand
             var mockConnection = new Mock<SqlConnection>();
@@ -53,7 +53,7 @@ namespace Testing.Tests
             var address = new AddressModel
             {
             };
-            string userId = "2343jhfdgfig45892310";
+            string userId = "user123";
 
             var mockConnection = new Mock<SqlConnection>();
             var mockCommand = new Mock<SqlCommand>();
@@ -61,8 +61,74 @@ namespace Testing.Tests
             mockConnection.Setup(c => c.OpenAsync()).ThrowsAsync(new Exception());
 
             var service = new AddressRepository(mockConnection.Object);
+
             var result = await service.AddAddressAsync(address, userId);
             Assert.AreEqual(-1, result);
         }
+
+        [TestMethod]
+        public async Task UpdateAddressAsync_ValidIdAndAddress_ReturnsTrue()
+        {
+            // Arrange
+            int id = 1;
+            var address = new AddressModel
+            {
+                Street = "123 Main St",
+                City = "Example City",
+                PhoneNumber = "123-456-7890",
+                State = "Example State",
+                ZipCode = "12345"
+            };
+
+            var expectedRowsAffected = 1;
+
+            // Mock SqlConnection and SqlCommand
+            var mockConnection = new Mock<SqlConnection>();
+            var mockCommand = new Mock<SqlCommand>();
+
+            mockConnection.Setup(c => c.OpenAsync()).Returns(Task.CompletedTask);
+            mockCommand.Setup(c => c.ExecuteNonQueryAsync()).ReturnsAsync(expectedRowsAffected); // Mock the return value of ExecuteNonQueryAsync
+
+            mockConnection.Setup(c => c.CreateCommand()).Returns(mockCommand.Object);
+
+            var service = new AddressRepository(mockConnection.Object);
+
+            // Act
+            var result = await service.UpdateAddressAsync(id, address);
+
+            // Assert
+            Assert.IsTrue(result); // Assert that the method returns true
+            mockCommand.Verify(); // Verify that SqlCommand was called as expected
+        }
+
+        [TestMethod]
+        public async Task UpdateAddressAsync_ExceptionThrown_ReturnsFalse()
+        {
+            // Arrange
+            int id = 1;
+            var address = new AddressModel
+            {
+                Street = "123 Main St",
+                City = "Example City",
+                PhoneNumber = "123-456-7890",
+                State = "Example State",
+                ZipCode = "12345"
+            };
+
+            var mockConnection = new Mock<SqlConnection>();
+            var mockCommand = new Mock<SqlCommand>();
+
+            mockConnection.Setup(c => c.OpenAsync()).ThrowsAsync(new Exception());
+
+            var service = new AddressRepository(mockConnection.Object);
+
+            // Act
+            var result = await service.UpdateAddressAsync(id, address);
+
+            // Assert
+            Assert.IsFalse(result); // Assert that the method returns false indicating failure
+        }
+
+
     }
 }
