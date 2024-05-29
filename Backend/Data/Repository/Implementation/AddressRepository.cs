@@ -8,12 +8,18 @@ namespace Data.Repository.Implementation
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
+        private SqlConnection @object;
 
         public AddressRepository(IConfiguration configuration)
         {
             _configuration = configuration;
             _connectionString = configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
 
+        }
+
+        public AddressRepository(SqlConnection @object)
+        {
+            this.@object = @object;
         }
 
         public async Task<int> AddAddressAsync(AddressModel address, string userId)
@@ -68,7 +74,6 @@ namespace Data.Repository.Implementation
                             }
                             else
                             {
-                                // Address not found
                                 return null;
                             }
                         }
@@ -77,7 +82,6 @@ namespace Data.Repository.Implementation
             }
             catch (Exception ex)
             {
-                // Log the exception and rethrow it
                 throw new Exception($"Failed to retrieve address: {ex.Message}", ex);
             }
         }
@@ -114,8 +118,7 @@ namespace Data.Repository.Implementation
                 }
             }
             catch (Exception)
-            {
-                // Handle exception
+            { 
                 throw;
             }
 
@@ -159,14 +162,12 @@ namespace Data.Repository.Implementation
                     {
                         command.Parameters.AddWithValue("@AddressId", id);
                         int rowsAffected = await command.ExecuteNonQueryAsync();
-                        // Check if any rows were affected by the delete operation
                         return rowsAffected > 0;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it as needed
                 throw new Exception($"Error occurred while deleting address with ID {id}.", ex);
             }
         }

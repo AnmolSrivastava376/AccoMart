@@ -69,28 +69,6 @@ namespace Data.Repository.Implementation.Cart
             }
         }
 
-        async Task ICartRepository.DeleteCartItem(int cartItemId)
-        {
-
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-            {
-                await connection.OpenAsync();
-
-                string sqlCartItemIdQuery = "SELECT 1 FROM CartItem WHERE CartItemId = @CartItemId";
-                using (SqlCommand checkCommand = new SqlCommand(sqlCartItemIdQuery, connection))
-                {
-                    checkCommand.Parameters.AddWithValue("@CartItemId", cartItemId);
-                    object cartItemIdObj = await checkCommand.ExecuteScalarAsync();
-
-                    if (cartItemIdObj == null || cartItemIdObj == DBNull.Value)
-                    {
-                        throw new InvalidOperationException("CartItem does not exist.");
-                    }
-                }
-
-            }
-
-        }
 
 
         async Task<IEnumerable<CartItem>> ICartRepository.GetCartItems(int cartId)
@@ -125,24 +103,6 @@ namespace Data.Repository.Implementation.Cart
             }
 
             return cartItems;
-        }
-
-
-        async Task<CartItem> ICartRepository.UpdateCartItem(int productId, int quantity, int cartId)
-        {
-            CartItem cartItem = new CartItem();
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
-            {
-                await connection.OpenAsync();
-                string sqlQuery = "UPDATE CartItem SET Quantity = @Quantity;";
-                SqlCommand updateCommand = new SqlCommand(sqlQuery, connection);
-                updateCommand.Parameters.AddWithValue("@Quantity", quantity);
-                int newId = Convert.ToInt32(updateCommand.ExecuteScalar());
-                cartItem.ProductId = newId;
-                cartItem.Quantity = quantity;
-            }
-
-            return cartItem;
         }
     }
 }

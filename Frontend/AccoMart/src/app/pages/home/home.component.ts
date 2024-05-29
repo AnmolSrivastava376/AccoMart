@@ -45,17 +45,7 @@ import { SearchProductCardComponent } from '../../components/search-product-card
 })
 export class HomeComponent implements OnInit, OnDestroy {
   categories: Category[] = [];
-  products: Product[] = [
-    {
-      productId: 0,
-      productName: '',
-      productDesc: '',
-      productPrice: 0,
-      productImageUrl: '',
-      categoryId: 0,
-      stock: 0,
-    },
-  ];
+  products: Product[] = [];
   page = 1;
   minprice: number = 0;
   maxprice: number = Number.MAX_SAFE_INTEGER;

@@ -21,16 +21,6 @@ namespace Service.Services.Implementation
             return await _cartRepository.AddCart(cartId,cart);
         }
 
-        async Task ICartService.DeleteCartItemAsync(int productId)
-        {
-            await _cartRepository.DeleteCartItem(productId);
-        }
-
-        async Task<CartItem> ICartService.UpdateCartItemAsync(int productId, int quantity, int cartId)
-        {
-            return await _cartRepository.UpdateCartItem(productId, quantity, cartId);
-        }
-
         async Task<IEnumerable<CartItem>> ICartService.GetCartItemsAsync(int cartId)
         {
             return await _cartRepository.GetCartItems(cartId);
