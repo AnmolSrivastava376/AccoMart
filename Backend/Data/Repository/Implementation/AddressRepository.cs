@@ -118,7 +118,7 @@ namespace Data.Repository.Implementation
                 }
             }
             catch (Exception)
-            { 
+            {
                 throw;
             }
 
