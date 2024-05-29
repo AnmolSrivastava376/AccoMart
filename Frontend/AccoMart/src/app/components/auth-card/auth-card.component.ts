@@ -10,6 +10,7 @@ import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
 import { TokenService } from '../../services/token.service';
 import { LoaderComponent } from '../loader/loader.component';
+import {ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-auth-card',
@@ -23,6 +24,7 @@ import { LoaderComponent } from '../loader/loader.component';
     Login2FAComponent,
     HttpClientModule,
     LoaderComponent,
+    
   ],
   providers: [HttpService],
   templateUrl: './auth-card.component.html',
@@ -32,13 +34,13 @@ export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   isLogin: boolean = true;
-  spinLoader: boolean = false;
+  loginSpinLoader: boolean = false;
   errorMessage: any;
   loginErrorMessage: any;
   successMessage: any;
   registerSpinLoader: boolean;
   inputType = 'password';
-  constructor(private router: Router, private tokenService: TokenService) {}
+  constructor(private router: Router, private tokenService: TokenService,private toastr:ToastrService) {}
 
   loginForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -68,8 +70,11 @@ export class AuthCardComponent {
   }
 
   onRegister() {
-    this.registerSpinLoader = true;
+
+
     if (this.registerForm.valid) {
+      this.registerSpinLoader = true;
+
       const username: string = String(this.registerForm.value.username);
       const email: string = String(this.registerForm.value.email);
       const password: string = String(this.registerForm.value.password);
@@ -78,24 +83,41 @@ export class AuthCardComponent {
         next: (result) => {
           if (result.status === 'Success') {
             this.successMessage = result.message;
+            this.registerSpinLoader = false;
+            this.toastr.success("Registration successful");
             this.isLogin = true;
+
           } else {
             console.error('Registration failed:', result.message);
+            this.toastr.error("Registration failed");
+            this.loginSpinLoader = false;
+            this.registerSpinLoader = false;
             this.errorMessage = result.message;
           }
         },
         error: (error) => {
           console.error(error.error.message);
           this.errorMessage = error.error.message;
+          this.registerSpinLoader = false;
+          this.toastr.error("Registration failed");
         },
+        complete: ()=>{
+          this.registerSpinLoader = false;
+        }
       });
     }
   }
 
   onLogin() {
-    this.spinLoader = true;
     const email: string = String(this.loginForm.value.email);
     const password: string = String(this.loginForm.value.password);
+    
+    if(email=='' || password=='')
+      {
+        this.toastr.error("Please enter all fields")
+        return;
+      }
+      this.loginSpinLoader = true;
 
     this.httpService.login(email, password).subscribe({
       next: (result: any) => {
@@ -109,21 +131,26 @@ export class AuthCardComponent {
           this.tokenService.setExpiryRefresh(
             result.response.refreshToken.expiryTokenDate
           );
-
           this.successMessage = result.message;
+          this.toastr.success("Login success")
+
           this.router.navigate(['/home']);
         } else {
-          this.spinLoader = false;
+          this.loginSpinLoader = false;
           this.loginErrorMessage = result.message;
           console.error(result.message);
-          alert('Unsuccessfull login');
+          this.toastr.error("Unsuccessful Login")
+          this.loginSpinLoader = false;
+
         }
       },
       error: (error) => {
-        this.spinLoader = false;
+        this.loginSpinLoader = false;
         this.loginErrorMessage = error.message;
         console.error(error);
-        alert('Unsuccessfull login');
+        this.toastr.error("Unsuccessful Login");
+        this.loginSpinLoader = false;
+
       },
     });
   }
