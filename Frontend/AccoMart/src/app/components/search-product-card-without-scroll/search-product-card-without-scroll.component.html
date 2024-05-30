@@ -4,7 +4,7 @@
             class="w-full h-fit items-center relative flex gap-[10px] overflow-hidden">
             <div class *ngFor="let product of products">
                 <div
-                    class='min-w-[240px] transition-all duration-500 min-h-[380px] h-fit border bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex-col gap-[10px] justify-between'
+                    class='w-[240px] transition-all duration-500 min-h-[380px] h-fit border bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between'
                     [style.transform]="'translateX(' + (i * -250) + 'px)'">
                     <div class="flex flex-col gap-[10px]">
                         <div
@@ -14,13 +14,13 @@
                         <div class="w-full flex flex-col cursor-pointer"
                             (click)="navigateToProduct(product.productId)">
                             <div
-                                class="font-bold text-[18px]">{{product?.productName?.slice(0,40)}}</div>
+                                class="font-bold text-[18px]">{{product?.productName?.slice(0,21)}}{{product?.productName?.length&& product.productName.length>21?"...":""}}</div>
                             <div class="font-medium text-gray-600 text-[14px]">
                                 {{product?.productDesc?.slice(0,40)}}<span
                                     *ngIf="product?.productDesc && product.productDesc.length > 50">...</span>
                             </div>
                             <div
-                                class="font-semibold text-[14px]">${{product.productPrice}}</div>
+                                class="font-semibold text-[14px]">₹ {{product.productPrice}}</div>
                         </div>
                     </div>
                     <div class="w-full h-fit flex gap-[4px]">
