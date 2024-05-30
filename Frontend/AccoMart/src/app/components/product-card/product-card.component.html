@@ -1,15 +1,18 @@
-<div class="w-full h-fit border flex bg-white flex-col rounded-[10px]">
-    <div class="font-bold text-[24px] px-[20px] py-[10px]">Trending</div>
-    <app-grid-display-card
-        class="hide"
-        [products]="trendingProducts"></app-grid-display-card>
-    <app-scroll-display-card
-        class="unhide"
-        [products]="trendingProducts"></app-scroll-display-card>
-    <div class="font-bold text-[24px] px-[20px] pt-[20px]">
+<div class="w-full h-fit border flex bg-white flex-col rounded-[10px] pb-[20px]">
+    <div class="font-bold text-[24px] px-[20px] pt-[20px] pb-[10px]">
         {{ categoryName ? categoryName : "Category Name" }}
     </div>
-    <app-product-scroll-display-card
-        [products]="filteredProducts"
-        (fetchNextPage)="handleEmitter()"></app-product-scroll-display-card>
+    <div class="px-[20px] text-gray-500 font-bold" *ngIf="!filteredProducts?.length">No products to display</div>
+    <app-product-scroll-display-card [products]="filteredProducts" (fetchNextPage)="handleEmitter()" *ngIf="filteredProducts?.length">
+    </app-product-scroll-display-card>
+
+    <div class="font-bold text-[24px] px-[20px] py-[10px]">Trending Products</div>
+    <app-grid-display-card class="hide" [products]="trendingProducts"></app-grid-display-card>
+    <app-scroll-display-card class="unhide" [products]="trendingProducts"></app-scroll-display-card>
+
+    <div class="font-bold text-[24px] px-[20px] py-[10px]">Browse More Products</div>
+    <div *ngFor="let prod of moreProducts">
+        <app-product-scroll-display-card [products]="prod.items" [categoryId]="prod.categoryId" *ngIf="prod.items.length>0"
+            (fetchNextPageCategoryWise)="handleEmitterCategoryWise($event)"></app-product-scroll-display-card>
+    </div>
 </div>

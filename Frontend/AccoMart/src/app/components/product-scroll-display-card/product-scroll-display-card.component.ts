@@ -17,7 +17,9 @@ export class ProductScrollDisplayCardComponent {
   cart?: cartItem[];
   i = 0;
   @Input() products?: Product[];
+  @Input() categoryId: number
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() fetchNextPageCategoryWise: EventEmitter<number> = new EventEmitter<number>();
   constructor(private cartService: CartService, private router: Router) {
     this.cart = this.cartService.fetchCart();
   }
@@ -25,8 +27,9 @@ export class ProductScrollDisplayCardComponent {
   handleNextButtonClick() {
     if (this.products && this.i + 2 < this.products.length) {
       this.i++;
-      if (this.i + 5 >= this.products.length) {
+      if (this.i + 3 >= this.products.length) {
         this.fetchNextPage.emit(true);
+        this.fetchNextPageCategoryWise.emit(this.categoryId)
       }
     }
   }

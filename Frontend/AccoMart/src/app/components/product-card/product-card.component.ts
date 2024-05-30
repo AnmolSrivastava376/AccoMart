@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChartService } from '../../services/chart.service';
 import { productService } from '../../services/product.services';
 import { ChartProductItem } from '../../interfaces/chartProductItem';
+import { MoreProducts } from '../../interfaces/moreProducts';
+import { Category } from '../../interfaces/category';
 
 @Component({
   selector: 'app-product-card',
@@ -24,18 +26,24 @@ import { ChartProductItem } from '../../interfaces/chartProductItem';
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })
-export class ProductCardComponent implements OnInit {
+export class ProductCardComponent implements OnInit,OnChanges {
   trendingProducts: Product[] = [];
   orderedProducts: ChartProductItem[];
+  moreProducts: MoreProducts[]=[];
   @Input() products?: Product[];
   @Input() categoryName?: string;
+  @Input() categories: Category[]
   @Input() filteredProducts?: Product[];
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
   constructor(
     private chartService: ChartService,
     private productService: productService
   ) {}
-
+  ngOnChanges(changes: SimpleChanges): void {
+      if(changes['categories']){
+        this.fetchBrowseMoreProducts();
+      }
+  }
   ngOnInit() {
     this.chartService.fetchProductWiseQuantity().subscribe((data) => {
       this.orderedProducts = data
@@ -59,12 +67,36 @@ export class ProductCardComponent implements OnInit {
       );
     });
   }
-
+  fetchBrowseMoreProducts(){
+    this.categories.forEach((category)=>{
+      this.productService.fetchProductByPageNo(category.categoryId, 1).subscribe({
+        next: (response)=>{
+          this.moreProducts.push({categoryId: category.categoryId, items: response, pageNo: 1})
+        }
+      })
+    })
+  }
   handleClick(productId: number) {
     window.location.href = `home/productdetail/${productId}`;
   }
 
   handleEmitter() {
     this.fetchNextPage.emit(true);
+  }
+  handleEmitterCategoryWise(categoryId: number){
+    this.moreProducts.forEach((item)=>{
+      if(item.categoryId === categoryId){
+        this.productService.fetchProductByPageNo(categoryId, item.pageNo+1).subscribe({
+          next: (response)=>{
+            if(response.length>0){
+              item.items = item.items.concat(response)
+            }
+          },
+          complete: ()=>{
+            item.pageNo++;
+          }
+        })
+      }
+    })
   }
 }
