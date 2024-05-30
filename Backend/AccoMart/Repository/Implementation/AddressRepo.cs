@@ -174,9 +174,11 @@ namespace Testing.Tests
             var addresses = await repository.GetAddressesByUserIdAsync(userId);
 
             // Assert
-            CollectionAssert.AreEqual(expectedAddresses, addresses, new AddressModelComparer());
+            CollectionAssert.AreEqual(expectedAddresses.OrderBy(a => a.AddressId).ToList(), addresses.OrderBy(a => a.AddressId).ToList(), "Addresses returned do not match expected addresses");
             mockCommand.Verify(); // Verify that SqlCommand was called as expected
         }
+
+
 
         [TestMethod]
         public async Task GetAddressesByUserIdAsync_NoAddresses_ReturnsEmptyList()
