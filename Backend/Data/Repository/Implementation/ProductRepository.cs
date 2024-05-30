@@ -131,17 +131,7 @@ namespace Data.Repository.Implementation
         {
 
             List<Product> products = new List<Product>();
-            string cacheKey = $"ProductsPage{id}_{pageNo}_{pageSize}";
-            string cachedProducts = await _database.StringGetAsync(cacheKey);
-
-            if (!string.IsNullOrEmpty(cachedProducts))
-            {
-                products = JsonConvert.DeserializeObject<List<Product>>(cachedProducts);
-
-            }
-
-            else
-            {
+         
 
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
@@ -174,8 +164,7 @@ namespace Data.Repository.Implementation
                         reader.Close();
                     }
                 }
-                await _database.StringSetAsync($"ProductsPage{id}_{pageNo}_{pageSize}", JsonConvert.SerializeObject(products));
-            }
+            
             return products;
         }
 
