@@ -210,6 +210,50 @@ namespace Testing.Tests
         }
 
 
+        [TestMethod]
+        public async Task DeleteAddressAsync_AddressDeleted_ReturnsTrue()
+        {
+            // Arrange
+            int addressId = 1;
+
+            var mockCommand = new Mock<SqlCommand>();
+            mockCommand.Setup(c => c.ExecuteNonQueryAsync()).ReturnsAsync(1); // Simulate deletion of one row
+
+            var mockConnection = new Mock<SqlConnection>();
+            mockConnection.Setup(c => c.OpenAsync()).Returns(Task.CompletedTask);
+            mockConnection.Setup(c => c.CreateCommand()).Returns(mockCommand.Object);
+
+            var repository = new AddressRepository(mockConnection.Object);
+
+            // Act
+            var result = await repository.DeleteAddressAsync(addressId);
+
+            // Assert
+            Assert.IsTrue(result); // Assert that the method returns true, indicating successful deletion
+        }
+
+        [TestMethod]
+        public async Task DeleteAddressAsync_AddressNotDeleted_ReturnsFalse()
+        {
+            // Arrange
+            int addressId = 1;
+
+            var mockCommand = new Mock<SqlCommand>();
+            mockCommand.Setup(c => c.ExecuteNonQueryAsync()).ReturnsAsync(0); // Simulate no rows affected
+
+            var mockConnection = new Mock<SqlConnection>();
+            mockConnection.Setup(c => c.OpenAsync()).Returns(Task.CompletedTask);
+            mockConnection.Setup(c => c.CreateCommand()).Returns(mockCommand.Object);
+
+            var repository = new AddressRepository(mockConnection.Object);
+
+            // Act
+            var result = await repository.DeleteAddressAsync(addressId);
+
+            // Assert
+            Assert.IsFalse(result); // Assert that the method returns false, indicating deletion did not occur
+        }
+
 
     }
 }
