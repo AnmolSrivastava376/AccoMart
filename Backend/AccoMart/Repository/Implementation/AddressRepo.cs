@@ -129,6 +129,85 @@ namespace Testing.Tests
             Assert.IsFalse(result); // Assert that the method returns false indicating failure
         }
 
+        [TestMethod]
+        public async Task GetAddressesByUserIdAsync_ReturnsAddresses()
+        {
+            // Arrange
+            var userId = "testUserId";
+            var expectedAddresses = new List<AddressModel>
+    {
+        new AddressModel { AddressId = 1, Street = "123 Main St", City = "Example City", PhoneNumber = "123-456-7890", State = "Example State", ZipCode = "12345" },
+        new AddressModel { AddressId = 2, Street = "456 Elm St", City = "Test City", PhoneNumber = "987-654-3210", State = "Test State", ZipCode = "54321" }
+    };
+
+            var mockDataReader = new Mock<SqlDataReader>();
+            mockDataReader.SetupSequence(r => r.ReadAsync())
+                .ReturnsAsync(true)
+                .ReturnsAsync(true)
+                .ReturnsAsync(false);
+
+            mockDataReader.Setup(r => r["AddressId"]).Returns(1);
+            mockDataReader.Setup(r => r["Street"]).Returns("123 Main St");
+            mockDataReader.Setup(r => r["City"]).Returns("Example City");
+            mockDataReader.Setup(r => r["PhoneNumber"]).Returns("123-456-7890");
+            mockDataReader.Setup(r => r["States"]).Returns("Example State");
+            mockDataReader.Setup(r => r["ZipCode"]).Returns("12345");
+
+            mockDataReader.Setup(r => r["AddressId"]).Returns(2);
+            mockDataReader.Setup(r => r["Street"]).Returns("456 Elm St");
+            mockDataReader.Setup(r => r["City"]).Returns("Test City");
+            mockDataReader.Setup(r => r["PhoneNumber"]).Returns("987-654-3210");
+            mockDataReader.Setup(r => r["States"]).Returns("Test State");
+            mockDataReader.Setup(r => r["ZipCode"]).Returns("54321");
+
+            var mockCommand = new Mock<SqlCommand>();
+            mockCommand.Setup(c => c.ExecuteReaderAsync()).ReturnsAsync(mockDataReader.Object);
+            mockCommand.Setup(c => c.Parameters.AddWithValue("@userId", userId)).Verifiable();
+
+            var mockConnection = new Mock<SqlConnection>();
+            mockConnection.Setup(c => c.OpenAsync()).Returns(Task.CompletedTask);
+            mockConnection.Setup(c => c.CreateCommand()).Returns(mockCommand.Object);
+
+            var repository = new AddressRepository(mockConnection.Object);
+
+            // Act
+            var addresses = await repository.GetAddressesByUserIdAsync(userId);
+
+            // Assert
+            CollectionAssert.AreEqual(expectedAddresses, addresses, new AddressModelComparer());
+            mockCommand.Verify(); // Verify that SqlCommand was called as expected
+        }
+
+        [TestMethod]
+        public async Task GetAddressesByUserIdAsync_NoAddresses_ReturnsEmptyList()
+        {
+            // Arrange
+            var userId = "testUserId";
+
+            var mockDataReader = new Mock<SqlDataReader>();
+            mockDataReader.SetupSequence(r => r.ReadAsync())
+                .ReturnsAsync(false); // Simulate no rows returned
+
+            var mockCommand = new Mock<SqlCommand>();
+            mockCommand.Setup(c => c.ExecuteReaderAsync()).ReturnsAsync(mockDataReader.Object);
+            mockCommand.Setup(c => c.Parameters.AddWithValue("@userId", userId)).Verifiable();
+
+            var mockConnection = new Mock<SqlConnection>();
+            mockConnection.Setup(c => c.OpenAsync()).Returns(Task.CompletedTask);
+            mockConnection.Setup(c => c.CreateCommand()).Returns(mockCommand.Object);
+
+            var repository = new AddressRepository(mockConnection.Object);
+
+            // Act
+            var addresses = await repository.GetAddressesByUserIdAsync(userId);
+
+            // Assert
+            Assert.IsNotNull(addresses); // Ensure the returned list is not null
+            Assert.AreEqual(0, addresses.Count); // Ensure the returned list is empty
+            mockCommand.Verify(); // Verify that SqlCommand was called as expected
+        }
+
+
 
     }
 }
