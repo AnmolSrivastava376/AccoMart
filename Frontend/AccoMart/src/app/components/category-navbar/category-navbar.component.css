@@ -4,7 +4,7 @@
     }
 
     to {
-        height: 500px;
+        height: 280px;
     }
 }
 
@@ -14,7 +14,7 @@
 
 @keyframes animate-out {
     from {
-        height: 500px;
+        height: 280px;
     }
 
     to {

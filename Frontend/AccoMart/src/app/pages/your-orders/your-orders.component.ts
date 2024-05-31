@@ -48,22 +48,28 @@ export class YourOrdersComponent implements OnInit {
     if (token) {
       this.decoded = jwtDecode(token);
       this.userId = this.decoded.UserId;
-      this.orderService.fetchAllOrders(this.userId).subscribe((response) => {
-        this.orders = response;
-        this.addProducts();
-        this.addAddresses();
-        this.sortOrders();
+      this.orderService.fetchAllOrders(this.userId).subscribe({
+        next: (response) => {
+          this.orders = response;
+          const productPromises = this.addProducts();
+          const addressPromises = this.addAddresses();
+          Promise.all([...productPromises, ...addressPromises]).then(() => {
+            this.sortOrders();
+            this.isloading = false;
+          });
+        },
       });
     }
   }
 
-  addProducts() {
-    this.orders.forEach((order) => {
-      this.orderService
-        .fetchOrderByOrderId(order.orderId)
-        .subscribe((response) => {
+  addProducts(): Promise<void>[] {
+    return this.orders.map((order) => {
+      return new Promise<void>((resolve) => {
+        this.orderService.fetchOrderByOrderId(order.orderId).subscribe((response) => {
           order.itemArray = this.fetchProductsByCart(response);
+          resolve();
         });
+      });
     });
   }
 
@@ -79,11 +85,10 @@ export class YourOrdersComponent implements OnInit {
     return products;
   }
 
-  addAddresses() {
-    this.orders.forEach((order) => {
-      this.addressService
-        .getAddressByAddressId(order.addressId)
-        .subscribe((response: any) => {
+  addAddresses(): Promise<void>[] {
+    return this.orders.map((order) => {
+      return new Promise<void>((resolve) => {
+        this.addressService.getAddressByAddressId(order.addressId).subscribe((response: any) => {
           order.address =
             response.response.street +
             ', ' +
@@ -92,7 +97,9 @@ export class YourOrdersComponent implements OnInit {
             response.response.state +
             ' - ' +
             response.response.zipCode;
+          resolve();
         });
+      });
     });
   }
 
@@ -118,7 +125,9 @@ export class YourOrdersComponent implements OnInit {
             this.historyOrders.push(order);
           }
         },
-        complete: () => (this.isloading = false),
+        complete: () => {
+          this.isloading = false;
+        },
       });
     });
   }
