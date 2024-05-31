@@ -104,38 +104,32 @@ namespace Data.Repository.Implementation
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();
-                string getAllOrdersQuery = "SELECT o.OrderId, o.ProductId, o.Quantity, p.ProductName " +
-                                           "FROM OrderHistory o " +
-                                           "INNER JOIN Product p ON o.ProductId = p.ProductId";
-                using (SqlCommand command = new SqlCommand(getAllOrdersQuery, connection))
+                string getTop10OrdersQuery = "SELECT TOP 10 p.ProductId, p.ProductName, SUM(o.Quantity) AS TotalQuantity " +
+                                             "FROM OrderHistory o " +
+                                             "INNER JOIN Product p ON o.ProductId = p.ProductId " +
+                                             "GROUP BY p.ProductId, p.ProductName " +
+                                             "ORDER BY TotalQuantity DESC";
+                using (SqlCommand command = new SqlCommand(getTop10OrdersQuery, connection))
                 {
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
                         {
-                            int quantity = Convert.ToInt32(reader["Quantity"]);
+                            int quantity = Convert.ToInt32(reader["TotalQuantity"]);
                             int productId = Convert.ToInt32(reader["ProductId"]);
                             string productName = Convert.ToString(reader["ProductName"]);
 
-                            ProductItem obj = productItems.FirstOrDefault(x => x.ProductName == productName);
-                            if (obj != null)
+                            productItems.Add(new ProductItem
                             {
-                                obj.Quantity += quantity;
-                                obj.ProductId = productId;
-                            }
-                            else
-                            {
-                                productItems.Add(new ProductItem
-                                {
-                                    Quantity = quantity,
-                                    ProductName = productName,
-                                    ProductId = productId,
-                                });
-                            }
+                                Quantity = quantity,
+                                ProductName = productName,
+                                ProductId = productId
+                            });
                         }
                     }
                 }
             }
+
             return productItems;
         }
     }

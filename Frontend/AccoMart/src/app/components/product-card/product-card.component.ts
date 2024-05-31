@@ -53,9 +53,7 @@ export class ProductCardComponent implements OnInit,OnChanges {
   }
   ngOnInit() {
     this.chartService.fetchProductWiseQuantity().subscribe((data) => {
-      this.orderedProducts = data
-        .sort((a, b) => b.quantity - a.quantity)
-        .slice(0, 7);
+    this.orderedProducts = data.slice(0, 7);
       for (let i = this.orderedProducts.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [this.orderedProducts[i], this.orderedProducts[j]] = [

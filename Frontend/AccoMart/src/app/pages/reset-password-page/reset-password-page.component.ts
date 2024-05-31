@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import * as CryptoJS from 'crypto-js';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-reset-password-page',
@@ -31,10 +32,10 @@ export class ResetPasswordPageComponent implements OnInit {
   key: string = 'test123'; // this will be in .env
 
   constructor(
-    private formBuilder: FormBuilder,
     private httpService: HttpService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastr:ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -65,9 +66,9 @@ export class ResetPasswordPageComponent implements OnInit {
       return;
     }
 
-    if(passwordd.length<8)
+    if(passwordd.length<6)
     {
-        this.resetError = 'Password must be 8 characters long';
+        this.resetError = 'Password must be 6 characters long';
         return;
     }
 
@@ -92,6 +93,7 @@ export class ResetPasswordPageComponent implements OnInit {
       .subscribe(
         (response) => {
           this.resetResponse = 'success';
+          this.toastr.success("Password reset successful")
           this.router.navigate(['/home/auth']);
         },
         (error) => {
