@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Login2FAComponent } from '../../components/login-2-fa/login-2-fa.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-auth-otp',
@@ -35,7 +36,7 @@ export class AuthOtpComponent {
   spinLoader: boolean;
   loginErrorMessage: any;
   sentOtp: boolean = true;
-  constructor(private router: Router, private tokenService: TokenService) {}
+  constructor(private router: Router, private tokenService: TokenService, private toastr: ToastrService) {}
   otpForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
     otp: ['', [Validators.required, Validators.minLength(6)]],
@@ -82,14 +83,14 @@ export class AuthOtpComponent {
           this.spinLoader = false;
           this.loginErrorMessage = result.message;
           console.error(result.message);
-          alert('Unsuccessfull login');
+          this.toastr.error('Unsuccessfull login');
         }
       },
       error: (error) => {
         this.spinLoader = false;
         this.loginErrorMessage = error.error.message;
         console.error(error);
-        alert('Unsuccessfull login');
+        this.toastr.error('Unsuccessfull login');
       }
     });
   }

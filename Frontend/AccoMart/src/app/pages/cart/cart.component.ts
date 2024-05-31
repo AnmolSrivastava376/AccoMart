@@ -180,7 +180,7 @@ export class CartComponent {
 
   placeOrder() {
     if (this.cartOrder.addressId === 0) {
-      alert('You need to provide an address');
+      this.toastr.info('You need to provide an address');
     } else {
       if (!this.spinLoader) {
         this.spinLoader = true;

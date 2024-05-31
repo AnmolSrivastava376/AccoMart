@@ -8,6 +8,7 @@ import { LoaderComponent } from '../loader/loader.component';
 import { CartService } from '../../services/cart.services';
 import { productService } from '../../services/product.services';
 import { BuyNowService } from '../../services/buy-now.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-detail-card',
@@ -25,7 +26,8 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
     private route: ActivatedRoute,
     private cartService: CartService,
     private productService: productService,
-    private buyNowService: BuyNowService
+    private buyNowService: BuyNowService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +75,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
       });
     }
     else{
-      alert("Product out of stock")
+      this.toastr.info("Product out of stock")
     }
   }
 }

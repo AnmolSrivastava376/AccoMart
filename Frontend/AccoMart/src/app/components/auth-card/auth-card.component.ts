@@ -10,10 +10,7 @@ import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
 import { TokenService } from '../../services/token.service';
 import { LoaderComponent } from '../loader/loader.component';
-import {ToastrService } from 'ngx-toastr';
-import * as CryptoJS from 'crypto-js';
-
-
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-auth-card',
   standalone: true,
@@ -26,7 +23,6 @@ import * as CryptoJS from 'crypto-js';
     Login2FAComponent,
     HttpClientModule,
     LoaderComponent,
-    
   ],
   providers: [HttpService],
   templateUrl: './auth-card.component.html',
@@ -36,21 +32,18 @@ export class AuthCardComponent {
   builder = inject(FormBuilder);
   httpService = inject(HttpService);
   isLogin: boolean = true;
-  loginSpinLoader: boolean = false;
+  spinLoader: boolean = false;
   errorMessage: any;
   loginErrorMessage: any;
   successMessage: any;
   registerSpinLoader: boolean;
   inputType = 'password';
-  key:string ='test123';// this will be in .env 
-
-  constructor(private router: Router, private tokenService: TokenService,private toastr:ToastrService) {}
+  constructor(private router: Router, private tokenService: TokenService, private toastr: ToastrService) {}
 
   loginForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
-  
   registerForm = this.builder.group({
     username: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -60,16 +53,11 @@ export class AuthCardComponent {
         Validators.required,
         Validators.minLength(6),
         Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./])[A-Za-z\d!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./]{6,}$/
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/
         ),
       ],
     ],
   });
-
-  encryptPassword(password: string, key: string): string {
-    const encryptedPassword = CryptoJS.HmacSHA256(password, key).toString()+"PW@";
-    return encryptedPassword;
-  }
 
   toogleInputType() {
     if (this.inputType === 'password') {
@@ -80,71 +68,55 @@ export class AuthCardComponent {
   }
 
   onRegister() {
-
-
+    this.registerSpinLoader = true;
     if (this.registerForm.valid) {
-      this.registerSpinLoader = true;
-
       const username: string = String(this.registerForm.value.username);
       const email: string = String(this.registerForm.value.email);
       const password: string = String(this.registerForm.value.password);
 
-      const encryptedPassword = this.encryptPassword(password,this.key);
-
-      this.httpService.register(username, email, encryptedPassword).subscribe({
+      this.httpService.register(username, email, password).subscribe({
         next: (result) => {
           if (result.status === 'Success') {
-            alert('Registraion Successful');
+            this.toastr.success('Registraion Successful');
             this.registerSpinLoader=false;
             this.successMessage = result.message;
-            this.registerSpinLoader = false;
-            this.toastr.success("Registration successful");
             this.isLogin = true;
-
           } else {
             this.registerSpinLoader=false;
-            alert('Registration Failed')
+            this.toastr.error('Registration Failed')
             console.error('Registration failed:', result.message);
-            this.toastr.error("Registration failed");
-            this.loginSpinLoader = false;
-            this.registerSpinLoader = false;
             this.errorMessage = result.message;
           }
         },
         error: (error) => {
           this.registerSpinLoader=false;
-          alert('Registration Failed');
+          this.toastr.error('Registration Failed');
           console.error(error.error.message);
           this.errorMessage = error.error.message;
-          this.registerSpinLoader = false;
-          this.toastr.error("Registration failed");
         },
-        complete: ()=>{
-          this.registerSpinLoader = false;
-        }
       });
     }
     else {
       this.registerSpinLoader = false;
       if (this.registerForm.controls['email'].invalid) {
-        alert('Unsuccessful login');
+        this.toastr.warning('Email Invalid');
       }
       if (this.registerForm.controls['email'].hasError('required')) {
-        alert('Email is required.');
+        this.toastr.info('Email is required.');
       } else if (this.registerForm.controls['email'].hasError('email')) {
-        alert('Email is invalid.');
+        this.toastr.warning('Email is invalid.');
       }
       if (this.registerForm.controls['username'].hasError('required')) {
-        alert('Username is required.');
+        this.toastr.info('Username is required.');
       }
       if (this.registerForm.controls['password'].hasError('required')) {
-        alert('Password is required.');
+        this.toastr.info('Password is required.');
       }
       if (this.registerForm.controls['password'].hasError('minlength')) {
-        alert('Password must be at least 6 characters long.');
+        this.toastr.info('Password must be at least 6 characters long.');
       }
       if (this.registerForm.controls['password'].hasError('pattern')) {
-        alert(
+        this.toastr.info(
           'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
         );
       }
@@ -152,18 +124,11 @@ export class AuthCardComponent {
   }
 
   onLogin() {
+    this.spinLoader = true;
     const email: string = String(this.loginForm.value.email);
     const password: string = String(this.loginForm.value.password);
-    
-    if(email=='' || password=='')
-      {
-        this.toastr.error("Please enter all fields")
-        return;
-      }
-      this.loginSpinLoader = true;
 
-    const encryptedPassword = this.encryptPassword(password,this.key);
-    this.httpService.login(email, encryptedPassword).subscribe({
+    this.httpService.login(email, password).subscribe({
       next: (result: any) => {
         if (result.isSuccess) {
           this.tokenService.setToken(result.response.accessToken.token);
@@ -175,26 +140,21 @@ export class AuthCardComponent {
           this.tokenService.setExpiryRefresh(
             result.response.refreshToken.expiryTokenDate
           );
-          this.successMessage = result.message;
-          this.toastr.success("Login success")
 
+          this.successMessage = result.message;
           this.router.navigate(['/home']);
         } else {
-          this.loginSpinLoader = false;
+          this.spinLoader = false;
           this.loginErrorMessage = result.message;
           console.error(result.message);
-          this.toastr.error("Unsuccessful Login")
-          this.loginSpinLoader = false;
-
+          this.toastr.error('Unsuccessfull login');
         }
       },
       error: (error) => {
-        this.loginSpinLoader = false;
+        this.spinLoader = false;
         this.loginErrorMessage = error.message;
         console.error(error);
-        this.toastr.error("Unsuccessful Login");
-        this.loginSpinLoader = false;
-
+        this.toastr.error('Unsuccessfull login');
       },
     });
   }

@@ -5,6 +5,7 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { searchService } from '../../services/search.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-searchbar',
@@ -20,7 +21,7 @@ export class SearchbarComponent {
   @Output() searchCompleted: EventEmitter<Product[]> = new EventEmitter<
     Product[]
   >();
-  constructor(private searchservice: searchService) {}
+  constructor(private searchservice: searchService, private toastr: ToastrService) {}
 
   onSearch(event: Event) {
     event.preventDefault();
@@ -35,7 +36,7 @@ export class SearchbarComponent {
         },
       });
     } else {
-      alert('Please type something in the searchbox');
+      this.toastr.info('Please type something in the searchbox');
     }
   }
 }

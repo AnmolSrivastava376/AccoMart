@@ -5,6 +5,7 @@ import { productService } from '../../services/product.services';
 import { LoaderComponent } from '../loader/loader.component';
 import { BuyNowService } from '../../services/buy-now.service';
 import { cartItem } from '../../interfaces/cartItem';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-buy-now-product-card',
@@ -22,7 +23,8 @@ export class BuyNowProductCardComponent implements OnInit {
     new EventEmitter<cartItem>();
   constructor(
     private productService: productService,
-    private buyNowService: BuyNowService
+    private buyNowService: BuyNowService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +42,7 @@ export class BuyNowProductCardComponent implements OnInit {
       this.outputCartItem.emit(this.productItem);
     }
     else{
-      alert("Product Quantity out of stock")
+      this.toastr.info("Product Quantity out of stock")
     }
   }
 

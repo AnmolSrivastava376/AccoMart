@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { cartItem } from '../../interfaces/cartItem';
 import { CartService } from '../../services/cart.services';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-scroll-display-card',
@@ -21,7 +22,7 @@ export class ProductScrollDisplayCardComponent {
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() fetchNextPageCategoryWise: EventEmitter<number> =
     new EventEmitter<number>();
-  constructor(private cartService: CartService) {
+  constructor(private cartService: CartService, private toastr : ToastrService) {
     this.cart = this.cartService.fetchCart();
   }
 
@@ -56,7 +57,7 @@ export class ProductScrollDisplayCardComponent {
       this.cartService.incrementCountByProductId(productId);
     }
     else{
-      alert("Maximum stock limit reached for this item")
+      this.toastr.info("Maximum stock limit reached for this item");
     }
   }
 

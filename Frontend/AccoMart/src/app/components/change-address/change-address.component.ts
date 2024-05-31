@@ -11,6 +11,7 @@ import { Address } from '../../interfaces/address';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addressService } from '../../services/address.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-change-address',
@@ -37,7 +38,7 @@ export class ChangeAddressComponent implements OnInit {
   selectAddress: Address;
   @Output() addressAdded = new EventEmitter<Address>();
   @Output() closeWindow = new EventEmitter<boolean>();
-  constructor(private router: Router, private addressService: addressService) {}
+  constructor(private router: Router, private addressService: addressService, private toastr: ToastrService) {}
 
   ngOnInit(): void {}
 
@@ -59,16 +60,16 @@ export class ChangeAddressComponent implements OnInit {
             else this.address.push(this.newAddress);
             this.addressAdded.emit(this.newAddress);
             this.showAddressform = false;
-            alert('Successfully Added');
+            this.toastr.success('Successfully Added');
             this.refreshAddresss();
           });
       } else {
-        alert(
+        this.toastr.error(
           'Please enter a valid 6-digit ZIP code and 10-digit phone number.'
         );
       }
     } else {
-      alert('Please fill out all address fields.');
+      this.toastr.error('Please fill out all address fields.');
     }
   }
 
@@ -97,7 +98,7 @@ export class ChangeAddressComponent implements OnInit {
       this.addressAdded.emit(this.selectAddress);
       this.closeWindow.emit(true);
     } else {
-      alert('Please select an address.');
+      this.toastr.info('Please select an address.');
     }
   }
 

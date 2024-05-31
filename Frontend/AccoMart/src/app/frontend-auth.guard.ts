@@ -7,12 +7,13 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from './services/Auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FrontendAuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
@@ -20,7 +21,7 @@ export class FrontendAuthGuard implements CanActivate {
   ): Observable<boolean> | Promise<boolean> | boolean {
     if (!this.authService.userLoggedIn()) {
       this.router.navigate(['/unauthorized']);
-      alert('Please Login');
+      this.toastr.warning('Please Login');
       return false;
     }
     return true;

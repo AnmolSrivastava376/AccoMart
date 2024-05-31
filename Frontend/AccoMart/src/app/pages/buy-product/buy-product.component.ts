@@ -24,6 +24,7 @@ import { BuyNowService } from '../../services/buy-now.service';
 import { BuyNowProductCardComponent } from '../../components/buy-now-product-card/buy-now-product-card.component';
 import { ProductOrder } from '../../interfaces/productOrder';
 
+
 @Component({
   selector: 'app-buy-product',
   standalone: true,
@@ -178,7 +179,7 @@ export class BuyProductComponent {
 
   placeOrderByProduct() {
     if (this.productOrder.addressId === 0) {
-      alert('You need to provide an address');
+      this.toastr.info('You need to provide an address');
     } else {
       if (!this.isLoading) {
         this.isLoading = true;
