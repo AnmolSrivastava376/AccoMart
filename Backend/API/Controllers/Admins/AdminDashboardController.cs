@@ -55,7 +55,7 @@ namespace API.Controllers.Admins
         }
 
 
-    [HttpGet("Product/{id}")]
+        [HttpGet("Product/{id}")]
          public async Task<Product> GetProductById(int id)
         {
 
