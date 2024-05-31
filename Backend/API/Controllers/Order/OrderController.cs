@@ -405,6 +405,12 @@ namespace API.Controllers.Order
         public async Task<StripeModel> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
         {
 
+            if (!IsQuantityAvailable(productId, quantity))
+            {
+                StripeModel stripeModel = new StripeModel();
+                stripeModel.StripeUrl = "Insufficient stock";
+            }
+
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
@@ -452,7 +458,6 @@ namespace API.Controllers.Order
                             options.LineItems.Add(sessionListItem);
                         }
 
-
                     }
 
                     decimal deliveryPrice = 0.00M;
@@ -488,7 +493,6 @@ namespace API.Controllers.Order
                     }
 
                     decimal discount = (totalProductPrice * 5) / 100;
-
                     var sessionListItem2 = new SessionLineItemOptions
                     {
                         PriceData = new SessionLineItemPriceDataOptions
@@ -538,6 +542,8 @@ namespace API.Controllers.Order
 
             if(url!= null)
             {
+                await UpdateStock(productId, quantity);
+
                 string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
 
                 var connection = new SqlConnection(_connectionString);
@@ -552,10 +558,96 @@ namespace API.Controllers.Order
 
                 };
             }
+
             return url;
 
         }
 
+
+        private async Task UpdateStock(int productId, int purchasedQuantity)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                string updateStockQuery = @"UPDATE Product SET Stock = Stock - @PurchasedQuantity WHERE ProductId = @ProductId";
+
+                using (var updateStockCommand = new SqlCommand(updateStockQuery, connection))
+                {
+                    updateStockCommand.Parameters.AddWithValue("@ProductId", productId);
+                    updateStockCommand.Parameters.AddWithValue("@PurchasedQuantity", purchasedQuantity);
+                    await updateStockCommand.ExecuteNonQueryAsync();
+                }
+            }
+        }
+
+
+        private bool IsQuantityAvailable(int productId, int requestedQuantity)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                // Retrieve the current stock for the product
+                string getStockQuery = @"SELECT Stock FROM Product WHERE ProductId = @ProductId";
+
+                using (var getStockCommand = new SqlCommand(getStockQuery, connection))
+                {
+                    getStockCommand.Parameters.AddWithValue("@ProductId", productId);
+                    int currentStock = (int)getStockCommand.ExecuteScalar();
+
+                    if (requestedQuantity > currentStock)
+                    {
+                        // Insufficient stock
+                        return false;
+                    }
+                    else
+                    {
+                        // Sufficient stock
+                        return true;
+                    }
+                }
+            }
+        }
+
+        [HttpPost("Product/Stock/productId={productId}")]
+        public async Task<int> GetStockAvailable(int productId)
+        {
+            return await StockAvailable(productId);
+        }
+
+        private async Task<int> StockAvailable(int productId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    await connection.OpenAsync();
+
+                    string getStockQuery = @"SELECT Stock FROM Product WHERE ProductId = @ProductId";
+
+                    using (var getStockCommand = new SqlCommand(getStockQuery, connection))
+                    {
+                        getStockCommand.Parameters.AddWithValue("@ProductId", productId);
+                        object result = await getStockCommand.ExecuteScalarAsync();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            return Convert.ToInt32(result);
+                        }
+                        else
+                        {
+                            return 0; 
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while fetching stock for product ID {productId}: {ex.Message}");
+                return 0;
+            }
+        }
 
         private string GetProductName(int productId)
         {
