@@ -50,6 +50,7 @@ export class AuthCardComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
+  
   registerForm = this.builder.group({
     username: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -59,7 +60,7 @@ export class AuthCardComponent {
         Validators.required,
         Validators.minLength(6),
         Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./])[A-Za-z\d!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./]{6,}$/
         ),
       ],
     ],
