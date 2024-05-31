@@ -76,6 +76,7 @@ export class ResetPasswordPageComponent implements OnInit {
       this.resetError = 'Password must contain at least one special character';
       return;
     }
+    
 
     this.spinLoader = true;
     const encryptedPassword = this.encryptPassword(passwordd, this.key).toString();

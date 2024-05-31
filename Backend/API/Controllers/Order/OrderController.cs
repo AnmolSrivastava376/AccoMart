@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Service.Services.Interface;
 using Stripe.Checkout;
-
+using StackExchange.Redis;
 
 namespace API.Controllers.Order
 {
@@ -14,6 +14,7 @@ namespace API.Controllers.Order
     {
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
+        private readonly StackExchange.Redis.IDatabase _database;
         private readonly ICartService _cartService;
         private readonly string _domain = "http://localhost:4200/";
 
@@ -144,6 +145,8 @@ namespace API.Controllers.Order
                 Mode = "payment",
                 CustomerEmail = "sdfgh@gmail.com",              
             };
+            StripeModel url = new StripeModel();
+            
 
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -170,22 +173,28 @@ namespace API.Controllers.Order
 
                         foreach (Tuple<int, int> CartItem in CartItems)
                         {
-                            string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
+                            if (!IsQuantityAvailable(CartItem.Item1, CartItem.Item2))
+                            {
+                                url.StripeUrl = "Product out of stock";
+                                return url;
+                            }
+                        }
 
+
+                        foreach (Tuple<int, int> CartItem in CartItems)
+                        {
+                            string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
                             using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery, connection))
                             {
                                 insertHistoryCommand.Parameters.AddWithValue("@OrderId", orderId);
                                 insertHistoryCommand.Parameters.AddWithValue("@ProductId", CartItem.Item1);
                                 insertHistoryCommand.Parameters.AddWithValue("@Quantity", CartItem.Item2);
                                 await insertHistoryCommand.ExecuteNonQueryAsync();
-
                             }
-
+                            UpdateStock(CartItem.Item1,CartItem.Item2);
                         }
 
                         _cartService.DeleteCartAsync(cartId);
-
-
                         foreach (Tuple<int, int> CartItem in CartItems)
                         {
                             string getProductQuery = @"SELECT * FROM Product WHERE ProductId = @ProductId";
@@ -215,9 +224,6 @@ namespace API.Controllers.Order
                                             Quantity = CartItem.Item2,
                                         };
                                         options.LineItems.Add(sessionListItem);
-
-
-
                                     }
                                 }
                             }
@@ -300,7 +306,6 @@ namespace API.Controllers.Order
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
-            StripeModel url = new StripeModel();
             url.StripeUrl = session.Url;
             return url;
         }
@@ -409,6 +414,7 @@ namespace API.Controllers.Order
             {
                 StripeModel stripeModel = new StripeModel();
                 stripeModel.StripeUrl = "Insufficient stock";
+                return stripeModel;
             }
 
             var options = new SessionCreateOptions
@@ -532,7 +538,6 @@ namespace API.Controllers.Order
 
             }
 
-           
             var service = new SessionService();
             Session session = service.Create(options);
             HttpContext.Session.SetString("Session", session.Id);
@@ -560,7 +565,6 @@ namespace API.Controllers.Order
             }
 
             return url;
-
         }
 
 
@@ -588,7 +592,6 @@ namespace API.Controllers.Order
             {
                 connection.Open();
 
-                // Retrieve the current stock for the product
                 string getStockQuery = @"SELECT Stock FROM Product WHERE ProductId = @ProductId";
 
                 using (var getStockCommand = new SqlCommand(getStockQuery, connection))
@@ -598,12 +601,10 @@ namespace API.Controllers.Order
 
                     if (requestedQuantity > currentStock)
                     {
-                        // Insufficient stock
                         return false;
                     }
                     else
                     {
-                        // Sufficient stock
                         return true;
                     }
                 }
