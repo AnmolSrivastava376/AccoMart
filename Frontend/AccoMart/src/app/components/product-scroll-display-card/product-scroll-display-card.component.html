@@ -3,9 +3,8 @@
         <div
             class="w-full h-fit items-center relative flex gap-[10px] overflow-hidden">
             <div class *ngFor="let product of products">
-                <div
-                    class='w-[240px] transition-all shadow-lg duration-500 min-h-[380px] h-fit border border-gray-300 bg-gray-100 bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between'
-                    [style.transform]="'translateX(' + (i * -250) + 'px)'">
+                <div class='w-[240px] transition-all relative shadow-lg duration-500 min-h-[380px] h-fit border border-gray-300 bg-gray-100 overflow-hidden bg-cover bg-center bg-no-repeat rounded-[10px] p-[10px] flex flex-col gap-[10px] justify-between' [style.transform]="'translateX(' + (i * -250) + 'px)'">
+                    <div class="w-full h-[25px] text-center bg-yellow-400 border absolute top-[5%] left-[-40%] rotate-[-45deg] font-bold text-gray-800" *ngIf="product.stock<5 && product.stock>0">{{product.stock}} left</div>
                     <div class="flex flex-col gap-[10px]">
                         <div
                             class="w-[220px] aspect-[1.1] bg-cover bg-center rounded-[4px] cursor-pointer"
@@ -26,17 +25,18 @@
                     <div class="w-full h-fit flex gap-[4px]">
                         <div
                             class="w-full h-[40px] py-[4px] px-[8px] rounded-[4px] cursor-pointer flex parent items-center justify-center"
-                            (click)="addToCart(product.productId)">
+                            (click)="addToCart(product.productId, product.stock)">
                             <div class="font-bold text-white"
-                                *ngIf="!isPresentInCart(product.productId)">ADD
+                                *ngIf="!isPresentInCart(product.productId) && product.stock>0">ADD
                                 TO CART
                             </div>
+                            <div class="font-bold text-white" *ngIf="!isPresentInCart(product.productId) && product.stock===0">OUT OF STOCK</div>
                             <div
                                 class="w-full h-full flex items-center font-bold text-white"
                                 *ngIf="isPresentInCart(product.productId)">
                                 <div
                                     class="w-full h-full flex-[1] text-[32px] flex items-center justify-center"
-                                    (click)="incrementCountByProductId(product.productId)">+</div>
+                                    (click)="incrementCountByProductId(product.productId, product.stock)">+</div>
                                 <div
                                     class="w-full h-full flex-[2] flex text-[20px] items-center justify-center">
                                     {{findQuantityByProductId(product.productId)}}</div>
