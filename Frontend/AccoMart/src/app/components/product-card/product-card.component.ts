@@ -11,6 +11,7 @@ import { productService } from '../../services/product.services';
 import { ChartProductItem } from '../../interfaces/chartProductItem';
 import { MoreProducts } from '../../interfaces/moreProducts';
 import { Category } from '../../interfaces/category';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-product-card',
@@ -21,12 +22,15 @@ import { Category } from '../../interfaces/category';
     ScrollDisplayCardComponent,
     ProductScrollDisplayCardComponent,
     HttpClientModule,
+    LoaderComponent
   ],
   providers: [ChartService, productService],
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css',
 })
 export class ProductCardComponent implements OnInit,OnChanges {
+  isLoading: boolean = true;
+  isBrowseMoreLoading: boolean = true;
   trendingProducts: Product[] = [];
   orderedProducts: ChartProductItem[];
   moreProducts: MoreProducts[]=[];
@@ -42,6 +46,9 @@ export class ProductCardComponent implements OnInit,OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
       if(changes['categories']){
         this.fetchBrowseMoreProducts();
+      }
+      if(changes['filteredProducts']){
+        this.isLoading = this.filteredProducts?.length?false:true;
       }
   }
   ngOnInit() {
@@ -70,6 +77,9 @@ export class ProductCardComponent implements OnInit,OnChanges {
       this.productService.fetchProductByPageNo(category.categoryId, 1).subscribe({
         next: (response)=>{
           this.moreProducts.push({categoryId: category.categoryId, items: response, pageNo: 1})
+        },
+        complete: ()=>{
+          this.isBrowseMoreLoading = false
         }
       })
     })
