@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, Input, OnInit } from '@angular/core';
+import { AfterContentInit, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../navbar/navbar.component';
@@ -16,7 +16,7 @@ import { BuyNowService } from '../../services/buy-now.service';
   templateUrl: './product-detail-card.component.html',
   styleUrl: './product-detail-card.component.css',
 })
-export class ProductDetailCardComponent implements OnInit, AfterContentInit {
+export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnChanges {
   @Input() product?: Product;
   productId: number;
   isLoading: boolean = false;
@@ -33,6 +33,13 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit {
       this.productId = +params['productId'];
     });
   }
+  ngOnChanges(changes: SimpleChanges): void {
+      if(changes['product']){
+        if(this.product && this.product.stock===0){
+          this.displayText = 'OUT OF STOCK'
+        }
+      }
+  }
 
   ngAfterContentInit(): void {
     const items = JSON.parse(localStorage.getItem('cartItems') || '');
@@ -47,12 +54,15 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit {
     if (this.displayText === 'VIEW IN CART') {
       window.location.href = 'home/cart';
     }
-    this.cartService.addToCart(this.productId);
-    this.displayText = 'VIEW IN CART';
+    if (this.product && this.product.stock > 0) {
+      this.cartService.addToCart(this.productId);
+      this.displayText = 'VIEW IN CART';
+    }
   }
 
   handleBuyNowClick() {
-    this.productService
+    if(this.product && this.product.stock>0){
+      this.productService
       .fetchProductById(this.productId)
       .subscribe((response: Product) => {
         this.buyNowService.item = {
@@ -61,5 +71,9 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit {
         };
         window.location.href = `/home/buy-product/${this.productId}`;
       });
+    }
+    else{
+      alert("Product out of stock")
+    }
   }
 }

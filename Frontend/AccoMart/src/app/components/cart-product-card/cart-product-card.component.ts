@@ -41,8 +41,13 @@ export class CartProductCardComponent {
       });
   }
 
-  incrementProductCount(productId: number) {
-    this.cartService.incrementCountByProductId(productId);
+  incrementProductCount(productId: number, stock: number) {
+    if (stock > this.cartService.findQuantityByProductId(productId)) {
+      this.cartService.incrementCountByProductId(productId);
+    }
+    else{
+      alert("Maximum stock limit reached for this item")
+    }
   }
 
   decrementProductCount(productId: number) {
