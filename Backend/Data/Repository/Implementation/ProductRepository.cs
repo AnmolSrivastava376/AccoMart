@@ -315,6 +315,7 @@ namespace Data.Repository.Implementation
                     }
                     reader.Close();
                 }
+
                 await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
 
                 return product;
@@ -461,6 +462,7 @@ namespace Data.Repository.Implementation
                 product.ProductImageUrl = productDto.ProductImageUrl;
                 product.ProductPrice = productDto.ProductPrice;
                 product.Stock = productDto.Stock;
+                product.CategoryId = productDto.CategoryId;
             }
             string cacheKey = $"Product_{product.ProductId}";
             await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));

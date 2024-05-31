@@ -18,19 +18,23 @@ namespace API.Controllers.Order
         private readonly ICartService _cartService;
         private readonly string _domain = "http://localhost:4200/";
 
-        public OrderController(IConfiguration configuration, ICartService cartService)
+        public OrderController(IConfiguration configuration, ICartService cartService, IConnectionMultiplexer redis)
         {
             _configuration = configuration;
             _cartService = cartService;
-            _connectionString = _configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
+            _database = redis.GetDatabase();
+
         }
+
+
+
         [HttpGet("FetchAllOrders/{userId}")]
         public async Task<IActionResult> FetchAllOrders(string userId)
         {
             List<Orders> orders = new List<Orders>();
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
                     string getAllOrdersQuery = "SELECT * FROM Orders WHERE UserId = @UserId ORDER BY OrderId DESC";
@@ -73,7 +77,7 @@ namespace API.Controllers.Order
             try
             {
                 decimal productAmount = 0.00M;
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();               
                     string getProductAmountQuery = @"
@@ -148,7 +152,7 @@ namespace API.Controllers.Order
             StripeModel url = new StripeModel();
             
 
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
                 string getCartItemQuery = @"SELECT * FROM CartItem WHERE CartId = @CartId";
@@ -319,7 +323,7 @@ namespace API.Controllers.Order
             {
                 int orderId = 0;
                 decimal productPrice = 0.00M;
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
 
@@ -360,9 +364,6 @@ namespace API.Controllers.Order
                     }
                 }
 
-
-
-
                 return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId,productPrice,orderId, productOrderDto.quantity);
 
          
@@ -379,7 +380,7 @@ namespace API.Controllers.Order
             try
             {
                 List<OrderedItem> orderedItems = new List<OrderedItem>();
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
                     string sqlQuery = "SELECT * FROM OrderHistory WHERE OrderId = @OrderId";
@@ -427,7 +428,7 @@ namespace API.Controllers.Order
 
             };
 
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
 
@@ -551,7 +552,7 @@ namespace API.Controllers.Order
 
                 string insertOrderHistoryQuery = "INSERT INTO OrderHistory (OrderId, ProductId, Quantity) VALUES (@OrderId, @ProductId, @Quantity)";
 
-                var connection = new SqlConnection(_connectionString);
+                var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]);
                 await connection.OpenAsync();
 
                 using (var insertHistoryCommand = new SqlCommand(insertOrderHistoryQuery, connection))
@@ -560,9 +561,10 @@ namespace API.Controllers.Order
                     insertHistoryCommand.Parameters.AddWithValue("@ProductId", productId);
                     insertHistoryCommand.Parameters.AddWithValue("@Quantity", quantity);
                     await insertHistoryCommand.ExecuteNonQueryAsync();
-
                 };
             }
+
+       
 
             return url;
         }
@@ -570,7 +572,7 @@ namespace API.Controllers.Order
 
         private async Task UpdateStock(int productId, int purchasedQuantity)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
 
@@ -583,12 +585,19 @@ namespace API.Controllers.Order
                     await updateStockCommand.ExecuteNonQueryAsync();
                 }
             }
+
+            string cacheKey = $"Product_{productId}";
+            string cachedProduct = await _database.StringGetAsync(cacheKey);
+            if (cachedProduct != null) {
+                await _database.KeyDeleteAsync(cacheKey);
+
+            }
         }
 
 
-        private bool IsQuantityAvailable(int productId, int requestedQuantity)
+        private bool IsQuantityAvailable(int productId, int requestedQuantity)  
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 connection.Open();
 
@@ -621,7 +630,7 @@ namespace API.Controllers.Order
         {
             try
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
 
@@ -652,7 +661,7 @@ namespace API.Controllers.Order
 
         private string GetProductName(int productId)
         {
-            using (var connection = new SqlConnection(_connectionString))
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 connection.Open();
                 string getProductQuery = "SELECT ProductName FROM Product WHERE Id = @ProductId";
