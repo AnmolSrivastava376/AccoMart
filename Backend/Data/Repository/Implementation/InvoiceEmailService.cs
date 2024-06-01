@@ -1,43 +1,25 @@
 ﻿using MimeKit;
 using Service.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using MailKit.Net.Smtp;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
 using MailKit.Security;
-using Service.Services.Interface;
+using Data.Repository.Interfaces;
 
-namespace Service.Services.Implementation
+namespace Data.Repository.Implementation
 {
-    public class EmailService : IEmailService
+
+    public class InvoiceEmailService : IInvoiceEmailService
     {
         private readonly EmailConfiguration _emailConfig;
-        public EmailService(EmailConfiguration emailConfig)
+        public InvoiceEmailService(EmailConfiguration emailConfig)
         {
             _emailConfig = emailConfig;
         }
-        public void SendEmail(Message message)
+        
+        public  void SendEmailInvoice(Message message)
         {
             var emailMessage = CreateEmailMessage(message);
-            Send(emailMessage);
-        }
-        public void SendEmailInvoice(Message message)
-        {
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Khushboo Gupta", "guptakhushboo81537@gmail.com"));
-            foreach (var to in message.To)
-            {
-                emailMessage.To.Add(to);
-            }
-            emailMessage.Subject = message.Subject;
-
             var builder = new BodyBuilder();
             builder.HtmlBody = message.Content;
-
             foreach (var attachment in message.Attachments)
             {
                 builder.Attachments.Add(attachment.fileName, attachment.content, ContentType.Parse(attachment.contentType));
@@ -45,25 +27,11 @@ namespace Service.Services.Implementation
 
             emailMessage.Body = builder.ToMessageBody();
 
-            using (var client = new SmtpClient())
-            {
-                try
-                {
-                    client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                    client.Connect(_emailConfig.SmtpServer, _emailConfig.Port, SecureSocketOptions.Auto);
-                    client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
-                    client.Send(emailMessage);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error sending email: {ex.Message}");
-                }
-                finally
-                {
-                    client.Disconnect(true);
-                }
-            }
+            Send(emailMessage);
+
         }
+
+
         public MimeMessage CreateEmailMessage(Message message)
         {
             var emailMessage = new MimeMessage();
@@ -76,6 +44,8 @@ namespace Service.Services.Implementation
             };
             return emailMessage;
         }
+
+
         public void Send(MimeMessage mailMessage)
         {
             using var client = new SmtpClient();
@@ -99,5 +69,7 @@ namespace Service.Services.Implementation
             }
 
         }
+
+
     }
 }

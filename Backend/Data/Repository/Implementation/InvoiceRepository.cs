@@ -8,6 +8,12 @@ using Azure;
 using Data.Models.Address;
 using Data.Models.ViewModels;
 using Data.Models.OrderModels;
+using Microsoft.AspNetCore.Identity;
+using Service.Models;
+using Data.Models.Authentication.User;
+using Data.Repository.Interfaces;
+
+
 
 
 namespace Data.Repository.Implementation
@@ -15,11 +21,14 @@ namespace Data.Repository.Implementation
     public class InvoiceRepository : IInvoiceRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IInvoiceEmailService _emailService;
 
-        public InvoiceRepository(IConfiguration configuration)
+        public InvoiceRepository(IConfiguration configuration, UserManager<ApplicationUser> userManager, IInvoiceEmailService emailService)
         {
             _configuration = configuration;
-
+            _userManager = userManager;
+            _emailService = emailService;
         }
 
         async Task IInvoiceRepository.GenerateInvoice(int orderId)
@@ -232,6 +241,25 @@ namespace Data.Repository.Implementation
                 document.Save(ms);
                 response = ms.ToArray();
             }
+
+
+
+            byte[] pdfBytes;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                document.Save(ms);
+                pdfBytes = ms.ToArray();
+            }
+
+            // Send the PDF over email
+            var user = await _userManager.FindByEmailAsync(invoiceDto.UserEmail);
+            if (user != null)
+            {
+                var message = new Message(new string[] { user.Email }, "Invoice Pdf", "Please find attached your invoice PDF.");
+                message.Attachments.Add(("invoice.pdf", pdfBytes, "application/pdf"));
+                 _emailService.SendEmailInvoice(message);  
+            } 
+
             return response;
 
         }

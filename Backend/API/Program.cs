@@ -107,6 +107,7 @@ var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfig
 StripeConfiguration.ApiKey = configuration.GetSection("Stripe:SecretKey").Get<string>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IInvoiceEmailService, InvoiceEmailService>();
 builder.Services.AddScoped<IUserManagement,UserManagement>();
 
 //Redis

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Service.Models;
-using Service.Services;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
@@ -12,6 +11,7 @@ using Data.Models.Authentication.Login;
 using Data.Models.Authentication.Register;
 using Data.Models.Authentication.User;
 using Data.Models.ResetPassword;
+using Service.Services;
 
 
 namespace API.Controllers.Authentication
@@ -31,9 +31,7 @@ namespace API.Controllers.Authentication
         public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IEmailService emailService, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, IUserManagement userManagement, ICartService cartService)
         {
             _userManager = userManager;
-
             _emailService = emailService;
-
             _userManagement = userManagement;
             _cartService = cartService;
 
