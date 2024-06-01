@@ -20,31 +20,48 @@ namespace Data.Repository.Implementation.Cart
 
         public async Task<IEnumerable<CartItem>> AddCart(int cartId, IEnumerable<CartItem> cart)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            try
             {
-                await connection.OpenAsync();
-
-                // Delete existing cart items for the given cartId
-                string deleteCartItemsQuery = "DELETE FROM CartItem WHERE CartId = @CartId";
-                SqlCommand deleteCartItemsCommand = new SqlCommand(deleteCartItemsQuery, connection);
-                deleteCartItemsCommand.Parameters.AddWithValue("@CartId", cartId);
-                await deleteCartItemsCommand.ExecuteNonQueryAsync();
-
-                // Insert new cart items
-                foreach (var item in cart)
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    int productId = item.ProductId;
-                    int quantity = item.Quantity;
+                    await connection.OpenAsync();
 
-                    string insertCartItemQuery = "INSERT INTO CartItem (ProductId, Quantity, CartId) VALUES (@ProductId, @Quantity, @CartId)";
-                    SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection);
-                    insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
-                    insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
-                    insertCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
-                    await insertCartItemCommand.ExecuteNonQueryAsync();
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string deleteCartItemsQuery = "DELETE FROM CartItem WHERE CartId = @CartId";
+                            SqlCommand deleteCartItemsCommand = new SqlCommand(deleteCartItemsQuery, connection, transaction);
+                            deleteCartItemsCommand.Parameters.AddWithValue("@CartId", cartId);
+                            await deleteCartItemsCommand.ExecuteNonQueryAsync();
+                            foreach (var item in cart)
+                            {
+                                int productId = item.ProductId;
+                                int quantity = item.Quantity;
+
+                                string insertCartItemQuery = "INSERT INTO CartItem (ProductId, Quantity, CartId) VALUES (@ProductId, @Quantity, @CartId)";
+                                SqlCommand insertCartItemCommand = new SqlCommand(insertCartItemQuery, connection, transaction);
+                                insertCartItemCommand.Parameters.AddWithValue("@ProductId", productId);
+                                insertCartItemCommand.Parameters.AddWithValue("@Quantity", quantity);
+                                insertCartItemCommand.Parameters.AddWithValue("@CartId", cartId);
+                                await insertCartItemCommand.ExecuteNonQueryAsync();
+                            }
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to add cart items: {ex.Message}", ex);
+                        }
+                    }
                 }
+
+                return cart;
             }
-            return cart;
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to add cart items: {ex.Message}", ex);
+            }
         }
 
 
@@ -75,8 +92,6 @@ namespace Data.Repository.Implementation.Cart
         {
             List<CartItem> cartItems = new List<CartItem>();
 
-
-
             using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
                 await connection.OpenAsync();
@@ -85,7 +100,6 @@ namespace Data.Repository.Implementation.Cart
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                // Read data from the first result set (Cart table)
                 while (await reader.ReadAsync())
                 {
 
