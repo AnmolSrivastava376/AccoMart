@@ -107,7 +107,8 @@ var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfig
 StripeConfiguration.ApiKey = configuration.GetSection("Stripe:SecretKey").Get<string>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IUserManagement,UserManagement>();
+builder.Services.AddScoped<IInvoiceEmailService, InvoiceEmailService>();
+builder.Services.AddScoped<IUserManagement, UserManagement>();
 
 //Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
@@ -134,12 +135,12 @@ app.UseCors(options =>
            .AllowAnyHeader()
            .AllowAnyMethod();
 });
-app.UseRewriter();  
+app.UseRewriter();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseSession();
 //app.UseMvc();
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
 app.MapControllerRoute(
