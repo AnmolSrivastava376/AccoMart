@@ -12,14 +12,18 @@ import { cartItem } from '../../interfaces/cartItem';
   imports: [CommonModule, LoaderComponent],
   templateUrl: './buy-now-product-card.component.html',
   styleUrl: './buy-now-product-card.component.css',
-  providers: [productService,BuyNowService]
+  providers: [productService, BuyNowService],
 })
-export class BuyNowProductCardComponent implements OnInit{
-  @Input() productId: number
-  product:Product | null
+export class BuyNowProductCardComponent implements OnInit {
+  @Input() productId: number;
+  product: Product | null;
   @Input() productItem: cartItem;
-  @Output() outputCartItem: EventEmitter<cartItem> = new EventEmitter<cartItem>();
-  constructor(private productService: productService, private buyNowService: BuyNowService){}
+  @Output() outputCartItem: EventEmitter<cartItem> =
+    new EventEmitter<cartItem>();
+  constructor(
+    private productService: productService,
+    private buyNowService: BuyNowService
+  ) {}
 
   ngOnInit(): void {
     this.productService
@@ -29,10 +33,15 @@ export class BuyNowProductCardComponent implements OnInit{
       });
   }
 
-  incrementProductCount() {
-    this.productItem.quantity++;
-    this.buyNowService.item = this.productItem;
-    this.outputCartItem.emit(this.productItem);
+  incrementProductCount(stock: number) {
+    if (this.productItem.quantity < stock) {
+      this.productItem.quantity++;
+      this.buyNowService.item = this.productItem;
+      this.outputCartItem.emit(this.productItem);
+    }
+    else{
+      alert("Product Quantity out of stock")
+    }
   }
 
   decrementProductCount() {

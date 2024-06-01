@@ -24,6 +24,7 @@
                 <app-product-card
                     [products]="products"
                     [filteredProducts]="filteredProducts"
+                    [categories]="categories"
                     [categoryName]="categories[activeCategoryIndex]? categories[activeCategoryIndex].categoryName: ''"
                     (fetchNextPage)="handleNextPageLoad()"></app-product-card>
             </div>

@@ -95,7 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.isLoading = false;
           },
           error: (error) => {
-            console.error('Error fetching products:', error);
+            console.log('Error fetching products:', error);
             this.isLoading = false;
           },
         });

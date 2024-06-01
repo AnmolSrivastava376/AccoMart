@@ -35,7 +35,7 @@ export class AdminDashboardComponent implements OnInit {
       this.initLineChart();
     });
     this.chartService.fetchProductWiseQuantity().subscribe((data) => {
-      this.barData = data.sort((a, b) => b.quantity - a.quantity).slice(0, 7);
+      this.barData = data.slice(0, 7);
       this.initBarChart();
     });
   }

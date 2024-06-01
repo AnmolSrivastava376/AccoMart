@@ -1,15 +1,33 @@
-<div class="w-full h-fit border flex bg-white flex-col rounded-[10px]">
-    <div class="font-bold text-[24px] px-[20px] py-[10px]">Trending</div>
-    <app-grid-display-card
-        class="hide"
-        [products]="trendingProducts"></app-grid-display-card>
-    <app-scroll-display-card
-        class="unhide"
-        [products]="trendingProducts"></app-scroll-display-card>
-    <div class="font-bold text-[24px] px-[20px] pt-[20px]">
+<div class="w-full h-fit border flex bg-white flex-col rounded-[10px] pb-[20px]">
+  
+    <div class="font-bold text-[24px] px-[20px] pt-[20px] pb-[10px]">
         {{ categoryName ? categoryName : "Category Name" }}
     </div>
-    <app-product-scroll-display-card
-        [products]="filteredProducts"
-        (fetchNextPage)="handleEmitter()"></app-product-scroll-display-card>
+    <div class="px-[20px] text-gray-500 font-bold" *ngIf="!filteredProducts?.length && !isLoading">No products to display</div>
+    <app-product-scroll-display-card [products]="filteredProducts" (fetchNextPage)="handleEmitter()" *ngIf="filteredProducts?.length && !isLoading">
+    </app-product-scroll-display-card>
+    <div class="" *ngIf="isLoading">
+        <app-loader></app-loader>
+    </div>
+
+    <div class="font-bold text-[24px] px-[20px] py-[10px]">
+        <span class="mr-2 text-orange-400"><i class="fas fa-fire-alt"></i></span>
+        Trending Products
+    </div>
+    <app-grid-display-card class="hide" [products]="trendingProducts"></app-grid-display-card>
+    <app-scroll-display-card class="unhide" [products]="trendingProducts"></app-scroll-display-card>
+
+    <div class="font-bold text-[24px] px-[20px] py-[10px]">Browse More Products</div>
+    <div class="" *ngIf="!isBrowseMoreLoading">
+        <div *ngFor="let prod of moreProducts">
+            <app-product-scroll-display-card [products]="prod.items" [categoryId]="prod.categoryId" *ngIf="prod.items.length>0"
+                (fetchNextPageCategoryWise)="handleEmitterCategoryWise($event)"></app-product-scroll-display-card>
+        </div>
+    </div>
+    <div class="mb-4" *ngIf="isBrowseMoreLoading">
+        <app-loader></app-loader>
+    </div>
+    <div class="w-full h-[40px] flex items-center justify-center" *ngIf="isLoadMoreVisible">
+        <div class="w-[140px] h-full flex items-center justify-center font-bold rounded-[6px] text-white bg-yellow-500 hover:bg-yellow-700 cursor-pointer" (click)="handleLoadMore()">Load More</div>
+    </div>
 </div>

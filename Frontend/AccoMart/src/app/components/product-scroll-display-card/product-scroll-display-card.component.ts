@@ -17,16 +17,20 @@ export class ProductScrollDisplayCardComponent {
   cart?: cartItem[];
   i = 0;
   @Input() products?: Product[];
+  @Input() categoryId: number;
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
-  constructor(private cartService: CartService, private router: Router) {
+  @Output() fetchNextPageCategoryWise: EventEmitter<number> =
+    new EventEmitter<number>();
+  constructor(private cartService: CartService) {
     this.cart = this.cartService.fetchCart();
   }
 
   handleNextButtonClick() {
     if (this.products && this.i + 2 < this.products.length) {
       this.i++;
-      if (this.i + 5 >= this.products.length) {
+      if (this.i + 3 >= this.products.length) {
         this.fetchNextPage.emit(true);
+        this.fetchNextPageCategoryWise.emit(this.categoryId);
       }
     }
   }
@@ -37,16 +41,23 @@ export class ProductScrollDisplayCardComponent {
     }
   }
 
-  addToCart(productId: number): void {
-    this.cartService.addToCart(productId);
+  addToCart(productId: number, stock: number): void {
+    if (stock >= 1 && !this.isPresentInCart(productId)) {
+      this.cartService.addToCart(productId);
+    }
   }
 
   findQuantityByProductId(productId: number): number {
     return this.cartService.findQuantityByProductId(productId);
   }
 
-  incrementCountByProductId(productId: number): void {
-    this.cartService.incrementCountByProductId(productId);
+  incrementCountByProductId(productId: number, stock: number): void {
+    if (stock > this.cartService.findQuantityByProductId(productId)) {
+      this.cartService.incrementCountByProductId(productId);
+    }
+    else{
+      alert("Maximum stock limit reached for this item")
+    }
   }
 
   isPresentInCart(productId: number): boolean {
@@ -54,7 +65,7 @@ export class ProductScrollDisplayCardComponent {
   }
 
   decrementCountByProductId(productId: number): void {
-    this.cartService.decrementCountByProductId(productId);
+      this.cartService.decrementCountByProductId(productId);
   }
 
   removeElementByProductId(productId: number): void {
