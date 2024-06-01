@@ -322,154 +322,229 @@ namespace Data.Repository.Implementation
             }
         }
 
-
-
         public async Task<Category> CreateCategory(string categoryName)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            try
             {
-                string query = $"SELECT CategoryName FROM Category WHERE CategoryName = @CategoryName";
-                SqlCommand checkCommand = new SqlCommand(query, connection);
-                checkCommand.Parameters.AddWithValue("@CategoryName", categoryName);
-
-                await connection.OpenAsync();
-                object existingCategory = await checkCommand.ExecuteScalarAsync();
-
-                if (existingCategory != null)
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    return null;
+                    await connection.OpenAsync();
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string query = $"SELECT CategoryName FROM Category WHERE CategoryName = @CategoryName";
+                            SqlCommand checkCommand = new SqlCommand(query, connection, transaction);
+                            checkCommand.Parameters.AddWithValue("@CategoryName", categoryName);
+                            object existingCategory = await checkCommand.ExecuteScalarAsync();
+
+                            if (existingCategory != null)
+                            {
+                                return null;
+                            }
+
+                            string sqlQuery = "INSERT INTO Category (CategoryName) VALUES (@CategoryName); SELECT SCOPE_IDENTITY()";
+                            SqlCommand command = new SqlCommand(sqlQuery, connection, transaction);
+                            command.Parameters.AddWithValue("@CategoryName", categoryName);
+                            int categoryId = Convert.ToInt32(await command.ExecuteScalarAsync());
+
+                            Category category = new Category
+                            {
+                                CategoryId = categoryId,
+                                CategoryName = categoryName
+                            };
+                            string cacheKey = $"Categories";
+                            await _database.KeyDeleteAsync(cacheKey);
+                            transaction.Commit();
+
+                            return category;
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to add category: {ex.Message}");
+                        }
+                    }
                 }
-
-                string sqlQuery = "INSERT INTO Category (CategoryName) VALUES (@CategoryName); SELECT SCOPE_IDENTITY()";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@CategoryName", categoryName);
-
-                int categoryId = Convert.ToInt32(await command.ExecuteScalarAsync());
-
-                Category category = new Category
-                {
-                    CategoryId = categoryId,
-                    CategoryName = categoryName
-                };
-                string cacheKey = $"Categories";
-                await _database.KeyDeleteAsync(cacheKey);
-
-                return category;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to add category: {ex.Message}");
             }
         }
 
         public async Task<Product> CreateProduct(ViewProduct productDto)
         {
-            Product product = new Product();
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            try
             {
-                await connection.OpenAsync();
-                string sqlQuery = "INSERT INTO Product (ProductName, ProductDesc, ProductPrice, ProductImageUrl, CategoryId,Stock) " +
-                                  "VALUES (@ProductName, @ProductDesc, @ProductPrice, @ProductImageUrl, @CategoryId,@Stock); SELECT SCOPE_IDENTITY()";
-                SqlCommand command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@ProductName", productDto.ProductName);
-                command.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
-                command.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
-                command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
-                command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
-                command.Parameters.AddWithValue("@Stock", productDto.Stock);
+                Product product = new Product();
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    await connection.OpenAsync();
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlQuery = "INSERT INTO Product (ProductName, ProductDesc, ProductPrice, ProductImageUrl, CategoryId,Stock) " +
+                                              "VALUES (@ProductName, @ProductDesc, @ProductPrice, @ProductImageUrl, @CategoryId,@Stock); SELECT SCOPE_IDENTITY()";
+                            SqlCommand command = new SqlCommand(sqlQuery, connection, transaction);
+                            command.Parameters.AddWithValue("@ProductName", productDto.ProductName);
+                            command.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
+                            command.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
+                            command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
+                            command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
+                            command.Parameters.AddWithValue("@Stock", productDto.Stock);
 
-                int productId = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            int productId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
-                product.ProductId = productId;
-                product.ProductName = productDto.ProductName;
-                product.ProductDesc = productDto.ProductDesc;
-                product.ProductImageUrl = productDto.ProductImageUrl;
-                product.ProductPrice = productDto.ProductPrice;
-                product.CategoryId = productDto.CategoryId;
-                product.Stock = productDto.Stock;
+                            product.ProductId = productId;
+                            product.ProductName = productDto.ProductName;
+                            product.ProductDesc = productDto.ProductDesc;
+                            product.ProductImageUrl = productDto.ProductImageUrl;
+                            product.ProductPrice = productDto.ProductPrice;
+                            product.CategoryId = productDto.CategoryId;
+                            product.Stock = productDto.Stock;
+
+                            string cacheKey = $"ProductByCategory_{productDto.CategoryId}";
+                            await _database.KeyDeleteAsync(cacheKey);
+                            string cacheKey2 = $"Product_{product.ProductId}";
+                            await _database.StringSetAsync(cacheKey2, JsonConvert.SerializeObject(product));
+                            transaction.Commit();
+
+                            return product;
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to add product: {ex.Message}");
+                        }
+                    }
+                }
             }
-
-            string cacheKey = $"ProductByCategory_{productDto.CategoryId}";
-            await _database.KeyDeleteAsync(cacheKey);
-            string cacheKey2 = $"Product_{product.ProductId}";
-            await _database.StringSetAsync(cacheKey2, JsonConvert.SerializeObject(product));
-
-            return product;
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to add product: {ex.Message}");
+            }
         }
 
         public async Task<Category> UpdateCategory(int categoryId, string newCategoryName)
         {
-            Category category = new Category();
-
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            try
             {
-                await connection.OpenAsync();
-                string sqlQuery = "UPDATE Category SET CategoryName = @NewCategoryName WHERE CategoryId = @CategoryId";
-                SqlCommand updateCommand = new SqlCommand(sqlQuery, connection);
-                updateCommand.Parameters.AddWithValue("@NewCategoryName", newCategoryName);
-                updateCommand.Parameters.AddWithValue("@CategoryId", categoryId);
-                await updateCommand.ExecuteNonQueryAsync();
-                category.CategoryId = categoryId;
-                category.CategoryName = newCategoryName;
-            }
-            string cacheKey = $"Category_{category.CategoryId}";
-            await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
-            string categoriesCacheKey = $"Categories";
-            await _database.KeyDeleteAsync(categoriesCacheKey);
+                Category category = new Category();
 
-            return category;
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    await connection.OpenAsync();
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlQuery = "UPDATE Category SET CategoryName = @NewCategoryName WHERE CategoryId = @CategoryId";
+                            SqlCommand updateCommand = new SqlCommand(sqlQuery, connection, transaction);
+                            updateCommand.Parameters.AddWithValue("@NewCategoryName", newCategoryName);
+                            updateCommand.Parameters.AddWithValue("@CategoryId", categoryId);
+                            await updateCommand.ExecuteNonQueryAsync();
+                            category.CategoryId = categoryId;
+                            category.CategoryName = newCategoryName;
+
+                            string cacheKey = $"Category_{category.CategoryId}";
+                            await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
+                            string categoriesCacheKey = $"Categories";
+                            await _database.KeyDeleteAsync(categoriesCacheKey);
+                            transaction.Commit();
+
+                            return category;
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to update category: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update category: {ex.Message}");
+            }
         }
 
         public async Task<Product> UpdateProduct(int productId, UpdateProduct productDto)
         {
-            Product product = new Product();
-
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            try
             {
-                await connection.OpenAsync();
-                string sqlProductIdQuery = "SELECT ProductId FROM Product WHERE ProductId = @ProductId";
-                SqlCommand productIdCommand = new SqlCommand(sqlProductIdQuery, connection);
-                productIdCommand.Parameters.AddWithValue("@ProductId", productId);
-                object productIdObj = await productIdCommand.ExecuteScalarAsync();
+                Product product = new Product();
 
-                if (productIdObj == null || productIdObj == DBNull.Value)
+                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    return null;
+                    await connection.OpenAsync();
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlProductIdQuery = "SELECT ProductId FROM Product WHERE ProductId = @ProductId";
+                            SqlCommand productIdCommand = new SqlCommand(sqlProductIdQuery, connection, transaction);
+                            productIdCommand.Parameters.AddWithValue("@ProductId", productId);
+                            object productIdObj = await productIdCommand.ExecuteScalarAsync();
+
+                            if (productIdObj == null || productIdObj == DBNull.Value)
+                            {
+                                return null;
+                            }
+
+                            string sqlCategoryIdQuery = "SELECT CategoryId FROM Category WHERE CategoryId = @CategoryId";
+                            SqlCommand categoryIdCommand = new SqlCommand(sqlCategoryIdQuery, connection, transaction);
+                            categoryIdCommand.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
+                            object categoryIdObj = await categoryIdCommand.ExecuteScalarAsync();
+
+                            if (categoryIdObj == null || categoryIdObj == DBNull.Value)
+                            {
+                                return null;
+                            }
+
+                            string sqlQuery = "UPDATE Product SET ProductName = @ProductName, ProductDesc = @ProductDesc, " +
+                                              "ProductPrice = @ProductPrice, ProductImageUrl = @ProductImageUrl, " +
+                                              "CategoryId = @CategoryId, Stock = @Stock WHERE ProductId = @ProductId";
+
+                            SqlCommand updateCommand = new SqlCommand(sqlQuery, connection, transaction);
+                            updateCommand.Parameters.AddWithValue("@ProductName", productDto.ProductName);
+                            updateCommand.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
+                            updateCommand.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
+                            updateCommand.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
+                            updateCommand.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
+                            updateCommand.Parameters.AddWithValue("@Stock", productDto.Stock);
+                            updateCommand.Parameters.AddWithValue("@ProductId", productId);
+
+                            await updateCommand.ExecuteNonQueryAsync();
+
+                            product.ProductId = productId;
+                            product.ProductName = productDto.ProductName;
+                            product.ProductDesc = productDto.ProductDesc;
+                            product.ProductImageUrl = productDto.ProductImageUrl;
+                            product.ProductPrice = productDto.ProductPrice;
+                            product.CategoryId = productDto.CategoryId;
+                            product.Stock = productDto.Stock;
+
+                            string cacheKey = $"Product_{product.ProductId}";
+                            await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
+                            transaction.Commit();
+
+                            return product;
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to update product: {ex.Message}");
+                        }
+                    }
                 }
-                string sqlCategoryIdQuery = "SELECT CategoryId FROM Category WHERE CategoryId = @CategoryId";
-                SqlCommand categoryIdCommand = new SqlCommand(sqlCategoryIdQuery, connection);
-                categoryIdCommand.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
-                object categoryIdObj = await categoryIdCommand.ExecuteScalarAsync();
-
-                if (categoryIdObj == null || categoryIdObj == DBNull.Value)
-                {
-                    return null;
-                }
-                string sqlQuery = "UPDATE Product SET ProductName = @ProductName, ProductDesc = @ProductDesc, " +
-                                  "ProductPrice = @ProductPrice, ProductImageUrl = @ProductImageUrl, " +
-                                  "CategoryId = @CategoryId,Stock =@Stock  WHERE ProductId = @ProductId";
-
-                SqlCommand updateCommand = new SqlCommand(sqlQuery, connection);
-                updateCommand.Parameters.AddWithValue("@ProductName", productDto.ProductName);
-                updateCommand.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
-                updateCommand.Parameters.AddWithValue("@ProductPrice", productDto.ProductPrice);
-                updateCommand.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
-                updateCommand.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
-                updateCommand.Parameters.AddWithValue("@ProductId", productId);
-                updateCommand.Parameters.AddWithValue("@Stock", productDto.Stock);
-
-                await updateCommand.ExecuteNonQueryAsync();
-
-                product.ProductId = productId;
-                product.ProductName = productDto.ProductName;
-                product.ProductDesc = productDto.ProductDesc;
-                product.ProductImageUrl = productDto.ProductImageUrl;
-                product.ProductPrice = productDto.ProductPrice;
-                product.Stock = productDto.Stock;
-                product.CategoryId = productDto.CategoryId;
             }
-            string cacheKey = $"Product_{product.ProductId}";
-            await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(product));
-            return product;
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update product: {ex.Message}");
+            }
         }
-
-
 
         public async Task DeleteCategory(int categoryId)
         {
@@ -501,7 +576,6 @@ namespace Data.Repository.Implementation
             string categoriesCacheKey = $"Categories";
             await _database.KeyDeleteAsync(categoriesCacheKey);
         }
-
 
         public async Task<Category> GetCategoryByName(string name)
         {
