@@ -17,11 +17,6 @@ namespace Data.Repository.Implementation
 
         }
 
-        public AddressRepository(SqlConnection @object)
-        {
-            this.@object = @object;
-        }
-
         public async Task<int> AddAddressAsync(AddressModel address, string userId)
         {
             try
@@ -29,16 +24,30 @@ namespace Data.Repository.Implementation
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
-                    using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, PhoneNumber, States, ZipCode, UserId) VALUES (@Street, @City, @PhoneNumber, @State, @ZipCode, @UserId); SELECT SCOPE_IDENTITY()", connection))
-                    {
-                        command.Parameters.AddWithValue("@Street", address.Street);
-                        command.Parameters.AddWithValue("@City", address.City);
-                        command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
-                        command.Parameters.AddWithValue("@State", address.State);
-                        command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
-                        command.Parameters.AddWithValue("@UserId", userId);
+                    SqlTransaction transaction = connection.BeginTransaction();
 
-                        return Convert.ToInt32(await command.ExecuteScalarAsync());
+                    try
+                    {
+                        using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, PhoneNumber, States, ZipCode, UserId) VALUES (@Street, @City, @PhoneNumber, @State, @ZipCode, @UserId); SELECT SCOPE_IDENTITY()", connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@Street", address.Street);
+                            command.Parameters.AddWithValue("@City", address.City);
+                            command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
+                            command.Parameters.AddWithValue("@State", address.State);
+                            command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
+                            command.Parameters.AddWithValue("@UserId", userId);
+
+                            int addressId = Convert.ToInt32(await command.ExecuteScalarAsync());
+             
+                            transaction.Commit();
+
+                            return addressId;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception($"Failed to add address: {ex.Message}", ex);
                     }
                 }
             }
@@ -46,8 +55,8 @@ namespace Data.Repository.Implementation
             {
                 throw new Exception($"Failed to add address: {ex.Message}", ex);
             }
-
         }
+
 
         public async Task<AddressModel> GetAddressByIdAsync(int addressId)
         {
@@ -86,6 +95,7 @@ namespace Data.Repository.Implementation
             }
         }
 
+
         public async Task<List<AddressModel>> GetAddressesByUserIdAsync(string userId)
         {
             List<AddressModel> addresses = new List<AddressModel>();
@@ -100,7 +110,7 @@ namespace Data.Repository.Implementation
                         command.Parameters.AddWithValue("@userId", userId);
                         using (var reader = await command.ExecuteReaderAsync())
                         {
-                            while (await reader.ReadAsync())
+                            if (await reader.ReadAsync())
                             {
                                 AddressModel address = new AddressModel
                                 {
@@ -112,6 +122,10 @@ namespace Data.Repository.Implementation
                                     ZipCode = Convert.ToString(reader["ZipCode"]),
                                 };
                                 addresses.Add(address);
+                            }
+                            else
+                            {
+                                return null;
                             }
                         }
                     }
@@ -132,22 +146,40 @@ namespace Data.Repository.Implementation
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     await connection.OpenAsync();
-                    using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, PhoneNumber = @PhoneNumber, States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection))
+                    using (SqlTransaction transaction = connection.BeginTransaction())
                     {
-                        command.Parameters.AddWithValue("@Street", address.Street);
-                        command.Parameters.AddWithValue("@City", address.City);
-                        command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
-                        command.Parameters.AddWithValue("@State", address.State);
-                        command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
-                        command.Parameters.AddWithValue("@AddressId", id);
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
-                        return rowsAffected > 0;
+                        try
+                        {
+                            using (var command = new SqlCommand("UPDATE Addresses SET Street = @Street, City = @City, PhoneNumber = @PhoneNumber, States = @State, ZipCode = @ZipCode WHERE AddressId = @AddressId", connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@Street", address.Street);
+                                command.Parameters.AddWithValue("@City", address.City);
+                                command.Parameters.AddWithValue("@PhoneNumber", address.PhoneNumber);
+                                command.Parameters.AddWithValue("@State", address.State);
+                                command.Parameters.AddWithValue("@ZipCode", address.ZipCode);
+                                command.Parameters.AddWithValue("@AddressId", id);
+
+                                int rowsAffected = await command.ExecuteNonQueryAsync();
+                                if (rowsAffected == 0)
+                                {
+                                    transaction.Rollback();
+                                    return false;
+                                }
+                                transaction.Commit();
+                                return true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to update address: {ex.Message}", ex);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception($"Failed to update address: {ex.Message}", ex);
             }
         }
 
