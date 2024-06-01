@@ -22,18 +22,29 @@ namespace Data.Repository.Implementation
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
-
-                    string sqlQuery = @"INSERT INTO DeliveryService (ImageUrl, ServiceName, Price, DeliveryDays) 
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlQuery = @"INSERT INTO DeliveryService (ImageUrl, ServiceName, Price, DeliveryDays) 
                                         VALUES (@ImageUrl, @ServiceName, @Price, @DeliveryDays)";
 
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@ImageUrl", deliveryService.ImageUrl);
-                        command.Parameters.AddWithValue("@ServiceName", deliveryService.ServiceName);
-                        command.Parameters.AddWithValue("@Price", deliveryService.Price);
-                        command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
+                            using (SqlCommand command = new SqlCommand(sqlQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@ImageUrl", deliveryService.ImageUrl);
+                                command.Parameters.AddWithValue("@ServiceName", deliveryService.ServiceName);
+                                command.Parameters.AddWithValue("@Price", deliveryService.Price);
+                                command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
 
-                        await command.ExecuteNonQueryAsync();
+                                await command.ExecuteNonQueryAsync();
+                            }
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw new Exception($"Failed to add delivery service: {ex.Message}");
+                        }
                     }
                 }
             }
@@ -42,6 +53,7 @@ namespace Data.Repository.Implementation
                 throw new Exception($"Failed to add delivery service: {ex.Message}");
             }
         }
+
 
         public async Task DeleteDeliveryService(int id)
         {
@@ -79,24 +91,35 @@ namespace Data.Repository.Implementation
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
-
-                    string sqlQuery = @"UPDATE DeliveryService 
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            string sqlQuery = @"UPDATE DeliveryService 
                                         SET ImageUrl = @ImageUrl, ServiceName = @ServiceName, Price = @Price, DeliveryDays = @DeliveryDays 
                                         WHERE DServiceId = @Id";
 
-                    using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@Id", id);
-                        command.Parameters.AddWithValue("@ImageUrl", deliveryService.ImageUrl);
-                        command.Parameters.AddWithValue("@ServiceName", deliveryService.ServiceName);
-                        command.Parameters.AddWithValue("@Price", deliveryService.Price);
-                        command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
+                            using (SqlCommand command = new SqlCommand(sqlQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@Id", id);
+                                command.Parameters.AddWithValue("@ImageUrl", deliveryService.ImageUrl);
+                                command.Parameters.AddWithValue("@ServiceName", deliveryService.ServiceName);
+                                command.Parameters.AddWithValue("@Price", deliveryService.Price);
+                                command.Parameters.AddWithValue("@DeliveryDays", deliveryService.DeliveryDays);
 
-                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                                int rowsAffected = await command.ExecuteNonQueryAsync();
 
-                        if (rowsAffected == 0)
+                                if (rowsAffected == 0)
+                                {
+                                    throw new KeyNotFoundException("Delivery service not found.");
+                                }
+                            }
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
                         {
-                            throw new KeyNotFoundException("Delivery service not found.");
+                            transaction.Rollback();
+                            throw new Exception($"Failed to update delivery service: {ex.Message}");
                         }
                     }
                 }
@@ -106,6 +129,7 @@ namespace Data.Repository.Implementation
                 throw new Exception($"Failed to update delivery service: {ex.Message}");
             }
         }
+
 
         public async Task<List<DeliveryService>> GetAllDeliveryServices()
         {
