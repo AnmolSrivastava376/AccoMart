@@ -41,5 +41,5 @@ Click on Admin option from the navbar menu (It will appear only if you are logge
 ```bash
 cd Accomart
 ```
-Run SQL queries on SSMS
+Paste and run queries from Queries.sql file on SSMS
 
