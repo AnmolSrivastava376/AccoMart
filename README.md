@@ -35,3 +35,11 @@ Abc@123456
 ```
 ### Access admin dashboard
 Click on Admin option from the navbar menu (It will appear only if you are logged in through admin credentials)
+
+## Set Up Database
+
+```bash
+cd Accomart
+```
+Run SQL queries on SSMS
+
