@@ -617,7 +617,6 @@ namespace API.Controllers.Order
             }
         }
 
-
         private bool IsQuantityAvailable(int productId, int requestedQuantity)
         {
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
