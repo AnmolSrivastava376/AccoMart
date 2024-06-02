@@ -73,13 +73,13 @@ namespace API.Controllers.Order
         public async Task<StripeModel> PlaceOrderByCart(CartOrder cartOrderDto)
         {
             int newOrderId = 0;
-           
+
             try
             {
                 decimal productAmount = 0.00M;
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
-                    await connection.OpenAsync();               
+                    await connection.OpenAsync();
                     string getProductAmountQuery = @"
                         SELECT CAST(SUM(p.ProductPrice * ci.Quantity) AS DECIMAL(18,2)) AS TotalAmount
                         FROM CartItem ci
@@ -120,16 +120,16 @@ namespace API.Controllers.Order
                     {
                         insertOrderCommand.Parameters.AddWithValue("@UserId", cartOrderDto.userId);
                         insertOrderCommand.Parameters.AddWithValue("@AddressId", cartOrderDto.addressId);
-                        insertOrderCommand.Parameters.AddWithValue("@CartId",  cartOrderDto.cartId);
+                        insertOrderCommand.Parameters.AddWithValue("@CartId", cartOrderDto.cartId);
                         insertOrderCommand.Parameters.AddWithValue("@DeliveryServiceID", cartOrderDto.deliveryId);
                         insertOrderCommand.Parameters.AddWithValue("@OrderAmount", totalAmount);
 
                         newOrderId = Convert.ToInt32(await insertOrderCommand.ExecuteScalarAsync());
-                    }
-                    
+                    }// Creating order , it will be deleted if the ordered amount is greater than the available amount at the time of checkout
+
                 }
 
-                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId,newOrderId,cartOrderDto.deliveryId,productAmount);
+                return await CheckoutByCart(cartOrderDto.userId, cartOrderDto.cartId, newOrderId, cartOrderDto.deliveryId, productAmount);
             }
             catch (Exception ex)
             {
@@ -139,7 +139,7 @@ namespace API.Controllers.Order
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeModel> CheckoutByCart(string userId, int cartId,int orderId,int deliveryId,decimal productAmount)
+        public async Task<StripeModel> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
             var options = new SessionCreateOptions
             {
@@ -147,10 +147,10 @@ namespace API.Controllers.Order
                 CancelUrl = _domain + "home/cart",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                CustomerEmail = "sdfgh@gmail.com",              
+                CustomerEmail = "sdfgh@gmail.com",
             };
             StripeModel url = new StripeModel();
-            
+
 
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -179,6 +179,7 @@ namespace API.Controllers.Order
                         {
                             if (!IsQuantityAvailable(CartItem.Item1, CartItem.Item2))
                             {
+                                await DeleteOrder(orderId); // deleting the created product as not enough quanity of products available
                                 url.StripeUrl = "Product out of stock";
                                 return url;
                             }
@@ -195,7 +196,7 @@ namespace API.Controllers.Order
                                 insertHistoryCommand.Parameters.AddWithValue("@Quantity", CartItem.Item2);
                                 await insertHistoryCommand.ExecuteNonQueryAsync();
                             }
-                            UpdateStock(CartItem.Item1,CartItem.Item2);
+                            UpdateStock(CartItem.Item1, CartItem.Item2);
                         }
 
                         _cartService.DeleteCartAsync(cartId);
@@ -244,7 +245,7 @@ namespace API.Controllers.Order
                             {
                                 while (await deliveryReader.ReadAsync())
                                 {
-                                     deliveryPrice = (decimal)deliveryReader["Price"];
+                                    deliveryPrice = (decimal)deliveryReader["Price"];
                                     string name = Convert.ToString(deliveryReader["ServiceName"]);
                                     var sessionListItem1 = new SessionLineItemOptions
                                     {
@@ -265,13 +266,13 @@ namespace API.Controllers.Order
                             }
                         }
 
-                        decimal discount = (productAmount * 5)/100;
+                        decimal discount = (productAmount * 5) / 100;
 
                         var sessionListItem2 = new SessionLineItemOptions
                         {
                             PriceData = new SessionLineItemPriceDataOptions
                             {
-                                UnitAmount = (long)(discount*100),
+                                UnitAmount = (long)(discount * 100),
                                 Currency = "inr",
                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                 {
@@ -311,14 +312,20 @@ namespace API.Controllers.Order
             HttpContext.Session.SetString("Session", session.Id);
             Response.Headers.Add("Location", session.Url);
             url.StripeUrl = session.Url;
+
+            if(url==null)
+            {
+                await DeleteOrder(orderId);
+            }
             return url;
+
+
         }
 
-        //[Authorize]
         [HttpPost("PlaceOrderByProduct")]
         public async Task<StripeModel> PlaceOrder(ProductOrder productOrderDto)
         {
-          
+
             try
             {
                 int orderId = 0;
@@ -360,13 +367,13 @@ namespace API.Controllers.Order
                             command.Parameters.AddWithValue("@OrderAmount", orderAmount);
                             orderId = Convert.ToInt32(await command.ExecuteScalarAsync());
                         }
-
+                        // this order will be deleted at the time of checkout if ordered quanity of product is greater than available quantity
                     }
                 }
 
-                return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId,productPrice,orderId, productOrderDto.quantity);
+                return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId, productPrice, orderId, productOrderDto.quantity);
 
-         
+
             }
             catch (Exception ex)
             {
@@ -398,7 +405,7 @@ namespace API.Controllers.Order
                     }
                 }
 
-                    return Ok(orderedItems);
+                return Ok(orderedItems);
             }
             catch
             {
@@ -408,11 +415,13 @@ namespace API.Controllers.Order
 
 
         [HttpPost("Checkout/Product")]
-        public async Task<StripeModel> Checkout(int productId,int deliveryId,decimal totalProductPrice,int orderId,int quantity)
+        public async Task<StripeModel> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity)
         {
 
             if (!IsQuantityAvailable(productId, quantity))
             {
+
+                await DeleteOrder(orderId);    // deleting the created order as not enough quantity is available
                 StripeModel stripeModel = new StripeModel();
                 stripeModel.StripeUrl = "Insufficient stock";
                 return stripeModel;
@@ -546,7 +555,7 @@ namespace API.Controllers.Order
             StripeModel url = new StripeModel();
             url.StripeUrl = session.Url;
 
-            if(url!= null)
+            if (url != null)
             {
                 await UpdateStock(productId, quantity);
 
@@ -563,13 +572,26 @@ namespace API.Controllers.Order
                     await insertHistoryCommand.ExecuteNonQueryAsync();
                 };
             }
-
-       
+            else
+            {
+                await DeleteOrder(orderId);
+            }
 
             return url;
         }
-
-
+        private async Task DeleteOrder(int orderId)
+        {
+            using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            {
+                await connection.OpenAsync();
+                string deleteStockQuery = "Delete from Orders where OrderID = @orderId";
+                using (var deleteStockCommand = new SqlCommand(deleteStockQuery, connection))
+                {
+                    deleteStockCommand.Parameters.AddWithValue("@orderId", orderId);
+                    await deleteStockCommand.ExecuteNonQueryAsync();
+                }
+            }
+        }
         private async Task UpdateStock(int productId, int purchasedQuantity)
         {
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -588,14 +610,15 @@ namespace API.Controllers.Order
 
             string cacheKey = $"Product_{productId}";
             string cachedProduct = await _database.StringGetAsync(cacheKey);
-            if (cachedProduct != null) {
+            if (cachedProduct != null)
+            {
                 await _database.KeyDeleteAsync(cacheKey);
 
             }
         }
 
 
-        private bool IsQuantityAvailable(int productId, int requestedQuantity)  
+        private bool IsQuantityAvailable(int productId, int requestedQuantity)
         {
             using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
             {
@@ -647,7 +670,7 @@ namespace API.Controllers.Order
                         }
                         else
                         {
-                            return 0; 
+                            return 0;
                         }
                     }
                 }
@@ -671,6 +694,6 @@ namespace API.Controllers.Order
                     return getProductCommand.ExecuteScalar()?.ToString() ?? "Unknown Product";
                 }
             }
-        }      
+        }
     }
 }
