@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../loader/loader.component';
 import { addressService } from '../../services/address.service';
 import { invoiceService } from '../../services/invoiceService';
+import { orderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-order-card',
@@ -22,7 +23,7 @@ import { invoiceService } from '../../services/invoiceService';
 })
 export class OrderCardComponent implements OnInit {
   @Input() orders?: Order[];
-  constructor(private invoiceService: invoiceService) {}
+  constructor(private invoiceService: invoiceService, private orderService:orderService) {}
 
   downloadFile(data: Blob): void {
     const blob = new Blob([data], { type: 'application/pdf' });
@@ -69,4 +70,14 @@ export class OrderCardComponent implements OnInit {
       },
     });
   }
+
+  CancelOrder(orderId:number)
+  {
+    if(confirm("Do you want to cancel this order"))
+      {
+        this.orderService.cancelOrder(orderId);
+      }
+      return;
+  }
+
 }

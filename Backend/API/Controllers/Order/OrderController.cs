@@ -6,6 +6,7 @@ using Service.Services.Interface;
 using Stripe.Checkout;
 using StackExchange.Redis;
 using System.Net;
+using Data.Models.CartModels;
 
 namespace API.Controllers.Order
 {
@@ -652,6 +653,31 @@ namespace API.Controllers.Order
         public async Task<int> GetStockAvailable(int productId)
         {
             return await StockAvailable(productId);
+        }
+
+
+        [HttpDelete("Order/Cancel/{orderId}")]
+        public async Task<IActionResult>CancelOrder(int orderId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    await connection.OpenAsync();
+                    string cancelOrderQuery = "Update Orders set isCancelled= 'true' where orderId =@orderId";
+                    using (var cancelOrderCommand = new SqlCommand(cancelOrderQuery, connection))
+                    {
+                        cancelOrderCommand.Parameters.AddWithValue("@orderId", orderId);
+                        await cancelOrderCommand.ExecuteNonQueryAsync();
+                    }
+                }
+                return Ok("Order Cancelled Successfully");
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         private async Task<int> StockAvailable(int productId)

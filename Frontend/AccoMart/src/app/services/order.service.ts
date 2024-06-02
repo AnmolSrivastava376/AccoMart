@@ -40,4 +40,13 @@ export class orderService {
       `http://localhost:5239/OrderController/GetCartItemsByOrderId/${orderId}`
     );
   }
+
+  cancelOrder(orderId:number):Observable<any>{
+    console.log(orderId);
+
+    return this.http.delete<any>(
+      `http://localhost:5239/OrderController/Order/Cancel/${orderId}`
+    ); 
+
+  }
 }
