@@ -187,11 +187,14 @@ export class CartComponent {
         this.orderService
           .placeOrderByCart(this.cartOrder)
           .subscribe((response) => {
+            
+            this.spinLoader = false;
             if(this.isValidUrl(response.stripeUrl))
               window.location.href = response.stripeUrl;
             else
               this.toastr.error("Error placing order")
           });
+
       }
     }
   }
