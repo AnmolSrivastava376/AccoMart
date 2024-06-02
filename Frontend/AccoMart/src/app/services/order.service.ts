@@ -5,6 +5,7 @@ import { CartOrder } from '../interfaces/placeOrder';
 import { Order } from '../interfaces/order';
 import { cartItem } from '../interfaces/cartItem';
 import { ProductOrder } from '../interfaces/productOrder';
+import { PlaceOrderResponse } from '../interfaces/PlaceOrderResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +13,8 @@ import { ProductOrder } from '../interfaces/productOrder';
 export class orderService {
   constructor(private http: HttpClient) {}
 
-  placeOrderByCart(cartOrder: CartOrder): Observable<{ stripeUrl: string }> {
-    return this.http.post<{ stripeUrl: string }>(
+  placeOrderByCart(cartOrder: CartOrder): Observable<PlaceOrderResponse> {
+    return this.http.post<PlaceOrderResponse>(
       `http://localhost:5239/OrderController/PlaceOrderByCart`,
       cartOrder
     );
@@ -21,8 +22,8 @@ export class orderService {
 
   placeOrderByProduct(
     productOrder: ProductOrder
-  ): Observable<{ stripeUrl: string }> {
-    return this.http.post<{ stripeUrl: string }>(
+  ): Observable<PlaceOrderResponse> {
+    return this.http.post<PlaceOrderResponse>(
       `http://localhost:5239/OrderController/PlaceOrderByProduct`,
       productOrder
     );

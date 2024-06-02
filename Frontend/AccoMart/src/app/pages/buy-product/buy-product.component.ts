@@ -89,6 +89,8 @@ export class BuyProductComponent {
     private orderService: orderService
   ) {}
 
+  
+
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.selectedProductId = +params['productId'];
@@ -184,14 +186,28 @@ export class BuyProductComponent {
         this.isLoading = true;
         this.orderService.placeOrderByProduct(this.productOrder).subscribe({
           next: (response) => {
-            window.location.href = response.stripeUrl;
+            if (response.stripeModel && response.stripeModel.stripeUrl) {
+              window.location.href = response.stripeModel.stripeUrl;
+          } else {
+              console.error('Stripe URL not found in response:', response);
+          }
+          this.isLoading = false;
+
           },
           error: (error) => {
-            console.error('Error placing order:', error);
+            this.toastr.error(error.error.message);
+            this.isLoading = false;
+            console.error('Error placing order:',error);
+
           }
         });
       }
     }
+  }
+
+  isValidUrl(url: string): boolean {
+    const urlPattern = /^(https?:\/\/)?([\w.]+)\.([a-z]{2,})(\/\S*)?$/i;
+    return urlPattern.test(url);
   }
 
   updateActiveDeliveryIndex(index: number) {

@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Service.Services.Interface;
 using Stripe.Checkout;
 using StackExchange.Redis;
+using System.Net;
 
 namespace API.Controllers.Order
 {
@@ -70,7 +71,7 @@ namespace API.Controllers.Order
         }
 
         [HttpPost("PlaceOrderByCart")]
-        public async Task<StripeModel> PlaceOrderByCart(CartOrder cartOrderDto)
+        public async Task<IActionResult> PlaceOrderByCart(CartOrder cartOrderDto)
         {
             int newOrderId = 0;
 
@@ -133,13 +134,13 @@ namespace API.Controllers.Order
             }
             catch (Exception ex)
             {
-                return null;
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = ex.Message });
             }
         }
 
         //[Authorize]
         [HttpPost("Checkout/Cart")]
-        public async Task<StripeModel> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
+        public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
             var options = new SessionCreateOptions
             {
@@ -179,9 +180,8 @@ namespace API.Controllers.Order
                         {
                             if (!IsQuantityAvailable(CartItem.Item1, CartItem.Item2))
                             {
-                                await DeleteOrder(orderId); // deleting the created product as not enough quanity of products available
-                                url.StripeUrl = "Product out of stock";
-                                return url;
+                                await DeleteOrder(orderId); // deleting the created product as not enough quanity of products 
+                                return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Product out of stock" });
                             }
                         }
 
@@ -316,14 +316,16 @@ namespace API.Controllers.Order
             if(url==null)
             {
                 await DeleteOrder(orderId);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Internal server error" });
+
             }
-            return url;
+            return Ok(new { StatusCode = HttpStatusCode.OK, Message = "Checkout successful", StripeModel = url });
 
 
         }
 
         [HttpPost("PlaceOrderByProduct")]
-        public async Task<StripeModel> PlaceOrder(ProductOrder productOrderDto)
+        public async Task<IActionResult> PlaceOrder(ProductOrder productOrderDto)
         {
 
             try
@@ -377,7 +379,8 @@ namespace API.Controllers.Order
             }
             catch (Exception ex)
             {
-                return null;
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Internal server error" });
+
             }
         }
 
@@ -415,16 +418,15 @@ namespace API.Controllers.Order
 
 
         [HttpPost("Checkout/Product")]
-        public async Task<StripeModel> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity)
+        public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity)
         {
 
             if (!IsQuantityAvailable(productId, quantity))
             {
 
                 await DeleteOrder(orderId);    // deleting the created order as not enough quantity is available
-                StripeModel stripeModel = new StripeModel();
-                stripeModel.StripeUrl = "Insufficient stock";
-                return stripeModel;
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Out of stock" });
+
             }
 
             var options = new SessionCreateOptions
@@ -574,10 +576,14 @@ namespace API.Controllers.Order
             }
             else
             {
+
                 await DeleteOrder(orderId);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Internal server error" });
+
             }
 
-            return url;
+            return Ok(new { StatusCode = HttpStatusCode.OK, Message = "Checkout successful", StripeModel = url });
+
         }
         private async Task DeleteOrder(int orderId)
         {

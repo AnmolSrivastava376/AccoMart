@@ -21,6 +21,7 @@ import { Product } from '../../interfaces/product';
 import { CartOrder } from '../../interfaces/placeOrder';
 import { ToastrService } from 'ngx-toastr';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { error } from 'highcharts';
 
 @Component({
   selector: 'app-cart',
@@ -189,10 +190,14 @@ export class CartComponent {
           .subscribe((response) => {
             
             this.spinLoader = false;
-            if(this.isValidUrl(response.stripeUrl))
-              window.location.href = response.stripeUrl;
-            else
-              this.toastr.error("Error placing order")
+            if (response.stripeModel && response.stripeModel.stripeUrl) {
+              window.location.href = response.stripeModel.stripeUrl;
+          } else {
+              console.error('Stripe URL not found in response:', response);
+          }
+          },error=>{
+            this.spinLoader = false;
+            this.toastr.error(error.error.message);
           });
 
       }
