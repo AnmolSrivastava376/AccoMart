@@ -42,7 +42,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: .net-app
+          name: ./Backend/API/${{env.DOTNET_ROOT}}/myapp/net-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
