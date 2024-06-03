@@ -42,7 +42,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: ./Backend/API/${{env.DOTNET_ROOT}}/myapp/net-app
+          name: ./Backend/API${{env.DOTNET_ROOT}}/myapp/net-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -51,4 +51,4 @@ jobs:
           app-name: 'AccoMartServer'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1D763BA7F07C4E86AAD3B5FC123A2259 }}
-          package: ./Backend/API/${{env.DOTNET_ROOT}}/myapp
+          package: ./Backend/API${{env.DOTNET_ROOT}}/myapp
