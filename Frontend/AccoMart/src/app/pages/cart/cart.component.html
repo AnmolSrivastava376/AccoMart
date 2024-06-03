@@ -63,11 +63,11 @@
         </div>
       </div>
       <div
-        class="bg-white border border-black w-full h-fit rounded-[10px] flex flex-col text-black px-[20px] py-[16px] gap-[10px]"
+        class="checkout w-full h-fit rounded-[10px] flex flex-col text-white px-[20px] py-[16px] gap-[10px]"
         *ngIf="!(cartItemLength===0)">
         <div class="font-bold text-[24px] leading-[28px] head-adj">Cart
           Summary</div>
-        <div class="w-full h-[1px] bg-black mb-[10px]"></div>
+        <div class="w-full h-[1px] bg-white mb-[10px]"></div>
         <div class="flex justify-between items-center leading-[16px] text-adj">
           <div class>Cart Subtotal</div>
           <div class>₹ {{getCartTotal()}}</div>
@@ -84,14 +84,14 @@
           <div class>Taxes</div>
           <div class>₹ {{getTaxes()}}</div>
         </div>
-        <div class="w-full h-[1px] bg-black mt-[10px]"></div>
+        <div class="w-full h-[1px] bg-white mt-[10px]"></div>
         <div
           class="flex justify-between items-center leading-[16px] font-semibold text-adj">
           <div class>Grand Total</div>
           <div class>₹ {{getGrandTotal()}}</div>
         </div>
         <div
-          class="w-[80%] my-[10px] h-[40px] rounded-[10px] bg-red-500 hover:bg-red-600 self-center flex justify-center items-center cursor-pointer"
+          class="w-[80%] my-[10px] h-[40px] rounded-[10px] bg-white self-center flex justify-center items-center cursor-pointer"
           (click)="placeOrder()">
           <div class="text-black font-semibold head-adj">
             <app-loader *ngIf="spinLoader"></app-loader>
