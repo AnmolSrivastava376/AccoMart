@@ -22,7 +22,6 @@
     "@angular/router": "^17.3.8",
     "angular-highcharts": "^17.0.1",
     "axios": "^1.6.8",
-    "crypto-js": "^4.2.0",
     "highcharts": "^11.4.3",
     "jwt-decode": "^4.0.0",
     "ngx-toastr": "^18.0.0",
