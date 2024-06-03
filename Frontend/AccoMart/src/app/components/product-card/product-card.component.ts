@@ -134,7 +134,8 @@ export class ProductCardComponent implements OnInit, OnChanges {
       this.sliceStart = this.sliceEnd + 1;
       this.sliceEnd += 3;
       this.fetchBrowseMoreProducts();
-    } else if (this.categories.length > this.sliceEnd) {
+    } else if (this.categories.length > this.sliceEnd+1) {
+      console.log(this.categories.length)
       this.sliceStart = this.sliceEnd + 1;
       this.sliceEnd = this.categories.length;
       this.fetchBrowseMoreProducts();
