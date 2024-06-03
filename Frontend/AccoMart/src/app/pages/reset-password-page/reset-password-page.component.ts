@@ -2,9 +2,10 @@ import { Component,OnInit } from '@angular/core';
 import { resetPassword } from '../../interfaces/resetPassword';
 import { HttpService } from '../../services/http.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import * as CryptoJS from 'crypto-js';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 
