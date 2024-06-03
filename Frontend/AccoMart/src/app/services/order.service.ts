@@ -6,6 +6,7 @@ import { Order } from '../interfaces/order';
 import { cartItem } from '../interfaces/cartItem';
 import { ProductOrder } from '../interfaces/productOrder';
 import { PlaceOrderResponse } from '../interfaces/PlaceOrderResponse';
+import { Item } from '../interfaces/item';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,8 @@ export class orderService {
       `http://localhost:5239/OrderController/FetchAllOrders/${userId}`
     );
   }
+  
+
 
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
@@ -41,12 +44,19 @@ export class orderService {
     );
   }
 
-  cancelOrder(orderId:number):Observable<any>{
-    console.log(orderId);
-
-    return this.http.delete<any>(
-      `http://localhost:5239/OrderController/Order/Cancel/${orderId}`
-    ); 
-
+  cancelOrder(orderId: number,items:Item[]): Observable<any> {
+    console.log("here");
+    console.log(items);
+    let result: any
+    this.http.post<any>(
+      `http://localhost:5239/OrderController/Order/Cancel/${orderId}`,items
+    ).subscribe({
+      next: (response)=>{
+        console.log(response," : Response");
+        result = response
+      }
+    })
+    return result;
   }
+
 }

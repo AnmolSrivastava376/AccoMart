@@ -132,8 +132,4 @@ export class YourOrdersComponent implements OnInit {
     });
   }
 
-  onCancel(orderId:number)
-  {
-    this.orderService.cancelOrder(orderId);
-  }
 }

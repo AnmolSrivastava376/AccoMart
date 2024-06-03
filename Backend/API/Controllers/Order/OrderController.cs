@@ -656,8 +656,8 @@ namespace API.Controllers.Order
         }
 
 
-        [HttpDelete("Order/Cancel/{orderId}")]
-        public async Task<IActionResult>CancelOrder(int orderId)
+        [HttpPost("Order/Cancel/{orderId}")]
+        public async Task<IActionResult>CancelOrder(int orderId, [FromBody] List<OrderItem> orderItems)
         {
             try
             {
@@ -670,6 +670,13 @@ namespace API.Controllers.Order
                         cancelOrderCommand.Parameters.AddWithValue("@orderId", orderId);
                         await cancelOrderCommand.ExecuteNonQueryAsync();
                     }
+
+                    
+                    foreach(OrderItem orderItem in orderItems)
+                    {
+                        await UpdateStock(orderItem.Product.ProductId, -1 * orderItem.Quantity);   // this will add the ordered quantity again in the inventory
+                    }
+
                 }
                 return Ok("Order Cancelled Successfully");
 
@@ -678,6 +685,7 @@ namespace API.Controllers.Order
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+            return null;
         }
 
         private async Task<int> StockAvailable(int productId)
