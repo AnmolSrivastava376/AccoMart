@@ -47,7 +47,7 @@
             </button>
 
             <div *ngIf="!order.isDelivered && !order.isCancelled" class="text-center">
-                <button class="w-full bg-[#da5a5a] text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring" (click)="CancelOrder(order.orderId)">
+                <button class="w-full bg-[#da5a5a] text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring" (click)="CancelOrder(order.orderId,order.itemArray)">
                     Cancel
                 </button>
             </div>
