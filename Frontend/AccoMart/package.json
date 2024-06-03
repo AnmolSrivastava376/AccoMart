@@ -12,7 +12,7 @@
   "dependencies": {
     "@angular/animations": "^17.2.0",
     "@angular/cdk": "^17.3.7",
-    "@angular/common": "^17.2.0",
+    "@angular/common": "^17.3.8",
     "@angular/compiler": "^17.2.0",
     "@angular/core": "^17.2.0",
     "@angular/forms": "^17.2.0",
@@ -46,5 +46,8 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "typescript": "~5.3.2"
+  },
+  "engines": {
+    "node" : ">=18.13"
   }
 }

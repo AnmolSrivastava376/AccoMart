@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { cartItem } from '../../interfaces/cartItem';
 import { CartService } from '../../services/cart.services';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-scroll-display-card',
@@ -13,16 +14,22 @@ import { Router } from '@angular/router';
   templateUrl: './product-scroll-display-card.component.html',
   styleUrl: './product-scroll-display-card.component.css',
 })
-export class ProductScrollDisplayCardComponent {
+export class ProductScrollDisplayCardComponent implements OnInit {
   cart?: cartItem[];
   i = 0;
   @Input() products?: Product[];
   @Input() categoryId: number;
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() fetchNextPageCategoryWise: EventEmitter<number> =
-    new EventEmitter<number>();
-  constructor(private cartService: CartService) {
-    this.cart = this.cartService.fetchCart();
+  @Output() fetchNextPageCategoryWise: EventEmitter<number> = new EventEmitter<number>();
+  private cartSubscription: Subscription
+  constructor(private cartService: CartService) {}
+
+  ngOnInit(): void {
+    this.cartSubscription = this.cartService.getCartItems$().subscribe({
+      next:(item)=>{
+        this.cart = item;
+      }
+    })
   }
 
   handleNextButtonClick() {
@@ -54,9 +61,8 @@ export class ProductScrollDisplayCardComponent {
   incrementCountByProductId(productId: number, stock: number): void {
     if (stock > this.cartService.findQuantityByProductId(productId)) {
       this.cartService.incrementCountByProductId(productId);
-    }
-    else{
-      alert("Maximum stock limit reached for this item")
+    } else {
+      alert('Maximum stock limit reached for this item');
     }
   }
 
@@ -65,7 +71,9 @@ export class ProductScrollDisplayCardComponent {
   }
 
   decrementCountByProductId(productId: number): void {
+    setTimeout(()=>{
       this.cartService.decrementCountByProductId(productId);
+    }, 0)
   }
 
   removeElementByProductId(productId: number): void {
