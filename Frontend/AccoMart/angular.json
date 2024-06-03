@@ -45,6 +45,12 @@
                   "maximumError": "4kb"
                 }
               ],
+              "fileReplacements": [
+                {
+                "replace": "src/enviornments/enviornment.ts",
+                "with" : "src/enviornments/enviornment.prod.ts"
+                }
+              ],
               "outputHashing": "all"
             },
             "development": {
@@ -52,6 +58,7 @@
               "extractLicenses": false,
               "sourceMap": true
             }
+
           },
           "defaultConfiguration": "production"
         },
