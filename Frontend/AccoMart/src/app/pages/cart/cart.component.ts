@@ -187,17 +187,19 @@ export class CartComponent {
         this.spinLoader = true;
         this.orderService
           .placeOrderByCart(this.cartOrder)
-          .subscribe((response) => {
-            
-            this.spinLoader = false;
-            if (response.stripeModel && response.stripeModel.stripeUrl) {
-              window.location.href = response.stripeModel.stripeUrl;
-          } else {
-              console.error('Stripe URL not found in response:', response);
-          }
-          },error=>{
-            this.spinLoader = false;
-            this.toastr.error(error.error.message);
+          .subscribe({
+            next: (response) => {
+              this.spinLoader = false;
+              if (response.stripeModel && response.stripeModel.stripeUrl) {
+                window.location.href = response.stripeModel.stripeUrl;
+            } else {
+                console.error('Stripe URL not found in response:', response);
+            }
+            },
+            error: (error)=>{
+              this.spinLoader = false;
+              this.toastr.error(error.error.message);
+            }
           });
 
       }

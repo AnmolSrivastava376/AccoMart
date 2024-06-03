@@ -53,13 +53,13 @@ export class CartService {
   decrementCountByProductId(productId: number): void {
     const updatedCart = this.cartStore.cartItems
       .map((item) => {
-        if (item.productId === productId && item.quantity > 0) {
+        if (item.productId === productId) {
           return { ...item, quantity: item.quantity - 1 };
         }
         return item;
-      })
-      .filter((item) => item.quantity !== 0);
+      }).filter(item=>item.quantity!==0)
     this.cartStore.cartItems = updatedCart;
+    console.log(this.cartStore.cartItems)
   }
 
   findQuantityByProductId(productId: number): number {

@@ -45,14 +45,11 @@ export class orderService {
   }
 
   cancelOrder(orderId: number,items:Item[]): Observable<any> {
-    console.log("here");
-    console.log(items);
     let result: any
     this.http.post<any>(
       `http://localhost:5239/OrderController/Order/Cancel/${orderId}`,items
     ).subscribe({
       next: (response)=>{
-        console.log(response," : Response");
         result = response
       }
     })
