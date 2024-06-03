@@ -661,6 +661,13 @@ namespace API.Controllers.Order
         {
             try
             {
+                var isCancelled = await isCancelledOrder(orderId);
+                if (isCancelled)
+                {
+                    return BadRequest(new { message = "Order already cancelled" });
+                }
+
+
                 using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
                 {
                     await connection.OpenAsync();
@@ -678,16 +685,47 @@ namespace API.Controllers.Order
                     }
 
                 }
-                return Ok("Order Cancelled Successfully");
+                return Ok(new { message = "Order Cancelled Successfully" });
 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return BadRequest(new { error = $"Error cancelling order: {ex.Message}" });
             }
-            return null;
         }
 
+        private async Task<bool> isCancelledOrder(int orderId)
+        {
+            try
+            {
+                using (var connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                {
+                    await connection.OpenAsync();
+
+                    string isCancelledQuery = @"Select IsCancelled from Orders where OrderId = @OrderId";
+
+                    using (var isCancelledCommand = new SqlCommand(isCancelledQuery, connection))
+                    {
+                        isCancelledCommand.Parameters.AddWithValue("@OrderId", orderId);
+                        var result = await isCancelledCommand.ExecuteScalarAsync();
+
+                        if (result != null && result != DBNull.Value)
+                        {
+                            return (bool)result;
+                        }
+                        else
+                        {
+                            return false; 
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error checking if order is cancelled: {ex.Message}");
+
+            }
+        }
         private async Task<int> StockAvailable(int productId)
         {
             try

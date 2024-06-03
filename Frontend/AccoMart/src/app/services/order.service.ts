@@ -13,14 +13,12 @@ import { Item } from '../interfaces/item';
 })
 export class orderService {
   constructor(private http: HttpClient) {}
-
   placeOrderByCart(cartOrder: CartOrder): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
       `http://localhost:5239/OrderController/PlaceOrderByCart`,
       cartOrder
     );
   }
-
   placeOrderByProduct(
     productOrder: ProductOrder
   ): Observable<PlaceOrderResponse> {
@@ -29,34 +27,27 @@ export class orderService {
       productOrder
     );
   }
-
   fetchAllOrders(userId: string): Observable<Order[]> {
     return this.http.get<Order[]>(
       `http://localhost:5239/OrderController/FetchAllOrders/${userId}`
     );
   }
-  
-
-
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
       `http://localhost:5239/OrderController/GetCartItemsByOrderId/${orderId}`
     );
   }
+async  cancelOrder(orderId: number,items:Item[]): Promise<any> {
 
-  cancelOrder(orderId: number,items:Item[]): Observable<any> {
-    console.log("here");
-    console.log(items);
     let result: any
-    this.http.post<any>(
+    this.http.post(
       `http://localhost:5239/OrderController/Order/Cancel/${orderId}`,items
     ).subscribe({
       next: (response)=>{
-        console.log(response," : Response");
         result = response
+        console.log(result);
       }
     })
     return result;
   }
-
 }

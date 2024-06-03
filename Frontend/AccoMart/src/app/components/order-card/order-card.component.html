@@ -40,17 +40,24 @@
                 </div>
             </div>
             <div class="font-bold text-adj">Delivering To : <span
-                    class="font-medium text-[14px] text-gray-500">{{order.address}}</span></div>
-            <button type="button" *ngIf="!order.isCancelled"
-                class="w-full bg-[#21474d] text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
-                (click)="downloadInvoice(order.orderId)">Download Invoice
-            </button>
-
-            <div *ngIf="!order.isDelivered && !order.isCancelled" class="text-center">
-                <button class="w-full bg-[#da5a5a] text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring" (click)="CancelOrder(order.orderId,order.itemArray)">
-                    Cancel
-                </button>
-            </div>
+                    class="font-medium text-[12px] text-gray-500">{{order.address}}</span></div>
+            
+                    <div class="text-center flex gap-3  ">
+                        <button 
+                            *ngIf="!order.isDelivered && !order.isCancelled"
+                            class="bg-[#f56b53] w-1/2 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring" 
+                            (click)="CancelOrder(order.orderId,order.itemArray)">
+                            Cancel
+                        </button>
+                        <button 
+                            type="button" 
+                            *ngIf="!order.isCancelled"
+                            [ngClass]="{ 'w-1/2': !order.isDelivered , 'w-full':  (order.isDelivered) }"
+                            class="bg-[#21474d] text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring" 
+                            (click)="downloadInvoice(order.orderId)">
+                            Download Invoice
+                        </button>
+                    </div>
           
         </div>
     </div>

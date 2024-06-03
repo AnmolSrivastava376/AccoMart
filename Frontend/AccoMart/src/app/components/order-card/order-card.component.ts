@@ -13,6 +13,8 @@ import { addressService } from '../../services/address.service';
 import { invoiceService } from '../../services/invoiceService';
 import { orderService } from '../../services/order.service';
 import { Item } from '../../interfaces/item';
+import { error } from 'highcharts';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-order-card',
@@ -24,7 +26,7 @@ import { Item } from '../../interfaces/item';
 })
 export class OrderCardComponent implements OnInit {
   @Input() orders?: Order[];
-  constructor(private invoiceService: invoiceService, private orderService:orderService) {}
+  constructor(private invoiceService: invoiceService, private orderService:orderService, private toastr:ToastrService) {}
 
   downloadFile(data: Blob): void {
     const blob = new Blob([data], { type: 'application/pdf' });
@@ -74,11 +76,14 @@ export class OrderCardComponent implements OnInit {
 
   CancelOrder(orderId:number,items:Item[])
   {
-    if(confirm("Do you want to cancel this order"))
+      if(confirm("Do you want to cancel this order"))
       {
-        this.orderService.cancelOrder(orderId,items);
+        this.orderService.cancelOrder(orderId,items).then(response=>{
+          this.toastr.success("order deleted successfully");
+        },error=>{
+          this.toastr.error("Cannot cancel order");
+        });
       }
       return;
   }
-
 }
