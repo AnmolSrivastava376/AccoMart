@@ -15,7 +15,7 @@ export class HttpService {
 
   register(username: string, email: string, password: string) {
     return this.http.post<any>(
-      `AuthenticationController/Register`,
+      `${this.baseUrl}AuthenticationController/Register`,
       {
         userName: username,
         email: email,
@@ -38,7 +38,7 @@ export class HttpService {
         };
       };
     }>(
-      `AuthenticationController/Login`,
+      `${this.baseUrl}AuthenticationController/Login`,
       {
         email: email,
         password: password,
@@ -59,7 +59,7 @@ export class HttpService {
         };
       };
     }>(
-      `AuthenticationController/Refresh-Token`,
+      `${this.baseUrl}AuthenticationController/Refresh-Token`,
       {
         refreshToken,
       }
@@ -68,7 +68,7 @@ export class HttpService {
 
   loginByEmail(email: string) {
     return this.http.post<{ OTP: Number }>(
-      `AuthenticationController/LoginByOtp?email=${email}`,
+      `${this.baseUrl}AuthenticationController/LoginByOtp?email=${email}`,
       {
         email: email,
       }
@@ -88,7 +88,7 @@ export class HttpService {
         };
       };
     }>(
-      `AuthenticationController/Login-2FA?code=${OTP}&email=${email}`,
+      `${this.baseUrl}AuthenticationController/Login-2FA?code=${OTP}&email=${email}`,
       {
         OTP: OTP,
         email: email,
@@ -98,7 +98,7 @@ export class HttpService {
 
   forgotPassword(email: string): Observable<any> {
     return this.http.post<any>(
-      `AuthenticationController/forgot-password?email=${email}`,
+      `${this.baseUrl}AuthenticationController/forgot-password?email=${email}`,
       {}
     );
   }
@@ -110,7 +110,7 @@ export class HttpService {
     email: string
   ): Observable<resetPassword> {
     return this.http.post<any>(
-      `AuthenticationController/reset-password`,
+      `${this.baseUrl}AuthenticationController/reset-password`,
       {
         password: password,
         confirmPassword: confirmPassword,

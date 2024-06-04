@@ -93,7 +93,7 @@ export class TokenHttpInterceptor implements HttpInterceptor {
           };
         };
       }>(
-        `AuthenticationController/Refresh-Token`,
+        `${this.baseUrl}AuthenticationController/Refresh-Token`,
         refresh
       );
       this.tokenService.setToken(response.data.response.accessToken.token);

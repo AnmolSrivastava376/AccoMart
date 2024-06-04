@@ -13,6 +13,6 @@ export class searchService {
   baseUrl = environment.serverUrl;
 
   searchProductByprefix(prefix: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`AdminDashboard/Products/SearchBy=${prefix}`);
+    return this.http.get<Product[]>(`${this.baseUrl}AdminDashboard/Products/SearchBy=${prefix}`);
   }
 }

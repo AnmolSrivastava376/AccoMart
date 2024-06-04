@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.isLoggedIn = true;
       this.decoded = jwtDecode(token);
@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear()
+    sessionStorage.clear()
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');

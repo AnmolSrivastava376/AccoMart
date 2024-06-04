@@ -44,7 +44,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
   }
 
   ngAfterContentInit(): void {
-    const items = JSON.parse(localStorage.getItem('cartItems') || '');
+    const items = JSON.parse(sessionStorage.getItem('cartItems') || '');
     items.forEach((item: Product) => {
       if (item.productId === this.productId) {
         this.displayText = 'VIEW IN CART';

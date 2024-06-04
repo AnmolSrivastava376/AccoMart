@@ -19,7 +19,7 @@ export class orderService {
 
   placeOrderByCart(cartOrder: CartOrder): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `OrderController/PlaceOrderByCart`,
+      `${this.baseUrl}OrderController/PlaceOrderByCart`,
       cartOrder
     );
   }
@@ -28,26 +28,26 @@ export class orderService {
     productOrder: ProductOrder
   ): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `OrderController/PlaceOrderByProduct`,
+      `${this.baseUrl}OrderController/PlaceOrderByProduct`,
       productOrder
     );
   }
 
   fetchAllOrders(userId: string): Observable<Order[]> {
     return this.http.get<Order[]>(
-      `OrderController/FetchAllOrders/${userId}`
+      `${this.baseUrl}OrderController/FetchAllOrders/${userId}`
     );
   }
 
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
-      `OrderController/GetCartItemsByOrderId/${orderId}`
+      `${this.baseUrl}OrderController/GetCartItemsByOrderId/${orderId}`
     );
   }
 
   async cancelOrder(orderId: number, items: Item[]): Promise<any> {
     return this.http.post(
-      `OrderController/Order/Cancel/${orderId}`,
+      `${this.baseUrl}OrderController/Order/Cancel/${orderId}`,
       items
     ).toPromise();
   }

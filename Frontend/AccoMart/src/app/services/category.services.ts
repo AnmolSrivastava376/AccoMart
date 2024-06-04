@@ -13,37 +13,37 @@ export class CategoryService {
   baseUrl = environment.serverUrl;
 
   fetchCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`AdminDashboard/GetAllCategories`);
+    return this.http.get<Category[]>(`${this.baseUrl}AdminDashboard/GetAllCategories`);
   }
 
   fetchCategorybyName(categoryName: string): Observable<Category> {
     return this.http.get<Category>(
-      `AdminDashboard/${categoryName}`
+      `${this.baseUrl}AdminDashboard/${categoryName}`
     );
   }
 
   fetchCategorybyId(categoryId: number): Observable<Category> {
     return this.http.get<Category>(
-      `AdminDashboard/${categoryId}`
+      `${this.baseUrl}AdminDashboard/${categoryId}`
     );
   }
 
   addCategory(categoryName: string): Observable<any> {
     return this.http.post(
-      `AdminDashboard/${this.baseUrl}Create`,
+      `${this.baseUrl}AdminDashboard/Create`,
       { name: categoryName }
     );
   }
 
   deleteCategory(categoryId: number): Observable<any> {
     return this.http.delete(
-      `AdminDashboard/${this.baseUrl}Delete/Category/${categoryId}`
+      `${this.baseUrl}AdminDashboard/Delete/Category/${categoryId}`
     );
   }
 
   editCategory(categoryId: number, newName: string): Observable<any> {
     return this.http.put(
-      `AdminDashboard/${this.baseUrl}Update/Category?Id=${categoryId}&NewCategoryName=${newName}`,
+      `${this.baseUrl}AdminDashboard/Update/Category?Id=${categoryId}&NewCategoryName=${newName}`,
       {}
     );
   }

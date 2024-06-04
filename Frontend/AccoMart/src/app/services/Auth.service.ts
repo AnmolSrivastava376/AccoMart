@@ -8,7 +8,7 @@ export class AuthService {
   constructor() {}
 
   isAdminLoggedIn() {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       const decodedToken: any = jwtDecode(token);
       if (decodedToken.Role && decodedToken.Role === 'Admin') {
@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   userLoggedIn() {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       return true;
     }

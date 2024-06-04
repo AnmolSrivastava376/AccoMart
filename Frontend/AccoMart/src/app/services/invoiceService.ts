@@ -12,7 +12,7 @@ export class invoiceService {
   baseUrl = environment.serverUrl;
 
   getInvoice(orderId: number): Observable<Blob> {
-    return this.http.get(`GetInvoice/${orderId}`, {
+    return this.http.get(`${this.baseUrl}GetInvoice/${orderId}`, {
       responseType: 'blob',
     });
   }

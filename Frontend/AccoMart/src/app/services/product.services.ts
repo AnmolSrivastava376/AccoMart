@@ -14,41 +14,41 @@ export class productService {
 
   fetchProductByCategoryID(categoryId: number): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`
+      `${this.baseUrl}AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`
     );
   }
 
   fetchProductByCategoryName(categoryName: string): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `AdminDashboard/Products/CategoryName=${categoryName}`
+      `${this.baseUrl}AdminDashboard/Products/CategoryName=${categoryName}`
     );
   }
 
   fetchProductById(productId: number): Observable<Product> {
     return this.http.get<Product>(
-      `AdminDashboard/Product/${productId}`
+      `${this.baseUrl}AdminDashboard/Product/${productId}`
     );
   }
   fetchAllProductsPagewise(pageNo: number): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `AdminDashboard/GetAllProductsPagewise?pageNo=${pageNo}`
+      `${this.baseUrl}AdminDashboard/GetAllProductsPagewise?pageNo=${pageNo}`
     );
   }
   fetchProductByPageNo(categoryId: number, pageNo: number): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `AdminDashboard/ProductsByPageNo?id=${categoryId}&pageNo=${pageNo}`
+      `${this.baseUrl}AdminDashboard/ProductsByPageNo?id=${categoryId}&pageNo=${pageNo}`
     );
   }
 
   fetchProductByName(productName: string): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `AdminDashboard/Products/SearchBy=${productName}`
+      `${this.baseUrl}AdminDashboard/Products/SearchBy=${productName}`
     );
   }
 
   fetchAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `AdminDashboard/Products`
+      `${this.baseUrl}AdminDashboard/Products`
     );
   }
 
@@ -57,21 +57,21 @@ export class productService {
     updatedProduct: Product
   ): Observable<Product> {
     return this.http.put<Product>(
-      `AdminDashboard/Update/Product/${productId}`,
+      `${this.baseUrl}AdminDashboard/Update/Product/${productId}`,
       updatedProduct
     );
   }
 
   addProduct(product: CreateProduct): Observable<any> {
     return this.http.post(
-      'AdminDashboard/Product/Create',
+      `${this.baseUrl}AdminDashboard/Product/Create`,
       product
     );
   }
 
   deleteProductById(productId: number): Observable<any> {
     return this.http.delete(
-      `AdminDashboard/Delete/Product/${productId}`
+      `${this.baseUrl}AdminDashboard/Delete/Product/${productId}`
     );
   }
 }

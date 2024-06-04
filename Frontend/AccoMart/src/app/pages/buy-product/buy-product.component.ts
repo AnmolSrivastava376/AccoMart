@@ -96,12 +96,12 @@ export class BuyProductComponent {
     this.route.params.subscribe((params) => {
       this.selectedProductId = +params['productId'];
     });
-    this.newCartItem = this.buyNowService.getProductFromLocalStorage();
+    this.newCartItem = this.buyNowService.getProductFromSessionStorage();
     if (this.newCartItem) {
       this.cart = [...this.cart, this.newCartItem];
       this.cartItemLength = 1;
     }
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
       this.cartId = this.decoded.CartId;

@@ -33,7 +33,7 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.isLoggedIn = true;
       this.decoded = jwtDecode(token);
@@ -63,7 +63,7 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
+    sessionStorage.clear();
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
