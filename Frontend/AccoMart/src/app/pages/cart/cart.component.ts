@@ -193,7 +193,7 @@ export class CartComponent {
             next: (response) => {
               this.spinLoader = false;
               if (response.stripeModel && response.stripeModel.stripeUrl) {
-                this.router.navigateByUrl(response.stripeModel.stripeUrl);
+                window.location.href = response.stripeModel.stripeUrl;
             } else {
                 console.error('Stripe URL not found in response:', response);
             }

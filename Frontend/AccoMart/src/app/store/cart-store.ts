@@ -3,11 +3,13 @@ import { BehaviorSubject } from 'rxjs';
 import { cartItem } from '../interfaces/cartItem';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartStore {
+  baseUrl = environment.serverUrl;
   constructor() {
     const token = localStorage.getItem('token');
     if (token) {
@@ -15,7 +17,7 @@ export class CartStore {
       this.cartId = this.decoded.CartId;
       axios
         .get(
-          `http://localhost:5239/ShoppingCartController/Get/CartItems?cartId=${this.cartId}`
+          `ShoppingCartController/Get/CartItems?cartId=${this.cartId}`
         )
         .then((response) => {
           this._cartItems = response.data;
@@ -40,7 +42,7 @@ export class CartStore {
     this._cartItemsSubject.next(items);
     this.updateLocalStorage();
     axios.post(
-      `http://localhost:5239/ShoppingCartController/Add/CartItem?cartId=${this.cartId}`,
+      `ShoppingCartController/Add/CartItem?cartId=${this.cartId}`,
       items
     );
   }
