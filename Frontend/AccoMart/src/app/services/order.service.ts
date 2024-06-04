@@ -15,11 +15,11 @@ import { environment } from '../../environments/environment';
 export class orderService {
   constructor(private http: HttpClient) {}
 
-  baseUrl = environment.serverUrl + 'OrderController/';
+  baseUrl = environment.serverUrl;
 
   placeOrderByCart(cartOrder: CartOrder): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `${this.baseUrl}PlaceOrderByCart`,
+      `OrderController/PlaceOrderByCart`,
       cartOrder
     );
   }
@@ -28,26 +28,26 @@ export class orderService {
     productOrder: ProductOrder
   ): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `${this.baseUrl}PlaceOrderByProduct`,
+      `OrderController/PlaceOrderByProduct`,
       productOrder
     );
   }
 
   fetchAllOrders(userId: string): Observable<Order[]> {
     return this.http.get<Order[]>(
-      `${this.baseUrl}FetchAllOrders/${userId}`
+      `OrderController/FetchAllOrders/${userId}`
     );
   }
 
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
-      `${this.baseUrl}GetCartItemsByOrderId/${orderId}`
+      `OrderController/GetCartItemsByOrderId/${orderId}`
     );
   }
 
   async cancelOrder(orderId: number, items: Item[]): Promise<any> {
     return this.http.post(
-      `${this.baseUrl}Order/Cancel/${orderId}`,
+      `OrderController/Order/Cancel/${orderId}`,
       items
     ).toPromise();
   }

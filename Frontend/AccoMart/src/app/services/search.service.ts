@@ -10,9 +10,9 @@ import { environment } from '../../environments/environment';
 export class searchService {
   constructor(private http: HttpClient) {}
 
-  baseUrl = environment.serverUrl + 'AdminDashboard/Products/';
+  baseUrl = environment.serverUrl;
 
   searchProductByprefix(prefix: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}SearchBy=${prefix}`);
+    return this.http.get<Product[]>(`AdminDashboard/Products/SearchBy=${prefix}`);
   }
 }

@@ -14,20 +14,20 @@ export class addressService {
 
   getAddressByUserId(userId: string): Observable<any> {
     return this.http.get<any>(
-      `${this.baseUrl}AddressController/GetAddress/${userId}`
+      `AddressController/GetAddress/${userId}`
     );
   }
 
   addAddress(address: Address, userId: string): Observable<Address> {
     return this.http.post<Address>(
-      `${this.baseUrl}AddressController/PostAddress/${userId}`,
+      `AddressController/PostAddress/${userId}`,
       address
     );
   }
 
   getAddressByAddressId(addressId: number): Observable<Address> {
     return this.http.get<Address>(
-      `${this.baseUrl}AddressController/GetAddress/addressId=${addressId}`
+      `AddressController/GetAddress/addressId=${addressId}`
     );
   }
 }

@@ -12,17 +12,17 @@ import { environment } from '../../environments/environment';
 export class ChartService {
   constructor(private http: HttpClient) {}
 
-  baseUrl = environment.serverUrl + 'ChartController/';
+  baseUrl = environment.serverUrl;
 
   fetchDailyOrderQuantity(): Observable<ChartOrderItem[]> {
-    return this.http.get<ChartOrderItem[]>(`${this.baseUrl}FetchDailyOrderQuantity`);
+    return this.http.get<ChartOrderItem[]>(`ChartController/FetchDailyOrderQuantity`);
   }
 
   fetchCategoryWiseQuantity(): Observable<ChartCategoryItem[]> {
-    return this.http.get<ChartCategoryItem[]>(`${this.baseUrl}FetchCategoryWiseQuantity`);
+    return this.http.get<ChartCategoryItem[]>(`ChartController/${this.baseUrl}FetchCategoryWiseQuantity`);
   }
 
   fetchProductWiseQuantity(): Observable<ChartProductItem[]> {
-    return this.http.get<ChartProductItem[]>(`${this.baseUrl}FetchProductWiseQuantity`);
+    return this.http.get<ChartProductItem[]>(`ChartController/${this.baseUrl}FetchProductWiseQuantity`);
   }
 }

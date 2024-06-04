@@ -11,15 +11,15 @@ import { environment } from '../../environments/environment';
 export class deliveryService {
   constructor(private http: HttpClient) {}
 
-  baseUrl = environment.serverUrl + 'DeliveryServiceController/';
+  baseUrl = environment.serverUrl;
 
   getDeliveryServices(): Observable<DeliveryService[]> {
-    return this.http.get<DeliveryService[]>(`${this.baseUrl}GetAllDeliveryServices`);
+    return this.http.get<DeliveryService[]>(`DeliveryServiceController/GetAllDeliveryServices`);
   }
 
   addDeliveryService(deliveryService: createDeliveryService): Observable<any> {
     return this.http.post(
-      `${this.baseUrl}AddDeliveryService`,
+      `DeliveryServiceController/AddDeliveryService`,
       deliveryService
     );
   }
@@ -29,20 +29,20 @@ export class deliveryService {
     id: number
   ): Observable<any> {
     return this.http.put(
-      `${this.baseUrl}UpdateDeliveryService/${id}`,
+      `DeliveryServiceController/UpdateDeliveryService/${id}`,
       deliveryService
     );
   }
 
   deleteDeliveryService(id: number): Observable<any> {
     return this.http.delete(
-      `${this.baseUrl}DeleteDeliveryService/${id}`
+      `DeliveryServiceController/DeleteDeliveryService/${id}`
     );
   }
 
   getDeliveryDate(deliveryServiceId: number): Observable<number> {
     return this.http.get<number>(
-      `${this.baseUrl}GetDeliveryDays/${deliveryServiceId}`
+      `DeliveryServiceController/GetDeliveryDays/${deliveryServiceId}`
     );
   }
 }
