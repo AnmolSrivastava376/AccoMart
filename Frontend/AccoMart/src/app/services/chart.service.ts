@@ -4,26 +4,25 @@ import { Observable } from 'rxjs';
 import { ChartOrderItem } from '../interfaces/chartOrderItem';
 import { ChartCategoryItem } from '../interfaces/chartCategoryItem';
 import { ChartProductItem } from '../interfaces/chartProductItem';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChartService {
   constructor(private http: HttpClient) {}
-  
+
+  baseUrl = environment.serverUrl + 'ChartController/';
+
   fetchDailyOrderQuantity(): Observable<ChartOrderItem[]> {
-    return this.http.get<ChartOrderItem[]>(
-      'http://localhost:5239/ChartController/FetchDailyOrderQuantity'
-    );
+    return this.http.get<ChartOrderItem[]>(`${this.baseUrl}FetchDailyOrderQuantity`);
   }
+
   fetchCategoryWiseQuantity(): Observable<ChartCategoryItem[]> {
-    return this.http.get<ChartCategoryItem[]>(
-      'http://localhost:5239/ChartController/FetchCategoryWiseQuantity'
-    );
+    return this.http.get<ChartCategoryItem[]>(`${this.baseUrl}FetchCategoryWiseQuantity`);
   }
+
   fetchProductWiseQuantity(): Observable<ChartProductItem[]> {
-    return this.http.get<ChartProductItem[]>(
-      'http://localhost:5239/ChartController/FetchProductWiseQuantity'
-    );
+    return this.http.get<ChartProductItem[]>(`${this.baseUrl}FetchProductWiseQuantity`);
   }
 }

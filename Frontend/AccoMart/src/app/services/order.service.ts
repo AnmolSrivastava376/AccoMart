@@ -7,47 +7,48 @@ import { cartItem } from '../interfaces/cartItem';
 import { ProductOrder } from '../interfaces/productOrder';
 import { PlaceOrderResponse } from '../interfaces/PlaceOrderResponse';
 import { Item } from '../interfaces/item';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class orderService {
+export class OrderService {
   constructor(private http: HttpClient) {}
+
+  baseUrl = environment.serverUrl + 'OrderController/';
+
   placeOrderByCart(cartOrder: CartOrder): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `http://localhost:5239/OrderController/PlaceOrderByCart`,
+      `${this.baseUrl}PlaceOrderByCart`,
       cartOrder
     );
   }
+
   placeOrderByProduct(
     productOrder: ProductOrder
   ): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `http://localhost:5239/OrderController/PlaceOrderByProduct`,
+      `${this.baseUrl}PlaceOrderByProduct`,
       productOrder
     );
   }
+
   fetchAllOrders(userId: string): Observable<Order[]> {
     return this.http.get<Order[]>(
-      `http://localhost:5239/OrderController/FetchAllOrders/${userId}`
+      `${this.baseUrl}FetchAllOrders/${userId}`
     );
   }
+
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
-      `http://localhost:5239/OrderController/GetCartItemsByOrderId/${orderId}`
+      `${this.baseUrl}GetCartItemsByOrderId/${orderId}`
     );
   }
-async  cancelOrder(orderId: number,items:Item[]): Promise<any> {
 
-    let result: any
-    this.http.post(
-      `http://localhost:5239/OrderController/Order/Cancel/${orderId}`,items
-    ).subscribe({
-      next: (response)=>{
-        result = response
-        console.log(result);
-      }
-    })
-    return result;
+  async cancelOrder(orderId: number, items: Item[]): Promise<any> {
+    return this.http.post(
+      `${this.baseUrl}Order/Cancel/${orderId}`,
+      items
+    ).toPromise();
   }
 }
