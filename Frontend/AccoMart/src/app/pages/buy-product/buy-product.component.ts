@@ -86,7 +86,8 @@ export class BuyProductComponent {
     private buyNowService: BuyNowService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private orderService: orderService
+    private orderService: orderService,
+    private router : Router
   ) {}
 
   
@@ -187,7 +188,7 @@ export class BuyProductComponent {
         this.orderService.placeOrderByProduct(this.productOrder).subscribe({
           next: (response) => {
             if (response.stripeModel && response.stripeModel.stripeUrl) {
-              window.location.href = response.stripeModel.stripeUrl;
+              this.router.navigateByUrl(response.stripeModel.stripeUrl);
           } else {
               console.error('Stripe URL not found in response:', response);
           }

@@ -22,6 +22,7 @@ import { CartOrder } from '../../interfaces/placeOrder';
 import { ToastrService } from 'ngx-toastr';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { error } from 'highcharts';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -60,7 +61,8 @@ export class CartComponent {
     private productService: productService,
     private orderService: orderService,
     private cartService: CartService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router : Router
   ) {}
   cart: cartItem[] = [];
   clickedIndex = 0;
@@ -191,7 +193,7 @@ export class CartComponent {
             next: (response) => {
               this.spinLoader = false;
               if (response.stripeModel && response.stripeModel.stripeUrl) {
-                window.location.href = response.stripeModel.stripeUrl;
+                this.router.navigateByUrl(response.stripeModel.stripeUrl);
             } else {
                 console.error('Stripe URL not found in response:', response);
             }

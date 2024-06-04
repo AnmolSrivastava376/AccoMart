@@ -10,6 +10,7 @@ import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatIcon } from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-grid-display-card',
@@ -20,9 +21,10 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class GridDisplayCardComponent {
   @Input() products?: Product[];
+  constructor(private router : Router){}
 
   navigateToProductDetail(index: number) {
     const productId = this.products ? this.products[index].productId : 0;
-    window.location.href = `home/productdetail/${productId}`;
+     this.router.navigate(['home/productdetail', productId]);
   }
 }

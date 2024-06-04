@@ -52,7 +52,9 @@ export class ProductCardComponent implements OnInit, OnChanges {
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
   constructor(
     private chartService: ChartService,
-    private productService: productService
+    private productService: productService,
+    private router : Router
+    
   ) {}
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['categories']) {
@@ -104,7 +106,7 @@ export class ProductCardComponent implements OnInit, OnChanges {
       });
   }
   handleClick(productId: number) {
-    window.location.href = `home/productdetail/${productId}`;
+    this.router.navigate(['/home/productdetail', productId]);
   }
 
   handleEmitter() {

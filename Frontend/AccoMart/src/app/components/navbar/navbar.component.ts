@@ -32,10 +32,10 @@ export class NavbarComponent implements OnInit {
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
-    window.location.href='home/auth'
+    this.router.navigate(['/home/auth']);
   }
   
   navigateToAuth(){
-    window.location.href='home/auth'
+    this.router.navigate(['/home/auth']);
   }
 }

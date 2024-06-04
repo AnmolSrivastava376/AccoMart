@@ -22,7 +22,7 @@ export class ProductScrollDisplayCardComponent implements OnInit {
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() fetchNextPageCategoryWise: EventEmitter<number> = new EventEmitter<number>();
   private cartSubscription: Subscription
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService, private router : Router) {}
 
   ngOnInit(): void {
     this.cartSubscription = this.cartService.getCartItems$().subscribe({
@@ -81,6 +81,6 @@ export class ProductScrollDisplayCardComponent implements OnInit {
   }
 
   navigateToProduct(productId: number) {
-    window.location.href = `home/productdetail/${productId}`;
+    this.router.navigate(['home/productdetail', productId]);
   }
 }
