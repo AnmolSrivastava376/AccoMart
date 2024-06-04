@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class SearchService {
+export class searchService {
   constructor(private http: HttpClient) {}
 
   baseUrl = environment.serverUrl + 'AdminDashboard/Products/';

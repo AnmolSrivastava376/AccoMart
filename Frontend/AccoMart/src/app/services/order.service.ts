@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class OrderService {
+export class orderService {
   constructor(private http: HttpClient) {}
 
   baseUrl = environment.serverUrl + 'OrderController/';
