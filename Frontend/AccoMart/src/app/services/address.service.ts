@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class AddressService {
+export class addressService {
   constructor(private http: HttpClient) {}
 
   baseUrl = environment.serverUrl;
