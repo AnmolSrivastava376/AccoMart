@@ -19,10 +19,10 @@ export class ChartService {
   }
 
   fetchCategoryWiseQuantity(): Observable<ChartCategoryItem[]> {
-    return this.http.get<ChartCategoryItem[]>(`ChartController/${this.baseUrl}FetchCategoryWiseQuantity`);
+    return this.http.get<ChartCategoryItem[]>(`ChartController/FetchCategoryWiseQuantity`);
   }
 
   fetchProductWiseQuantity(): Observable<ChartProductItem[]> {
-    return this.http.get<ChartProductItem[]>(`ChartController/${this.baseUrl}FetchProductWiseQuantity`);
+    return this.http.get<ChartProductItem[]>(`ChartController/FetchProductWiseQuantity`);
   }
 }
