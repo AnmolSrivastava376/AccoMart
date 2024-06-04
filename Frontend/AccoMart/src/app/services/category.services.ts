@@ -8,12 +8,15 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class CategoryService {
-  constructor(private http: HttpClient) {}
-
-  baseUrl = environment.serverUrl;
+  baseUrl: string
+  constructor(private http: HttpClient) {
+    this.baseUrl = environment.serverUrl;
+  }
 
   fetchCategories(): Observable<Category[]> {
-    return this.http.get<Category[]>(`${this.baseUrl}AdminDashboard/GetAllCategories`);
+    const url = `${this.baseUrl}AdminDashboard/GetAllCategories`
+    console.log(url);
+    return this.http.get<Category[]>(url);
   }
 
   fetchCategorybyName(categoryName: string): Observable<Category> {

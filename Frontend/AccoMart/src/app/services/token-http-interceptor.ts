@@ -43,7 +43,7 @@ export class TokenHttpInterceptor implements HttpInterceptor {
         authReq = req.clone();
       } else {
         authReq = req.clone({
-          url: `${this.baseUrl}${req.url}`,
+          url: `${req.url}`,
           setHeaders: {
             Authorization: `Bearer ${token}`,
           },
@@ -93,7 +93,7 @@ export class TokenHttpInterceptor implements HttpInterceptor {
           };
         };
       }>(
-        `${this.baseUrl}AuthenticationController/Refresh-Token`,
+        `AuthenticationController/Refresh-Token`,
         refresh
       );
       this.tokenService.setToken(response.data.response.accessToken.token);
