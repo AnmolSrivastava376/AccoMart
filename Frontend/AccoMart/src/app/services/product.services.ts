@@ -3,50 +3,52 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../interfaces/product';
 import { CreateProduct } from '../interfaces/createProduct';
-
+import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class productService {
   constructor(private http: HttpClient) {}
 
+  baseUrl = environment.serverUrl
+
   fetchProductByCategoryID(categoryId: number): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `http://localhost:5239/AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`
+      `${this.baseUrl}AdminDashboard/Products/CategoryId=${categoryId}?orderBy=price_dsc`
     );
   }
 
   fetchProductByCategoryName(categoryName: string): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `http://localhost:5239/AdminDashboard/Products/CategoryName=${categoryName}`
+      `${this.baseUrl}AdminDashboard/Products/CategoryName=${categoryName}`
     );
   }
 
   fetchProductById(productId: number): Observable<Product> {
     return this.http.get<Product>(
-      `http://localhost:5239/AdminDashboard/Product/${productId}`
+      `${this.baseUrl}AdminDashboard/Product/${productId}`
     );
   }
   fetchAllProductsPagewise(pageNo: number): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `http://localhost:5239/AdminDashboard/GetAllProductsPagewise?pageNo=${pageNo}`
+      `${this.baseUrl}AdminDashboard/GetAllProductsPagewise?pageNo=${pageNo}`
     );
   }
   fetchProductByPageNo(categoryId: number, pageNo: number): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `http://localhost:5239/AdminDashboard/ProductsByPageNo?id=${categoryId}&pageNo=${pageNo}`
+      `${this.baseUrl}AdminDashboard/ProductsByPageNo?id=${categoryId}&pageNo=${pageNo}`
     );
   }
 
   fetchProductByName(productName: string): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `http://localhost:5239/AdminDashboard/Products/SearchBy=${productName}`
+      `${this.baseUrl}AdminDashboard/Products/SearchBy=${productName}`
     );
   }
 
   fetchAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(
-      'http://localhost:5239/AdminDashboard/Products'
+      `${this.baseUrl}AdminDashboard/Products`
     );
   }
 
@@ -55,21 +57,21 @@ export class productService {
     updatedProduct: Product
   ): Observable<Product> {
     return this.http.put<Product>(
-      `http://localhost:5239/AdminDashboard/Update/Product/${productId}`,
+      `${this.baseUrl}AdminDashboard/Update/Product/${productId}`,
       updatedProduct
     );
   }
 
   addProduct(product: CreateProduct): Observable<any> {
     return this.http.post(
-      'http://localhost:5239/AdminDashboard/Product/Create',
+      '${this.baseUrl}AdminDashboard/Product/Create',
       product
     );
   }
 
   deleteProductById(productId: number): Observable<any> {
     return this.http.delete(
-      `http://localhost:5239/AdminDashboard/Delete/Product/${productId}`
+      `${this.baseUrl}AdminDashboard/Delete/Product/${productId}`
     );
   }
 }
