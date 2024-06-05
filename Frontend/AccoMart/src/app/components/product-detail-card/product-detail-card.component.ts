@@ -54,7 +54,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
 
   handleClick() {
     if (this.displayText === 'VIEW IN CART') {
-      this.router.navigate(['/home/cart']);
+      window.location.href = '/home/cart'
     }
     if (this.product && this.product.stock > 0) {
       this.cartService.addToCart(this.productId);
@@ -71,7 +71,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
           productId: response.productId,
           quantity: 1,
         };
-        this.router.navigate(['/home/buy-product', this.productId]);
+        window.location.href = `/home/buy-product/${this.productId}`
       });
     }
     else{

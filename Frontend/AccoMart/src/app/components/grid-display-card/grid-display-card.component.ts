@@ -25,6 +25,6 @@ export class GridDisplayCardComponent {
 
   navigateToProductDetail(index: number) {
     const productId = this.products ? this.products[index].productId : 0;
-     this.router.navigate(['home/productdetail', productId]);
+     window.location.href = `home/productdetail/${productId}`
   }
 }

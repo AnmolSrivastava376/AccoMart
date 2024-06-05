@@ -97,12 +97,12 @@ export class AdminProductsComponent implements OnInit {
   }
 
   openAddProductPage() {
-    this.router.navigate(['/admin/product/add']);
+    window.location.href = '/admin/product/add'
   }
 
   openEditPage(product: Product): void {
     this.selectedProduct = product;
-    this.router.navigate(['/admin/product/edit', product.productId]);
+    window.location.href = `admin/product/edit/${product.productId}`
   }
 
   deleteProduct(productId: number) {

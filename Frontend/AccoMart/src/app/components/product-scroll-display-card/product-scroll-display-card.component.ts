@@ -81,6 +81,6 @@ export class ProductScrollDisplayCardComponent implements OnInit {
   }
 
   navigateToProduct(productId: number) {
-    this.router.navigate(['home/productdetail', productId]);
+    window.location.href = `home/productdetail/${productId}`;
   }
 }

@@ -39,7 +39,7 @@ export class Login2FAComponent {
     this.httpService.login2FA(otp,email).subscribe((result) => {
         console.log(result);
         sessionStorage.setItem("token", result.response.accessToken.token);
-        this.router.navigateByUrl('/');
+        window.location.href = '/'
     })
   }
 }

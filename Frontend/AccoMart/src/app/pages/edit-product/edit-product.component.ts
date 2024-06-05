@@ -147,7 +147,7 @@ export class EditProductComponent implements OnInit {
   }
 
   CancelEdit(): void {
-    this.router.navigate(['/admin/products']);
+    window.location.href = '/admin/products'
   }
 
   submitForm(): void {
@@ -171,7 +171,7 @@ export class EditProductComponent implements OnInit {
       .subscribe({
         next: () => {
           this.toastr.success('Product edited', undefined, { timeOut: 2000 });
-          this.router.navigate(['/admin/products']);
+          window.location.href = '/admin/products'
         },
         error: () => {
           this.toastr.error('Error updating product', undefined, {

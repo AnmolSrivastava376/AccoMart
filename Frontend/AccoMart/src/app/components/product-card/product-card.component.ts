@@ -106,7 +106,7 @@ export class ProductCardComponent implements OnInit, OnChanges {
       });
   }
   handleClick(productId: number) {
-    this.router.navigate(['/home/productdetail', productId]);
+    window.location.href = `/home/productdetail/${productId}`
   }
 
   handleEmitter() {

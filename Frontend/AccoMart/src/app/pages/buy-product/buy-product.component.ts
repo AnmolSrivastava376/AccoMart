@@ -188,7 +188,7 @@ export class BuyProductComponent {
         this.orderService.placeOrderByProduct(this.productOrder).subscribe({
           next: (response) => {
             if (response.stripeModel && response.stripeModel.stripeUrl) {
-              this.router.navigateByUrl(response.stripeModel.stripeUrl);
+              window.location.href = response.stripeModel.stripeUrl
           } else {
               console.error('Stripe URL not found in response:', response);
           }

@@ -46,11 +46,11 @@ export class HomeNavbarComponent implements OnInit {
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');
-    this.router.navigate(['/home/auth']);
+    this.navigateToAuth();
   }
 
   navigateToAuth() {
-    this.router.navigate(['/home/auth']);
+    window.location.href = '/home/auth'
   }
 
   onSearchCompleted(products: Product[]): void {

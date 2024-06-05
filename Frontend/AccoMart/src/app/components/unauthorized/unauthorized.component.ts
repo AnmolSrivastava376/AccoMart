@@ -12,6 +12,6 @@ export class UnauthorizedComponent {
   constructor(private router: Router) { }
 
   redirectToLogin(): void {
-    this.router.navigate(['/home/auth']);
+    window.location.href = '/home/auth'
   }
 }

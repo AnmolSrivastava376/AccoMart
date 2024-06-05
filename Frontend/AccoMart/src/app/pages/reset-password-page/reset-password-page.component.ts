@@ -95,7 +95,7 @@ export class ResetPasswordPageComponent implements OnInit {
         (response) => {
           this.resetResponse = 'success';
           this.toastr.success("Password reset successful")
-          this.router.navigate(['/home/auth']);
+          window.location.href = '/home/auth'
         },
         (error) => {
           if (error.error && error.error.errors) {
