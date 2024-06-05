@@ -128,10 +128,10 @@
               </div>
 
               <div class="">
-                <a href="home/forgotpassword" class="text-[#6cc0bc] text-[14px] hover:underline">Forgot your
+                <a [routerLink]='["/home/forgotpassword"]' class="text-[#6cc0bc] text-[14px] hover:underline">Forgot your
                   password?</a>
                 <span class="mx-1"></span>
-                <a href="home/auth-otp" class="text-[#6cc0bc] text-[14px] underline">Login with Otp</a>
+                <a [routerLink]='["/homeauth-otp"]' class="text-[#6cc0bc] text-[14px] underline">Login with Otp</a>
               </div>
               <div class="flex justify-center h-fit">
                 <button type="button" (click)="onLogin()"
@@ -156,7 +156,7 @@
               </button>
             </div>
             <div class="back-btn mt-[10px]">
-              <a href="home" class="text-blue-50 bg-green-500 rounded font-semibold px-4 py-2">&laquo; back</a>
+              <a [routerLink]='["/home"]' class="text-blue-50 bg-green-500 rounded font-semibold px-4 py-2">&laquo; back</a>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpService } from '../../services/http.service';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TokenService } from '../../services/token.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +23,7 @@ import { LoaderComponent } from '../../components/loader/loader.component';
     Login2FAComponent,
     HttpClientModule,
     LoaderComponent,
+    RouterLink
   ],
   providers: [HttpService],
   templateUrl: './auth-otp.component.html',
