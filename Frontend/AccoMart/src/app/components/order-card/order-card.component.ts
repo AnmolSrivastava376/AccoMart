@@ -1,9 +1,9 @@
 import {
   Component,
   Input,
-  OnChanges,
+  Output,
   OnInit,
-  SimpleChanges,
+  EventEmitter,
 } from '@angular/core';
 import { Order } from '../../interfaces/order';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,6 @@ import { addressService } from '../../services/address.service';
 import { invoiceService } from '../../services/invoiceService';
 import { orderService } from '../../services/order.service';
 import { Item } from '../../interfaces/item';
-import { error } from 'highcharts';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -26,6 +25,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class OrderCardComponent implements OnInit {
   @Input() orders?: Order[];
+  @Output() Change = new EventEmitter<boolean>();
+
+
   constructor(private invoiceService: invoiceService, private orderService:orderService, private toastr:ToastrService) {}
 
   downloadFile(data: Blob): void {
@@ -83,7 +85,13 @@ export class OrderCardComponent implements OnInit {
         },error=>{
           this.toastr.error("Cannot cancel order");
         });
+
+  
+      }else{
+        console.log("this");
+        this.Change.emit(true);
       }
       return;
   }
+ 
 }

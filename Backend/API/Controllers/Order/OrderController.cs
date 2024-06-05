@@ -7,6 +7,9 @@ using Stripe.Checkout;
 using StackExchange.Redis;
 using System.Net;
 using Data.Models.CartModels;
+using Microsoft.AspNetCore.Identity;
+using Data.Models.Authentication.User;
+using Service.Models;
 
 namespace API.Controllers.Order
 {
@@ -19,14 +22,19 @@ namespace API.Controllers.Order
         private readonly StackExchange.Redis.IDatabase _database;
         private readonly ICartService _cartService;
         private readonly string _domain;     
+        private readonly IEmailService _emailService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public OrderController(IConfiguration configuration, ICartService cartService, IConnectionMultiplexer redis)
+
+        public OrderController(IConfiguration configuration, ICartService cartService, IConnectionMultiplexer redis,IEmailService emailService, UserManager<ApplicationUser> userManager)
         {
-            //_configuration = configuration;
+            _configuration = configuration;
             _cartService = cartService;
             _database = redis.GetDatabase();
+            _userManager = userManager;
             _domain = configuration["Url:frontendUrl"];
+            _emailService = emailService;   
         }
 
 
@@ -377,7 +385,7 @@ namespace API.Controllers.Order
                     }
                 }
 
-                return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId, productPrice, orderId, productOrderDto.quantity);
+                return await Checkout(productOrderDto.ProductId, productOrderDto.DeliveryId, productPrice, orderId, productOrderDto.quantity,productOrderDto.UserId);
 
 
             }
@@ -422,7 +430,7 @@ namespace API.Controllers.Order
 
 
         [HttpPost("Checkout/Product")]
-        public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity)
+        public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity, string userId)
         {
 
             if (!IsQuantityAvailable(productId, quantity))
@@ -577,6 +585,15 @@ namespace API.Controllers.Order
                     insertHistoryCommand.Parameters.AddWithValue("@Quantity", quantity);
                     await insertHistoryCommand.ExecuteNonQueryAsync();
                 };
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user != null) 
+                {
+                    var message = new Message(new string[] { user.Email }, "Order Successfull", "Order Successfull placed");
+                    _emailService.SendEmail(message);
+                }
+
+
             }
             else
             {
@@ -657,7 +674,6 @@ namespace API.Controllers.Order
         {
             return await StockAvailable(productId);
         }
-
 
         [HttpPost("Order/Cancel/{orderId}")]
         public async Task<IActionResult>CancelOrder(int orderId, [FromBody] List<OrderItem> orderItems)
