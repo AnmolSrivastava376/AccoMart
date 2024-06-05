@@ -424,7 +424,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Product")]
         public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity)
         {
-
+            _domain = _configuration["Url:frontendUrl"];
             if (!IsQuantityAvailable(productId, quantity))
             {
 
