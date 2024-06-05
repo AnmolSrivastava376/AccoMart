@@ -8,6 +8,7 @@ import { LoaderComponent } from '../loader/loader.component';
 import { CartService } from '../../services/cart.services';
 import { productService } from '../../services/product.services';
 import { BuyNowService } from '../../services/buy-now.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-detail-card',
@@ -25,7 +26,8 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
     private route: ActivatedRoute,
     private cartService: CartService,
     private productService: productService,
-    private buyNowService: BuyNowService
+    private buyNowService: BuyNowService,
+    private router : Router
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +44,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
   }
 
   ngAfterContentInit(): void {
-    const items = JSON.parse(localStorage.getItem('cartItems') || '');
+    const items = JSON.parse(sessionStorage.getItem('cartItems') || '');
     items.forEach((item: Product) => {
       if (item.productId === this.productId) {
         this.displayText = 'VIEW IN CART';
@@ -52,7 +54,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
 
   handleClick() {
     if (this.displayText === 'VIEW IN CART') {
-      window.location.href = 'home/cart';
+      this.router.navigate(['/home/cart']);
     }
     if (this.product && this.product.stock > 0) {
       this.cartService.addToCart(this.productId);
@@ -69,7 +71,7 @@ export class ProductDetailCardComponent implements OnInit, AfterContentInit, OnC
           productId: response.productId,
           quantity: 1,
         };
-        window.location.href = `/home/buy-product/${this.productId}`;
+        this.router.navigate(['/home/buy-product', this.productId]);
       });
     }
     else{

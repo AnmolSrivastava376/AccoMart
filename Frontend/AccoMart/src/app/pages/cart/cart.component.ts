@@ -22,6 +22,7 @@ import { CartOrder } from '../../interfaces/placeOrder';
 import { ToastrService } from 'ngx-toastr';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { error } from 'highcharts';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -60,7 +61,8 @@ export class CartComponent {
     private productService: productService,
     private orderService: orderService,
     private cartService: CartService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router : Router
   ) {}
   cart: cartItem[] = [];
   clickedIndex = 0;
@@ -83,9 +85,9 @@ export class CartComponent {
 
   ngOnInit(): void {
     this.cartItemLength = JSON.parse(
-      localStorage.getItem('cartItems') || ''
+      sessionStorage.getItem('cartItems') || ''
     ).length;
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
       this.cartId = this.decoded.CartId;

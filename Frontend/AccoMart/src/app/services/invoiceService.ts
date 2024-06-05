@@ -1,17 +1,18 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import axios from 'axios';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class invoiceService {
-  http = inject(HttpClient);
-  constructor() {}
+  constructor(private http: HttpClient) {}
+
+  baseUrl = environment.serverUrl;
 
   getInvoice(orderId: number): Observable<Blob> {
-    return this.http.get(`http://localhost:5239/GetInvoice/${orderId}`, {
+    return this.http.get(`${this.baseUrl}GetInvoice/${orderId}`, {
       responseType: 'blob',
     });
   }

@@ -38,7 +38,7 @@ export class Login2FAComponent {
     const otp = this.loginForm.value.otp!
     this.httpService.login2FA(otp,email).subscribe((result) => {
         console.log(result);
-        localStorage.setItem("token", result.response.accessToken.token);
+        sessionStorage.setItem("token", result.response.accessToken.token);
         this.router.navigateByUrl('/');
     })
   }

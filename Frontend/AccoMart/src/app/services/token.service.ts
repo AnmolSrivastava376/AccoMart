@@ -7,45 +7,45 @@ export class TokenService {
   constructor() {}
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   }
 
   setToken(token: string): void {
-    localStorage.setItem('token', token);
+    sessionStorage.setItem('token', token);
   }
 
   setRefreshToken(refreshToken: any): void {
-    localStorage.setItem('refreshtoken', refreshToken);
+    sessionStorage.setItem('refreshtoken', refreshToken);
   }
 
   setAccessToken(accessToken: any): void {
-    localStorage.setItem('accesstoken', accessToken);
+    sessionStorage.setItem('accesstoken', accessToken);
   }
 
   setExpiryAccess(expiry_accesstoken: any): void {
-    localStorage.setItem('expiry_accesstoken', expiry_accesstoken);
+    sessionStorage.setItem('expiry_accesstoken', expiry_accesstoken);
   }
 
   setExpiryRefresh(expiry_refreshtoken: any): void {
-    localStorage.setItem('expiry_refreshtoken', expiry_refreshtoken);
+    sessionStorage.setItem('expiry_refreshtoken', expiry_refreshtoken);
   }
 
   getAccessToken(): any | null {
-    const accessToken = localStorage.getItem('accesstoken');
+    const accessToken = sessionStorage.getItem('accesstoken');
     return accessToken;
   }
 
   getRefreshToken(): any | null {
-    const refreshToken = localStorage.getItem('accesstoken');
+    const refreshToken = sessionStorage.getItem('accesstoken');
     return refreshToken;
   }
 
   getAccessExpiry(): any | null {
-    const expiry_accesstoken = localStorage.getItem('expiry_accesstoken');
+    const expiry_accesstoken = sessionStorage.getItem('expiry_accesstoken');
     return expiry_accesstoken;
   }
   getRefreshExpiry(): any | null {
-    const expiry_refreshtoken = localStorage.getItem('expiry_refreshtoken');
+    const expiry_refreshtoken = sessionStorage.getItem('expiry_refreshtoken');
     return expiry_refreshtoken;
   }
 }

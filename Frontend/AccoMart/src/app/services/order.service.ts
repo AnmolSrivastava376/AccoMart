@@ -7,47 +7,48 @@ import { cartItem } from '../interfaces/cartItem';
 import { ProductOrder } from '../interfaces/productOrder';
 import { PlaceOrderResponse } from '../interfaces/PlaceOrderResponse';
 import { Item } from '../interfaces/item';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class orderService {
   constructor(private http: HttpClient) {}
+
+  baseUrl = environment.serverUrl;
+
   placeOrderByCart(cartOrder: CartOrder): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `http://localhost:5239/OrderController/PlaceOrderByCart`,
+      `${this.baseUrl}OrderController/PlaceOrderByCart`,
       cartOrder
     );
   }
+
   placeOrderByProduct(
     productOrder: ProductOrder
   ): Observable<PlaceOrderResponse> {
     return this.http.post<PlaceOrderResponse>(
-      `http://localhost:5239/OrderController/PlaceOrderByProduct`,
+      `${this.baseUrl}OrderController/PlaceOrderByProduct`,
       productOrder
     );
   }
+
   fetchAllOrders(userId: string): Observable<Order[]> {
     return this.http.get<Order[]>(
-      `http://localhost:5239/OrderController/FetchAllOrders/${userId}`
+      `${this.baseUrl}OrderController/FetchAllOrders/${userId}`
     );
   }
+
   fetchOrderByOrderId(orderId: number): Observable<cartItem[]> {
     return this.http.get<cartItem[]>(
-      `http://localhost:5239/OrderController/GetCartItemsByOrderId/${orderId}`
+      `${this.baseUrl}OrderController/GetCartItemsByOrderId/${orderId}`
     );
   }
-async  cancelOrder(orderId: number,items:Item[]): Promise<any> {
 
-    let result: any
-    this.http.post(
-      `http://localhost:5239/OrderController/Order/Cancel/${orderId}`,items
-    ).subscribe({
-      next: (response)=>{
-        result = response
-        console.log(result);
-      }
-    })
-    return result;
+  async cancelOrder(orderId: number, items: Item[]): Promise<any> {
+    return this.http.post(
+      `${this.baseUrl}OrderController/Order/Cancel/${orderId}`,
+      items
+    ).toPromise();
   }
 }

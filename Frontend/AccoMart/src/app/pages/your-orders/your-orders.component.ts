@@ -44,7 +44,7 @@ export class YourOrdersComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
       this.userId = this.decoded.UserId;

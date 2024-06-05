@@ -18,14 +18,15 @@ namespace API.Controllers.Order
         private readonly IConfiguration _configuration;
         private readonly StackExchange.Redis.IDatabase _database;
         private readonly ICartService _cartService;
-        private readonly string _domain = "http://localhost:4200/";
+        private string _domain;     
+
 
         public OrderController(IConfiguration configuration, ICartService cartService, IConnectionMultiplexer redis)
         {
             _configuration = configuration;
             _cartService = cartService;
             _database = redis.GetDatabase();
-
+            
         }
 
 
@@ -33,7 +34,8 @@ namespace API.Controllers.Order
         [HttpGet("FetchAllOrders/{userId}")]
         public async Task<IActionResult> FetchAllOrders(string userId)
         {
-            List<Orders> orders = new List<Orders>();
+           
+            List <Orders> orders = new List<Orders>();
             try
             {
                 using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
@@ -143,6 +145,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Cart")]
         public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
+            _domain = _configuration["Url:frontendUrl"];
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
@@ -421,7 +424,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Product")]
         public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity)
         {
-
+            _domain = _configuration["Url:frontendUrl"];
             if (!IsQuantityAvailable(productId, quantity))
             {
 

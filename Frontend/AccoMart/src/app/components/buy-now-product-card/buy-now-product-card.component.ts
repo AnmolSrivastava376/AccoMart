@@ -5,6 +5,7 @@ import { productService } from '../../services/product.services';
 import { LoaderComponent } from '../loader/loader.component';
 import { BuyNowService } from '../../services/buy-now.service';
 import { cartItem } from '../../interfaces/cartItem';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-buy-now-product-card',
@@ -22,7 +23,8 @@ export class BuyNowProductCardComponent implements OnInit {
     new EventEmitter<cartItem>();
   constructor(
     private productService: productService,
-    private buyNowService: BuyNowService
+    private buyNowService: BuyNowService,
+    private router : Router
   ) {}
 
   ngOnInit(): void {
@@ -51,7 +53,7 @@ export class BuyNowProductCardComponent implements OnInit {
       this.outputCartItem.emit(this.productItem);
     } else {
       this.buyNowService.removeItem();
-      window.location.href = `home`;
+      this.router.navigate(['/home']);
     }
   }
 }

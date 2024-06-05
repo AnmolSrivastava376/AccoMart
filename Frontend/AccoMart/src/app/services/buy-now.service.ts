@@ -14,16 +14,16 @@ export class BuyNowService {
 
   set item(product: cartItem) {
     this._product = product;
-    this.storeProductInLocalStorage(product);
+    this.storeProductInSessionStorage(product);
   }
 
-  private storeProductInLocalStorage(product: cartItem): void {
+  private storeProductInSessionStorage(product: cartItem): void {
     const productString = JSON.stringify(product);
-    localStorage.setItem('productItem', productString);
+    sessionStorage.setItem('productItem', productString);
   }
 
-  getProductFromLocalStorage(): cartItem | null {
-    const productString = localStorage.getItem('productItem');
+  getProductFromSessionStorage(): cartItem | null {
+    const productString = sessionStorage.getItem('productItem');
     if (productString) {
       const product: cartItem = JSON.parse(productString);
       return product;
@@ -32,6 +32,6 @@ export class BuyNowService {
     }
   }
   removeItem() {
-    localStorage.removeItem('productItem');
+    sessionStorage.removeItem('productItem');
   }
 }

@@ -6,6 +6,7 @@ import { ScrollDisplayCardComponent } from '../scroll-display-card/scroll-displa
 import { ProductScrollDisplayCardComponent } from '../product-scroll-display-card/product-scroll-display-card.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SearchProductCardWithoutScrollComponent } from '../search-product-card-without-scroll/search-product-card-without-scroll.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-search-product-card',
@@ -24,9 +25,9 @@ import { SearchProductCardWithoutScrollComponent } from '../search-product-card-
 export class SearchProductCardComponent {
   @Input() products?: Product[];
   @Input() categoryName?: string;
-  constructor() {}
+  constructor(private router : Router) {}
 
   handleClick(productId: number) {
-    window.location.href = `home/productdetail/${productId}`;
+    this.router.navigate(['home/productdetail', productId]);
   }
 }

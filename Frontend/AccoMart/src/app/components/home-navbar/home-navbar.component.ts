@@ -29,7 +29,7 @@ export class HomeNavbarComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.isLoggedIn = true;
       this.decoded = jwtDecode(token);
@@ -39,10 +39,10 @@ export class HomeNavbarComponent implements OnInit {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('cartItems');
-    localStorage.removeItem('accesstoken');
-    localStorage.removeItem('refreshtoken');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('cartItems');
+    sessionStorage.removeItem('accesstoken');
+    sessionStorage.removeItem('refreshtoken');
     this.isLoggedIn = false;
     this.username = '';
     console.log('Token removed successfully');

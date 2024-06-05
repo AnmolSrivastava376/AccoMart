@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.services';
 import { Subscription } from 'rxjs';
-import { invoiceService } from '../../services/invoiceService';
 import { HttpClientModule } from '@angular/common/http';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { FormsModule } from '@angular/forms';
@@ -40,7 +39,6 @@ import { SearchProductCardComponent } from '../../components/search-product-card
     productService,
     Router,
     CartService,
-    invoiceService,
   ],
 })
 export class HomeComponent implements OnInit, OnDestroy {
@@ -62,7 +60,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     private productService: productService,
     private router: Router,
     private cartService: CartService,
-    private invoiceService: invoiceService
   ) {}
 
   ngOnInit(): void {
@@ -118,7 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   gotoCart() {
-    window.location.href = '/home/cart';
+    this.router.navigate(['/home/cart']);
   }
 
   handleNextPageLoad() {

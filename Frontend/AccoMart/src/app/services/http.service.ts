@@ -1,19 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { resetPassword } from '../interfaces/resetPassword';
 import { Observable } from 'rxjs';
 import { RefreshToken } from '../interfaces/RefreshToken';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HttpService {
-  http = inject(HttpClient);
-  constructor() {}
+  constructor(private http: HttpClient) {}
+
+  baseUrl = environment.serverUrl;
 
   register(username: string, email: string, password: string) {
     return this.http.post<any>(
-      'http://localhost:5239/AuthenticationController/Register',
+      `${this.baseUrl}AuthenticationController/Register`,
       {
         userName: username,
         email: email,
@@ -35,10 +37,13 @@ export class HttpService {
           expiryTokenDate: string;
         };
       };
-    }>('http://localhost:5239/AuthenticationController/Login', {
-      email: email,
-      password: password,
-    });
+    }>(
+      `${this.baseUrl}AuthenticationController/Login`,
+      {
+        email: email,
+        password: password,
+      }
+    );
   }
 
   refreshToken(refreshToken: RefreshToken) {
@@ -53,14 +58,17 @@ export class HttpService {
           expiryTokenDate: string;
         };
       };
-    }>('http://localhost:5239/AuthenticationController/Refresh-Token', {
-      refreshToken,
-    });
+    }>(
+      `${this.baseUrl}AuthenticationController/Refresh-Token`,
+      {
+        refreshToken,
+      }
+    );
   }
 
   loginByEmail(email: string) {
     return this.http.post<{ OTP: Number }>(
-      `http://localhost:5239/AuthenticationController/LoginByOtp?email=${email}`,
+      `${this.baseUrl}AuthenticationController/LoginByOtp?email=${email}`,
       {
         email: email,
       }
@@ -80,7 +88,7 @@ export class HttpService {
         };
       };
     }>(
-      `http://localhost:5239/AuthenticationController/Login-2FA?code=${OTP}&email=${email}`,
+      `${this.baseUrl}AuthenticationController/Login-2FA?code=${OTP}&email=${email}`,
       {
         OTP: OTP,
         email: email,
@@ -90,7 +98,7 @@ export class HttpService {
 
   forgotPassword(email: string): Observable<any> {
     return this.http.post<any>(
-      `http://localhost:5239/AuthenticationController/forgot-password?email=${email}`,
+      `${this.baseUrl}AuthenticationController/forgot-password?email=${email}`,
       {}
     );
   }
@@ -102,7 +110,7 @@ export class HttpService {
     email: string
   ): Observable<resetPassword> {
     return this.http.post<any>(
-      'http://localhost:5239/AuthenticationController/reset-password',
+      `${this.baseUrl}AuthenticationController/reset-password`,
       {
         password: password,
         confirmPassword: confirmPassword,

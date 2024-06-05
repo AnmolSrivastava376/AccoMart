@@ -86,7 +86,8 @@ export class BuyProductComponent {
     private buyNowService: BuyNowService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private orderService: orderService
+    private orderService: orderService,
+    private router : Router
   ) {}
 
   
@@ -95,12 +96,12 @@ export class BuyProductComponent {
     this.route.params.subscribe((params) => {
       this.selectedProductId = +params['productId'];
     });
-    this.newCartItem = this.buyNowService.getProductFromLocalStorage();
+    this.newCartItem = this.buyNowService.getProductFromSessionStorage();
     if (this.newCartItem) {
       this.cart = [...this.cart, this.newCartItem];
       this.cartItemLength = 1;
     }
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.decoded = jwtDecode(token);
       this.cartId = this.decoded.CartId;
@@ -187,7 +188,7 @@ export class BuyProductComponent {
         this.orderService.placeOrderByProduct(this.productOrder).subscribe({
           next: (response) => {
             if (response.stripeModel && response.stripeModel.stripeUrl) {
-              window.location.href = response.stripeModel.stripeUrl;
+              this.router.navigateByUrl(response.stripeModel.stripeUrl);
           } else {
               console.error('Stripe URL not found in response:', response);
           }

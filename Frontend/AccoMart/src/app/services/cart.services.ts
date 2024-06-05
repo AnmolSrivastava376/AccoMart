@@ -15,7 +15,7 @@ export class CartService {
 
   setCartItems(items: cartItem[]): void {
     this.cartStore.cartItems = items;
-    localStorage.setItem('cartItems', JSON.stringify(items));
+    sessionStorage.setItem('cartItems', JSON.stringify(items));
   }
 
   fetchCart(): cartItem[] {
