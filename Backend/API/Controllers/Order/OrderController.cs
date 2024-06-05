@@ -18,15 +18,15 @@ namespace API.Controllers.Order
         private readonly IConfiguration _configuration;
         private readonly StackExchange.Redis.IDatabase _database;
         private readonly ICartService _cartService;
-        private readonly string _domain;     
+        private string _domain;     
 
 
         public OrderController(IConfiguration configuration, ICartService cartService, IConnectionMultiplexer redis)
         {
-            //_configuration = configuration;
+            _configuration = configuration;
             _cartService = cartService;
             _database = redis.GetDatabase();
-            _domain = configuration["Url:frontendUrl"];
+            
         }
 
 
@@ -145,7 +145,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Cart")]
         public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
-          
+            _domain = _configuration["Url:frontendUrl"];
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
