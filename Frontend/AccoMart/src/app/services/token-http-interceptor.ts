@@ -52,8 +52,7 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       return next.handle(authReq).pipe(
         tap((event) => {
           if (event instanceof HttpResponse) {
-            // Log successful responses
-            console.log('Successful Response:', event);
+                      
           }
         }),
         catchError((error: HttpErrorResponse) => {

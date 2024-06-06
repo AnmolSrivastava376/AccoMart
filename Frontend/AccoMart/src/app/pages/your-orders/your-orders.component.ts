@@ -48,18 +48,29 @@ export class YourOrdersComponent implements OnInit {
     if (token) {
       this.decoded = jwtDecode(token);
       this.userId = this.decoded.UserId;
-      this.orderService.fetchAllOrders(this.userId).subscribe({
-        next: (response) => {
-          this.orders = response;
-          const productPromises = this.addProducts();
-          const addressPromises = this.addAddresses();
-          Promise.all([...productPromises, ...addressPromises]).then(() => {
-            this.sortOrders();
-            this.isloading = false;
-          });
-        },
-      });
+      this.fetchOrders();
     }
+  }
+
+  fetchOrders()
+  {
+    this.isloading = true; 
+    this.orders = []; 
+    this.currentOrders = []; 
+    this.historyOrders = []; 
+
+    this.orderService.fetchAllOrders(this.userId).subscribe({
+      next: (response) => {
+    
+        this.orders = response;
+        const productPromises = this.addProducts();
+        const addressPromises = this.addAddresses();
+        Promise.all([...productPromises, ...addressPromises]).then(() => {
+          this.sortOrders();
+          this.isloading = false;
+        });
+      },
+    });
   }
 
   addProducts(): Promise<void>[] {
@@ -130,6 +141,10 @@ export class YourOrdersComponent implements OnInit {
         },
       });
     });
+  }
+
+  handleOrderChange(event: any) {
+this.fetchOrders();
   }
 
 }

@@ -25,7 +25,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class OrderCardComponent implements OnInit {
   @Input() orders?: Order[];
-  @Output() Change = new EventEmitter<boolean>();
+  @Output() Change = new EventEmitter<any>();
 
 
   constructor(private invoiceService: invoiceService, private orderService:orderService, private toastr:ToastrService) {}
@@ -78,19 +78,17 @@ export class OrderCardComponent implements OnInit {
 
   CancelOrder(orderId:number,items:Item[])
   {
-      if(confirm("Do you want to cancel this order"))
-      {
+     
         this.orderService.cancelOrder(orderId,items).then(response=>{
-          this.toastr.success("order deleted successfully");
+          this.toastr.success("order cancelled successfully");
+          this.Change.emit();
+
         },error=>{
           this.toastr.error("Cannot cancel order");
         });
 
   
-      }else{
-        console.log("this");
-        this.Change.emit(true);
-      }
+      
       return;
   }
  
