@@ -28,6 +28,6 @@ export class SearchProductCardComponent {
   constructor(private router : Router) {}
 
   handleClick(productId: number) {
-    this.router.navigate(['home/productdetail', productId]);
+    window.location.href = `home/productdetail/${productId}`
   }
 }

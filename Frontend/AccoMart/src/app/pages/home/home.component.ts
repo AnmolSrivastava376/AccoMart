@@ -115,7 +115,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   gotoCart() {
-    this.router.navigate(['/home/cart']);
+    window.location.href = '/home/cart'
   }
 
   handleNextPageLoad() {

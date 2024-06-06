@@ -53,7 +53,7 @@ export class BuyNowProductCardComponent implements OnInit {
       this.outputCartItem.emit(this.productItem);
     } else {
       this.buyNowService.removeItem();
-      this.router.navigate(['/home']);
+      window.location.href = '/home'
     }
   }
 }

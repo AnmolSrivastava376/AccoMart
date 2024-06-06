@@ -106,7 +106,7 @@ export class ChangeAddressComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/home/cart']);
+    window.location.href = '/home/cart'
   }
 
   refreshAddresss() {

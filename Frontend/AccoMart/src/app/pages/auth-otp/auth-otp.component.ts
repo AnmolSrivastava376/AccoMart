@@ -78,7 +78,7 @@ export class AuthOtpComponent {
             result.response.refreshToken.expiryTokenDate
           );
           this.successMessage = result.message;
-          this.router.navigate(['/home']);
+          window.location.href = '/home'
         } else {
           this.spinLoader = false;
           this.loginErrorMessage = result.message;

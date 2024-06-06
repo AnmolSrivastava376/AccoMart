@@ -177,8 +177,7 @@ export class AuthCardComponent {
           );
           this.successMessage = result.message;
           this.toastr.success("Login success")
-
-          this.router.navigate(['/home']);
+          window.location.href = '/home'
         } else {
           this.loginSpinLoader = false;
           this.loginErrorMessage = result.message;

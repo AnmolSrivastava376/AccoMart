@@ -23,18 +23,18 @@ export class SidebarComponent implements OnInit {
   }
 
   showProducts() {
-    this.router.navigate(['/admin/products']);
+    window.location.href = '/admin/products'
   }
 
   showCategories() {
-    this.router.navigate(['/admin/categories']);
+    window.location.href = '/admin/categories'
   }
 
   showDeliveryServices() {
-    this.router.navigate(['/admin/delivery']);
+    window.location.href = '/admin/delivery'
   }
 
   showDashboard() {
-    this.router.navigate(['/admin']);
+    window.location.href = '/admin'
   }
 }

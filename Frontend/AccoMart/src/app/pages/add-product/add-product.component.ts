@@ -123,7 +123,7 @@ export class AddProductComponent implements OnInit {
   }
 
   Cancel(): void {
-    this.router.navigate(['/admin/products']);
+    window.location.href = '/admin/products'
   }
 
   AddProduct() {
@@ -146,7 +146,7 @@ export class AddProductComponent implements OnInit {
         this.toastr.success('Product added successfully', undefined, {
           timeOut: 5000,
         });
-        this.router.navigate(['/admin/products']);
+        window.location.href = '/admin/products'
       },
       error: () => {
         this.toastr.error('Error adding product', undefined, {

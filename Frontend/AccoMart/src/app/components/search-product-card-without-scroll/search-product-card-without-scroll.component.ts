@@ -58,6 +58,6 @@ export class SearchProductCardWithoutScrollComponent {
   }
 
   navigateToProduct(productId: number) {
-    this.router.navigate(['home/productdetail', productId]);
+    window.location.href = `home/productdetail/${productId}`;
   }
 }

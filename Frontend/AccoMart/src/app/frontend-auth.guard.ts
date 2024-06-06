@@ -19,7 +19,7 @@ export class FrontendAuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     if (!this.authService.userLoggedIn()) {
-      this.router.navigate(['/unauthorized']);
+      window.location.href = '/unauthorized';
       alert('Please Login');
       return false;
     }
