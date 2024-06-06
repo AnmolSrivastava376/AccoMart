@@ -5,7 +5,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { CommonModule } from '@angular/common';
 import { SearchbarComponent } from '../searchbar/searchbar.component';
@@ -15,7 +15,7 @@ import { NavigationMenuComponent } from '../navigation-menu/navigation-menu.comp
 @Component({
   selector: 'app-home-navbar',
   standalone: true,
-  imports: [CommonModule, SearchbarComponent, NavigationMenuComponent],
+  imports: [CommonModule, SearchbarComponent, NavigationMenuComponent, RouterLink],
   templateUrl: './home-navbar.component.html',
   styleUrl: './home-navbar.component.css',
 })

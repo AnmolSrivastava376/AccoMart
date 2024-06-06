@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpService } from '../../services/http.service';
-import { Route, Router } from '@angular/router';
+import { Route, Router, RouterLink } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { LoaderComponent } from '../loader/loader.component';
 @Component({
   selector: 'app-forgetpassword',
   standalone: true,
-  imports: [HttpClientModule, FormsModule, CommonModule, LoaderComponent],
+  imports: [HttpClientModule, FormsModule, CommonModule, LoaderComponent, RouterLink],
   providers: [HttpService],
   templateUrl: './forgetpassword.component.html',
   styleUrl: './forgetpassword.component.css',

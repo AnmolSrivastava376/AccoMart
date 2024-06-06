@@ -7,7 +7,7 @@
             <div *ngIf="!username" class="hide text-white">Login to
                 continue</div>
         </div>
-        <a href="home/yourorders" *ngIf="isLoggedIn">
+        <a [routerLink]='["/home/yourorders"]' *ngIf="isLoggedIn">
             <li class="flex items-center space-x-2 li-animate-hover">
                 <div class="w-[20px] h-[20px] flex items-center justify-center">
                     <i class="fas fa-box"></i>
@@ -15,7 +15,7 @@
                 <span>Your Orders</span>
             </li>
         </a>
-        <a href="home/cart" *ngIf="isLoggedIn">
+        <a [routerLink]='["/home/cart"]' *ngIf="isLoggedIn">
             <li class="flex items-center space-x-2 li-animate-hover">
                 <div class="w-[20px] h-[20px] flex items-center justify-center">
                     <i class="fas fa-shopping-cart"></i>
@@ -30,7 +30,7 @@
             </div>
             <span >Logout</span>
         </li>
-        <a *ngIf="!isLoggedIn" href="home/auth">
+        <a *ngIf="!isLoggedIn" [routerLink]='["/home/auth"]'>
             <li class="flex items-center space-x-2 li-animate-hover">
                 <div class="w-[20px] h-[20px] flex items-center justify-center">
                     <i class="fas fa-sign-out-alt"></i>
@@ -38,7 +38,7 @@
                 <span>Sign-In</span>
             </li>
         </a>
-        <a *ngIf="isAdmin" href="admin">
+        <a *ngIf="isAdmin" [routerLink]='["/admin"]'>
             <li
                 class="flex text-white hover:text-gray-300 space-x-2 text-left items-start">
                 <div class="w-[20px] h-[20px] flex items-center mt-1">

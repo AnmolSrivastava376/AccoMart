@@ -6,7 +6,7 @@ import {
   Renderer2,
   ViewChild,
 } from '@angular/core';
-import { Route, Router } from '@angular/router';
+import { Route, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import { AuthService } from '../../services/Auth.service';
@@ -15,7 +15,7 @@ import { MatIcon } from '@angular/material/icon';
 @Component({
   selector: 'app-navigation-menu',
   standalone: true,
-  imports: [CommonModule, MatIcon],
+  imports: [CommonModule, MatIcon, RouterLink],
   templateUrl: './navigation-menu.component.html',
   styleUrl: './navigation-menu.component.css',
 })

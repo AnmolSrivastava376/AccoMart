@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Login2FAComponent } from '../login-2-fa/login-2-fa.component';
 import { HttpService } from '../../services/http.service';
 import { TokenService } from '../../services/token.service';
@@ -26,7 +26,7 @@ import * as CryptoJS from 'crypto-js';
     Login2FAComponent,
     HttpClientModule,
     LoaderComponent,
-    
+    RouterLink
   ],
   providers: [HttpService],
   templateUrl: './auth-card.component.html',

@@ -21,7 +21,7 @@ namespace API.Controllers.Order
         private readonly IConfiguration _configuration;
         private readonly StackExchange.Redis.IDatabase _database;
         private readonly ICartService _cartService;
-        private readonly string _domain;     
+        private string _domain;     
         private readonly IEmailService _emailService;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -32,9 +32,7 @@ namespace API.Controllers.Order
             _configuration = configuration;
             _cartService = cartService;
             _database = redis.GetDatabase();
-            _userManager = userManager;
             _domain = configuration["Url:frontendUrl"];
-            _emailService = emailService;   
         }
 
 
@@ -153,7 +151,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Cart")]
         public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
-          
+            _domain = _configuration["Url:frontendUrl"];
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
@@ -432,7 +430,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Product")]
         public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity, string userId)
         {
-
+            _domain = _configuration["Url:frontendUrl"];
             if (!IsQuantityAvailable(productId, quantity))
             {
 

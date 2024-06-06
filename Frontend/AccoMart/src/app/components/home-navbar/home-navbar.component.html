@@ -1,7 +1,6 @@
 <div
     class="w-full h-[60px] py-[10px] bg-white flex justify-between px-[20px] items-center">
-    <div class="font-[900] text-[28px] text-[#245963] h700 mr-4"><a
-            href="home">AccoMart</a></div>
+    <div class="font-[900] text-[28px] text-[#245963] h700 mr-4"><a [routerLink]='["/home"]'>AccoMart</a></div>
     <div class="flex-grow">
         <app-searchbar
             (searchCompleted)="onSearchCompleted($event)"></app-searchbar>
