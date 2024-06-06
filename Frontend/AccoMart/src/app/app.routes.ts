@@ -1,4 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AuthGuard } from './auth.guard';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -46,12 +47,13 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
+  imports: [  
+    RouterModule.forRoot(routes, {useHash: true}),
     HttpClientModule,
     ChartModule,
     BrowserAnimationsModule,
   ],
   exports: [RouterModule],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}]
 })
 export class AppRoutingModule {}
