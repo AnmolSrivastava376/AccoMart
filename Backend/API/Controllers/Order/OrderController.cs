@@ -32,7 +32,9 @@ namespace API.Controllers.Order
             _configuration = configuration;
             _cartService = cartService;
             _database = redis.GetDatabase();
+            _emailService = emailService;
             _domain = configuration["Url:frontendUrl"];
+            _userManager = userManager;
         }
 
 
@@ -151,7 +153,8 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Cart")]
         public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
-            _domain = _configuration["Url:frontendUrl"];
+              _domain = "http://localhost:4200/";
+           // _domain = _configuration["Url:frontendUrl"];
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
@@ -329,8 +332,15 @@ namespace API.Controllers.Order
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { Message = "Internal server error" });
 
             }
-            return Ok(new { StatusCode = HttpStatusCode.OK, Message = "Checkout successful", StripeModel = url });
 
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var message = new Message(new string[] { user.Email }, "Order Successfull", "Order Successfull placed");
+                _emailService.SendEmail(message);
+            }
+
+            return Ok(new { StatusCode = HttpStatusCode.OK, Message = "Checkout successful", StripeModel = url });
 
         }
 
