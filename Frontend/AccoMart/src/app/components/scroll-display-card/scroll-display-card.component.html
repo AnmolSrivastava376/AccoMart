@@ -2,9 +2,9 @@
     <div
         class="w-full h-fit items-center relative flex gap-[10px] overflow-x-scroll overflow-y-hidden">
         <div class *ngFor="let product of products">
-            <div
+            <div (click)="navigateToProduct(product)"
                 class="min-w-[200px] h-[200px] border bg-cover bg-center bg-no-repeat rounded-[10px]"
-                style="background-image: url('{{product?.productImageUrl}}');"></div>
+                style="background-image: url('{{product?.productImageUrl}}');" ></div>
         </div>
     </div>
 </div>
