@@ -20,12 +20,12 @@ namespace Data.Repository.Implementation
 
     public class ProductRepository : IProductRepository
     {
-        private readonly IConfiguration _configuration;
         private readonly StackExchange.Redis.IDatabase _database;
-        public ProductRepository(IConfiguration configuration, IConnectionMultiplexer redis)
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+
+        public ProductRepository( IConnectionMultiplexer redis)
         {
 
-            _configuration = configuration;
             _database = redis.GetDatabase();
         }
         public async Task<List<Category>> GetAllCategories()
@@ -41,7 +41,7 @@ namespace Data.Repository.Implementation
             else
             {
                 categories = new List<Category>();
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     string sqlQuery = "SELECT * FROM Category";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
@@ -67,7 +67,7 @@ namespace Data.Repository.Implementation
         public async Task<List<Product>> GetAllProducts()
         {
             List<Product> products = new List<Product>();
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 string sqlQuery = $"SELECT * FROM Product";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
@@ -96,7 +96,7 @@ namespace Data.Repository.Implementation
         public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize)
         {
             List<Product> products = new List<Product>();
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 int offset = (pageNo - 1) * pageSize;
                 string sqlQuery = $"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product) AS Temp WHERE RowNum >= @Offset AND RowNum < @Limit";
@@ -133,7 +133,7 @@ namespace Data.Repository.Implementation
             List<Product> products = new List<Product>();
          
 
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     int offset = (pageNo - 1) * pageSize;
 
@@ -181,7 +181,7 @@ namespace Data.Repository.Implementation
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     string sqlQuery = $"SELECT * FROM Product WHERE CategoryId = {id}";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
@@ -262,7 +262,7 @@ namespace Data.Repository.Implementation
         private async Task<Category> FetchCategoryFromSQL(int id)
         {
             Category category = new Category();
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 string sqlQuery = $"SELECT * FROM Category WHERE CategoryId = {id}";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
@@ -294,7 +294,7 @@ namespace Data.Repository.Implementation
             {
                 Product product = new Product();
 
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
 
                     await connection.OpenAsync();
@@ -326,7 +326,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -378,7 +378,7 @@ namespace Data.Repository.Implementation
             try
             {
                 Product product = new Product();
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -433,7 +433,7 @@ namespace Data.Repository.Implementation
             {
                 Category category = new Category();
 
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -476,7 +476,7 @@ namespace Data.Repository.Implementation
             {
                 Product product = new Product();
 
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -548,7 +548,7 @@ namespace Data.Repository.Implementation
 
         public async Task DeleteCategory(int categoryId)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string sqlCategoryIdQuery = "SELECT 1 FROM Category WHERE CategoryId = @CategoryId";
@@ -589,7 +589,7 @@ namespace Data.Repository.Implementation
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     string sqlCategoryIdQuery = $"SELECT CategoryId FROM Category WHERE CategoryName = '{name}'";
 
@@ -623,7 +623,7 @@ namespace Data.Repository.Implementation
             }
             else
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     string sqlQuery = $"SELECT * FROM Category WHERE CategoryId = {id}";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
@@ -645,7 +645,7 @@ namespace Data.Repository.Implementation
 
         public async Task DeleteProduct(int productId)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string sqlProductIdQuery = "SELECT 1 FROM Product WHERE ProductId = @ProductId";
@@ -675,7 +675,7 @@ namespace Data.Repository.Implementation
             prefix = string.IsNullOrEmpty(prefix) ? "" : prefix.ToLower();
             List<Product> products = new List<Product>();
 
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string sqlQuery = $"SELECT * FROM Product WHERE ProductName LIKE '{prefix}%';";
@@ -706,7 +706,7 @@ namespace Data.Repository.Implementation
             name = string.IsNullOrEmpty(name) ? "" : name.ToLower();
             List<Product> products = new List<Product>();
 
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
 
