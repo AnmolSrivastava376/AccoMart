@@ -7,17 +7,18 @@ namespace Data.Repository.Implementation
 {
     public class ChartRepository : IChartRepository
     {
-        private readonly string _connectionString;
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
-        public ChartRepository(IConfiguration configuration)
+
+        public ChartRepository()
         {
-            _connectionString = configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
+
         }
 
         public async Task<List<OrderQuantity>> FetchDailyOrderQuantity()
         {
             List<OrderQuantity> orderQuantity = new List<OrderQuantity>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string getAllOrdersQuery = "SELECT o.OrderId, o.ProductId, o.Quantity, od.OrderDate, p.ProductPrice " +
@@ -59,7 +60,7 @@ namespace Data.Repository.Implementation
         public async Task<List<CategoryItem>> FetchCategoryWiseQuantity()
         {
             List<CategoryItem> categoryItems = new List<CategoryItem>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string getAllOrdersQuery = "SELECT o.OrderId, o.ProductId, o.Quantity, c.CategoryId, c.CategoryName " +
@@ -101,7 +102,7 @@ namespace Data.Repository.Implementation
         public async Task<List<ProductItem>> FetchProductWiseQuantity()
         {
             List<ProductItem> productItems = new List<ProductItem>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string getTop10OrdersQuery = "SELECT TOP 10 p.ProductId, p.ProductName, SUM(o.Quantity) AS TotalQuantity " +
