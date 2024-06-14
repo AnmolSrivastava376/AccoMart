@@ -799,5 +799,22 @@ namespace API.Controllers.Order
                 }
             }
         }
+
+        [HttpGet("getenvironment")]
+        public async Task<IActionResult> getEnvironent()
+        {
+            string secretValue = Environment.GetEnvironmentVariable("SECRET");
+            if (secretValue != null)
+            {
+                return Ok(secretValue);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+
     }
 }
