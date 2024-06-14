@@ -8,16 +8,16 @@ namespace Data.Repository.Implementation
     public class ChartRepository : IChartRepository
     {
         private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
-
-
         public ChartRepository()
         {
+
 
         }
 
         public async Task<List<OrderQuantity>> FetchDailyOrderQuantity()
         {
             List<OrderQuantity> orderQuantity = new List<OrderQuantity>();
+            
             using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
