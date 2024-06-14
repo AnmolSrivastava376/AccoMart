@@ -24,6 +24,7 @@ namespace API.Controllers.Order
         private string _domain;     
         private readonly IEmailService _emailService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly string connectionstring= Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
 
 
@@ -46,7 +47,7 @@ namespace API.Controllers.Order
             List <Orders> orders = new List<Orders>();
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     string getAllOrdersQuery = "SELECT * FROM Orders WHERE UserId = @UserId ORDER BY OrderId DESC";
