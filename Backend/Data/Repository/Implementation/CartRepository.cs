@@ -12,7 +12,7 @@ namespace Data.Repository.Implementation.Cart
         private readonly IDatabase _database;
         private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
-        public CartRepository(IConfiguration configuration, IConnectionMultiplexer redis)
+        public CartRepository(IConnectionMultiplexer redis)
         {
             _database = redis.GetDatabase();
         }
