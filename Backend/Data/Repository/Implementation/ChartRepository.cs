@@ -8,8 +8,6 @@ namespace Data.Repository.Implementation
     public class ChartRepository : IChartRepository
     {
         private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
-
-
         public ChartRepository()
         {
 
