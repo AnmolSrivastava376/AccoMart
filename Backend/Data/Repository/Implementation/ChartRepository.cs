@@ -17,7 +17,7 @@ namespace Data.Repository.Implementation
         public async Task<List<OrderQuantity>> FetchDailyOrderQuantity()
         {
             List<OrderQuantity> orderQuantity = new List<OrderQuantity>();
-            using (SqlConnection connection = new SqlConnection(connectionstring))
+            
             using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
@@ -61,7 +61,6 @@ namespace Data.Repository.Implementation
         {
             List<CategoryItem> categoryItems = new List<CategoryItem>();
             using (SqlConnection connection = new SqlConnection(connectionstring))
-            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string getAllOrdersQuery = "SELECT o.OrderId, o.ProductId, o.Quantity, c.CategoryId, c.CategoryName " +
@@ -103,7 +102,6 @@ namespace Data.Repository.Implementation
         public async Task<List<ProductItem>> FetchProductWiseQuantity()
         {
             List<ProductItem> productItems = new List<ProductItem>();
-            using (SqlConnection connection = new SqlConnection(connectionstring))
             using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
