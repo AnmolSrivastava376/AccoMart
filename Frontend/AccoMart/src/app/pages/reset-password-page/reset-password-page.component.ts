@@ -26,6 +26,7 @@ export class ResetPasswordPageComponent implements OnInit {
     email: '',
     token: '',
   };
+
   resetResponse: string;
   resetError: string;
   spinLoader: boolean;
@@ -60,27 +61,27 @@ export class ResetPasswordPageComponent implements OnInit {
     this.inputType = this.inputType === 'password' ? 'text' : 'password';
   }
 
-  resetPassword(passwordd:string,confirmPasswordd:string) {
-    if (passwordd !== confirmPasswordd) {
+  resetPassword(password:string,confirmPassword:string) {
+    if (password !== confirmPassword) {
       this.resetError = 'Passwords do not match';
       return;
     }
 
-    if(passwordd.length<6)
+    if(password.length<6)
     {
         this.resetError = 'Password must be 6 characters long';
         return;
     }
 
-    if (!/[!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./]/.test(passwordd)) {
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./])[A-Za-z\d!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./]{6,}$/.test(password)) {
       this.resetError = 'Password must contain at least one special character';
       return;
     }
     
 
     this.spinLoader = true;
-    const encryptedPassword = this.encryptPassword(passwordd, this.key).toString();
-    const encryptedPasswordConfirm = this.encryptPassword(confirmPasswordd, this.key).toString();
+    const encryptedPassword = this.encryptPassword(password, this.key).toString();
+    const encryptedPasswordConfirm = this.encryptPassword(confirmPassword, this.key).toString();
     this.resetPasswords.password = encryptedPassword;
     this.resetPasswords.confirmPassword = encryptedPasswordConfirm;
 
