@@ -78,7 +78,9 @@ export class OrderCardComponent implements OnInit {
 
   CancelOrder(orderId:number,items:Item[])
   {
-     
+   
+    if(window.confirm("Do you want to cancel this order"))
+      {
         this.orderService.cancelOrder(orderId,items).then(response=>{
           this.toastr.success("order cancelled successfully");
           this.Change.emit();
@@ -86,9 +88,8 @@ export class OrderCardComponent implements OnInit {
         },error=>{
           this.toastr.error("Cannot cancel order");
         });
-
-  
-      
+      }
+          
       return;
   }
  
