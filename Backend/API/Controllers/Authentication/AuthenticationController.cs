@@ -157,7 +157,7 @@ namespace API.Controllers.Authentication
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-                var forgotPasswordlink = $"http://localhost:4200/home/reset-password?token={encodedToken}&email={Uri.EscapeDataString(user.Email)}";
+                var forgotPasswordlink = $"https://agreeable-coast-00adf000f.5.azurestaticapps.net/home/reset-password?token={encodedToken}&email={Uri.EscapeDataString(user.Email)}";
                 var message = new Message(new string[] { user.Email! }, "Forgot Password Link", forgotPasswordlink);
                 _emailService.SendEmail(message);
                 return StatusCode(StatusCodes.Status200OK, new Response { Status = $"Password change request has been sent to {user.Email}" });

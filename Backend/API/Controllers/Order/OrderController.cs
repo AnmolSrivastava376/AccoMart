@@ -154,7 +154,7 @@ namespace API.Controllers.Order
         [HttpPost("Checkout/Cart")]
         public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
-              _domain = "http://localhost:4200/";
+              _domain = "https://agreeable-coast-00adf000f.5.azurestaticapps.net/";
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
