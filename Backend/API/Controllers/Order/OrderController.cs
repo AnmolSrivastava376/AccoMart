@@ -1,4 +1,4 @@
-using Data.Models.OrderModels;
+﻿using Data.Models.OrderModels;
 using Data.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -805,7 +805,7 @@ namespace API.Controllers.Order
         {
             string messageBody = $"Dear {user.UserName},\n\n";
             messageBody += $"Thank you for placing an order with Accomart.\n\n";
-            messageBody += $"Your order with ID {orderId} has been successfully placed with a total amount of {totalAmount:C}.\n\n";
+            messageBody += $"Your order with ID {orderId} has been successfully placed with a total amount of ₹{totalAmount:N2}.\n\n";
             messageBody += $"Best regards,\nAccomart Team";
 
             var message = new Message(new string[] { user.Email }, "Order Successfully Placed", messageBody);
