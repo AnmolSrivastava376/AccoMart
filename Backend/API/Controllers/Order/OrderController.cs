@@ -6,10 +6,11 @@ using Service.Services.Interface;
 using Stripe.Checkout;
 using StackExchange.Redis;
 using System.Net;
-using Data.Models.CartModels;
 using Microsoft.AspNetCore.Identity;
 using Data.Models.Authentication.User;
 using Service.Models;
+using Org.BouncyCastle.Crypto;
+using Data.Models.CartModels;
 
 namespace API.Controllers.Order
 {
@@ -597,8 +598,7 @@ namespace API.Controllers.Order
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null) 
                 {
-                    var message = new Message(new string[] { user.Email }, "Order Successfull", "Order Successfull placed");
-                    _emailService.SendEmail(message);
+                    SendMail(user);
                 }
 
 
@@ -614,6 +614,52 @@ namespace API.Controllers.Order
             return Ok(new { StatusCode = HttpStatusCode.OK, Message = "Checkout successful", StripeModel = url });
 
         }
+   
+
+        [HttpPost("Product/Stock/productId={productId}")]
+        public async Task<int> GetStockAvailable(int productId)
+        {
+            return await StockAvailable(productId);
+        }
+
+        [HttpPost("Order/Cancel/{orderId}")]
+        public async Task<IActionResult>CancelOrder(int orderId, [FromBody] List<OrderItem> orderItems)
+        {
+            try
+            {
+                var isCancelled = await isCancelledOrder(orderId);
+                if (isCancelled)
+                {
+                    return BadRequest(new { message = "Order already cancelled" });
+                }
+
+
+                using (var connection = new SqlConnection(connectionstring))
+                {
+                    await connection.OpenAsync();
+                    string cancelOrderQuery = "Update Orders set isCancelled= 'true' where orderId =@orderId";
+                    using (var cancelOrderCommand = new SqlCommand(cancelOrderQuery, connection))
+                    {
+                        cancelOrderCommand.Parameters.AddWithValue("@orderId", orderId);
+                        await cancelOrderCommand.ExecuteNonQueryAsync();
+                    }
+
+                    
+                    foreach(OrderItem orderItem in orderItems)
+                    {
+                        await UpdateStock(orderItem.Product.ProductId, -1 * orderItem.Quantity);   // this will add the ordered quantity again in the inventory
+                    }
+
+                }
+                return Ok(new { message = "Order Cancelled Successfully" });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = $"Error cancelling order: {ex.Message}" });
+            }
+        }
+
         private async Task DeleteOrder(int orderId)
         {
             using (var connection = new SqlConnection(connectionstring))
@@ -676,51 +722,6 @@ namespace API.Controllers.Order
                 }
             }
         }
-
-        [HttpPost("Product/Stock/productId={productId}")]
-        public async Task<int> GetStockAvailable(int productId)
-        {
-            return await StockAvailable(productId);
-        }
-
-        [HttpPost("Order/Cancel/{orderId}")]
-        public async Task<IActionResult>CancelOrder(int orderId, [FromBody] List<OrderItem> orderItems)
-        {
-            try
-            {
-                var isCancelled = await isCancelledOrder(orderId);
-                if (isCancelled)
-                {
-                    return BadRequest(new { message = "Order already cancelled" });
-                }
-
-
-                using (var connection = new SqlConnection(connectionstring))
-                {
-                    await connection.OpenAsync();
-                    string cancelOrderQuery = "Update Orders set isCancelled= 'true' where orderId =@orderId";
-                    using (var cancelOrderCommand = new SqlCommand(cancelOrderQuery, connection))
-                    {
-                        cancelOrderCommand.Parameters.AddWithValue("@orderId", orderId);
-                        await cancelOrderCommand.ExecuteNonQueryAsync();
-                    }
-
-                    
-                    foreach(OrderItem orderItem in orderItems)
-                    {
-                        await UpdateStock(orderItem.Product.ProductId, -1 * orderItem.Quantity);   // this will add the ordered quantity again in the inventory
-                    }
-
-                }
-                return Ok(new { message = "Order Cancelled Successfully" });
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { error = $"Error cancelling order: {ex.Message}" });
-            }
-        }
-
         private async Task<bool> isCancelledOrder(int orderId)
         {
             try
@@ -785,7 +786,6 @@ namespace API.Controllers.Order
                 return 0;
             }
         }
-
         private string GetProductName(int productId)
         {
             using (var connection = new SqlConnection(connectionstring))
@@ -799,22 +799,12 @@ namespace API.Controllers.Order
                 }
             }
         }
-
-        [HttpGet("getenvironment")]
-        public async Task<IActionResult> getEnvironent()
+        
+        private void  SendMail(ApplicationUser user)
         {
-            string secretValue = Environment.GetEnvironmentVariable("SECRET");
-            if (secretValue != null)
-            {
-                return Ok(secretValue);
-            }
-            else
-            {
-                return NotFound();
-            }
+            var message = new Message(new string[] { user.Email }, "Order Successfull", "Order Successfull placed");
+             _emailService.SendEmail(message);
         }
-
-
 
     }
 }
