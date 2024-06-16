@@ -52,15 +52,6 @@ namespace API.Controllers.Authentication
         }
 
 
-        [HttpGet("Test Send email")]
-        public IActionResult TestEmail()
-        {
-            var message = new Message(new string[] { "guptakhushboo81537@gmail.com" }, "test", "<h1>Testing</h1>");
-            _emailService.SendEmail(message);
-            return StatusCode(StatusCodes.Status200OK, new Response { Status = "Success", Message = "Email sent Successfully" });
-        }
-
-
         [HttpGet("ConfirmedEmail")]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
