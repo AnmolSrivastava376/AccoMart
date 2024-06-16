@@ -7,13 +7,11 @@ namespace Data.Repository.Implementation
     public class AddressRepository : IAddressRepository
     {
         private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
         private SqlConnection @object;
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
-        public AddressRepository(IConfiguration configuration)
+        public AddressRepository()
         {
-            _configuration = configuration;
-            _connectionString = configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"];
 
         }
 
@@ -21,7 +19,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     SqlTransaction transaction = connection.BeginTransaction();
@@ -62,7 +60,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (var command = new SqlCommand("SELECT * FROM Addresses WHERE AddressId = @AddressId", connection))
@@ -102,7 +100,7 @@ namespace Data.Repository.Implementation
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (var command = new SqlCommand("SELECT * FROM Addresses WHERE UserId = @userId", connection))
@@ -143,7 +141,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -187,7 +185,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (var command = new SqlCommand("DELETE FROM Addresses WHERE AddressId = @AddressId", connection))

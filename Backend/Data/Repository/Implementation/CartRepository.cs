@@ -9,11 +9,11 @@ namespace Data.Repository.Implementation.Cart
 {
     public class CartRepository : ICartRepository
     {
-        private readonly IConfiguration _configuration;
         private readonly IDatabase _database;
-        public CartRepository(IConfiguration configuration, IConnectionMultiplexer redis)
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+
+        public CartRepository(IConnectionMultiplexer redis)
         {
-            _configuration = configuration;
             _database = redis.GetDatabase();
         }
 
@@ -22,7 +22,7 @@ namespace Data.Repository.Implementation.Cart
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
 
@@ -68,7 +68,7 @@ namespace Data.Repository.Implementation.Cart
 
         async Task ICartRepository.DeleteCart(int cartId)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
 
@@ -92,7 +92,7 @@ namespace Data.Repository.Implementation.Cart
         {
             List<CartItem> cartItems = new List<CartItem>();
 
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
 

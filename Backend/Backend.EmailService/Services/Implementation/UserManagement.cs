@@ -23,6 +23,9 @@ namespace Service.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly ICartService _cartService;
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+        private readonly string jwt_secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+
 
         public UserManagement(UserManager<ApplicationUser> userManager, IConfiguration configuration, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ICartService cartService)
         {
@@ -37,7 +40,7 @@ namespace Service.Services
 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
-            var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwt_secret));
             _ = int.TryParse(_configuration["JWT:TokenValidiyInMinutes"], out int tokenValidityInMinutes);
             tokenValidityInMinutes += 10;  // increasing the token validity time
             var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
@@ -73,7 +76,7 @@ namespace Service.Services
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt_secret)),
                 ValidateLifetime = false
             };
 
@@ -235,7 +238,7 @@ namespace Service.Services
             int addressId = 0;
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     connection.Open();
                     using (var command = new SqlCommand("SELECT * FROM Addresses WHERE UserId = @UserId", connection))

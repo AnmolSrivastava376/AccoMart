@@ -4,7 +4,6 @@ using Data.Repository.Interface;
 using PdfSharpCore;
 using PdfSharpCore.Pdf;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
-using Azure;
 using Data.Models.Address;
 using Data.Models.ViewModels;
 using Data.Models.OrderModels;
@@ -14,26 +13,25 @@ using Data.Models.Authentication.User;
 using Data.Repository.Interfaces;
 
 
-
-
 namespace Data.Repository.Implementation
 {
     public class InvoiceRepository : IInvoiceRepository
     {
-        private readonly IConfiguration _configuration;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IInvoiceEmailService _emailService;
+        private readonly IConfiguration _configuration;
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
         public InvoiceRepository(IConfiguration configuration, UserManager<ApplicationUser> userManager, IInvoiceEmailService emailService)
         {
-            _configuration = configuration;
             _userManager = userManager;
+            _configuration = configuration;
             _emailService = emailService;
         }
 
         async Task IInvoiceRepository.GenerateInvoice(int orderId)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string checkProductQuery = "INSERT INTO Invoice (OrderId) VALUES(@OrderId);";
@@ -47,7 +45,7 @@ namespace Data.Repository.Implementation
         {
             GetInvoice invoiceDto = new GetInvoice();
 
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string sqlOrderQuery = "SELECT * FROM Orders WHERE OrderId = @OrderId;";
@@ -106,7 +104,7 @@ namespace Data.Repository.Implementation
             }
 
 
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string sqlOrderQuery = "SELECT * FROM OrderHistory WHERE OrderId = @OrderId;";
@@ -263,9 +261,6 @@ namespace Data.Repository.Implementation
             return response;
 
         }
-
-
-
 
     }
 }

@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
@@ -55,7 +56,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddControllers();
-using var conn = new SqlConnection(builder.Configuration.GetConnectionString("Server=tcp:accomart.database.windows.net,1433;Initial Catalog=Accomart;Persist Security Info=False;User ID=khushboo;Password=Finalstep@2111;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+using var conn = new SqlConnection(builder.Configuration.GetConnectionString(Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING")));
 
 
 //Services and Repo 
@@ -98,7 +99,9 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidAudience = configuration["JWT:ValidAudience"],
         ValidIssuer = configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+
+
+IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")))
     };
 });
 
@@ -112,7 +115,7 @@ builder.Services.AddScoped<IUserManagement, UserManagement>();
 
 //Redis
 builder.Services.AddSingleton<IConnectionMultiplexer>(c => {
-    var config = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"), true);
+    var config = ConfigurationOptions.Parse(Environment.GetEnvironmentVariable("Redis_string"), true);
     config.AbortOnConnectFail = false; // Enable retry policy
     return ConnectionMultiplexer.Connect(config);
 });

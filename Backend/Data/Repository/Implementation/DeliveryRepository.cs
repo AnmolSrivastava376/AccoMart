@@ -8,18 +8,18 @@ namespace Data.Repository.Implementation
 {
     public class DeliveryRepository : IDeliveryRepository
     {
-        private readonly IConfiguration _configuration;
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
-        public DeliveryRepository(IConfiguration configuration)
+        public DeliveryRepository()
         {
-            _configuration = configuration;
+
         }
 
         public async Task AddDeliveryService(CreateDeliveryService deliveryService)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -59,7 +59,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
 
@@ -88,7 +88,7 @@ namespace Data.Repository.Implementation
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
                     using (SqlTransaction transaction = connection.BeginTransaction())
@@ -137,7 +137,7 @@ namespace Data.Repository.Implementation
             {
                 List<DeliveryService> deliveryServices = new List<DeliveryService>();
 
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
 
@@ -178,7 +178,7 @@ namespace Data.Repository.Implementation
             {
                 int days = 0;
 
-                using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+                using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     await connection.OpenAsync();
 

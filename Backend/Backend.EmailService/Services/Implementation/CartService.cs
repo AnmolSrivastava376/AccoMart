@@ -10,11 +10,12 @@ namespace Service.Services.Implementation
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
-        private readonly IConfiguration _configuration;
-        public CartService(ICartRepository cartRepository, IConfiguration configuration)
+        private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+
+        public CartService(ICartRepository cartRepository)
         {
             _cartRepository = cartRepository;
-            _configuration = configuration;
+
         }
         async Task<IEnumerable<CartItem>> ICartService.AddToCartAsync(int cartId, IEnumerable<CartItem> cart)
         {
@@ -29,7 +30,7 @@ namespace Service.Services.Implementation
         public async Task<int> AddToCartAsync()
         {
             int cartId = 0;
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 // Create a new instance of the Cart entity
@@ -48,7 +49,7 @@ namespace Service.Services.Implementation
 
         async Task ICartService.AddUser(Users user)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration["ConnectionStrings:AZURE_SQL_CONNECTIONSTRING"]))
+            using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 await connection.OpenAsync();
                 string insertCartQuery = "INSERT INTO Users (UserName, UserPassword, UserEmail, CartId) VALUES (@UserName, @UserPassword, @UserEmail, @CartId);";
