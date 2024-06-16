@@ -156,6 +156,7 @@ namespace API.Controllers.Order
         public async Task<IActionResult> CheckoutByCart(string userId, int cartId, int orderId, int deliveryId, decimal productAmount)
         {
               _domain = "https://agreeable-coast-00adf000f.5.azurestaticapps.net/";
+
             var options = new SessionCreateOptions
             {
                 SuccessUrl = _domain + "home/yourorders",
@@ -165,6 +166,7 @@ namespace API.Controllers.Order
                 CustomerEmail = "sdfgh@gmail.com",
             };
             StripeModel url = new StripeModel();
+            decimal totalAmount;
 
 
             using (SqlConnection connection = new SqlConnection(connectionstring))
@@ -298,7 +300,7 @@ namespace API.Controllers.Order
                         };
                         options.LineItems.Add(sessionListItem2);
 
-                        decimal totalAmount = deliveryPrice + productAmount - discount;
+                         totalAmount = deliveryPrice + productAmount - discount;
 
 
                         var sessionListItem3 = new SessionLineItemOptions
@@ -337,8 +339,7 @@ namespace API.Controllers.Order
             var user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
-                var message = new Message(new string[] { user.Email }, "Order Successfull", "Order Successfull placed");
-                _emailService.SendEmail(message);
+                SendMail(user,totalAmount,orderId);
             }
 
             return Ok(new { StatusCode = HttpStatusCode.OK, Message = "Checkout successful", StripeModel = url });
@@ -442,6 +443,7 @@ namespace API.Controllers.Order
         public async Task<IActionResult> Checkout(int productId, int deliveryId, decimal totalProductPrice, int orderId, int quantity, string userId)
         {
             _domain = _configuration["Url:frontendUrl"];
+            decimal totalAmount;
             if (!IsQuantityAvailable(productId, quantity))
             {
 
@@ -548,7 +550,7 @@ namespace API.Controllers.Order
                     };
                     options.LineItems.Add(sessionListItem2);
 
-                    decimal totalAmount = deliveryPrice + totalProductPrice - discount;
+                   totalAmount = deliveryPrice + totalProductPrice - discount;
 
 
                     var sessionListItem3 = new SessionLineItemOptions
@@ -598,9 +600,8 @@ namespace API.Controllers.Order
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null) 
                 {
-                    SendMail(user);
+                    SendMail(user,totalAmount,orderId);
                 }
-
 
             }
             else
@@ -800,10 +801,15 @@ namespace API.Controllers.Order
             }
         }
         
-        private void  SendMail(ApplicationUser user)
+        private void  SendMail(ApplicationUser user,decimal totalAmount,int orderId)
         {
-            var message = new Message(new string[] { user.Email }, "Order Successfull", "Order Successfull placed");
-             _emailService.SendEmail(message);
+            string messageBody = $"Dear {user.UserName},\n\n";
+            messageBody += $"Thank you for placing an order with Accomart.\n\n";
+            messageBody += $"Your order with ID {orderId} has been successfully placed with a total amount of {totalAmount:C}.\n\n";
+            messageBody += $"Best regards,\nAccomart Team";
+
+            var message = new Message(new string[] { user.Email }, "Order Successfully Placed", messageBody);
+            _emailService.SendEmail(message);
         }
 
     }
