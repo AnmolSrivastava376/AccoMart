@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit {
 
   navigateToHome()
   {
-    this.router.navigate(['/home']);
+    window.location.href ='/home'
   }
   
   navigateToAuth(){
