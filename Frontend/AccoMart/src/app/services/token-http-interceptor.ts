@@ -42,7 +42,7 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       if (req.url.includes('api.cloudinary.com')) {
         authReq = req.clone();
       }
-      else if(req.url.includes('https://accomartserver.azurewebsites.net/GetInvoice')){
+      else if(req.url.includes('https://accomartserver.azurewebsites.net/GetInvoice/132')){
           authReq = req.clone();
         }
       else {
