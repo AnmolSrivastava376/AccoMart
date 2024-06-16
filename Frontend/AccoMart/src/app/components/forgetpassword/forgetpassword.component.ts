@@ -32,4 +32,8 @@ export class ForgetpasswordComponent {
       },
     });
   }
+
+  navigateAuth(){
+    window.location.href = '/home/auth'
+  }
 }
