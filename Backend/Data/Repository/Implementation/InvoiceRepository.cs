@@ -22,8 +22,9 @@ namespace Data.Repository.Implementation
         private readonly IConfiguration _configuration;
         private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
 
-        public InvoiceRepository( UserManager<ApplicationUser> userManager, IInvoiceEmailService emailService)
+        public InvoiceRepository( UserManager<ApplicationUser> userManager, IInvoiceEmailService emailService, IConfiguration configuration)
         {
+            _configuration = configuration;
             _userManager = userManager;
             _emailService = emailService;
         }
