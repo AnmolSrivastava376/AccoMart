@@ -41,7 +41,11 @@ export class TokenHttpInterceptor implements HttpInterceptor {
       let authReq: HttpRequest<any>;
       if (req.url.includes('api.cloudinary.com')) {
         authReq = req.clone();
-      } else {
+      }
+      else if(req.url.includes('https://accomartserver.azurewebsites.net/GetInvoice')){
+          authReq = req.clone();
+        }
+      else {
         authReq = req.clone({
           url: `${req.url}`,
           setHeaders: {
