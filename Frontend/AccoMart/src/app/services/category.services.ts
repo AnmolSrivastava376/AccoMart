@@ -21,13 +21,13 @@ export class CategoryService {
 
   fetchCategorybyName(categoryName: string): Observable<Category> {
     return this.http.get<Category>(
-      `${this.baseUrl}AdminDashboard/${categoryName}`
+      `${this.baseUrl}AdminDashboard/category/name/${categoryName}`
     );
   }
 
   fetchCategorybyId(categoryId: number): Observable<Category> {
     return this.http.get<Category>(
-      `${this.baseUrl}AdminDashboard/${categoryId}`
+      `${this.baseUrl}AdminDashboard/category/${categoryId}`
     );
   }
 

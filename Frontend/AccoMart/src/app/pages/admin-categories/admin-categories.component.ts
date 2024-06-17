@@ -49,7 +49,9 @@ export class AdminCategoriesComponent implements OnInit {
       error: () => {
         this.toastr.error('Error  Fetching products', undefined, {
           timeOut: 5000,
+          
         });
+        this.isLoading = false;
       },
     });
   }
@@ -130,7 +132,6 @@ export class AdminCategoriesComponent implements OnInit {
           if (response.categoryId) {
             this.categories.push(response);
           }
-          this.isLoading = false;
         });
     } else {
       this.categoryService
@@ -141,8 +142,9 @@ export class AdminCategoriesComponent implements OnInit {
             this.categories.push(response);
           }
         });
-      this.isLoading = false;
     }
+    this.isLoading = false;
+
   }
 
   searchFunction(event: any) {
