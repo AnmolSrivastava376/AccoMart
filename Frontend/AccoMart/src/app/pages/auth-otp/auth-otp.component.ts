@@ -94,4 +94,8 @@ export class AuthOtpComponent {
       }
     });
   }
+
+  navigateHome(){
+    window.location.href ='/home';
+  }
 }
