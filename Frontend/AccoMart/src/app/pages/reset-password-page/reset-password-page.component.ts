@@ -74,7 +74,7 @@ export class ResetPasswordPageComponent implements OnInit {
     }
 
     if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./])[A-Za-z\d!@#$%^&*()_+{}|:"<>?~`\-=[\]\\;',./]{6,}$/.test(password)) {
-      this.resetError = 'Password must contain at least one special character';
+      this.resetError = 'Password must contain at least one special character, one lowercase and one uppercase letter';
       return;
     }
     
