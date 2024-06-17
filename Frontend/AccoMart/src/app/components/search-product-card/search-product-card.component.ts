@@ -7,7 +7,6 @@ import { ProductScrollDisplayCardComponent } from '../product-scroll-display-car
 import { HttpClientModule } from '@angular/common/http';
 import { SearchProductCardWithoutScrollComponent } from '../search-product-card-without-scroll/search-product-card-without-scroll.component';
 import { Router } from '@angular/router';
-import { CartProductCardComponent } from '../cart-product-card/cart-product-card.component';
 
 @Component({
   selector: 'app-search-product-card',
@@ -19,7 +18,7 @@ import { CartProductCardComponent } from '../cart-product-card/cart-product-card
     ProductScrollDisplayCardComponent,
     HttpClientModule,
     SearchProductCardWithoutScrollComponent,
-    CartProductCardComponent
+    ProductScrollDisplayCardComponent
   ],
   templateUrl: './search-product-card.component.html',
   styleUrl: './search-product-card.component.css',

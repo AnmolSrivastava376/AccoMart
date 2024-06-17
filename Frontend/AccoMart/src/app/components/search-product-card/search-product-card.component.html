@@ -3,8 +3,8 @@
     <!-- <app-search-product-card-without-scroll
         [products]="products"
         *ngIf="products ? products.length > 0 : false"></app-search-product-card-without-scroll> -->
-    <div class="" *ngFor="let product of products">
-        <app-cart-product-card [productId]="product.productId"></app-cart-product-card>
+    <div class="">
+        <app-product-scroll-display-card [products]="products"></app-product-scroll-display-card>
     </div>
     <div
         class="text-xl text-gray-500 italic pb-[10px] px-[20px]"
