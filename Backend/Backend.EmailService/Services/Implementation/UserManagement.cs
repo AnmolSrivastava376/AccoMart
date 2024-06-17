@@ -303,7 +303,7 @@ namespace Service.Services
                 Response = new LoginResponse(),
                 IsSuccess = false,
                 StatusCode = 400,
-                Message = "Otp is incorrect"
+                Message = "Login Failed"
             };
         }
 
