@@ -15,4 +15,8 @@ import { productService } from '../../services/product.services';
 export class LandingPageComponent {
   constructor(private httpService: productService) {}
   router = inject(Router);
+
+  navigateHome(){
+    window.location.href = '/home';
+  }
 }
