@@ -5,7 +5,6 @@ import { GridDisplayCardComponent } from '../grid-display-card/grid-display-card
 import { ScrollDisplayCardComponent } from '../scroll-display-card/scroll-display-card.component';
 import { ProductScrollDisplayCardComponent } from '../product-scroll-display-card/product-scroll-display-card.component';
 import { HttpClientModule } from '@angular/common/http';
-import { SearchProductCardWithoutScrollComponent } from '../search-product-card-without-scroll/search-product-card-without-scroll.component';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +16,6 @@ import { Router } from '@angular/router';
     ScrollDisplayCardComponent,
     ProductScrollDisplayCardComponent,
     HttpClientModule,
-    SearchProductCardWithoutScrollComponent,
     ProductScrollDisplayCardComponent
   ],
   templateUrl: './search-product-card.component.html',
