@@ -50,7 +50,9 @@ export class SearchProductCardWithoutScrollComponent {
   }
 
   decrementCountByProductId(productId: number): void {
-    this.cartService.decrementCountByProductId(productId);
+    setTimeout(()=>{
+      this.cartService.decrementCountByProductId(productId);
+    }, 0)
   }
 
   removeElementByProductId(productId: number): void {
