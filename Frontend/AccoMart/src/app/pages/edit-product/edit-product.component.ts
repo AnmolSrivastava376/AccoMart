@@ -155,11 +155,14 @@ export class EditProductComponent implements OnInit {
     if(this.product.productPrice<=0)
       {
         this.toastr.error('Please enter valid price', undefined, { timeOut: 1000 })
+        return;
+
       }
 
       if(this.product.stock<=0)
       {
         this.toastr.error('Please enter valid stock',undefined, { timeOut: 1000 })
+        return;
       }
 
 
