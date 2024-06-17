@@ -139,6 +139,8 @@ export class DeliveryServicesComponent {
         this.toastr.error('Please enter valid delivery days', undefined, {
           timeOut: 2000,
         });      
+        return;
+
       }
 
       if(newDeliveryService.price<=0)
@@ -146,6 +148,7 @@ export class DeliveryServicesComponent {
           this.toastr.error('Please enter valid delivery price', undefined, {
             timeOut: 2000,
           });      
+          return;
         }
 
     if (
