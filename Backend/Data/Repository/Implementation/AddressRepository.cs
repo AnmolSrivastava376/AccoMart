@@ -26,7 +26,7 @@ namespace Data.Repository.Implementation
 
                     try
                     {
-                        using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, PhoneNumber, States, ZipCode, UserId) VALUES (@Street, @City, @PhoneNumber, @State, @ZipCode, @UserId);", connection, transaction))
+                        using (var command = new SqlCommand("INSERT INTO Addresses (Street, City, PhoneNumber, States, ZipCode, UserId) VALUES (@Street, @City, @PhoneNumber, @State, @ZipCode, @UserId); SELECT SCOPE_IDENTITY()", connection, transaction))
                         {
                             command.Parameters.AddWithValue("@Street", address.Street);
                             command.Parameters.AddWithValue("@City", address.City);
