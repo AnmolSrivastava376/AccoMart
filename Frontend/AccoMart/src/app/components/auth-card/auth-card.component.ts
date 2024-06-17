@@ -200,4 +200,18 @@ export class AuthCardComponent {
   onSwitch() {
     this.isLogin = !this.isLogin;
   }
+  navigateForgetPassword()
+  {
+    window.location.href = '/home/forgotpassword'
+  }
+
+  navigateLoginOtp()
+  {
+    window.location.href = '/home/auth-otp'
+  }
+
+  navigateHome()
+  {
+    window.location.href ='/home'
+  }
 }
