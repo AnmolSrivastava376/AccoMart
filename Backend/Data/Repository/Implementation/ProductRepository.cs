@@ -343,7 +343,7 @@ namespace Data.Repository.Implementation
                                 return null;
                             }
 
-                            string sqlQuery = "INSERT INTO Category (CategoryName) VALUES (@CategoryName); SELECT SCOPE_IDENTITY()";
+                            string sqlQuery = "INSERT INTO Category (CategoryName) VALUES (@CategoryName);";
                             SqlCommand command = new SqlCommand(sqlQuery, connection, transaction);
                             command.Parameters.AddWithValue("@CategoryName", categoryName);
                             int categoryId = Convert.ToInt32(await command.ExecuteScalarAsync());
