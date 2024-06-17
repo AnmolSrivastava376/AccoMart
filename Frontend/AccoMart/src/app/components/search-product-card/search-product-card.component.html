@@ -1,8 +1,11 @@
 <div class="w-full h-fit border flex bg-white flex-col rounded-[10px]">
     <div class="font-bold text-[24px] px-[20px] py-[10px]">Search results</div>
-    <app-search-product-card-without-scroll
+    <!-- <app-search-product-card-without-scroll
         [products]="products"
-        *ngIf="products ? products.length > 0 : false"></app-search-product-card-without-scroll>
+        *ngIf="products ? products.length > 0 : false"></app-search-product-card-without-scroll> -->
+    <div class="" *ngFor="let product of products">
+        <app-cart-product-card [productId]="product.productId"></app-cart-product-card>
+    </div>
     <div
         class="text-xl text-gray-500 italic pb-[10px] px-[20px]"
         *ngIf="products?.length === 0">
