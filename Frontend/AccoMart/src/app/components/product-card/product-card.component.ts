@@ -47,6 +47,7 @@ export class ProductCardComponent implements OnInit, OnChanges {
   moreProducts: MoreProducts[] = [];
   @Input() products?: Product[];
   @Input() categoryName?: string;
+  @Input() categoryId?: number;
   @Input() categories: Category[];
   @Input() filteredProducts?: Product[];
   @Output() fetchNextPage: EventEmitter<boolean> = new EventEmitter<boolean>();
