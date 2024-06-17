@@ -253,7 +253,7 @@ namespace Data.Repository.Implementation
             var user = await _userManager.FindByEmailAsync(invoiceDto.UserEmail);
             if (user != null)
             {
-                var message = new Message(new string[] { user.Email }, "Invoice Pdf", "Please find attached your invoice PDF.");
+                var message = new Message(new string[] { user.Email }, $"Invoice:OrderId{orderId}", "Thanks for shopping with AccoMart. Please find attached your invoice PDF.");
                 message.Attachments.Add(("invoice.pdf", pdfBytes, "application/pdf"));
                  _emailService.SendEmailInvoice(message);  
             } 
