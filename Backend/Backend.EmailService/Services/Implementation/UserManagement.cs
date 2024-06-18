@@ -42,7 +42,7 @@ namespace Service.Services
         {
             var authSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwt_secret));
             _ = int.TryParse(_configuration["JWT:TokenValidiyInMinutes"], out int tokenValidityInMinutes);
-            tokenValidityInMinutes += 10;  // increasing the token validity time
+            tokenValidityInMinutes += 30;
             var expirationTimeUtc = DateTime.UtcNow.AddMinutes(tokenValidityInMinutes);
             var localTimeZone = TimeZoneInfo.Local;
             var expirationTimeInLocalTimeZone = TimeZoneInfo.ConvertTimeFromUtc(expirationTimeUtc, localTimeZone);
