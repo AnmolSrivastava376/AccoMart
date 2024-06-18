@@ -36,8 +36,9 @@ export class AuthOtpComponent {
   successMessage: any;
   spinLoader: boolean;
   loginErrorMessage: any;
-  sentOtp: boolean = true;
-  constructor(private router: Router, private tokenService: TokenService, private toastr : ToastrService) {}
+  showOtp:boolean = false;
+  
+  constructor(private router: Router, private tokenService: TokenService, private toastr:ToastrService) {}
   otpForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
     otp: ['', [Validators.required, Validators.minLength(6)]],
@@ -49,9 +50,9 @@ export class AuthOtpComponent {
     this.httpService.loginByEmail(email).subscribe({
       next: (result: any) => {
         if (result.isSuccess) {
-          this.toastr.success('OTP sent on email');
+          console.log('OTP Sent');
+          this.showOtp = true;
           this.spinLoader = false;
-          this.sentOtp = false;
         } else {
           this.toastr.error('Email Id is invalid');
         }
@@ -63,7 +64,6 @@ export class AuthOtpComponent {
   }
 
   login() {
-    this.sentOtp = false;
     const email: string = String(this.otpForm.value.email);
     const otp: string = String(this.otpForm.value.otp);
     this.httpService.login2FA(otp, email).subscribe({
