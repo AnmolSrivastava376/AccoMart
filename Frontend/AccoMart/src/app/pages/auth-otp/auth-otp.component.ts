@@ -38,7 +38,7 @@ export class AuthOtpComponent {
   loginErrorMessage: any;
   showOtp:boolean = false;
   
-  constructor(private router: Router, private tokenService: TokenService) {}
+  constructor(private router: Router, private tokenService: TokenService, private toastr:ToastrService) {}
   otpForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
     otp: ['', [Validators.required, Validators.minLength(6)]],
