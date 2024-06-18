@@ -101,7 +101,7 @@ namespace Data.Repository.Implementation
                         command.Parameters.AddWithValue("@userId", userId);
                         using (var reader = await command.ExecuteReaderAsync())
                         {
-                            if (await reader.ReadAsync())
+                            while(await reader.ReadAsync())
                             {
                                 AddressModel address = new AddressModel
                                 {
@@ -114,10 +114,7 @@ namespace Data.Repository.Implementation
                                 };
                                 addresses.Add(address);
                             }
-                            else
-                            {
-                                return null;
-                            }
+                           
                         }
                     }
                 }
