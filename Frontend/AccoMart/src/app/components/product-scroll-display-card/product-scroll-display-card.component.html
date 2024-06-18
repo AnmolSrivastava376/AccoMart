@@ -13,7 +13,7 @@
                         <div class="w-full flex flex-col cursor-pointer"
                             (click)="navigateToProduct(product.productId)">
                             <div
-                                class="font-bold text-[18px]">{{product?.productName?.slice(0,40)}}</div>
+                                class="font-bold text-[18px]">{{(product && product.productName && product.productName.length>16)?product.productName.slice(0,14)+'...':product.productName}}</div>
                             <div class="font-medium text-gray-600 text-[14px]">
                                 {{product?.productDesc?.slice(0,40)}}<span
                                     *ngIf="product?.productDesc && product.productDesc.length > 50">...</span>
