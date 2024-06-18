@@ -18,9 +18,9 @@ namespace Service.Services.Implementation
         {
             _invoiceRepository = invoiceRepository;
         }
-        async Task IInvoiceService.GenerateInvoiceAsync(int cartId)
+        async Task IInvoiceService.GenerateInvoiceAsync(int orderId)
         {
-            await _invoiceRepository.GenerateInvoice(cartId);
+            await _invoiceRepository.GenerateInvoice(orderId);
         }
 
         async Task<byte[]> IInvoiceService.GetInvoiceAsync(int orderId)
