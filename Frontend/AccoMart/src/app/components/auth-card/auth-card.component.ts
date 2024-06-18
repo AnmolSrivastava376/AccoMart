@@ -81,7 +81,8 @@ export class AuthCardComponent {
 
   onRegister() {
 
-
+    this.errorMessage = "";
+    this.successMessage = "";
     if (this.registerForm.valid) {
       this.registerSpinLoader = true;
 
@@ -152,6 +153,8 @@ export class AuthCardComponent {
   }
 
   onLogin() {
+    this.errorMessage = "";
+    this.successMessage = "";
     const email: string = String(this.loginForm.value.email);
     const password: string = String(this.loginForm.value.password);
     
