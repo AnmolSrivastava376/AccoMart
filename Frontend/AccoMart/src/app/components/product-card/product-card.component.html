@@ -23,7 +23,7 @@
 
     <div *ngFor="let prod of moreProducts">
         <app-product-scroll-display-card [products]="prod.items" [categoryId]="prod.categoryId"
-            *ngIf="prod.items.length>0"
+            *ngIf="(prod.items.length>0 && prod.categoryId != categoryId)"
             (fetchNextPageCategoryWise)="handleEmitterCategoryWise($event)"></app-product-scroll-display-card>
     </div>
 

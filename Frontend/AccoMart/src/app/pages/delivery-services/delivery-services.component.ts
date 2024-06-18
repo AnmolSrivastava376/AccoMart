@@ -84,12 +84,24 @@ export class DeliveryServicesComponent {
   }
 
   editDeliveryService(deliveryService: createDeliveryService) {
+    if(deliveryService.deliveryDays<=0)
+      {
+        this.toastr.error('Please enter valid delivery days', undefined, {
+          timeOut: 2000,
+        });      
+      }
+
+      if(deliveryService.price<=0)
+        {
+          this.toastr.error('Please enter valid delivery price', undefined, {
+            timeOut: 2000,
+          });      
+        }
+
 
     if (
       !deliveryService.imageUrl ||
-      !deliveryService.serviceName ||
-      !deliveryService.price ||
-      !deliveryService.deliveryDays
+      !deliveryService.serviceName 
     ) {
       this.toastr.error('Please fill all the fields', undefined, {
         timeOut: 5000,
@@ -119,16 +131,32 @@ export class DeliveryServicesComponent {
         },
       });
   }
-
+  
   createDeliveryService(newDeliveryService: createDeliveryService) {
+
+    if(newDeliveryService.deliveryDays<=0)
+      {
+        this.toastr.error('Please enter valid delivery days', undefined, {
+          timeOut: 2000,
+        });      
+        return;
+
+      }
+
+      if(newDeliveryService.price<=0)
+        {
+          this.toastr.error('Please enter valid delivery price', undefined, {
+            timeOut: 2000,
+          });      
+          return;
+        }
+
     if (
       !newDeliveryService.imageUrl ||
-      !newDeliveryService.serviceName ||
-      !newDeliveryService.price ||
-      !newDeliveryService.deliveryDays
+      !newDeliveryService.serviceName 
     ) {
       this.toastr.error('Please fill all the fields', undefined, {
-        timeOut: 5000,
+        timeOut: 2000,
       });
       return;
     }

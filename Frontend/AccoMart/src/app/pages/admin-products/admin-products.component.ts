@@ -34,7 +34,9 @@ export class AdminProductsComponent implements OnInit {
   product: Product;
   categories: Category[];
   selectedProduct: Product;
-  isLoading = true;
+  isLoading:boolean = true;
+  isSearching:boolean = false;
+
   constructor(
     private productService: productService,
     private categoryService: CategoryService,
@@ -162,14 +164,18 @@ export class AdminProductsComponent implements OnInit {
   }
 
   searchFunction(event: any) {
+    
     this.isLoading = true;
     const searchValue = event.target.value;
     if(searchValue=='')
       {
         this.pageNo=1;
+        this.products=[];
+        this.isSearching = false;
         this.fetchProductsByPageNo();
 
       }else{
+        this.isSearching = true;
         this.mergeResults(searchValue);
 
       }
