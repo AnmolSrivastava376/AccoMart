@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Login2FAComponent } from '../../components/login-2-fa/login-2-fa.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-auth-otp',
@@ -36,7 +37,7 @@ export class AuthOtpComponent {
   spinLoader: boolean;
   loginErrorMessage: any;
   sentOtp: boolean = true;
-  constructor(private router: Router, private tokenService: TokenService) {}
+  constructor(private router: Router, private tokenService: TokenService, private toastr : ToastrService) {}
   otpForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
     otp: ['', [Validators.required, Validators.minLength(6)]],
@@ -48,15 +49,15 @@ export class AuthOtpComponent {
     this.httpService.loginByEmail(email).subscribe({
       next: (result: any) => {
         if (result.isSuccess) {
-          console.log('OTP Sent');
+          this.toastr.success('OTP sent on email');
           this.spinLoader = false;
           this.sentOtp = false;
         } else {
-          console.log('OTP is invalid');
+          this.toastr.success('Email Id is invalid');
         }
       },
       error: (error) => {
-        console.error('Error while sending OTP:', error);
+        this.toastr.success('Error while sending OTP:', error);
       },
     });
   }

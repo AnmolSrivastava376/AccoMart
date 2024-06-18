@@ -26,6 +26,7 @@
     <PackageReference Include="Polybioz.HtmlRenderer.PdfSharp.Core" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 	  <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 
