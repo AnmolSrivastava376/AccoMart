@@ -25,8 +25,8 @@
                   class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400" />
               </div>
               <!-- OTP Field -->
-              <div class="mb-2">
-                <label for="username"
+              <div class="mb-2" *ngIf = "showOtp">
+                <label for="otp"
                   class="block text-sm font-semibold mb-1">OTP<span
                     class="text-red-500">*</span></label>
                 <input
@@ -35,7 +35,7 @@
                   formControlName="otp"
                   placeholder="Enter the OTP received on mail"
                   class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400"
-                  [disabled]="sentOtp" />
+                   />
               </div>
               <div *ngIf="loginErrorMessage"
                 class="text-red-600 text-sm text-center mt-2">{{
@@ -49,10 +49,10 @@
               <button
                 type="button"
                 class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:ring"
-                (click)="sentOtp ? sendOtp() : login()">
+                (click)="showOtp ? login():sendOtp()">
                 <app-loader *ngIf="spinLoader"></app-loader>
                 <span *ngIf="!spinLoader">
-                  {{ sentOtp ? "Send OTP" : "Login" }}
+                  {{ showOtp ?   "Login":"Send OTP" }}
                 </span>
               </button>
             </div>

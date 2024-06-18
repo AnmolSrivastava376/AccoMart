@@ -35,7 +35,8 @@ export class AuthOtpComponent {
   successMessage: any;
   spinLoader: boolean;
   loginErrorMessage: any;
-  sentOtp: boolean = true;
+  showOtp:boolean = false;
+  
   constructor(private router: Router, private tokenService: TokenService) {}
   otpForm = this.builder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -49,8 +50,8 @@ export class AuthOtpComponent {
       next: (result: any) => {
         if (result.isSuccess) {
           console.log('OTP Sent');
+          this.showOtp = true;
           this.spinLoader = false;
-          this.sentOtp = false;
         } else {
           console.log('OTP is invalid');
         }
@@ -62,7 +63,6 @@ export class AuthOtpComponent {
   }
 
   login() {
-    this.sentOtp = false;
     const email: string = String(this.otpForm.value.email);
     const otp: string = String(this.otpForm.value.otp);
     this.httpService.login2FA(otp, email).subscribe({
