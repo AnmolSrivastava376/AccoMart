@@ -53,11 +53,11 @@ export class AuthOtpComponent {
           this.spinLoader = false;
           this.sentOtp = false;
         } else {
-          this.toastr.success('Email Id is invalid');
+          this.toastr.error('Email Id is invalid');
         }
       },
       error: (error) => {
-        this.toastr.success('Error while sending OTP:', error);
+        this.toastr.error('Error while sending OTP:', error);
       },
     });
   }
