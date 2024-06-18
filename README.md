@@ -12,8 +12,6 @@ cd AccoMart/Frontend/AccoMart
 
 ```bash
 npm install
-# If facing issues, run:
-npm install --force
 ```
 ### Step 3: Start Frontend 
 ```bash
@@ -36,7 +34,7 @@ Abc@123456
 ### Access admin dashboard
 Click on Admin option from the navbar menu (It will appear only if you are logged in through admin credentials)
 
-## Set Up Database
+## Set Up Database 💾
 
 ```bash
 cd Accomart
