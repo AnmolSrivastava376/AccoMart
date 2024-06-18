@@ -96,6 +96,7 @@ export class ChangeAddressComponent implements OnInit {
     if (this.selectAddress) {
       this.addressAdded.emit(this.selectAddress);
       this.closeWindow.emit(true);
+      window.location.reload();
     } else {
       alert('Please select an address.');
     }
