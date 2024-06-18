@@ -50,7 +50,6 @@ export class AuthOtpComponent {
     this.httpService.loginByEmail(email).subscribe({
       next: (result: any) => {
         if (result.isSuccess) {
-          console.log('OTP Sent');
           this.showOtp = true;
           this.spinLoader = false;
         } else {
