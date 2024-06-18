@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Login2FAComponent } from '../../components/login-2-fa/login-2-fa.component';
 import { LoaderComponent } from '../../components/loader/loader.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-auth-otp',
@@ -53,11 +54,11 @@ export class AuthOtpComponent {
           this.showOtp = true;
           this.spinLoader = false;
         } else {
-          console.log('OTP is invalid');
+          this.toastr.error('Email Id is invalid');
         }
       },
       error: (error) => {
-        console.error('Error while sending OTP:', error);
+        this.toastr.error('Error while sending OTP:', error);
       },
     });
   }

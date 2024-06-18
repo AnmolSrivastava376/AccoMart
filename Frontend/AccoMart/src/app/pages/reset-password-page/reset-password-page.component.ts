@@ -100,9 +100,9 @@ export class ResetPasswordPageComponent implements OnInit {
         },
         (error) => {
           if (error.error && error.error.errors) {
-            this.resetError = error.error.errors.message;
+            this.toastr.error("Failed to reset password")
           } else {
-            this.resetError = 'Error resetting passwords';
+            this.toastr.error("Failed to reset password")
           }
 
           console.log(error.error);

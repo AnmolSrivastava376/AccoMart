@@ -6,14 +6,7 @@ namespace Data.Repository.Implementation
 {
     public class AddressRepository : IAddressRepository
     {
-        private readonly IConfiguration _configuration;
-        private SqlConnection @object;
         private readonly string connectionstring = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
-
-        public AddressRepository()
-        {
-
-        }
 
         public async Task<int> AddAddressAsync(AddressModel address, string userId)
         {
