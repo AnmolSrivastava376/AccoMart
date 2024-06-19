@@ -6,6 +6,7 @@ using Data.Models.Product_Category.Category;
 using Data.Models.ViewModels;
 using Data.Models.Product_Category;
 using Data.Models.ViewModels.UpdateProduct;
+using System.Security.Claims;
 
 namespace API.Controllers.Admins
 {
@@ -37,8 +38,10 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("GetAllProductsPagewise")]
+        [Authorize(Roles = "Admin")]
         public async Task<List<Product>> GetAllProductsPagewise(int pageNo)
         {
+
             int pageSize = 20;
             return await _productService.GetAllProductsPagewiseAsync(pageNo,pageSize);
         }
@@ -136,6 +139,24 @@ namespace API.Controllers.Admins
             await _productService.DeleteProductAsync(ProductId);
             return Ok();
         }
+
+
+        [HttpGet("getuserid")]
+        [Authorize(Roles = "Admin")]
+        public async Task<string> GetUserID()
+        {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
+
+            return userId;
+
+        }
+
+
 
     }
 }
