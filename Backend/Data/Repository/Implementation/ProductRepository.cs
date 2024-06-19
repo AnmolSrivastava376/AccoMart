@@ -93,16 +93,21 @@ namespace Data.Repository.Implementation
             }
             return products;
         }
-        public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize)
+        public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize, int userId)
         {
             List<Product> products = new List<Product>();
             using (SqlConnection connection = new SqlConnection(connectionstring))
             {
                 int offset = (pageNo - 1) * pageSize;
-                string sqlQuery = $"SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product) AS Temp WHERE RowNum >= @Offset AND RowNum < @Limit";
+                string sqlQuery = @"
+            SELECT * FROM 
+            (SELECT ROW_NUMBER() OVER (ORDER BY ProductId) AS RowNum, * FROM Product WHERE AdminId = @AdminId) AS Temp 
+            WHERE RowNum >= @Offset AND RowNum < @Limit";
+
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Offset", offset);
                 command.Parameters.AddWithValue("@Limit", offset + pageSize);
+                command.Parameters.AddWithValue("@AdminId", userId);
 
                 await connection.OpenAsync();
 

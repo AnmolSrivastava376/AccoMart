@@ -49,9 +49,9 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.GetAllProducts();
         }
-        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize)
+        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize, int userId)
         {
-            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize);
+            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize, userId);
         }
 
         async Task<List<Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)

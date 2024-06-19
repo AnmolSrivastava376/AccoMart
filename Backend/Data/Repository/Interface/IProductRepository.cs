@@ -11,7 +11,7 @@ namespace Data.Repository.Interfaces
         Task<Product> GetProductById(int id);
         Task<Category> GetCategoryByName(string name);
         Task<List<Product>> GetAllProductsByCategory(int id,string orderBy);
-        Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize);
+        Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize, int userId);
         Task<List<Product>> GetProductsByPageNo(int id, int pageNo, int pageSize);
         Task<List<Product>> GetAllProducts();
         Task<List<Category>> GetAllCategories();
