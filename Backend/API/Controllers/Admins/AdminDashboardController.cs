@@ -41,9 +41,15 @@ namespace API.Controllers.Admins
         [Authorize(Roles = "Admin")]
         public async Task<List<Product>> GetAllProductsPagewise(int pageNo)
         {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
 
             int pageSize = 20;
-            return await _productService.GetAllProductsPagewiseAsync(pageNo,pageSize);
+            return await _productService.GetAllProductsPagewiseAsync(pageNo,pageSize,userId);
         }
         [HttpGet("Products/SearchBy={prefix}")]
         public async Task<List<Product>> GetProductBySearchName(string prefix = "")
@@ -139,23 +145,6 @@ namespace API.Controllers.Admins
             await _productService.DeleteProductAsync(ProductId);
             return Ok();
         }
-
-
-        [HttpGet("getuserid")]
-        [Authorize(Roles = "Admin")]
-        public async Task<string> GetUserID()
-        {
-            string userId = User.FindFirstValue("UserId");
-
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new UnauthorizedAccessException("UserId not found in token.");
-            }
-
-            return userId;
-
-        }
-
 
 
     }

@@ -12,7 +12,7 @@ namespace Service.Services.Interface
         Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy);
         Task<List<Product>> GetAllProductsAsync();
 
-        Task<List<Product>> GetAllProductsPagewiseAsync(int pageNo, int pageSize,int userId);
+        Task<List<Product>> GetAllProductsPagewiseAsync(int pageNo, int pageSize,string userId);
         Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize);
         Task<List<Category>> GetAllCategoriesAsync();
         Task<Category> GetCategoryByIdAsync(int id);
