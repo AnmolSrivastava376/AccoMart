@@ -378,7 +378,7 @@ namespace Data.Repository.Implementation
             }
         }
 
-        public async Task<Product> CreateProduct(ViewProduct productDto)
+        public async Task<Product> CreateProduct(ViewProduct productDto,string userId)
         {
             try
             {
@@ -390,8 +390,8 @@ namespace Data.Repository.Implementation
                     {
                         try
                         {
-                            string sqlQuery = "INSERT INTO Product (ProductName, ProductDesc, ProductPrice, ProductImageUrl, CategoryId,Stock) " +
-                                              "VALUES (@ProductName, @ProductDesc, @ProductPrice, @ProductImageUrl, @CategoryId,@Stock); SELECT SCOPE_IDENTITY()";
+                            string sqlQuery = "INSERT INTO Product (ProductName, ProductDesc, ProductPrice, ProductImageUrl, CategoryId,Stock,AdminId) " +
+                                              "VALUES (@ProductName, @ProductDesc, @ProductPrice, @ProductImageUrl, @CategoryId,@Stock,@AdminId); SELECT SCOPE_IDENTITY()";
                             SqlCommand command = new SqlCommand(sqlQuery, connection, transaction);
                             command.Parameters.AddWithValue("@ProductName", productDto.ProductName);
                             command.Parameters.AddWithValue("@ProductDesc", productDto.ProductDesc);
@@ -399,6 +399,8 @@ namespace Data.Repository.Implementation
                             command.Parameters.AddWithValue("@ProductImageUrl", productDto.ProductImageUrl);
                             command.Parameters.AddWithValue("@CategoryId", productDto.CategoryId);
                             command.Parameters.AddWithValue("@Stock", productDto.Stock);
+                            command.Parameters.AddWithValue("@AdminId", userId);
+
 
                             int productId = Convert.ToInt32(await command.ExecuteScalarAsync());
 

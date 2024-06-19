@@ -107,7 +107,14 @@ namespace API.Controllers.Admins
         [HttpPost("Product/Create")]
         public async Task<ActionResult<Product>> CreateProduct(ViewProduct productDto)
         {
-            var product = await _productService.CreateProductAsync(productDto);
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
+
+            var product = await _productService.CreateProductAsync(productDto,userId);
             return Ok(product); 
         }
 
