@@ -49,7 +49,7 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.GetAllProducts();
         }
-        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize, int userId)
+        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize, string userId)
         {
             return await _productRepository.GetAllProductsPagewise(pageNo, pageSize, userId);
         }

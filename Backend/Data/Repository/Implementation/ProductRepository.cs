@@ -93,7 +93,7 @@ namespace Data.Repository.Implementation
             }
             return products;
         }
-        public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize, int userId)
+        public async Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize, string userId)
         {
             List<Product> products = new List<Product>();
             using (SqlConnection connection = new SqlConnection(connectionstring))
