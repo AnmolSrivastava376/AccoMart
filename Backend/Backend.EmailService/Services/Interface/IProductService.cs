@@ -18,7 +18,7 @@ namespace Service.Services.Interface
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> GetCategoryByNameAsync(string name);
         Task<Category> CreateCategoryAsync(string categoryName);
-        Task<Product> CreateProductAsync(ViewProduct productDto);
+        Task<Product> CreateProductAsync(ViewProduct productDto,string userId);
         Task<Category> UpdateCategoryAsync(int Id, string NewCategoryName);
         Task<Product> UpdateProductAsync(int productId, UpdateProduct productDto);
         Task DeleteCategoryAsync(int CategoryId);

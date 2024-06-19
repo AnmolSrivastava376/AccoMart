@@ -19,9 +19,9 @@ namespace Service.Services.Implementation
             return await _productRepository.CreateCategory(categoryName);
         }
 
-        async Task<Product> IProductService.CreateProductAsync(ViewProduct productDto)
+        async Task<Product> IProductService.CreateProductAsync(ViewProduct productDto,string userId)
         {
-            return await _productRepository.CreateProduct(productDto);
+            return await _productRepository.CreateProduct(productDto,userId);
         }
        
 
