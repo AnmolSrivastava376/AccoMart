@@ -80,14 +80,9 @@ namespace API.Controllers.Admins
         [HttpGet("Product/{id}")]
          public async Task<Product> GetProductById(int id)
         {
-            string userId = User.FindFirstValue("UserId");
+          
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                throw new UnauthorizedAccessException("UserId not found in token.");
-            }
-
-            return await _productService.GetProductByIdAsync(id, userId);
+            return await _productService.GetProductByIdAsync(id);
         }
 
         [HttpGet("GetAllCategories")]

@@ -71,9 +71,9 @@ namespace Service.Services.Implementation
 
 
 
-        async Task<Product> IProductService.GetProductByIdAsync(int id,string userId)
+        async Task<Product> IProductService.GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetProductById(id,userId);
+            return await _productRepository.GetProductById(id);
         }
 
 

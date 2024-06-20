@@ -63,10 +63,9 @@ namespace Data.Repository.Implementation
                 categories = new List<Category>();
                 using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
-                    string sqlQuery = "SELECT * FROM Category WHERE AdminID = @UserId";
+                    string sqlQuery = "SELECT * FROM Category";
                  
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
-                    command.Parameters.AddWithValue("@UserId", userId);
                     await connection.OpenAsync();
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -279,7 +278,7 @@ namespace Data.Repository.Implementation
             return category;
         }
 
-        public async Task<Product> GetProductById(int id, string userId)
+        public async Task<Product> GetProductById(int id)
         {
 
             string cacheKey = $"Product_{id}";

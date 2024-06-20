@@ -12,31 +12,11 @@
       <!-- Main content -->
       <div class="flex-grow bg-white p-8 overflow-scroll w-full text-center ">
         <h2 class="text-2xl font-bold mb-4 mt-2">Products</h2>
-        <div class="mb-8 text-center">
+        <div class="mb-8 text-center mt-2">
           <button (click)="openAddProductPage()"
             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
             Add New Product</button>
-          <div class="relative w-full">
-            <input type="text" placeholder="Search for Product, Category or ProductID"
-              class="w-full pl-10 pr-4 border border-gray-400 rounded-md py-2 px-4  mb-2 mt-4"
-              (keyup.enter)="searchFunction($event)">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0,0,256,256">
-                <g transform>
-                  <g fill="#000000" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt"
-                    stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray stroke-dashoffset="0"
-                    font-family="none" font-weight="none" font-size="none" text-anchor="none"
-                    style="mix-blend-mode: normal">
-                    <g transform="translate(0.96,13.248) scale(5.12,5.12)">
-                      <path
-                        d="M21,3c-9.39844,0 -17,7.60156 -17,17c0,9.39844 7.60156,17 17,17c3.35547,0 6.46094,-0.98437 9.09375,-2.65625l12.28125,12.28125l4.25,-4.25l-12.125,-12.09375c2.17969,-2.85937 3.5,-6.40234 3.5,-10.28125c0,-9.39844 -7.60156,-17 -17,-17zM21,7c7.19922,0 13,5.80078 13,13c0,7.19922 -5.80078,13 -13,13c-7.19922,0 -13,-5.80078 -13,-13c0,-7.19922 5.80078,-13 13,-13z">
-                      </path>
-                    </g>
-                  </g>
-                </g>
-              </svg>
-            </div>
-          </div>
+     
         </div>
 
         <!-- Tiles of products -->

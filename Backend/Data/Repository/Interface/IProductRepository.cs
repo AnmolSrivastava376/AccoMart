@@ -8,7 +8,7 @@ namespace Data.Repository.Interfaces
     public interface IProductRepository
     {
 
-        Task<Product> GetProductById(int id, string userId);
+        Task<Product> GetProductById(int id);
         Task<Category> GetCategoryByName(string name, string userId);
         Task<List<Product>> GetAllProductsByCategory(int id,string orderBy);
         Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize, string userId);
