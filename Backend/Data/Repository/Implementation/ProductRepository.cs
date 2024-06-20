@@ -248,8 +248,6 @@ namespace Data.Repository.Implementation
             return products;
         }
 
-
-
         public async Task<Category> GetCategoryById(int id,string userId)
         {
             
@@ -258,8 +256,6 @@ namespace Data.Repository.Implementation
                 return category;
             
         }
-
-
 
         private async Task<Category> FetchCategoryFromSQL(int id, string userId)
         {
@@ -346,7 +342,7 @@ namespace Data.Repository.Implementation
                                 return null;
                             }
 
-                            string sqlQuery = "INSERT INTO Category (CategoryName) VALUES (@CategoryName); SELECT SCOPE_IDENTITY()";
+                            string sqlQuery = "INSERT INTO Category (CategoryName, AdminID) VALUES (@CategoryName, @AdminID); SELECT SCOPE_IDENTITY()";
                             SqlCommand command = new SqlCommand(sqlQuery, connection, transaction);
                             command.Parameters.AddWithValue("@CategoryName", categoryName);
                             int categoryId = Convert.ToInt32(await command.ExecuteScalarAsync());
