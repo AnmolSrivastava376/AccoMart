@@ -6,11 +6,11 @@ namespace Data.Models.ViewModels
     {
         [Required]
         public string ImageUrl { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Service Name is required")]
         public string ServiceName { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Delivery Service Price is required")]
         public float Price { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Delivery Days should be greater than 0"), Range(1, Int32.MaxValue)]
         public int DeliveryDays { get; set; }
     }
 }

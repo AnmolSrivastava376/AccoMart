@@ -6,6 +6,7 @@ namespace Data.Models.ViewModels
     {
         [Required]
         public Product Product { get; set; }
+
         [Required(ErrorMessage ="Quantity should be provided"), Range(1,Int32.MaxValue)]
         public int Quantity { get; set; }
     }
