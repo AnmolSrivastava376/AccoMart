@@ -146,7 +146,7 @@ export class AdminProductsComponent implements OnInit {
         });
     } else {
       forkJoin([
-        this.productService.fetchProductByName(searchValue),
+        this.productService.fetchProductByNameAdmin(searchValue),
         this.productService.fetchProductByCategoryName(searchValue),
       ]).subscribe({
         next: ([productsByName, productsByCategory]) => {
