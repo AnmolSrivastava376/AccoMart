@@ -321,7 +321,7 @@ namespace Data.Repository.Implementation
             }
         }
 
-        public async Task<Category> CreateCategory(string categoryName)
+        public async Task<Category> CreateCategory(string categoryName,string userId)
         {
             try
             {
@@ -345,6 +345,7 @@ namespace Data.Repository.Implementation
                             string sqlQuery = "INSERT INTO Category (CategoryName, AdminID) VALUES (@CategoryName, @AdminID); SELECT SCOPE_IDENTITY()";
                             SqlCommand command = new SqlCommand(sqlQuery, connection, transaction);
                             command.Parameters.AddWithValue("@CategoryName", categoryName);
+                            command.Parameters.AddWithValue("@AdminID", userId);
                             int categoryId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
                             Category category = new Category
