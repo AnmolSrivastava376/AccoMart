@@ -85,6 +85,44 @@ namespace Data.Repository.Implementation
             return categories;
         }
 
+        public async Task<List<Category>> GetAllCategoriesAdmin(string userId)
+        {
+            List<Category> categories;
+            string cacheKey = "Categories";
+            string cachedCategories = await _database.StringGetAsync(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedCategories))
+            {
+                categories = JsonConvert.DeserializeObject<List<Category>>(cachedCategories);
+            }
+            else
+            {
+                categories = new List<Category>();
+                using (SqlConnection connection = new SqlConnection(connectionstring))
+                {
+                    string sqlQuery = "SELECT * FROM Category WHERE AdminId = @UserId";
+                 
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (await reader.ReadAsync())
+                    {
+                        Category category_ = new Category
+                        {
+                            CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                            CategoryName = Convert.ToString(reader["CategoryName"])
+                        };
+                        categories.Add(category_);
+                    }
+                    reader.Close();
+                }
+                await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categories));
+            }
+            return categories;
+        }
+
         public async Task<List<Product>> GetAllProducts()
         {
             List<Product> products = new List<Product>();
