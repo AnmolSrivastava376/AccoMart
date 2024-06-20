@@ -8,7 +8,7 @@ namespace Service.Services.Interface
 {
     public interface IProductService
     {
-        Task<Product> GetProductByIdAsync(int id, string userId);
+        Task<Product> GetProductByIdAsync(int id);
 
         Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy);
         Task<List<Product>> GetAllProductsAsync();
