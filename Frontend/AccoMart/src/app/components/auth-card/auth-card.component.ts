@@ -66,6 +66,8 @@ export class AuthCardComponent {
     ],
   });
 
+  displayErrors : boolean = false;
+
   encryptPassword(password: string, key: string): string {
     const encryptedPassword = CryptoJS.HmacSHA256(password, key).toString()+"PW@";
     return encryptedPassword;
@@ -79,8 +81,11 @@ export class AuthCardComponent {
     }
   }
 
+  shouldDisplayErrors(): boolean {
+    return this.displayErrors;
+  }
   onRegister() {
-
+    this.displayErrors = true;
     this.errorMessage = "";
     this.successMessage = "";
     if (this.registerForm.valid) {
