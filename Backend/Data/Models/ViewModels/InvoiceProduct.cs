@@ -9,10 +9,10 @@ namespace Data.Models.ViewModels
         public string ProductName { get; set; }
         [Required(ErrorMessage = "Product description is required")]
         public string ProductDesc { get; set; }
-        [Required(ErrorMessage ="Product price is required")]
+        [Required(ErrorMessage ="Product price is required"), Range(1, Int32.MaxValue)]
         public decimal ProductPrice { get; set; }
 
-        [Required(ErrorMessage ="Quantity is requied")]
+        [Required(ErrorMessage ="Quantity is requied"), Range(1, Int32.MaxValue)]
         public int Quantity { get; set; }
     }
 }

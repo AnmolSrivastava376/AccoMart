@@ -3,6 +3,7 @@ using Data.Repository.Interfaces;
 using Service.Services.Interface;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Data.Models.Authentication.User;
 
 
 namespace Service.Services.Implementation

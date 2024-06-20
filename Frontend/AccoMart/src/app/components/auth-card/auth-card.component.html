@@ -16,18 +16,18 @@
             <!-- Register box -->
             <form [formGroup]="registerForm" class="" *ngIf="!isLogin">
               <!-- Username Field -->
-              <div>
-                <label for="username" class="block text-sm font-semibold mb-1">Username<span
-                    class="text-red-500">*</span></label>
-                <input type="text" id="username" formControlName="username" placeholder="Enter your username"
-                  class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400" />
-                <div *ngIf="registerForm.get('username')?.errors">
-                  <div *ngIf="registerForm.get('username')?.errors?.['required']"
-                    class="text-red-600 text-sm text-left mt-2">
-                    UserName is required.
+                <div>
+                  <label for="username" class="block text-sm font-semibold mb-1">Username<span class="text-red-500">*</span></label>
+                  <input type="text" id="username" formControlName="username" placeholder="Enter your username"
+                    class="w-full border-gray-300 border rounded-md p-[6px] focus:outline-none focus:ring focus:border-blue-400" />
+                  <div *ngIf="shouldDisplayErrors()">
+                    <div *ngIf="registerForm.get('username')?.errors">
+                      <div *ngIf="registerForm.get('username')?.errors?.['required']" class="text-red-600 text-sm text-left mt-2">
+                        UserName is required.
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
               <!-- Email Field -->
               <div>
                 <label for="email" class="block text-sm font-semibold mb-1">Email<span

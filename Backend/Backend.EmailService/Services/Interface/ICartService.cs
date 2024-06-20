@@ -1,4 +1,5 @@
-﻿using Data.Models.CartModels;
+﻿using Data.Models.Authentication.User;
+using Data.Models.CartModels;
 namespace Service.Services.Interface
 {
     public interface ICartService
