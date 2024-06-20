@@ -57,6 +57,12 @@ namespace API.Controllers.Admins
             return await _productService.GetProductBySearchNameAsync(prefix);
         }
 
+        [HttpGet("Products/SearchBy={prefix}")]
+        public async Task<List<Product>> GetProductBySearchNameAdmin(string userId,string prefix = "")
+        {
+            return await _productService.GetProductBySearchNameAdminAsync(prefix, userId);
+        }
+
         [HttpGet("Products/CategoryName={name}")]
         public async Task<List<Product>> GetProductsByCategoryName(string name = "")
         {
@@ -65,10 +71,10 @@ namespace API.Controllers.Admins
 
 
         [HttpGet("Product/{id}")]
-         public async Task<Product> GetProductById(int id)
+         public async Task<Product> GetProductById(int id, string userId)
         {
 
-            return await _productService.GetProductByIdAsync(id);
+            return await _productService.GetProductByIdAsync(id, userId);
         }
 
         [HttpGet("GetAllCategories")]
@@ -94,18 +100,20 @@ namespace API.Controllers.Admins
 
 
         [HttpGet("Category/{id}")]
-        public async Task<ActionResult<Category>> GetCategoryById(int id)
+        public async Task<ActionResult<Category>> GetCategoryById(int id, string userId)
         {
-            var category = await _productService.GetCategoryByIdAsync(id);
+            var category = await _productService.GetCategoryByIdAsync(id,userId);
             return Ok(category);
         }
 
         [HttpGet("Category/name/{name}")]
-        public async Task<ActionResult<Category>> GetCategoryByName(string name)
+        public async Task<ActionResult<Category>> GetCategoryByName(string name, string userId)
         {
-            var category = await _productService.GetCategoryByNameAsync(name);
+            var category = await _productService.GetCategoryByNameAsync(name, userId);
             return Ok(category);
         }
+
+       
 
 
         [Authorize(Roles = "Admin")]

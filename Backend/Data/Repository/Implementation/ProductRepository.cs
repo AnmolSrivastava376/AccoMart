@@ -31,15 +31,7 @@ namespace Data.Repository.Implementation
         public async Task<List<Category>> GetAllCategories()
         {
             List<Category> categories;
-            string cacheKey = "Categories";
-            string cachedCategories = await _database.StringGetAsync(cacheKey);
-
-            if (!string.IsNullOrEmpty(cachedCategories))
-            {
-                categories = JsonConvert.DeserializeObject<List<Category>>(cachedCategories);
-            }
-            else
-            {
+            
                 categories = new List<Category>();
                 using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
@@ -59,8 +51,37 @@ namespace Data.Repository.Implementation
                     }
                     reader.Close();
                 }
-                await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(categories));
-            }
+               
+            
+            return categories;
+        }
+
+        public async Task<List<Category>> GetAllCategoriesAdmin(string userId)
+        {
+            List<Category> categories;
+           
+                categories = new List<Category>();
+                using (SqlConnection connection = new SqlConnection(connectionstring))
+                {
+                    string sqlQuery = "SELECT * FROM Category WHERE AdminID = @UserId";
+                 
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (await reader.ReadAsync())
+                    {
+                        Category category_ = new Category
+                        {
+                            CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                            CategoryName = Convert.ToString(reader["CategoryName"])
+                        };
+                        categories.Add(category_);
+                    }
+                    reader.Close();
+                }
+              
             return categories;
         }
 
@@ -267,48 +288,25 @@ namespace Data.Repository.Implementation
 
 
 
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<Category> GetCategoryById(int id,string userId)
         {
-            string categoryJson = await _database.StringGetAsync($"Category:{id}");
-
-            if (categoryJson != null)
-            {
-                return JsonConvert.DeserializeObject<Category>(categoryJson);
-            }
-            else
-            {
-                Category category = await FetchCategoryFromSQL(id);
-                await _database.StringSetAsync($"Category:{id}", JsonConvert.SerializeObject(category));
-
+            
+                Category category = await FetchCategoryFromSQL(id,userId);
+             
                 return category;
-            }
+            
         }
 
 
-        public async Task<Category> GetCategoryByName(int id)
-        {
-            string categoryJson = await _database.StringGetAsync($"Category:{id}");
 
-            if (categoryJson != null)
-            {
-                return JsonConvert.DeserializeObject<Category>(categoryJson);
-            }
-            else
-            {
-                Category category = await FetchCategoryFromSQL(id);
-                await _database.StringSetAsync($"Category:{id}", JsonConvert.SerializeObject(category));
-
-                return category;
-            }
-        }
-
-        private async Task<Category> FetchCategoryFromSQL(int id)
+        private async Task<Category> FetchCategoryFromSQL(int id, string userId)
         {
             Category category = new Category();
             using (SqlConnection connection = new SqlConnection(connectionstring))
             {
-                string sqlQuery = $"SELECT * FROM Category WHERE CategoryId = {id}";
+                string sqlQuery = $"SELECT * FROM Category WHERE CategoryId = {id} AND AdminID = {userId}";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@UserId", userId);
                 connection.Open();
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -323,7 +321,7 @@ namespace Data.Repository.Implementation
             return category;
         }
 
-        public async Task<Product> GetProductById(int id)
+        public async Task<Product> GetProductById(int id, string userId)
         {
 
             string cacheKey = $"Product_{id}";
@@ -341,7 +339,7 @@ namespace Data.Repository.Implementation
                 {
 
                     await connection.OpenAsync();
-                    string sqlQuery = $"SELECT * FROM Product WHERE ProductId = {id}";
+                    string sqlQuery = $"SELECT * FROM Product WHERE ProductId = {id} AND AdminID = @userId";
                     SqlCommand command = new SqlCommand(sqlQuery, connection);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
@@ -396,8 +394,7 @@ namespace Data.Repository.Implementation
                                 CategoryId = categoryId,
                                 CategoryName = categoryName
                             };
-                            string cacheKey = $"Categories";
-                            await _database.KeyDeleteAsync(cacheKey);
+ 
                             transaction.Commit();
 
                             return category;
@@ -615,28 +612,16 @@ namespace Data.Repository.Implementation
                     await deleteCommand.ExecuteNonQueryAsync();
                 }
             }
-            string cacheKey = $"Category_{categoryId}";
-            await _database.KeyDeleteAsync(cacheKey);
 
-            string categoriesCacheKey = $"Categories";
-            await _database.KeyDeleteAsync(categoriesCacheKey);
         }
 
-        public async Task<Category> GetCategoryByName(string name)
+        public async Task<Category> GetCategoryByName(string name,string userId)
         {
             int categoryId = 0;
-            string cacheKey = $"CategoryByName_{name}";
-            string cachedCategoryId = await _database.StringGetAsync(cacheKey);
-
-            if (cachedCategoryId != null)
-            {
-                categoryId = Convert.ToInt32(cachedCategoryId);
-            }
-            else
-            {
+           
                 using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
-                    string sqlCategoryIdQuery = $"SELECT CategoryId FROM Category WHERE CategoryName = '{name}'";
+                    string sqlCategoryIdQuery = $"SELECT CategoryId FROM Category WHERE CategoryName = '{name}' AND AdminID = {userId}";
 
                     await connection.OpenAsync();
 
@@ -647,11 +632,11 @@ namespace Data.Repository.Implementation
                         if (categoryIdObj != null && categoryIdObj != DBNull.Value)
                         {
                             categoryId = Convert.ToInt32(categoryIdObj);
-                            await _database.StringSetAsync(cacheKey, categoryId.ToString());
+                            
                         }
                     }
                 }
-            }
+            
             var category = await GetCategoryById_(categoryId);
             return category;
         }
@@ -659,15 +644,8 @@ namespace Data.Repository.Implementation
         private async Task<Category> GetCategoryById_(int id)
         {
             Category category = new Category();
-            string cacheKey = $"Category_{id}";
-            string cachedCategory = await _database.StringGetAsync(cacheKey);
-
-            if (cachedCategory != null)
-            {
-                category = JsonConvert.DeserializeObject<Category>(cachedCategory);
-            }
-            else
-            {
+            
+            
                 using (SqlConnection connection = new SqlConnection(connectionstring))
                 {
                     string sqlQuery = $"SELECT * FROM Category WHERE CategoryId = {id}";
@@ -682,9 +660,7 @@ namespace Data.Repository.Implementation
                     }
                     reader.Close();
                 }
-                await _database.StringSetAsync(cacheKey, JsonConvert.SerializeObject(category));
-            }
-
+               
             return category;
         }
 
@@ -724,6 +700,37 @@ namespace Data.Repository.Implementation
             {
                 await connection.OpenAsync();
                 string sqlQuery = $"SELECT * FROM Product WHERE ProductName LIKE '{prefix}%';";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Product product = new Product();
+                    product.ProductId = Convert.ToInt32(reader["ProductId"]);
+                    product.ProductName = Convert.ToString(reader["ProductName"]);
+                    product.ProductDesc = Convert.ToString(reader["ProductDesc"]);
+                    product.ProductImageUrl = Convert.ToString(reader["ProductImageUrl"]);
+                    product.ProductPrice = Convert.ToDecimal(reader["ProductPrice"]);
+                    product.CategoryId = Convert.ToInt32(reader["CategoryId"]);
+                    product.Stock = Convert.ToInt32(reader["Stock"]);
+
+                    products.Add(product);
+                }
+                reader.Close();
+            }
+
+            return products;
+        }
+
+        public async Task<List<Product>> GetProductBySearchNameAdmin(string userId, string prefix = "")
+        {
+            prefix = string.IsNullOrEmpty(prefix) ? "" : prefix.ToLower();
+            List<Product> products = new List<Product>();
+
+            using (SqlConnection connection = new SqlConnection(connectionstring))
+            {
+                await connection.OpenAsync();
+                string sqlQuery = $"SELECT * FROM Product WHERE ProductName LIKE '{prefix}%' AND AdminID = {userId};";
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 

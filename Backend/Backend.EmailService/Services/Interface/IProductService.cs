@@ -8,7 +8,8 @@ namespace Service.Services.Interface
 {
     public interface IProductService
     {
-        Task<Product> GetProductByIdAsync(int id);
+        Task<Product> GetProductByIdAsync(int id, string userId);
+
         Task<List<Product>> GetAllProductsByCategoryAsync(int id, string orderBy);
         Task<List<Product>> GetAllProductsAsync();
 
@@ -16,8 +17,8 @@ namespace Service.Services.Interface
         Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize);
         Task<List<Category>> GetAllCategoriesAsync();
         Task<List<Category>> GetAllCategoriesAdminAsync(string userId);
-        Task<Category> GetCategoryByIdAsync(int id);
-        Task<Category> GetCategoryByNameAsync(string name);
+        Task<Category> GetCategoryByIdAsync(int id,string userId);
+        Task<Category> GetCategoryByNameAsync(string name,string userId);
         Task<Category> CreateCategoryAsync(string categoryName);
         Task<Product> CreateProductAsync(ViewProduct productDto,string userId);
         Task<Category> UpdateCategoryAsync(int Id, string NewCategoryName);
@@ -25,6 +26,7 @@ namespace Service.Services.Interface
         Task DeleteCategoryAsync(int CategoryId);
         Task DeleteProductAsync(int ProductId);
         Task<List<Product>> GetProductBySearchNameAsync(string prefix);
+        Task<List<Product>> GetProductBySearchNameAdminAsync(string userId, string prefix);
         Task<List<Product>> GetProductsByCategoryNameAsync(string prefix);
 
     }

@@ -58,22 +58,22 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.GetProductsByPageNo(id, pageNo, pageSize);
         }
-        async Task<Category> IProductService.GetCategoryByIdAsync(int id)
+        async Task<Category> IProductService.GetCategoryByIdAsync(int id,string userId)
         {
-            return await _productRepository.GetCategoryById(id);
+            return await _productRepository.GetCategoryById(id,userId);
         }
 
-        async Task<Category> IProductService.GetCategoryByNameAsync(string name)
+        async Task<Category> IProductService.GetCategoryByNameAsync(string name, string userId)
         {
-            return await _productRepository.GetCategoryByName( name);
+            return await _productRepository.GetCategoryByName(name, userId);
         }
 
 
 
 
-        async Task<Product> IProductService.GetProductByIdAsync(int id)
+        async Task<Product> IProductService.GetProductByIdAsync(int id,string userId)
         {
-            return await _productRepository.GetProductById(id);
+            return await _productRepository.GetProductById(id,userId);
         }
 
 
@@ -103,6 +103,11 @@ namespace Service.Services.Implementation
         async Task<List<Category>> IProductService.GetAllCategoriesAdminAsync(string userId)
         {
             return await _productRepository.GetAllCategoriesAdmin(userId);
+        }
+
+        async Task<List<Product>> IProductService.GetProductBySearchNameAdminAsync(string userId, string prefix)
+        {
+            return await _productRepository.GetProductBySearchNameAdmin(userId,prefix);
         }
     }
 }
