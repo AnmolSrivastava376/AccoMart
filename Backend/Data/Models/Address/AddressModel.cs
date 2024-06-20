@@ -19,6 +19,9 @@ namespace Data.Models.Address
         [Required(ErrorMessage = "Zip code is required")]
         public string ZipCode { get; set; }
 
+
+        [Phone]
+        [Required(ErrorMessage = "Phone Numebr is Required")]
         public string PhoneNumber { get; set; }
     }
 }
