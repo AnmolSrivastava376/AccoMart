@@ -46,6 +46,12 @@ export class productService {
     );
   }
 
+  
+  fetchProductByNameAdmin(productName: string): Observable<Product[]> {
+    return this.http.get<Product[]>(
+      `${this.baseUrl}AdminDashboard/ProductsAdmin/SearchBy=${productName}`
+    );
+  }
   fetchAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(
       `${this.baseUrl}AdminDashboard/Products`
