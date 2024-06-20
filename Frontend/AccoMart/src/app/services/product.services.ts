@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class productService {
   constructor(private http: HttpClient) {}
-
+  //sample
   baseUrl = environment.serverUrl
 
   fetchProductByCategoryID(categoryId: number): Observable<Product[]> {
