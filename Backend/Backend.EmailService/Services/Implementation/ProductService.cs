@@ -99,5 +99,10 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.UpdateProduct(productId, productDto);
         }
+
+        async Task<List<Category>> IProductService.GetAllCategoriesAdminAsync(string userId)
+        {
+            return await _productRepository.GetAllCategoriesAdmin(userId);
+        }
     }
 }

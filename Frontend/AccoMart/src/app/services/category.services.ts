@@ -19,6 +19,13 @@ export class CategoryService {
     return this.http.get<Category[]>(url);
   }
 
+  fetchCategoriesByAdmin(): Observable<Category[]> {
+    const url = `${this.baseUrl}AdminDashboard/GetAllCategoriesAdmin`
+    console.log(url);
+    return this.http.get<Category[]>(url);
+  }
+
+
   fetchCategorybyName(categoryName: string): Observable<Category> {
     return this.http.get<Category>(
       `${this.baseUrl}AdminDashboard/category/name/${categoryName}`

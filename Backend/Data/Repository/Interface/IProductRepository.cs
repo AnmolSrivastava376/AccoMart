@@ -15,6 +15,7 @@ namespace Data.Repository.Interfaces
         Task<List<Product>> GetProductsByPageNo(int id, int pageNo, int pageSize);
         Task<List<Product>> GetAllProducts();
         Task<List<Category>> GetAllCategories();
+        Task<List<Category>> GetAllCategoriesAdmin(string userId);
         Task<Category> GetCategoryById(int id);
         Task<Category> CreateCategory(string categoryName);
         Task<Product> CreateProduct(ViewProduct productDto,string userId);

@@ -15,6 +15,7 @@ namespace Service.Services.Interface
         Task<List<Product>> GetAllProductsPagewiseAsync(int pageNo, int pageSize,string userId);
         Task<List<Product>> GetProductsByPageNoAsync(int id, int pageNo, int pageSize);
         Task<List<Category>> GetAllCategoriesAsync();
+        Task<List<Category>> GetAllCategoriesAdminAsync(string userId);
         Task<Category> GetCategoryByIdAsync(int id);
         Task<Category> GetCategoryByNameAsync(string name);
         Task<Category> CreateCategoryAsync(string categoryName);
