@@ -57,6 +57,7 @@ namespace API.Controllers.Admins
             return await _productService.GetProductBySearchNameAsync(prefix);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("ProductsAdmin/SearchBy={prefix}")]
         public async Task<List<Product>> GetProductBySearchNameAdmin(string prefix = "")
         {
@@ -144,8 +145,13 @@ namespace API.Controllers.Admins
         [HttpPost("Category/Create")]
          public async Task<ActionResult<Category>> CreateCategory([FromBody] CategoryName category_name)
          {
+            string userId = User.FindFirstValue("UserId");
 
-            var category = await _productService.CreateCategoryAsync(category_name.name);
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
+            var category = await _productService.CreateCategoryAsync(category_name.name, userId);
             return Ok(category);    
          }
 

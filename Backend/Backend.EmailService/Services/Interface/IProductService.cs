@@ -19,7 +19,7 @@ namespace Service.Services.Interface
         Task<List<Category>> GetAllCategoriesAdminAsync(string userId);
         Task<Category> GetCategoryByIdAsync(int id,string userId);
         Task<Category> GetCategoryByNameAsync(string name,string userId);
-        Task<Category> CreateCategoryAsync(string categoryName);
+        Task<Category> CreateCategoryAsync(string categoryName, string userId);
         Task<Product> CreateProductAsync(ViewProduct productDto,string userId);
         Task<Category> UpdateCategoryAsync(int Id, string NewCategoryName);
         Task<Product> UpdateProductAsync(int productId, UpdateProduct productDto);

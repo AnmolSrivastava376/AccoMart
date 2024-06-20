@@ -17,7 +17,7 @@ namespace Data.Repository.Interfaces
         Task<List<Category>> GetAllCategories();
         Task<List<Category>> GetAllCategoriesAdmin(string userId);
         Task<Category> GetCategoryById(int id,string userId);
-        Task<Category> CreateCategory(string categoryName);
+        Task<Category> CreateCategory(string categoryName, string userId);
         Task<Product> CreateProduct(ViewProduct productDto,string userId);
         Task<Category> UpdateCategory(int Id, string NewCategoryName);
         Task<Product> UpdateProduct(int productId, UpdateProduct productDto);
