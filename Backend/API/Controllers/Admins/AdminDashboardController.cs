@@ -58,8 +58,14 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("ProductsAdmin/SearchBy={prefix}")]
-        public async Task<List<Product>> GetProductBySearchNameAdmin(string userId,string prefix = "")
+        public async Task<List<Product>> GetProductBySearchNameAdmin(string prefix = "")
         {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
             return await _productService.GetProductBySearchNameAdminAsync(prefix, userId);
         }
 
@@ -71,8 +77,14 @@ namespace API.Controllers.Admins
 
 
         [HttpGet("Product/{id}")]
-         public async Task<Product> GetProductById(int id, string userId)
+         public async Task<Product> GetProductById(int id)
         {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
 
             return await _productService.GetProductByIdAsync(id, userId);
         }
@@ -100,15 +112,27 @@ namespace API.Controllers.Admins
 
 
         [HttpGet("Category/{id}")]
-        public async Task<ActionResult<Category>> GetCategoryById(int id, string userId)
+        public async Task<ActionResult<Category>> GetCategoryById(int id)
         {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
             var category = await _productService.GetCategoryByIdAsync(id,userId);
             return Ok(category);
         }
 
         [HttpGet("Category/name/{name}")]
-        public async Task<ActionResult<Category>> GetCategoryByName(string name, string userId)
+        public async Task<ActionResult<Category>> GetCategoryByName(string name)
         {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
             var category = await _productService.GetCategoryByNameAsync(name, userId);
             return Ok(category);
         }
