@@ -56,7 +56,7 @@ export class AdminProductsComponent implements OnInit {
   }
 
   fetchCategories() {
-    this.categoryService.fetchCategories().subscribe({
+    this.categoryService.fetchCategoriesByAdmin().subscribe({
       next: (response) => {
         this.categories = response;
         this.fetchProductsByPageNo();

@@ -41,7 +41,7 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   fetchCategories() {
-    this.categoryService.fetchCategories().subscribe({
+    this.categoryService.fetchCategoriesByAdmin().subscribe({
       next: (response: any) => {
         this.categories = response;
         this.isLoading = false;

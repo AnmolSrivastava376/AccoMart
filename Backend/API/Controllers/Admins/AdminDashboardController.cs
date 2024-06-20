@@ -77,7 +77,22 @@ namespace API.Controllers.Admins
             return await _productService.GetAllCategoriesAsync();
         }
 
-       
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetAllCategoriesAdmin")]
+        async public Task<List<Category>> GetAllCategoriesAdmin()
+        {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
+            return await _productService.GetAllCategoriesAdminAsync(userId);
+        }
+
+
         [HttpGet("Category/{id}")]
         public async Task<ActionResult<Category>> GetCategoryById(int id)
         {
