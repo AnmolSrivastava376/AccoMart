@@ -19,9 +19,9 @@ namespace Service.Services.Implementation
             return await _productRepository.CreateCategory(categoryName);
         }
 
-        async Task<Product> IProductService.CreateProductAsync(ViewProduct productDto)
+        async Task<Product> IProductService.CreateProductAsync(ViewProduct productDto,string userId)
         {
-            return await _productRepository.CreateProduct(productDto);
+            return await _productRepository.CreateProduct(productDto,userId);
         }
        
 
@@ -49,9 +49,9 @@ namespace Service.Services.Implementation
         {
             return await _productRepository.GetAllProducts();
         }
-        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize)
+        async Task<List<Product>> IProductService.GetAllProductsPagewiseAsync(int pageNo, int pageSize, string userId)
         {
-            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize);
+            return await _productRepository.GetAllProductsPagewise(pageNo, pageSize, userId);
         }
 
         async Task<List<Product>> IProductService.GetProductsByPageNoAsync(int id, int pageNo, int pageSize)

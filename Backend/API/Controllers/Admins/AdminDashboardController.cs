@@ -6,6 +6,7 @@ using Data.Models.Product_Category.Category;
 using Data.Models.ViewModels;
 using Data.Models.Product_Category;
 using Data.Models.ViewModels.UpdateProduct;
+using System.Security.Claims;
 
 namespace API.Controllers.Admins
 {
@@ -37,10 +38,18 @@ namespace API.Controllers.Admins
         }
 
         [HttpGet("GetAllProductsPagewise")]
+        [Authorize(Roles = "Admin")]
         public async Task<List<Product>> GetAllProductsPagewise(int pageNo)
         {
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
+
             int pageSize = 20;
-            return await _productService.GetAllProductsPagewiseAsync(pageNo,pageSize);
+            return await _productService.GetAllProductsPagewiseAsync(pageNo,pageSize,userId);
         }
         [HttpGet("Products/SearchBy={prefix}")]
         public async Task<List<Product>> GetProductBySearchName(string prefix = "")
@@ -98,7 +107,14 @@ namespace API.Controllers.Admins
         [HttpPost("Product/Create")]
         public async Task<ActionResult<Product>> CreateProduct(ViewProduct productDto)
         {
-            var product = await _productService.CreateProductAsync(productDto);
+            string userId = User.FindFirstValue("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("UserId not found in token.");
+            }
+
+            var product = await _productService.CreateProductAsync(productDto,userId);
             return Ok(product); 
         }
 
@@ -136,6 +152,7 @@ namespace API.Controllers.Admins
             await _productService.DeleteProductAsync(ProductId);
             return Ok();
         }
+
 
     }
 }

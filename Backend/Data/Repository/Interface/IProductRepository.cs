@@ -11,13 +11,13 @@ namespace Data.Repository.Interfaces
         Task<Product> GetProductById(int id);
         Task<Category> GetCategoryByName(string name);
         Task<List<Product>> GetAllProductsByCategory(int id,string orderBy);
-        Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize);
+        Task<List<Product>> GetAllProductsPagewise(int pageNo, int pageSize, string userId);
         Task<List<Product>> GetProductsByPageNo(int id, int pageNo, int pageSize);
         Task<List<Product>> GetAllProducts();
         Task<List<Category>> GetAllCategories();
         Task<Category> GetCategoryById(int id);
         Task<Category> CreateCategory(string categoryName);
-        Task<Product> CreateProduct(ViewProduct productDto);
+        Task<Product> CreateProduct(ViewProduct productDto,string userId);
         Task<Category> UpdateCategory(int Id, string NewCategoryName);
         Task<Product> UpdateProduct(int productId, UpdateProduct productDto);
         Task DeleteCategory(int CategoryId);
